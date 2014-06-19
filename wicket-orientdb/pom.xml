@@ -1,39 +1,78 @@
 <?xml version="1.0"?>
-<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  <modelVersion>4.0.0</modelVersion>
-  <parent>
-    <groupId>ru.ydn.wicket.wicket-orientdb</groupId>
-    <artifactId>wicket-orientdb-parent</artifactId>
-    <version>1.0-SNAPSHOT</version>
-  </parent>
-  <groupId>ru.ydn.wicket.wicket-orientdb</groupId>
-  <artifactId>wicket-orientdb</artifactId>
-  <version>1.0-SNAPSHOT</version>
-  <name>wicket-orientdb</name>
-  <url>http://maven.apache.org</url>
-  <dependencies>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-    </dependency>
-    <dependency>
-	    <groupId>org.apache.wicket</groupId>
-	    <artifactId>wicket-core</artifactId>
-    </dependency>
-    <dependency>
-	    <groupId>org.apache.wicket</groupId>
-	    <artifactId>wicket-extensions</artifactId>
-	    <version>${wicket.version}</version>
-    </dependency>
-    <dependency>
-	    <groupId>org.apache.wicket</groupId>
-	    <artifactId>wicket-devutils</artifactId>
-	    <scope>provided</scope>
-    </dependency>
-  </dependencies>
-  <build>
-  	<resources>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>ru.ydn.wicket.wicket-orientdb</groupId>
+		<artifactId>wicket-orientdb-parent</artifactId>
+		<version>1.0-SNAPSHOT</version>
+	</parent>
+	<groupId>ru.ydn.wicket.wicket-orientdb</groupId>
+	<artifactId>wicket-orientdb</artifactId>
+	<version>1.0-SNAPSHOT</version>
+	<name>wicket-orientdb</name>
+	<url>http://maven.apache.org</url>
+	<dependencies>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.wicket</groupId>
+			<artifactId>wicket-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.wicket</groupId>
+			<artifactId>wicket-extensions</artifactId>
+			<version>${wicket.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.wicket</groupId>
+			<artifactId>wicket-auth-roles</artifactId>
+			<version>${wicket.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.orientechnologies</groupId>
+			<artifactId>orient-commons</artifactId>
+			<version>${orientdb.version}</version>
+			<type>bundle</type>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.orientechnologies</groupId>
+			<artifactId>orientdb-core</artifactId>
+			<version>${orientdb.version}</version>
+			<type>bundle</type>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.orientechnologies</groupId>
+			<artifactId>orientdb-enterprise</artifactId>
+			<version>${orientdb.version}</version>
+			<type>bundle</type>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.orientechnologies</groupId>
+			<artifactId>orientdb-server</artifactId>
+			<version>${orientdb.version}</version>
+			<type>bundle</type>
+			<scope>provided</scope>
+		</dependency>
+		<!-- INCLUDE THIS IF YOU'RE CONNECTING TO THE SERVER THROUGH THE REMOTE 
+			ENGINE -->
+		<dependency>
+			<groupId>com.orientechnologies</groupId>
+			<artifactId>orientdb-client</artifactId>
+			<version>${orientdb.version}</version>
+			<type>bundle</type>
+			<scope>provided</scope>
+		</dependency>
+		<!-- END REMOTE ENGINE DEPENDENCY -->
+	</dependencies>
+	<build>
+		<resources>
 			<resource>
 				<directory>src/main/resources</directory>
 			</resource>
@@ -61,5 +100,5 @@
 				</excludes>
 			</testResource>
 		</testResources>
-  </build>
+	</build>
 </project>

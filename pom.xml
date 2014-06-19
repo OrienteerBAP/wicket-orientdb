@@ -40,6 +40,7 @@
 	</repositories>
 	<properties>
 		<wicket.version>6.15.0</wicket.version>
+		<orientdb.version>1.6</orientdb.version>
 		<jetty.version>7.6.13.v20130916</jetty.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<!-- allowed values: R7, 1.0, 1.5, 2.0 or none -->
@@ -67,6 +68,26 @@
 			<version>${wicket.version}</version>
 		</dependency>
 		<dependency>
+		    <groupId>com.orientechnologies</groupId>
+		    <artifactId>orient-commons</artifactId>
+		    <version>${orientdb.version}</version>
+		    <type>bundle</type>
+		</dependency>
+		<dependency>
+		    <groupId>com.orientechnologies</groupId>
+		    <artifactId>orientdb-core</artifactId>
+		    <version>${orientdb.version}</version>
+		    <type>bundle</type>
+		</dependency>
+		<!-- INCLUDE THIS IF YOU'RE CONNECTING TO THE SERVER THROUGH THE REMOTE ENGINE -->
+		<dependency>
+		    <groupId>com.orientechnologies</groupId>
+		    <artifactId>orientdb-client</artifactId>
+		    <version>${orientdb.version}</version>
+		    <type>bundle</type>
+		</dependency>
+		<!-- END REMOTE ENGINE DEPENDENCY -->
+		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-log4j12</artifactId>
 			<version>1.6.4</version>
@@ -86,6 +107,12 @@
   </dependencyManagement>
   <build>
     <plugins>
+	    <plugin>
+		  <groupId>org.apache.felix</groupId>
+		  <artifactId>maven-bundle-plugin</artifactId>
+		  <version>2.3.6</version>
+		  <extensions>true</extensions>
+	    </plugin>
 	    <plugin>
 		    <inherited>true</inherited>
 		    <groupId>org.apache.maven.plugins</groupId>
