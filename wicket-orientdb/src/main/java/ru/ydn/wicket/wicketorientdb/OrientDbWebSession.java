@@ -16,7 +16,7 @@ import com.orientechnologies.orient.core.exception.OSecurityAccessException;
 import com.orientechnologies.orient.core.metadata.security.ORole;
 import com.orientechnologies.orient.core.metadata.security.OUser;
 
-public class OrientDbWebSession<K extends ODatabaseComplex> extends AuthenticatedWebSession {
+public class OrientDbWebSession extends AuthenticatedWebSession {
 
 	private OUser user;
 	
@@ -24,9 +24,9 @@ public class OrientDbWebSession<K extends ODatabaseComplex> extends Authenticate
 		super(request);
 	}
 	
-	public static OrientDbWebSession<ODatabaseComplex> get()
+	public static OrientDbWebSession get()
 	{
-		return (OrientDbWebSession<ODatabaseComplex>)Session.get();
+		return (OrientDbWebSession)Session.get();
 	}
 
 	@Override
@@ -49,10 +49,9 @@ public class OrientDbWebSession<K extends ODatabaseComplex> extends Authenticate
 	}
 
 	
-	@SuppressWarnings("unchecked")
-	public K getDatabase()
+	public ODatabaseComplex<?> getDatabase()
 	{
-		return (K)ODatabaseRecordThreadLocal.INSTANCE.get();
+		return ODatabaseRecordThreadLocal.INSTANCE.get();
 	}
 
 	@Override
@@ -83,7 +82,5 @@ public class OrientDbWebSession<K extends ODatabaseComplex> extends Authenticate
 		super.signOut();
 		this.user=null;
 	}
-	
-	
 
 }

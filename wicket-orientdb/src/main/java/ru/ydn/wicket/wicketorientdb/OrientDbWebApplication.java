@@ -9,7 +9,10 @@ public abstract class OrientDbWebApplication extends AuthenticatedWebApplication
 	private final OrientDbSettings orientDbSettings = new OrientDbSettings();
 
 	@Override
-	protected abstract Class<? extends OrientDbWebSession> getWebSessionClass();
+	protected Class<? extends OrientDbWebSession> getWebSessionClass()
+	{
+		return OrientDbWebSession.class;
+	}
 	
 	public IOrientDbSettings getOrientDbSettings()
 	{
@@ -20,6 +23,7 @@ public abstract class OrientDbWebApplication extends AuthenticatedWebApplication
 	protected void init() {
 		super.init();
 		Orient.instance().registerThreadDatabaseFactory(orientDbSettings.DEFAULT_DATABASE_THREAD_LOCAL_FACTORY);
+		getRequestCycleListeners().add(new TransactionRequestCycleListener());
 	}
 
 }

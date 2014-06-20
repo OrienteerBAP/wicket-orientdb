@@ -2,7 +2,7 @@
 <html xmlns:wicket="http://wicket.apache.org">
 	<head>
 		<meta charset="utf-8" />
-		<title>Apache Wicket Console Demo</title>
+		<title>Apache Wicket-OrientDb Library Demo</title>
 		<link href='http://fonts.googleapis.com/css?family=Yanone+Kaffeesatz:regular,bold' rel='stylesheet' type='text/css' />
 		<link rel="stylesheet" href="style.css" type="text/css" media="screen" title="Stylesheet" />
 	</head>
@@ -14,7 +14,15 @@
 			</div>
 		</div>
 		<div id="bd">
-			<h2>Demo of Wicket Console</h2>
+			<h2>Demo of Wicket OrientDB Library</h2>
+			<table>
+				<tr><td>DataBase Name</td><td wicket:id="dbName"></td></tr>
+				<tr><td>DataBase URL</td><td wicket:id="dbUrl"></td></tr>
+				<tr><td>DataBase User</td><td wicket:id="dbUserName"></td></tr>
+				<tr><td>Signed In</td><td wicket:id="signedIn"></td></tr>
+				<tr><td>Signed In User</td><td wicket:id="signedInUser"></td></tr>
+			</table>
+			<div wicket:id="signInPanel"></div>
 		</div>
 		<!-- <div id="ft">
 		</div> -->
