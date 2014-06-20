@@ -23,7 +23,12 @@ public abstract class OrientDbWebApplication extends AuthenticatedWebApplication
 	protected void init() {
 		super.init();
 		Orient.instance().registerThreadDatabaseFactory(orientDbSettings.DEFAULT_DATABASE_THREAD_LOCAL_FACTORY);
-		getRequestCycleListeners().add(new TransactionRequestCycleListener());
+		getRequestCycleListeners().add(newTransactionRequestCycleListener());
+	}
+	
+	protected TransactionRequestCycleListener newTransactionRequestCycleListener()
+	{
+		return new TransactionRequestCycleListener();
 	}
 
 }

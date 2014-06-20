@@ -13,7 +13,7 @@ import com.orientechnologies.orient.server.OServer;
 import com.orientechnologies.orient.server.OServerMain;
 import com.orientechnologies.orient.server.config.OServerConfiguration;
 
-public class EmbeddOrientDBApplicationListener implements IApplicationListener {
+public class EmbeddOrientDbApplicationListener implements IApplicationListener {
 	
 	private File configFile;
 	private String config;
@@ -21,22 +21,22 @@ public class EmbeddOrientDBApplicationListener implements IApplicationListener {
 	
 	private OServer server;
 
-	public EmbeddOrientDBApplicationListener()
+	public EmbeddOrientDbApplicationListener()
 	{
 		
 	}
 	
-	public EmbeddOrientDBApplicationListener(File configFile)
+	public EmbeddOrientDbApplicationListener(File configFile)
 	{
 		this.configFile=configFile;
 	}
 	
-	public EmbeddOrientDBApplicationListener(String config)
+	public EmbeddOrientDbApplicationListener(String config)
 	{
 		this.config=config;
 	}
 	
-	public EmbeddOrientDBApplicationListener(OServerConfiguration serverConfiguration)
+	public EmbeddOrientDbApplicationListener(OServerConfiguration serverConfiguration)
 	{
 		this.serverConfiguration = serverConfiguration;
 	}
