@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
+import java.net.URL;
 
 import org.apache.wicket.Application;
 import org.apache.wicket.IApplicationListener;
@@ -15,6 +16,7 @@ import com.orientechnologies.orient.server.config.OServerConfiguration;
 
 public class EmbeddOrientDbApplicationListener implements IApplicationListener {
 	
+	private URL url;
 	private File configFile;
 	private String config;
 	private OServerConfiguration serverConfiguration;
@@ -24,6 +26,11 @@ public class EmbeddOrientDbApplicationListener implements IApplicationListener {
 	public EmbeddOrientDbApplicationListener()
 	{
 		
+	}
+	
+	public EmbeddOrientDbApplicationListener(URL url)
+	{
+		this.url=url;
 	}
 	
 	public EmbeddOrientDbApplicationListener(File configFile)
@@ -45,7 +52,11 @@ public class EmbeddOrientDbApplicationListener implements IApplicationListener {
 	public void onAfterInitialized(Application arg0) {
 		try {
 			server = OServerMain.create();
-			if(configFile!=null)
+			if(url!=null)
+			{
+				server.startup(url.openStream());
+			}
+			else if(configFile!=null)
 			{
 				server.startup(configFile);
 			}
@@ -62,9 +73,15 @@ public class EmbeddOrientDbApplicationListener implements IApplicationListener {
 				server.startup();
 			}
 			server.activate();
+			onAfterServerStartupAndActivation();
 		} catch (Exception e) {
 			throw new WicketRuntimeException("Can't start OrientDB Embedded Server", e);
 		}
+	}
+	
+	public void onAfterServerStartupAndActivation() throws Exception
+	{
+		
 	}
 
 	@Override
