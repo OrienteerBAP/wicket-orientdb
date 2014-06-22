@@ -13,8 +13,6 @@ public class ODocumentPropertyModel<T> extends PropertyModel<T> {
 	
 	public static Object wrapDocumentIfRequired(Object obj)
 	{
-		if(obj instanceof ODocument) return new ODocumentMapWrapper((ODocument)obj);
-		
 		return obj instanceof ODocument
 					?new ODocumentMapWrapper((ODocument)obj)
 					:obj;

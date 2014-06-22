@@ -12,6 +12,7 @@ import com.orientechnologies.orient.core.Orient;
 import com.orientechnologies.orient.core.db.ODatabase;
 import com.orientechnologies.orient.core.db.ODatabaseComplex;
 import com.orientechnologies.orient.core.db.ODatabaseRecordThreadLocal;
+import com.orientechnologies.orient.core.db.record.ODatabaseRecord;
 import com.orientechnologies.orient.core.exception.OSecurityAccessException;
 import com.orientechnologies.orient.core.metadata.security.ORole;
 import com.orientechnologies.orient.core.metadata.security.OUser;
@@ -49,7 +50,7 @@ public class OrientDbWebSession extends AuthenticatedWebSession {
 	}
 
 	
-	public ODatabaseComplex<?> getDatabase()
+	public ODatabaseRecord getDatabase()
 	{
 		return ODatabaseRecordThreadLocal.INSTANCE.get();
 	}
