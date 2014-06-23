@@ -47,7 +47,7 @@ public class ODocumentModel extends LoadableDetachableModel<ODocument> implement
 		ODocument doc = getObject();
 		if(doc!=null)
 		{
-	        if(orid==null) this.orid = doc.getIdentity();
+	        this.orid = doc.getIdentity();
 	        if(orid!=null && orid.isValid())
 	        {
 	        	savedDocument=null;
@@ -55,9 +55,10 @@ public class ODocumentModel extends LoadableDetachableModel<ODocument> implement
 	        else
 	        {
 	        	orid=null;
+	        	savedDocument = doc;
 	        }
-	        super.detach();
 		}
+		super.detach();
     }
 
 }
