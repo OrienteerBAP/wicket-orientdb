@@ -77,7 +77,7 @@ public class OrientDbWebSession extends AuthenticatedWebSession {
 	{
 		return user;
 	}
-
+	
 	@Override
 	public void signOut() {
 		super.signOut();
