@@ -3,6 +3,7 @@ package ru.ydn.wicket.wicketorientdb.model;
 import org.apache.wicket.model.IObjectClassAwareModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 
+import com.orientechnologies.orient.core.exception.ORecordNotFoundException;
 import com.orientechnologies.orient.core.id.ORID;
 import com.orientechnologies.orient.core.record.impl.ODocument;
 
@@ -31,9 +32,13 @@ public class ODocumentModel extends LoadableDetachableModel<ODocument> implement
 	protected ODocument load() {
 		if(orid!=null && orid.isValid())
 		{
-			ODocument ret = new ODocument(orid);
-			ret.load();
-			return ret;
+			try {
+				ODocument ret = new ODocument(orid);
+				ret.load();
+				return ret;
+			} catch (ORecordNotFoundException e) {
+				return null;
+			}
 		}
 		else
 		{
