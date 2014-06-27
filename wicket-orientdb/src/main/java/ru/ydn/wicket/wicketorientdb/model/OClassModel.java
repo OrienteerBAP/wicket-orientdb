@@ -1,5 +1,6 @@
 package ru.ydn.wicket.wicketorientdb.model;
 
+import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 
 import ru.ydn.wicket.wicketorientdb.OrientDbWebSession;
@@ -12,6 +13,7 @@ import com.orientechnologies.orient.core.record.impl.ODocument;
 
 public class OClassModel extends LoadableDetachableModel<OClass> {
 
+	private IModel<ODocument> documentModel;
 	private String className;
 	
 	public OClassModel(OClass oClass) {
@@ -22,14 +24,22 @@ public class OClassModel extends LoadableDetachableModel<OClass> {
 	public OClassModel(String className) {
 		this.className=className;
 	}
-
 	
-	
-	
+	public OClassModel(IModel<ODocument> documentModel) {
+		this.documentModel = documentModel;
+	}
 
 	@Override
 	protected OClass load() {
-		return className!=null?getSchema().getClass(className):null;
+		if(documentModel!=null)
+		{
+			ODocument doc = documentModel.getObject();
+			return doc!=null?doc.getSchemaClass():null;
+		}
+		else
+		{
+			return className!=null?getSchema().getClass(className):null;
+		}
 	}
 	
 	@Override
@@ -41,6 +51,7 @@ public class OClassModel extends LoadableDetachableModel<OClass> {
 	        this.className = oClass.getName();
 	        super.detach();
 		}
+		if(documentModel!=null) documentModel.detach();
     }
 	
 	public OSchema getSchema()

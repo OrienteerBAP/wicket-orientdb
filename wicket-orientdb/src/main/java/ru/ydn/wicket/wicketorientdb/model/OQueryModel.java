@@ -81,7 +81,6 @@ public class OQueryModel<K> extends LoadableDetachableModel<List<K>>
     	if(first!=null) sb.append(" SKIP "+first);
     	if(count!=null && count>0) sb.append(" LIMIT "+count);
     	if(sortableParameter!=null) sb.append(" ORDER BY "+sortableParameter+(isAccessing?"":" desc"));
-    	System.out.println("SQL="+sb.toString());
     	return sb.toString();
     }
 
