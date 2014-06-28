@@ -6,11 +6,15 @@ import com.orientechnologies.orient.core.db.ODatabaseThreadLocalFactory;
 
 public interface IOrientDbSettings {
 	public String getDBUrl();
+	public String getDBUserName();
+	public String getDBUserPassword();
 	public String getDefaultUserName();
 	public String getDefaultUserPassword();
 	public ODatabasePoolBase<? extends ODatabase> getDatabasePool();
 	public ODatabaseThreadLocalFactory getDatabaseThreadLocalFactory();
 	public void setDBUrl(String url);
+	public void setDBUserName(String userName);
+	public void setDBUserPassword(String password);
 	public void setDefaultUserName(String userName);
 	public void setDefaultUserPassword(String password);
 	public void setDatabasePool(ODatabasePoolBase<? extends ODatabase> pool);

@@ -2,35 +2,18 @@ package ru.ydn.wicket.wicketorientdb;
 
 import com.orientechnologies.orient.core.Orient;
 import com.orientechnologies.orient.core.db.ODatabase;
-import com.orientechnologies.orient.core.db.ODatabaseComplex;
 import com.orientechnologies.orient.core.db.ODatabasePoolBase;
 import com.orientechnologies.orient.core.db.ODatabaseThreadLocalFactory;
 import com.orientechnologies.orient.core.db.document.ODatabaseDocumentPool;
-import com.orientechnologies.orient.core.db.record.ODatabaseRecord;
 
 public class OrientDbSettings implements IOrientDbSettings
 {
 	private String dbUrl;
+	private String dbUserName;
+	private String dbUserPassword;
 	private String defaultUserName;
 	private String defaultUserPassword;
 	private ODatabasePoolBase<? extends ODatabase> pool = ODatabaseDocumentPool.global();
-	public final ODatabaseThreadLocalFactory DEFAULT_DATABASE_THREAD_LOCAL_FACTORY 
-									= new ODatabaseThreadLocalFactory() {
-									
-									@Override
-									@SuppressWarnings({ "resource", "rawtypes" })
-									public ODatabaseRecord getThreadDatabase() {
-										ODatabase db = pool.acquire(dbUrl, defaultUserName, defaultUserPassword);
-										while(db!=null && !(db instanceof ODatabaseRecord))
-										{
-											if(db instanceof ODatabaseComplex)
-											{
-												db = ((ODatabaseComplex)db).getUnderlying();
-											}
-										}
-										return (ODatabaseRecord)db;
-									}
-								};
 	
 	@Override
 	public String getDBUrl() {
@@ -75,6 +58,27 @@ public class OrientDbSettings implements IOrientDbSettings
 	@Override
 	public void setDatabasePool(ODatabasePoolBase<? extends ODatabase> pool) {
 		this.pool = pool;
+	}
+	
+
+	@Override
+	public String getDBUserName() {
+		return dbUserName;
+	}
+
+	@Override
+	public String getDBUserPassword() {
+		return dbUserPassword;
+	}
+
+	@Override
+	public void setDBUserName(String userName) {
+		this.dbUserName = userName;
+	}
+
+	@Override
+	public void setDBUserPassword(String password) {
+		this.dbUserPassword = password;
 	}
 
 	@Override

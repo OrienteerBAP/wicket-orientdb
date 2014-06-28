@@ -2,13 +2,14 @@ package ru.ydn.wicket.wicketorientdb;
 
 import org.apache.wicket.Page;
 import org.apache.wicket.authroles.authentication.AuthenticatedWebApplication;
+import org.apache.wicket.protocol.http.WebApplication;
 
 import ru.ydn.wicket.wicketorientdb.security.WicketOrientDbAuthorizationStrategy;
 
 import com.orientechnologies.orient.core.Orient;
 
 public abstract class OrientDbWebApplication extends AuthenticatedWebApplication {
-	private final OrientDbSettings orientDbSettings = new OrientDbSettings();
+	private IOrientDbSettings orientDbSettings = new OrientDbSettings();
 
 	@Override
 	protected Class<? extends OrientDbWebSession> getWebSessionClass()
@@ -20,11 +21,21 @@ public abstract class OrientDbWebApplication extends AuthenticatedWebApplication
 	{
 		return orientDbSettings;
 	}
+	
+	public void setOrientDbSettings(IOrientDbSettings orientDbSettings)
+	{
+		this.orientDbSettings=orientDbSettings;
+	}
+	
+	public static OrientDbWebApplication get()
+    {
+        return (OrientDbWebApplication) WebApplication.get();
+    }
 
 	@Override
 	protected void init() {
 		super.init();
-		Orient.instance().registerThreadDatabaseFactory(orientDbSettings.DEFAULT_DATABASE_THREAD_LOCAL_FACTORY);
+		Orient.instance().registerThreadDatabaseFactory(new DefaultODatabaseThreadLocalFactory(this));
 		getRequestCycleListeners().add(newTransactionRequestCycleListener());
 		getSecuritySettings().setAuthorizationStrategy(new WicketOrientDbAuthorizationStrategy(this));
 	}

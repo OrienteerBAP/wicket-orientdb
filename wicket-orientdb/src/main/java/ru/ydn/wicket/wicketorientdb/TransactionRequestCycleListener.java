@@ -1,11 +1,13 @@
 package ru.ydn.wicket.wicketorientdb;
 
+import org.apache.wicket.WicketRuntimeException;
 import org.apache.wicket.request.IRequestHandler;
 import org.apache.wicket.request.cycle.RequestCycle;
 import org.apache.wicket.request.handler.resource.ResourceReferenceRequestHandler;
 import org.apache.wicket.request.resource.PackageResourceReference;
 import org.apache.wicket.request.resource.ResourceReference;
 
+import com.orientechnologies.orient.core.db.record.ODatabaseRecord;
 import com.orientechnologies.orient.core.metadata.security.OUser;
 
 public class TransactionRequestCycleListener extends
@@ -14,13 +16,24 @@ public class TransactionRequestCycleListener extends
 	@Override
 	public void start(RequestCycle cycle) {
 		OrientDbWebSession session = OrientDbWebSession.get();
+		ODatabaseRecord db = session.getDatabase();
+		OUser oUser;
 		if(session.isSignedIn())
 		{
-			OUser user = session.getUser();
-			user.reload();
-			session.getDatabase().setUser(user);
+			oUser = session.getUser();
+			oUser.reload();
 		}
-		session.getDatabase().begin();
+		else
+		{
+			IOrientDbSettings settings = OrientDbWebApplication.get().getOrientDbSettings();
+			oUser = db.getMetadata().getSecurity().getUser(settings.getDefaultUserName());
+			if(!oUser.checkPassword(settings.getDefaultUserPassword()))
+			{
+				throw new WicketRuntimeException("Incorrect password for default user was specified");
+			}
+		}
+		db.setUser(oUser);
+		db.begin();
 	}
 
 	@Override
