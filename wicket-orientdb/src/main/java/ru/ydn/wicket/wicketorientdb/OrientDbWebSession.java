@@ -52,7 +52,7 @@ public class OrientDbWebSession extends AuthenticatedWebSession {
 	
 	public ODatabaseRecord getDatabase()
 	{
-		return ODatabaseRecordThreadLocal.INSTANCE.get();
+		return DefaultODatabaseThreadLocalFactory.castToODatabaseRecord(ODatabaseRecordThreadLocal.INSTANCE.get().getDatabaseOwner());
 	}
 
 	@Override

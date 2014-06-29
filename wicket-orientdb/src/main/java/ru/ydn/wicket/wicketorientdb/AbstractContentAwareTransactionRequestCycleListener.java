@@ -18,8 +18,8 @@ public abstract class AbstractContentAwareTransactionRequestCycleListener extend
 		if(isInProgress(cycle)) return;
 		if(isOurContent(cycle, handler))
 		{
-			start(cycle);
 			setInProgress(cycle, true);
+			start(cycle);
 		}
 	}
 	

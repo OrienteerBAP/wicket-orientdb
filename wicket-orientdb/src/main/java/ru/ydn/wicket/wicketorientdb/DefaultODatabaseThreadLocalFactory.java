@@ -19,11 +19,16 @@ public class DefaultODatabaseThreadLocalFactory implements ODatabaseThreadLocalF
 	public ODatabaseRecord getThreadDatabase() {
 		IOrientDbSettings settings = app.getOrientDbSettings();
 		ODatabase db = settings.getDatabasePool().acquire(settings.getDBUrl(), settings.getDBUserName(), settings.getDBUserPassword());
+		return castToODatabaseRecord(db);
+	}
+	
+	public static ODatabaseRecord castToODatabaseRecord(ODatabase db)
+	{
 		while(db!=null && !(db instanceof ODatabaseRecord))
 		{
 			if(db instanceof ODatabaseComplex)
 			{
-				db = ((ODatabaseComplex)db).getUnderlying();
+				db = ((ODatabaseComplex<?>)db).getUnderlying();
 			}
 		}
 		return (ODatabaseRecord)db;

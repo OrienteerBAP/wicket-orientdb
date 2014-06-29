@@ -3,6 +3,9 @@ package ru.ydn.wicket.wicketorientdb.model;
 import org.apache.wicket.model.IObjectClassAwareModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 
+import ru.ydn.wicket.wicketorientdb.OrientDbWebSession;
+
+import com.orientechnologies.orient.core.db.record.ODatabaseRecord;
 import com.orientechnologies.orient.core.exception.ORecordNotFoundException;
 import com.orientechnologies.orient.core.id.ORID;
 import com.orientechnologies.orient.core.record.impl.ODocument;
@@ -33,9 +36,8 @@ public class ODocumentModel extends LoadableDetachableModel<ODocument> implement
 		if(orid!=null && orid.isValid())
 		{
 			try {
-				ODocument ret = new ODocument(orid);
-				ret.load();
-				return ret;
+				ODatabaseRecord db = OrientDbWebSession.get().getDatabase();
+				return db.load(orid);
 			} catch (ORecordNotFoundException e) {
 				return null;
 			}
@@ -49,7 +51,7 @@ public class ODocumentModel extends LoadableDetachableModel<ODocument> implement
 	@Override
     public void detach()
     {
-		ODocument doc = getObject();
+		ODocument doc = isAttached()?getObject():null;
 		if(doc!=null)
 		{
 	        this.orid = doc.getIdentity();
@@ -65,5 +67,14 @@ public class ODocumentModel extends LoadableDetachableModel<ODocument> implement
 		}
 		super.detach();
     }
+
+	@Override
+	public String toString() {
+		return "ODocumentModel [orid=" + orid + "]";
+	}
+	
+	
+	
+	
 
 }
