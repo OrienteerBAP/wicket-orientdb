@@ -1,10 +1,12 @@
 package ru.ydn.wicket.wicketorientdb.security;
 
+import java.lang.annotation.Annotation;
 import java.util.HashMap;
 import java.util.Map;
 
 import ru.ydn.wicket.wicketorientdb.OrientDbWebSession;
 
+import com.orientechnologies.common.concur.resource.OSharedResource;
 import com.orientechnologies.orient.core.db.record.ODatabaseRecord;
 import com.orientechnologies.orient.core.exception.OSecurityAccessException;
 import com.orientechnologies.orient.core.metadata.schema.OClass;
@@ -23,6 +25,40 @@ public class OSecurityHelper
 		MAPPING_FOR_HACK.put(OrientPermission.UPDATE, OSecurityShared.ALLOW_UPDATE_FIELD);
 		MAPPING_FOR_HACK.put(OrientPermission.DELETE, OSecurityShared.ALLOW_DELETE_FIELD);
 	}
+	
+	private static class RequiredOrientResourceImpl implements RequiredOrientResource
+	{
+		private final String value;
+		private final OrientPermission[] permissions;
+		
+		public RequiredOrientResourceImpl(String value, OrientPermission[] permissions)
+		{
+			this.value = value;
+			this.permissions = permissions;
+		}
+		
+		@Override
+		public Class<? extends Annotation> annotationType() {
+			return RequiredOrientResource.class;
+		}
+
+		@Override
+		public String value() {
+			return value;
+		}
+
+		@Override
+		public OrientPermission[] permissions() {
+			return permissions;
+		}
+		
+	}
+	
+	public static RequiredOrientResource[] requireOClass(final OClass oClass, final OrientPermission... permissions)
+	{
+		return new RequiredOrientResource[]{new RequiredOrientResourceImpl(ODatabaseSecurityResources.CLASS+"."+oClass.getName(), permissions)};
+	}
+	
 	//Very bad hack - should be changed in OrientDB
 	private static class AccessToIsAllowedInRestrictedAccessHook extends ORestrictedAccessHook
 	{

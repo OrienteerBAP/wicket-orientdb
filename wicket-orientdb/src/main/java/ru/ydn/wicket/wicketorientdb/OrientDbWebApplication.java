@@ -37,6 +37,7 @@ public abstract class OrientDbWebApplication extends AuthenticatedWebApplication
 		super.init();
 		Orient.instance().registerThreadDatabaseFactory(new DefaultODatabaseThreadLocalFactory(this));
 		getRequestCycleListeners().add(newTransactionRequestCycleListener());
+		getRequestCycleListeners().add(new OrientDefaultExceptionsHandlingListener());
 		getSecuritySettings().setAuthorizationStrategy(new WicketOrientDbAuthorizationStrategy(this));
 	}
 	

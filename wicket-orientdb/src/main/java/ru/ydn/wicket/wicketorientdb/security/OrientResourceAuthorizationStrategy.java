@@ -7,7 +7,9 @@ import org.apache.wicket.Page;
 import org.apache.wicket.authorization.Action;
 import org.apache.wicket.authorization.IAuthorizationStrategy;
 import org.apache.wicket.request.component.IRequestableComponent;
+import org.apache.wicket.util.string.Strings;
 
+import com.orientechnologies.orient.core.metadata.security.ODatabaseSecurityResources;
 import com.orientechnologies.orient.core.metadata.security.OUser;
 
 import ru.ydn.wicket.wicketorientdb.OrientDbWebSession;
@@ -43,6 +45,14 @@ public class OrientResourceAuthorizationStrategy  implements IAuthorizationStrat
 			{
 				if(!checkResources(dynamicResources)) return false;
 			}
+			if(component instanceof ISecuredComponent)
+			{
+				resources = ((ISecuredComponent)component).getRequiredResources();
+				if(resources!=null)
+				{
+					if(!checkResources(resources)) return false;
+				}
+			}
 			return true;
 		}
 		else
@@ -63,9 +73,15 @@ public class OrientResourceAuthorizationStrategy  implements IAuthorizationStrat
 	public boolean checkResource(RequiredOrientResource resource)
 	{
 		OUser user = OrientDbWebSession.get().getUser();
-		return user!=null
-				?user.checkIfAllowed(resource.value(), OrientPermission.combinedPermission(resource.permissions()))!=null
-				:false;
+		if(user==null) return false;
+		int iOperation = OrientPermission.combinedPermission(resource.permissions());
+		String iResource = resource.value();
+		if(user.checkIfAllowed(iResource, iOperation)!=null) return true;
+		while(!Strings.isEmpty(iResource=Strings.beforeLastPathComponent(resource.value(), '.')))
+		{
+			if(user.checkIfAllowed(iResource+"."+ODatabaseSecurityResources.ALL, iOperation)!=null) return true;
+		}
+		return false;
 	}
 	
 	public boolean checkResources(Map<String, OrientPermission[]> resources)

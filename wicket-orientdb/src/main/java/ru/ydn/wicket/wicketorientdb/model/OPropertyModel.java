@@ -14,6 +14,16 @@ public class OPropertyModel extends LoadableDetachableModel<OProperty>
 	private IModel<OClass> classModel;
 	private IModel<String> propertyNameModel;
 	
+	public OPropertyModel(OProperty oProperty)
+	{
+		this(oProperty.getOwnerClass(), oProperty);
+	}
+	
+	public OPropertyModel(OClass oClass, OProperty oProperty)
+	{
+		this(new OClassModel(oClass), oProperty.getName());
+	}
+	
 	public OPropertyModel(IModel<OClass> classModel, IModel<String> propertyNameModel)
 	{
 		this.classModel = classModel;

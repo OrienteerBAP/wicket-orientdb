@@ -2,7 +2,7 @@ package ru.ydn.wicket.wicketorientdb;
 
 import org.junit.Test;
 import static org.junit.Assert.*;
-import static ru.ydn.wicket.wicketorientdb.model.AutoResourceModel.buitify;
+import static ru.ydn.wicket.wicketorientdb.model.AbstractNamingModel.buitify;
 
 public class MainTest
 {
