@@ -6,11 +6,17 @@ import com.google.common.base.Function;
 
 public class GetObjectFunction<T> implements Function<IModel<T>, T>
 {
-	public static final GetObjectFunction<Object> INSTANCE = new GetObjectFunction<>();
+	public static final GetObjectFunction<?> INSTANCE = new GetObjectFunction<>();
 	
 	@Override
 	public T apply(IModel<T> input) {
 		return input.getObject();
+	}
+	
+	@SuppressWarnings("unchecked")
+	public static <T> GetObjectFunction<T> getInstance()
+	{
+		return (GetObjectFunction<T>)INSTANCE;
 	}
 
 }

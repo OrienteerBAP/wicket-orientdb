@@ -104,7 +104,7 @@ public class OQueryModel<K> extends LoadableDetachableModel<List<K>>
 
     private Map<String, Object> prepareParams()
     {
-    	return Maps.transformValues(params, GetObjectFunction.INSTANCE);
+    	return Maps.transformValues(params, GetObjectFunction.getInstance());
     }
 
 
