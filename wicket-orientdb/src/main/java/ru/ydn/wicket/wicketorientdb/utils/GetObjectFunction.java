@@ -6,7 +6,7 @@ import com.google.common.base.Function;
 
 public class GetObjectFunction<T> implements Function<IModel<T>, T>
 {
-	public static final GetObjectFunction<?> INSTANCE = new GetObjectFunction<>();
+	public static final GetObjectFunction<?> INSTANCE = new GetObjectFunction<Object>();
 	
 	@Override
 	public T apply(IModel<T> input) {

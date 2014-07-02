@@ -87,12 +87,12 @@ public class ODocumentMapWrapper extends ODocumentWrapper implements Map<String,
 
 	@Override
 	public Set<String> keySet() {
-		return new HashSet<>(Arrays.asList(document.fieldNames()));
+		return new HashSet<String>(Arrays.asList(document.fieldNames()));
 	}
 
 	@Override
 	public Collection<Object> values() {
-		List<Object> ret = new ArrayList<>();
+		List<Object> ret = new ArrayList<Object>();
 		for(java.util.Map.Entry<String, Object> entry : document)
 		{
 			ret.add(entry.getValue());
@@ -102,7 +102,7 @@ public class ODocumentMapWrapper extends ODocumentWrapper implements Map<String,
 
 	@Override
 	public Set<java.util.Map.Entry<String, Object>> entrySet() {
-		Set<java.util.Map.Entry<String, Object>> ret = new HashSet<>();
+		Set<java.util.Map.Entry<String, Object>> ret = new HashSet<java.util.Map.Entry<String, Object>>();
 		for(java.util.Map.Entry<String, Object> entry : document)
 		{
 			ret.add(entry);

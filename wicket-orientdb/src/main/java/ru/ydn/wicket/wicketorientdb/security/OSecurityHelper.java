@@ -18,7 +18,7 @@ import com.orientechnologies.orient.core.record.impl.ODocument;
 
 public class OSecurityHelper 
 {
-	private static final Map<OrientPermission, String> MAPPING_FOR_HACK = new HashMap<>();
+	private static final Map<OrientPermission, String> MAPPING_FOR_HACK = new HashMap<OrientPermission, String>();
 	static
 	{
 		MAPPING_FOR_HACK.put(OrientPermission.READ, OSecurityShared.ALLOW_READ_FIELD);
