@@ -8,7 +8,8 @@ import org.apache.wicket.validation.ValidationError;
 import com.orientechnologies.orient.core.metadata.schema.OSchemaShared;
 
 public class OSchemaNamesValidator implements IValidator<String>{
-
+	public static final OSchemaNamesValidator INSTANCE = new OSchemaNamesValidator();
+	
 	@Override
 	public void validate(IValidatable<String> validatable) {
 		String value = validatable.getValue();
