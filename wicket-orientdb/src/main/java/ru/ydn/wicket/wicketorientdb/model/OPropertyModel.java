@@ -30,6 +30,11 @@ public class OPropertyModel extends LoadableDetachableModel<OProperty>
 		this.propertyNameModel = propertyNameModel;
 	}
 	
+	public OPropertyModel(String className, String propertyName)
+	{
+		this(new OClassModel(className), propertyName);
+	}
+	
 	public OPropertyModel(IModel<OClass> classModel, String propertyName)
 	{
 		this.classModel = classModel;
