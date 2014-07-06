@@ -53,9 +53,5 @@ public class OPropertyModel extends LoadableDetachableModel<OProperty>
 		if(classModel!=null) classModel.detach();
 		if(propertyNameModel!=null) propertyNameModel.detach();
 	}
-
-	
-	
-	
 	
 }
