@@ -47,6 +47,15 @@ public class OPropertyModel extends LoadableDetachableModel<OProperty>
 		String property = propertyNameModel.getObject();
 		return oClass!=null && property!=null?oClass.getProperty(property):null;
 	}
+
+	@Override
+	protected void onDetach() {
+		if(classModel!=null) classModel.detach();
+		if(propertyNameModel!=null) propertyNameModel.detach();
+	}
+
+	
+	
 	
 	
 }
