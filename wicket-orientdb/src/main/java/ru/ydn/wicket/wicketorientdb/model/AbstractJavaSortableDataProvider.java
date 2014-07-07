@@ -18,9 +18,9 @@ import com.orientechnologies.orient.core.metadata.schema.OClass;
 
 public abstract class AbstractJavaSortableDataProvider<T, S> extends SortableDataProvider<T, S>
 {
-	private IModel<Collection<T>> dataModel;
+	private IModel<? extends Collection<T>> dataModel;
 	
-	public AbstractJavaSortableDataProvider(IModel<Collection<T>> dataModel)
+	public AbstractJavaSortableDataProvider(IModel<? extends Collection<T>> dataModel)
 	{
 		Args.notNull(dataModel, "dataModel");
 		this.dataModel = dataModel;
