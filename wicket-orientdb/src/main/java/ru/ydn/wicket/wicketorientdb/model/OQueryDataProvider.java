@@ -13,7 +13,11 @@ import com.orientechnologies.orient.core.record.impl.ODocument;
 
 public class OQueryDataProvider <K> extends SortableDataProvider<K, String>
 {
-    private OQueryModel<K> model;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private OQueryModel<K> model;
 
     public OQueryDataProvider(String sql)
     {

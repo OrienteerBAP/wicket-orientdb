@@ -8,10 +8,13 @@ import ru.ydn.wicket.wicketorientdb.OrientDbWebSession;
 
 import com.orientechnologies.orient.core.index.OIndex;
 import com.orientechnologies.orient.core.metadata.schema.OClass;
-import com.orientechnologies.orient.core.metadata.schema.OProperty;
 
 public class OIndexModel extends LoadableDetachableModel<OIndex<?>>
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private IModel<OClass> classModel;
 	private IModel<String> indexNameModel;
 	

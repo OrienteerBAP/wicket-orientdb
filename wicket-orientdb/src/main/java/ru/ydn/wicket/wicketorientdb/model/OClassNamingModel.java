@@ -6,6 +6,11 @@ import com.orientechnologies.orient.core.metadata.schema.OClass;
 
 public class OClassNamingModel extends AbstractNamingModel<OClass> {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	public OClassNamingModel(OClass oClass)
 	{
 		super(oClass);

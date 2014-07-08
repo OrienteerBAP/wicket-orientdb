@@ -12,6 +12,10 @@ import com.orientechnologies.orient.core.record.impl.ODocument;
 
 public class ODocumentModel extends LoadableDetachableModel<ODocument> implements IObjectClassAwareModel<ODocument>
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private ORID orid;
 	private ODocument savedDocument;
 	

@@ -11,6 +11,10 @@ import org.apache.wicket.util.string.Strings;
 
 public abstract class AbstractNamingModel<T> extends AbstractReadOnlyModel<String> implements IComponentAssignedModel<String>
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private String resourceKey;
 	private IModel<T> objectModel;
 	

@@ -8,9 +8,7 @@
 		<artifactId>wicket-orientdb-parent</artifactId>
 		<version>1.0-SNAPSHOT</version>
 	</parent>
-	<groupId>ru.ydn.wicket.wicket-orientdb</groupId>
 	<artifactId>wicket-orientdb</artifactId>
-	<version>1.0-SNAPSHOT</version>
 	<name>wicket-orientdb</name>
 	<url>http://maven.apache.org</url>
 	<dependencies>

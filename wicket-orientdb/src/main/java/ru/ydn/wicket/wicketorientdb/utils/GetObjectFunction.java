@@ -8,6 +8,10 @@ import com.google.common.base.Function;
 
 public class GetObjectFunction<T> implements Function<IModel<T>, T>, Serializable
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	public static final GetObjectFunction<?> INSTANCE = new GetObjectFunction<Object>();
 	
 	@Override

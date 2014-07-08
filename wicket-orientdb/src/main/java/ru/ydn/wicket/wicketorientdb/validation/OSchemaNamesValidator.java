@@ -8,6 +8,10 @@ import org.apache.wicket.validation.ValidationError;
 import com.orientechnologies.orient.core.metadata.schema.OSchemaShared;
 
 public class OSchemaNamesValidator implements IValidator<String>{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	public static final OSchemaNamesValidator INSTANCE = new OSchemaNamesValidator();
 	
 	@Override

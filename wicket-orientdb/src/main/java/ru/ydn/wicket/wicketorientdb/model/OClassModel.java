@@ -6,13 +6,16 @@ import org.apache.wicket.model.LoadableDetachableModel;
 import ru.ydn.wicket.wicketorientdb.OrientDbWebSession;
 
 import com.orientechnologies.orient.core.db.record.ODatabaseRecord;
-import com.orientechnologies.orient.core.id.ORID;
 import com.orientechnologies.orient.core.metadata.schema.OClass;
 import com.orientechnologies.orient.core.metadata.schema.OSchema;
 import com.orientechnologies.orient.core.record.impl.ODocument;
 
 public class OClassModel extends LoadableDetachableModel<OClass> {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private IModel<ODocument> documentModel;
 	private String className;
 	

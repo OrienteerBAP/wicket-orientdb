@@ -8,11 +8,15 @@ import org.apache.wicket.model.Model;
 
 import com.orientechnologies.orient.core.index.OIndex;
 import com.orientechnologies.orient.core.metadata.schema.OClass;
-import com.orientechnologies.orient.core.metadata.schema.OProperty;
 
 public class OIndexiesDataProvider extends
 		AbstractJavaSortableDataProvider<OIndex<?>, String>
 {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 
 	public OIndexiesDataProvider(OClass oClass, boolean allIndexes)
 	{
@@ -23,6 +27,11 @@ public class OIndexiesDataProvider extends
 			final IModel<Boolean> allIndexiesModel)
 	{
 		super(new LoadableDetachableModel<Collection<OIndex<?>>>() {
+
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
 
 			@Override
 			protected Collection<OIndex<?>> load() {

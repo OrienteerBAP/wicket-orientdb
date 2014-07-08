@@ -1,6 +1,5 @@
 package ru.ydn.wicket.wicketorientdb;
 
-import org.apache.wicket.Page;
 import org.apache.wicket.authroles.authentication.AuthenticatedWebApplication;
 import org.apache.wicket.protocol.http.WebApplication;
 

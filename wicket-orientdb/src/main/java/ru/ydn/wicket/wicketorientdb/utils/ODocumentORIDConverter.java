@@ -8,6 +8,10 @@ import com.orientechnologies.orient.core.record.impl.ODocument;
 
 public class ODocumentORIDConverter extends Converter<ODocument, ORID> implements Serializable
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	public static final ODocumentORIDConverter INSTANCE = new ODocumentORIDConverter();
 
 	@Override

@@ -3,14 +3,10 @@ package ru.ydn.wicket.wicketorientdb;
 import java.util.Set;
 
 import org.apache.wicket.Session;
-import org.apache.wicket.authroles.authentication.AbstractAuthenticatedWebSession;
 import org.apache.wicket.authroles.authentication.AuthenticatedWebSession;
 import org.apache.wicket.authroles.authorization.strategies.role.Roles;
 import org.apache.wicket.request.Request;
 
-import com.orientechnologies.orient.core.Orient;
-import com.orientechnologies.orient.core.db.ODatabase;
-import com.orientechnologies.orient.core.db.ODatabaseComplex;
 import com.orientechnologies.orient.core.db.ODatabaseRecordThreadLocal;
 import com.orientechnologies.orient.core.db.record.ODatabaseRecord;
 import com.orientechnologies.orient.core.exception.OSecurityAccessException;
@@ -19,6 +15,10 @@ import com.orientechnologies.orient.core.metadata.security.OUser;
 
 public class OrientDbWebSession extends AuthenticatedWebSession {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private OUser user;
 	
 	public OrientDbWebSession(Request request) {

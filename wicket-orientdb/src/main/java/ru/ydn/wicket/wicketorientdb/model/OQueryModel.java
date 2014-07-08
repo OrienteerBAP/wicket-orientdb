@@ -22,7 +22,11 @@ import com.orientechnologies.orient.core.sql.query.OSQLSynchQuery;
 
 public class OQueryModel<K> extends LoadableDetachableModel<List<K>>
 {
-    private static final Pattern PROJECTION_PATTERN = Pattern.compile("select\\b(.+?)\\bfrom\\b", Pattern.CASE_INSENSITIVE);
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private static final Pattern PROJECTION_PATTERN = Pattern.compile("select\\b(.+?)\\bfrom\\b", Pattern.CASE_INSENSITIVE);
     private static final Pattern ORDER_CHECK_PATTERN = Pattern.compile("order\\s+by", Pattern.CASE_INSENSITIVE);
 
     private String sql;

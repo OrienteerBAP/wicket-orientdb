@@ -10,7 +10,12 @@ import org.slf4j.LoggerFactory;
 public abstract class AbstractContentAwareTransactionRequestCycleListener extends AbstractRequestCycleListener
 {
 	private final static Logger log = LoggerFactory.getLogger(AbstractContentAwareTransactionRequestCycleListener.class);
-	private final static MetaDataKey<Boolean> IN_PROGRESS_KEY = new MetaDataKey<Boolean>(){};
+	private final static MetaDataKey<Boolean> IN_PROGRESS_KEY = new MetaDataKey<Boolean>(){
+
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;};
 	
 	@Override
 	public void onRequestHandlerResolved(RequestCycle cycle,

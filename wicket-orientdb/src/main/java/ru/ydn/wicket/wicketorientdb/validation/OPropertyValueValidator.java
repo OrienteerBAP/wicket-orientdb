@@ -30,6 +30,10 @@ import com.orientechnologies.orient.core.record.impl.ODocument;
 
 public class OPropertyValueValidator<T> extends Behavior implements
 		IValidator<T>, INullAcceptingValidator<T> {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private Component component;
 	private IModel<OProperty> propertyModel;
 
@@ -116,6 +120,8 @@ public class OPropertyValueValidator<T> extends Behavior implements
 							.entrySet())
 						validateType(validatable, p, entry.getValue());
 				}
+				break;
+			default:
 				break;
 			}
 			if (p.getMin() != null) {

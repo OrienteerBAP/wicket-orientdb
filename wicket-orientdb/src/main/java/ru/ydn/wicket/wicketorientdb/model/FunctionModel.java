@@ -1,7 +1,6 @@
 package ru.ydn.wicket.wicketorientdb.model;
 
 import org.apache.wicket.WicketRuntimeException;
-import org.apache.wicket.model.ChainingModel;
 import org.apache.wicket.model.IModel;
 
 import com.google.common.base.Converter;
@@ -9,6 +8,10 @@ import com.google.common.base.Function;
 
 public class FunctionModel<F, T> implements IModel<T>
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private IModel<F> fromModel;
 	private Function<? super F, ? extends T> function;
 	
@@ -23,6 +26,7 @@ public class FunctionModel<F, T> implements IModel<T>
 		return function.apply(fromModel.getObject());
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public void setObject(T object) {
 		if(function instanceof Converter)

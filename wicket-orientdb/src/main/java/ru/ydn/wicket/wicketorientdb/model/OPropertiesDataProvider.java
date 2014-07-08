@@ -13,6 +13,11 @@ public class OPropertiesDataProvider
 		extends
 		AbstractJavaSortableDataProvider<OProperty, String> {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	public OPropertiesDataProvider(OClass oClass,  boolean allProperties)
 	{
 		this(new OClassModel(oClass), Model.<Boolean>of(allProperties));
@@ -20,6 +25,11 @@ public class OPropertiesDataProvider
 
 	public OPropertiesDataProvider(final IModel<OClass> oClassModel, final IModel<Boolean> allPropertiesModel) {
 		super(new LoadableDetachableModel<Collection<OProperty>>() {
+
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
 
 			@Override
 			protected Collection<OProperty> load() {

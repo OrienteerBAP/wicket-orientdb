@@ -1,11 +1,15 @@
 package ru.ydn.wicket.wicketorientdb.model;
 
-import org.apache.wicket.model.AbstractPropertyModel;
 import org.apache.wicket.model.PropertyModel;
 
 import com.orientechnologies.orient.core.record.impl.ODocument;
 
 public class ODocumentPropertyModel<T> extends PropertyModel<T> {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 
 	public ODocumentPropertyModel(Object modelObject, String expression) {
 		super(wrapDocumentIfRequired(modelObject), expression);

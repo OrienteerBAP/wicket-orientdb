@@ -4,13 +4,15 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.Model;
 
-import com.orientechnologies.orient.core.db.record.OIdentifiable;
 import com.orientechnologies.orient.core.metadata.schema.OClass;
 import com.orientechnologies.orient.core.metadata.schema.OProperty;
-import com.orientechnologies.orient.core.record.impl.ODocument;
 
 public class OPropertyModel extends LoadableDetachableModel<OProperty>
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private IModel<OClass> classModel;
 	private IModel<String> propertyNameModel;
 	

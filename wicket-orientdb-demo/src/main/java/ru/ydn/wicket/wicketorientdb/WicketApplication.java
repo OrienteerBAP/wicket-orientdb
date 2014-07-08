@@ -2,8 +2,6 @@ package ru.ydn.wicket.wicketorientdb;
 
 import org.apache.wicket.authroles.authentication.pages.SignInPage;
 import org.apache.wicket.markup.html.WebPage;
-import org.apache.wicket.protocol.http.WebApplication;
-
 import com.orientechnologies.orient.client.remote.OServerAdmin;
 
 /**

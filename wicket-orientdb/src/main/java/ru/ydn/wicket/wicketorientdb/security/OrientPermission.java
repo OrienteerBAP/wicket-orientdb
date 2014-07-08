@@ -1,8 +1,6 @@
 package ru.ydn.wicket.wicketorientdb.security;
 
 import java.util.HashMap;
-import java.util.Map;
-
 import org.apache.wicket.MetaDataKey;
 
 public enum OrientPermission {
@@ -10,7 +8,12 @@ public enum OrientPermission {
 	
 	private final int permissionFlag;
 	
-	public static final MetaDataKey<HashMap<String, OrientPermission[]>> REQUIRED_ORIENT_RESOURCES_KEY = new MetaDataKey<HashMap<String,OrientPermission[]>>() {};
+	public static final MetaDataKey<HashMap<String, OrientPermission[]>> REQUIRED_ORIENT_RESOURCES_KEY = new MetaDataKey<HashMap<String,OrientPermission[]>>() {
+
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;};
 	
 	private OrientPermission(int permissionFlag)
 	{
