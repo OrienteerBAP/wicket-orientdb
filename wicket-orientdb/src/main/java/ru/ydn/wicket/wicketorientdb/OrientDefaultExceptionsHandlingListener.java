@@ -20,7 +20,8 @@ public class OrientDefaultExceptionsHandlingListener extends
 	public IRequestHandler onException(RequestCycle cycle, Exception ex) {
 		Throwable th = null;
 		if((th=Exceptions.findCause(ex, OSecurityException.class))!=null
-				|| (th=Exceptions.findCause(ex, OValidationException.class))!=null)
+				|| (th=Exceptions.findCause(ex, OValidationException.class))!=null
+				|| (th=Exceptions.findCause(ex, IllegalStateException.class))!=null)
 		{
 			OrientDbWebSession.get().error(th.getMessage());
 			return new RenderPageRequestHandler(new PageProvider(extractCurrentPage()),
