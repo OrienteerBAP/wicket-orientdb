@@ -1,6 +1,7 @@
 package ru.ydn.wicket.wicketorientdb;
 
 import org.apache.wicket.Page;
+import org.apache.wicket.WicketRuntimeException;
 import org.apache.wicket.core.request.handler.IPageRequestHandler;
 import org.apache.wicket.core.request.handler.PageProvider;
 import org.apache.wicket.core.request.handler.RenderPageRequestHandler;
@@ -20,7 +21,7 @@ public class OrientDefaultExceptionsHandlingListener extends
 		Throwable th = null;
 		if((th=Exceptions.findCause(ex, OSecurityException.class))!=null
 				|| (th=Exceptions.findCause(ex, OValidationException.class))!=null
-				|| (th=Exceptions.findCause(ex, IllegalStateException.class))!=null)
+				|| (th=Exceptions.findCause(ex, IllegalStateException.class))!=null && Exceptions.findCause(ex, WicketRuntimeException.class)==null)
 		{
 			OrientDbWebSession.get().error(th.getMessage());
 			return new RenderPageRequestHandler(new PageProvider(extractCurrentPage()),
