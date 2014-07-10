@@ -54,7 +54,12 @@ public class OSecurityHelper
 	
 	public static RequiredOrientResource[] requireOClass(final OClass oClass, final OrientPermission... permissions)
 	{
-		return new RequiredOrientResource[]{new RequiredOrientResourceImpl(ODatabaseSecurityResources.CLASS+"."+oClass.getName(), permissions)};
+		return requireResource(ODatabaseSecurityResources.CLASS+"."+oClass.getName(), permissions);
+	}
+	
+	public static RequiredOrientResource[] requireResource(final String resource, final OrientPermission... permissions)
+	{
+		return new RequiredOrientResource[]{new RequiredOrientResourceImpl(resource, permissions)};
 	}
 	
 	//Very bad hack - should be changed in OrientDB
