@@ -29,6 +29,7 @@ public abstract class AbstractPrototyper<T> extends AbstractInvocationHandler im
 	AbstractPrototyper() {
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Override
 	protected Object handleInvocation(Object proxy, Method method, Object[] args)
 			throws Throwable {
@@ -39,11 +40,15 @@ public abstract class AbstractPrototyper<T> extends AbstractInvocationHandler im
 		}
 		else if(methodName.equals("realizePrototype"))
 		{
-			return handleRealize();
+			return handleRealize((T)proxy);
 		}
-		else if(methodName.equals("obtainRealizedPrototype"))
+		else if(methodName.equals("obtainRealizedObject"))
 		{
 			return realized;
+		}
+		else if(methodName.equals("thisPrototype"))
+		{
+			return proxy;
 		}
 		if(methodName.startsWith(GET) && args.length==0)
 		{
@@ -67,9 +72,9 @@ public abstract class AbstractPrototyper<T> extends AbstractInvocationHandler im
 		}
 	}
 	
-	protected T handleRealize()
+	protected T handleRealize(T proxy)
 	{
-		T ret = createInstance();
+		T ret = createInstance(proxy);
 		for (Map.Entry<String, Object> entry: values.entrySet()) {
 			try
 			{
@@ -83,7 +88,7 @@ public abstract class AbstractPrototyper<T> extends AbstractInvocationHandler im
 		return ret;
 	}
 	
-	protected abstract T createInstance();
+	protected abstract T createInstance(T proxy);
 	
 	protected abstract Class<T> getMainInterface();
 	

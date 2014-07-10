@@ -6,5 +6,6 @@ public interface IPrototype<T> extends Serializable
 {
 	public boolean isPrototypeRealized();
 	public T realizePrototype();
-	public T obtainRealizedPrototype();
+	public T obtainRealizedObject();
+	public T thisPrototype();
 }

@@ -4,33 +4,25 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.Model;
 
+import ru.ydn.wicket.wicketorientdb.OrientDbWebSession;
+import ru.ydn.wicket.wicketorientdb.utils.proto.IPrototype;
+
+import com.orientechnologies.orient.core.db.record.ODatabaseRecord;
 import com.orientechnologies.orient.core.metadata.schema.OClass;
 import com.orientechnologies.orient.core.metadata.schema.OProperty;
+import com.orientechnologies.orient.core.metadata.schema.OSchema;
 
-public class OPropertyModel extends LoadableDetachableModel<OProperty>
+public class OPropertyModel extends PrototypeLoadableDetachableModel<OProperty>
 {
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	private IModel<OClass> classModel;
-	private IModel<String> propertyNameModel;
+	private String propertyName;
 	
 	public OPropertyModel(OProperty oProperty)
 	{
-		this(oProperty.getOwnerClass(), oProperty);
+		super(oProperty);
 	}
 	
-	public OPropertyModel(OClass oClass, OProperty oProperty)
-	{
-		this(new OClassModel(oClass), oProperty.getName());
-	}
-	
-	public OPropertyModel(IModel<OClass> classModel, IModel<String> propertyNameModel)
-	{
-		this.classModel = classModel;
-		this.propertyNameModel = propertyNameModel;
-	}
 	
 	public OPropertyModel(String className, String propertyName)
 	{
@@ -40,20 +32,36 @@ public class OPropertyModel extends LoadableDetachableModel<OProperty>
 	public OPropertyModel(IModel<OClass> classModel, String propertyName)
 	{
 		this.classModel = classModel;
-		this.propertyNameModel = Model.of(propertyName);
+		this.propertyName = propertyName;
 	}
 
 	@Override
-	protected OProperty load() {
-		OClass oClass = classModel.getObject();
-		String property = propertyNameModel.getObject();
-		return oClass!=null && property!=null?oClass.getProperty(property):null;
+	protected OProperty loadInstance() {
+			OClass oClass = classModel.getObject();
+			return oClass!=null && propertyName!=null?oClass.getProperty(propertyName):null;
 	}
+	
 
+	@Override
+	protected void handleObject(OProperty object) {
+		classModel = new OClassModel(object.getOwnerClass());
+		propertyName = object.getName();
+	}
+	
 	@Override
 	protected void onDetach() {
 		if(classModel!=null) classModel.detach();
-		if(propertyNameModel!=null) propertyNameModel.detach();
+	}
+
+
+	public OSchema getSchema()
+	{
+		return getDatabase().getMetadata().getSchema();
+	}
+	
+	public ODatabaseRecord getDatabase()
+	{
+		return OrientDbWebSession.get().getDatabase();
 	}
 	
 }

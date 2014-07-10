@@ -11,23 +11,14 @@ import com.orientechnologies.orient.core.metadata.schema.OClass;
 import com.orientechnologies.orient.core.metadata.schema.OSchema;
 import com.orientechnologies.orient.core.record.impl.ODocument;
 
-public class OClassModel extends LoadableDetachableModel<OClass> {
+public class OClassModel extends PrototypeLoadableDetachableModel<OClass> {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	private IModel<ODocument> documentModel;
 	private String className;
-	private OClass prototype;
 	
 	public OClassModel(OClass oClass) {
 		super(oClass);
-		className=oClass.getName();
-		if(oClass instanceof IPrototype)
-		{
-			prototype = oClass;
-		}
 	}
 
 	public OClassModel(String className) {
@@ -39,7 +30,7 @@ public class OClassModel extends LoadableDetachableModel<OClass> {
 	}
 
 	@Override
-	protected OClass load() {
+	protected OClass loadInstance() {
 		if(documentModel!=null)
 		{
 			ODocument doc = documentModel.getObject();
@@ -47,28 +38,21 @@ public class OClassModel extends LoadableDetachableModel<OClass> {
 		}
 		else
 		{
-			return prototype!=null?prototype:(className!=null?getSchema().getClass(className):null);
+			return className!=null?getSchema().getClass(className):null;
 		}
 	}
 	
-	@SuppressWarnings("unchecked")
-	@Override
-    public void detach()
-    {
-		OClass oClass = getObject();
-		if(oClass!=null)
-		{
-			if(oClass instanceof IPrototype && ((IPrototype<OClass>)oClass).isPrototypeRealized())
-			{
-				oClass = ((IPrototype<OClass>)oClass).obtainRealizedPrototype();
-				prototype = null;
-			}
-			this.className = oClass.getName();
-			super.detach();
-		}
-		if(documentModel!=null) documentModel.detach();
-    }
 	
+	@Override
+	protected void handleObject(OClass object) {
+		className = object.getName();
+	}
+	
+	@Override
+	protected void onDetach() {
+		if(documentModel!=null) documentModel.detach();
+	}
+
 	public OSchema getSchema()
 	{
 		return getDatabase().getMetadata().getSchema();

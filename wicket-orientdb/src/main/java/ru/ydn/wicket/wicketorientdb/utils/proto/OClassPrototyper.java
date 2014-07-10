@@ -20,15 +20,15 @@ public class OClassPrototyper extends AbstractPrototyper<OClass> {
 	private static final Class<?>[] FIX_INTERFACES = new Class<?>[]{OClassSetNameFix.class}; 
 	
 
-	public OClassPrototyper()
+	private OClassPrototyper()
 	{
 		values.put("overSize", (float)0);
 	}
 
 	@Override
-	protected OClass createInstance() {
+	protected OClass createInstance(OClass proxy) {
 		OSchema schema = OrientDbWebSession.get().getDatabase().getMetadata().getSchema();
-		return schema.createClass(values.get("name").toString());
+		return schema.createClass(proxy.getName());
 	}
 
 	@Override
