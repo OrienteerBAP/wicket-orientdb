@@ -1,4 +1,4 @@
-package ru.ydn.wicket.wicketorientdb.utils.proto;
+package ru.ydn.wicket.wicketorientdb.proto;
 
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;

@@ -1,4 +1,4 @@
-package ru.ydn.wicket.wicketorientdb.utils.proto;
+package ru.ydn.wicket.wicketorientdb.proto;
 
 import java.lang.reflect.Method;
 import java.util.Collections;
@@ -11,6 +11,16 @@ import com.orientechnologies.orient.core.metadata.schema.OSchemaShared;
 import com.orientechnologies.orient.core.metadata.schema.clusterselection.OClusterSelectionStrategy;
 
 public class OClassPrototyper extends AbstractPrototyper<OClass> {
+	
+	public static final String NAME = "name";
+	public static final String SHORT_NAME = "shortName";
+	public static final String SUPER_CLASS = "superClass";
+	public static final String OVER_SIZE = "overSize";
+	public static final String STRICT_MODE = "strictMode";
+	public static final String ABSTRACT = "abstract";
+	public static final String CLUSTER_SELECTION = "clusterSelection";
+	
+	public static String[] OCLASS_ATTRS = new String[]{NAME, SHORT_NAME, SUPER_CLASS, OVER_SIZE, STRICT_MODE, ABSTRACT, CLUSTER_SELECTION};
 	
 	public static interface OClassSetNameFix
 	{

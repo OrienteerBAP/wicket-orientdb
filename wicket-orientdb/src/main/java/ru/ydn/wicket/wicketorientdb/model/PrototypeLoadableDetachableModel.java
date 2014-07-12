@@ -2,7 +2,7 @@ package ru.ydn.wicket.wicketorientdb.model;
 
 import org.apache.wicket.model.LoadableDetachableModel;
 
-import ru.ydn.wicket.wicketorientdb.utils.proto.IPrototype;
+import ru.ydn.wicket.wicketorientdb.proto.IPrototype;
 
 public abstract class PrototypeLoadableDetachableModel<T> extends
 		LoadableDetachableModel<T> {

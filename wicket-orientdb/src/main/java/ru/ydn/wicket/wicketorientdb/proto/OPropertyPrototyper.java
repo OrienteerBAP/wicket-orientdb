@@ -1,4 +1,4 @@
-package ru.ydn.wicket.wicketorientdb.utils.proto;
+package ru.ydn.wicket.wicketorientdb.proto;
 
 import ru.ydn.wicket.wicketorientdb.OrientDbWebSession;
 
@@ -7,6 +7,19 @@ import com.orientechnologies.orient.core.metadata.schema.OProperty;
 import com.orientechnologies.orient.core.metadata.schema.OSchema;
 
 public class OPropertyPrototyper extends AbstractPrototyper<OProperty> {
+	
+	public static final String NAME = "name";
+	public static final String TYPE = "type";
+	public static final String LINKED_TYPE = "linkedType";
+	public static final String LINKED_CLASS = "linkedClass";
+	public static final String MANDATORY = "mandatory";
+	public static final String READONLY = "readonly";
+	public static final String NOT_NULL = "notNull";
+	public static final String MIN = "min";
+	public static final String MAX = "max";
+	public static final String COLLATE = "collate";
+	public static String[] OPROPERTY_ATTRS = new String[]{NAME, TYPE, LINKED_TYPE, LINKED_CLASS, MANDATORY, READONLY, NOT_NULL, MIN, MAX, COLLATE};
+
 	
 	private final String className;
 	
