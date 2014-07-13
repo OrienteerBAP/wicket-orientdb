@@ -1,7 +1,9 @@
 package ru.ydn.wicket.wicketorientdb.proto;
 
 import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 import ru.ydn.wicket.wicketorientdb.OrientDbWebSession;
 
@@ -20,7 +22,7 @@ public class OClassPrototyper extends AbstractPrototyper<OClass> {
 	public static final String ABSTRACT = "abstract";
 	public static final String CLUSTER_SELECTION = "clusterSelection";
 	
-	public static String[] OCLASS_ATTRS = new String[]{NAME, SHORT_NAME, SUPER_CLASS, OVER_SIZE, STRICT_MODE, ABSTRACT, CLUSTER_SELECTION};
+	public static final List<String> OCLASS_ATTRS = Arrays.asList(NAME, SHORT_NAME, SUPER_CLASS, OVER_SIZE, STRICT_MODE, ABSTRACT, CLUSTER_SELECTION);
 	
 	public static interface OClassSetNameFix
 	{
@@ -62,12 +64,12 @@ public class OClassPrototyper extends AbstractPrototyper<OClass> {
 	
 
 	@Override
-	protected void handleSet(String propName, Object value) {
+	protected Object handleSet(String propName, Object value) {
 		if("clusterSelection".equals(propName))
 		{
 			if(value instanceof OClusterSelectionStrategy)
 			{
-				super.handleSet(propName, value);
+				return super.handleSet(propName, value);
 			}
 			else if(value instanceof CharSequence)
 			{
@@ -75,14 +77,12 @@ public class OClassPrototyper extends AbstractPrototyper<OClass> {
 				
 				if(schema instanceof OSchemaShared)
 				{
-					super.handleSet(propName, ((OSchemaShared)schema).getClusterSelectionFactory().newInstance(value.toString()));
+					return super.handleSet(propName, ((OSchemaShared)schema).getClusterSelectionFactory().newInstance(value.toString()));
 				}
 			}
 		}
-		else
-		{
-			super.handleSet(propName, value);
-		}
+		//Default
+		return super.handleSet(propName, value);
 	}
 
 	@Override

@@ -18,7 +18,7 @@ public class OPropertyFullNameConverter extends Converter<OProperty, String> imp
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	public static final OClassClassNameConverter INSTANCE = new OClassClassNameConverter();
+	public static final OPropertyFullNameConverter INSTANCE = new OPropertyFullNameConverter();
 
 	@Override
 	protected String doForward(OProperty a) {

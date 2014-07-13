@@ -1,5 +1,8 @@
 package ru.ydn.wicket.wicketorientdb.proto;
 
+import java.util.Arrays;
+import java.util.List;
+
 import ru.ydn.wicket.wicketorientdb.OrientDbWebSession;
 
 import com.orientechnologies.orient.core.metadata.schema.OClass;
@@ -18,7 +21,7 @@ public class OPropertyPrototyper extends AbstractPrototyper<OProperty> {
 	public static final String MIN = "min";
 	public static final String MAX = "max";
 	public static final String COLLATE = "collate";
-	public static String[] OPROPERTY_ATTRS = new String[]{NAME, TYPE, LINKED_TYPE, LINKED_CLASS, MANDATORY, READONLY, NOT_NULL, MIN, MAX, COLLATE};
+	public static final List<String> OPROPERTY_ATTRS = Arrays.asList(NAME, TYPE, LINKED_TYPE, LINKED_CLASS, MANDATORY, READONLY, NOT_NULL, MIN, MAX, COLLATE);
 
 	
 	private final String className;

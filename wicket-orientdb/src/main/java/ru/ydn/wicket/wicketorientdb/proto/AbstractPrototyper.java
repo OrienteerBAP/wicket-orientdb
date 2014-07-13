@@ -18,11 +18,49 @@ import com.google.common.primitives.Primitives;
 import com.google.common.reflect.AbstractInvocationHandler;
 
 public abstract class AbstractPrototyper<T> extends AbstractInvocationHandler implements Serializable {
+	public static enum Operation
+	{
+		GET("get", true, 0), IS("is", true, 0), SET("set", false, 1);
+		
+		private final String prefix;
+		private final boolean geeter;
+		private final int requiredAttrs;
+		private Operation(String prefix, boolean getter, int requiredAttrs)
+		{
+			this.prefix = prefix;
+			this.geeter = getter;
+			this.requiredAttrs = requiredAttrs;
+		}
+		public boolean isGeeter() {
+			return geeter;
+		}
+		
+		public boolean isSeeter() {
+			return !geeter;
+		}
+		
+		public String toPropertyName(Method method, Object[] args)
+		{
+			String methodName = method.getName();
+			if(methodName.startsWith(prefix) && args.length==requiredAttrs)
+			{
+				int pLength = prefix.length();
+				return  methodName.substring(pLength, pLength+1).toLowerCase()+methodName.substring(pLength+1);
+			}
+			else
+			{
+				return null;
+			}
+		}
+		
+	}
 	private static final String GET = "get";
 	private static final String IS = "is";
 	private static final String SET = "set";
 	
 	protected Map<String, Object> values = new HashMap<String, Object>();
+	
+	protected T thisProxy;
 	
 	private transient T realized;
 	
@@ -50,27 +88,37 @@ public abstract class AbstractPrototyper<T> extends AbstractInvocationHandler im
 		{
 			return proxy;
 		}
-		if(methodName.startsWith(GET) && args.length==0)
+		
+		for (Operation operation : Operation.values())
 		{
-			String propName = methodName.substring(3, 4).toLowerCase()+methodName.substring(4);
-			return handleGet(propName, method.getReturnType());
+			String propertyName = operation.toPropertyName(method, args);
+			if(propertyName!=null)
+			{
+				if(thisProxy!=proxy)
+				{
+					for (Map.Entry<String, Object> entry : values.entrySet())
+					{
+						if(entry.getValue()==proxy)
+						{
+							propertyName=entry.getKey()+"."+propertyName;
+							break;
+						}
+					}
+				}
+				if(operation.isGeeter())
+				{
+					return handleGet(propertyName, method.getReturnType());
+				}
+				else if(operation.isSeeter())
+				{
+					return handleSet(propertyName, args[0]);
+				}
+			}
 		}
-		else if(methodName.startsWith(IS) && args.length==0)
-		{
-			String propName = methodName.substring(2, 3).toLowerCase()+methodName.substring(3);
-			return handleGet(propName, method.getReturnType());
-		}
-		else if(methodName.startsWith(SET) &&  args.length==1)
-		{
-			String propName = methodName.substring(3, 4).toLowerCase()+methodName.substring(4);
-			handleSet(propName, args[0]);
-			return null;
-		}
-		else
-		{
-			return handleCustom(proxy, method, args);
-		}
+		
+		return handleCustom(proxy, method, args);
 	}
+
 	
 	protected T handleRealize(T proxy)
 	{
@@ -136,14 +184,26 @@ public abstract class AbstractPrototyper<T> extends AbstractInvocationHandler im
 		return ret;
 	}
 	
-	protected void handleSet(String propName, Object value)
+	protected Object handleSet(String propName, Object value)
 	{
 		values.put(propName, value);
+		return null;
 	}
 	
 	protected Object handleCustom(Object proxy, Method method, Object[] args)
 	{
 		throw new UnsupportedOperationException("Method '"+method.getName()+"' is not supported by proxy: "+this.getClass().getSimpleName());
+	}
+	
+	protected <M> M prototypeForChild(String property, Class<M> classM, Class<?>... classes)
+	{
+		ClassLoader loader = getClass().getClassLoader();
+		Class<?>[] interfaces = new Class<?>[2+classes.length];
+		interfaces[0]=classM;
+		interfaces[1]=Serializable.class;
+		System.arraycopy(classes, 0, interfaces, 2, classes.length);
+		Object ret = Proxy.newProxyInstance(loader, interfaces, this);
+		return classM.cast(ret);
 	}
 	
 	static <T> T newPrototype(AbstractPrototyper<T> prototype)
@@ -160,7 +220,8 @@ public abstract class AbstractPrototyper<T> extends AbstractInvocationHandler im
 			interfaces = newInterfaces;
 		}
 		Object ret = Proxy.newProxyInstance(loader, interfaces, prototype);
-		return mainInterface.cast(ret);
+		prototype.thisProxy = mainInterface.cast(ret);
+		return prototype.thisProxy;
 	}
 	
 	@Override
