@@ -39,23 +39,22 @@ public class OIndexPrototyper extends AbstractPrototyper<OIndex>
 
 	private static final Class<?>[] FIX_INTERFACES = new Class<?>[]{MakeNameAndTypeWritableFix.class}; 
 	
-	private final String className;
-	private final String[] fields;
 	
-	public OIndexPrototyper(String className, String[] fields)
+	public OIndexPrototyper(String className, List<String> fields)
 	{
-		this.className = className;
-		this.fields = fields;
+		values.put(DEF_CLASS_NAME, className);
+		values.put(DEF_FIELDS, fields);
 	}
 	
 	@Override
 	protected OIndex<?> createInstance(OIndex proxy) {
 		OSchema schema = OrientDbWebSession.get().getDatabase().getMetadata().getSchema();
-		OClass oClass = schema.getClass(className);
+		OClass oClass = schema.getClass(proxy.getDefinition().getClassName());
 		String name = proxy.getName();
 		String type = proxy.getType();
+		List<String> fields = proxy.getDefinition().getFields();
 		values.keySet().retainAll(RW_ATTRS);
-		return oClass.createIndex(name, type, fields);
+		return oClass.createIndex(name, type, fields.toArray(new String[0]));
 	}
 	
 	@Override
@@ -75,7 +74,7 @@ public class OIndexPrototyper extends AbstractPrototyper<OIndex>
 		return OIndex.class;
 	}
 
-	public static OIndex<?> newPrototype(String className, String[] fields)
+	public static OIndex<?> newPrototype(String className, List<String> fields)
 	{
 		return newPrototype(new OIndexPrototyper(className, fields));
 	}
