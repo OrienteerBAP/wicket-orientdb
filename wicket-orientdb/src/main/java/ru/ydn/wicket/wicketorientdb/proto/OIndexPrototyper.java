@@ -34,7 +34,7 @@ public class OIndexPrototyper extends AbstractPrototyper<OIndex>
 	public static final String SIZE = "size";
 	public static final String KEY_SIZE = "keySize";
 
-	public static final List<String> OINDEX_ATTRS = Arrays.asList(NAME, TYPE, DEF_CLASS_NAME, DEF_FIELDS, DEF_FILED_TO_INDEX, DEF_COLLATE, DEF_NULLS_IGNORED, SIZE, KEY_SIZE);
+	public static final List<String> OINDEX_ATTRS = Arrays.asList(NAME, TYPE, DEF_CLASS_NAME, DEF_FIELDS, DEF_COLLATE, DEF_NULLS_IGNORED, SIZE, KEY_SIZE);
 	public static final List<String> RW_ATTRS = Arrays.asList(DEF_COLLATE, DEF_NULLS_IGNORED);
 
 	private static final Class<?>[] FIX_INTERFACES = new Class<?>[]{MakeNameAndTypeWritableFix.class}; 
