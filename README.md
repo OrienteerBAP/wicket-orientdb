@@ -59,9 +59,39 @@ Important! Following issue have been created to introduce support of custom prop
 https://issues.apache.org/jira/browse/WICKET-5623
 If you interested in using PropertyModel as usual in wicket, please, take a look to following pull request: https://github.com/apache/wicket/pull/74
 
+Security
+--------
 
+It's easy to integrate with OrientDB security stuff:
+You can either specify static required orientDB resources
 
+```java
+@RequiredOrientResource(value = ODatabaseSecurityResources.SCHEMA, permissions={OrientPermission.READ, OrientPermission.WRITE})
+public class MyPage extends WebPage {
+...
+```
+```java
+@RequiredOrientResources({
+	@RequiredOrientResource(value = ODatabaseSecurityResources.SCHEMA, permissions=OrientPermission.READ),
+	@RequiredOrientResource(value = ODatabaseSecurityResources.ALL_CLASSES, permissions=OrientPermission.READ),
+})
+public class MyPanel extends Panel {
+...
+```
 
+or provide them dynamically: just implement ISecuredComponent
+
+```java
+public class SaveSchemaCommand<T> extends SavePrototypeCommand<T> implements ISecuredComponent {
+...
+	@Override
+	public RequiredOrientResource[] getRequiredResources() {
+		T object = objectModel.getObject();
+		OrientPermission permission = (object instanceof IPrototype<?>)?OrientPermission.CREATE:OrientPermission.UPDATE;
+		return OSecurityHelper.requireResource(ODatabaseSecurityResources.SCHEMA, permission);
+	}
+
+```
 
 
 
