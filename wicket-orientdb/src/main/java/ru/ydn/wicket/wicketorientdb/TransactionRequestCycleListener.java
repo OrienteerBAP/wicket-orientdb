@@ -16,7 +16,7 @@ public class TransactionRequestCycleListener extends
 	public void start(RequestCycle cycle) {
 		OrientDbWebSession session = OrientDbWebSession.get();
 		ODatabaseRecord db = session.getDatabase();
-		if(db.isClosed()) System.out.println("DataBase CLOSED");
+		/*if(db.isClosed()) System.out.println("DataBase CLOSED");
 		OUser oUser;
 		if(session.isSignedIn())
 		{
@@ -32,9 +32,16 @@ public class TransactionRequestCycleListener extends
 				throw new WicketRuntimeException("Incorrect password for default user was specified");
 			}
 		}
-		db.setUser(oUser);
+		db.setUser(oUser);*/
+		//It's required to have ability to check security rights locally
+		OUser oUser = db.getUser();
+		if(oUser.getDocument()!=null && oUser.getDocument().getIdentity()!=null && !oUser.getDocument().getIdentity().isValid())
+		{
+			db.setUser(db.getMetadata().getSecurity().getUser(oUser.getName()));
+		}
 		db.begin();
 	}
+	
 
 	@Override
 	public void end(RequestCycle cycle) {
@@ -47,9 +54,9 @@ public class TransactionRequestCycleListener extends
 		finally
 		{
 			//Following 3 lines are required to correctly close pooled resource: pool is using username as a key
-			IOrientDbSettings settings = OrientDbWebApplication.get().getOrientDbSettings();
+			/*IOrientDbSettings settings = OrientDbWebApplication.get().getOrientDbSettings();
 			OUser oUser = db.getMetadata().getSecurity().getUser(settings.getDBUserName());
-			db.setUser(oUser);
+			db.setUser(oUser);*/
 			db.close();
 			ODatabaseRecordThreadLocal.INSTANCE.remove();
 		}

@@ -23,8 +23,10 @@ public class OrientDefaultExceptionsHandlingListener extends
 				|| (th=Exceptions.findCause(ex, OValidationException.class))!=null
 				|| (th=Exceptions.findCause(ex, IllegalStateException.class))!=null && Exceptions.findCause(ex, WicketRuntimeException.class)==null)
 		{
+			Page page = extractCurrentPage();
+			if(page==null) return null;
 			OrientDbWebSession.get().error(th.getMessage());
-			return new RenderPageRequestHandler(new PageProvider(extractCurrentPage()),
+			return new RenderPageRequestHandler(new PageProvider(page),
 			RenderPageRequestHandler.RedirectPolicy.ALWAYS_REDIRECT);
 		}
 		else

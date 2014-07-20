@@ -77,7 +77,7 @@ public class OrientResourceAuthorizationStrategy  implements IAuthorizationStrat
 		int iOperation = OrientPermission.combinedPermission(resource.permissions());
 		String iResource = resource.value();
 		if(user.checkIfAllowed(iResource, iOperation)!=null) return true;
-		while(!Strings.isEmpty(iResource=Strings.beforeLastPathComponent(resource.value(), '.')))
+		while(!Strings.isEmpty(iResource=Strings.beforeLastPathComponent(iResource, '.')))
 		{
 			if(user.checkIfAllowed(iResource+"."+ODatabaseSecurityResources.ALL, iOperation)!=null) return true;
 		}
