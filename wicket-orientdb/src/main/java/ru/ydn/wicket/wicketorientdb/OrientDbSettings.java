@@ -11,8 +11,6 @@ public class OrientDbSettings implements IOrientDbSettings
 	private String dbUrl;
 	private String dbUserName;
 	private String dbUserPassword;
-	private String defaultUserName;
-	private String defaultUserPassword;
 	private ODatabasePoolBase<? extends ODatabase> pool = ODatabaseDocumentPool.global();
 	
 	@Override
@@ -20,15 +18,6 @@ public class OrientDbSettings implements IOrientDbSettings
 		return dbUrl;
 	}
 
-	@Override
-	public String getDefaultUserName() {
-		return defaultUserName;
-	}
-
-	@Override
-	public String getDefaultUserPassword() {
-		return defaultUserPassword;
-	}
 
 	@Override
 	public ODatabasePoolBase<? extends ODatabase> getDatabasePool() {
@@ -43,16 +32,6 @@ public class OrientDbSettings implements IOrientDbSettings
 	@Override
 	public void setDBUrl(String url) {
 		this.dbUrl = url;
-	}
-
-	@Override
-	public void setDefaultUserName(String userName) {
-		this.defaultUserName=userName;
-	}
-
-	@Override
-	public void setDefaultUserPassword(String password) {
-		this.defaultUserPassword=password;
 	}
 
 	@Override

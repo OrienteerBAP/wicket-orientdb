@@ -113,16 +113,6 @@ public class OrientDbWebSession extends AuthenticatedWebSession {
 		super.detach();
 		userReloaded = false;
 	}
-
-	public boolean isUserValid()
-	{
-		OUser user = getUser();
-		return user!=null 
-				&& user.getName()!=null 
-				&& user.getDocument()!=null 
-				&& user.getDocument().getIdentity()!=null 
-				&& user.getDocument().getIdentity().isValid();
-	}
 	
 	String getUsername()
 	{

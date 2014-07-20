@@ -16,23 +16,6 @@ public class TransactionRequestCycleListener extends
 	public void start(RequestCycle cycle) {
 		OrientDbWebSession session = OrientDbWebSession.get();
 		ODatabaseRecord db = session.getDatabase();
-		/*if(db.isClosed()) System.out.println("DataBase CLOSED");
-		OUser oUser;
-		if(session.isSignedIn())
-		{
-			oUser = session.getUser();
-			oUser.reload();
-		}
-		else
-		{
-			IOrientDbSettings settings = OrientDbWebApplication.get().getOrientDbSettings();
-			oUser = db.getMetadata().getSecurity().getUser(settings.getDefaultUserName());
-			if(!oUser.checkPassword(settings.getDefaultUserPassword()))
-			{
-				throw new WicketRuntimeException("Incorrect password for default user was specified");
-			}
-		}
-		db.setUser(oUser);*/
 		//It's required to have ability to check security rights locally
 		OUser oUser = db.getUser();
 		if(oUser.getDocument()!=null && oUser.getDocument().getIdentity()!=null && !oUser.getDocument().getIdentity().isValid())

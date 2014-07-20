@@ -26,10 +26,6 @@ public class DefaultODatabaseThreadLocalFactory implements ODatabaseThreadLocalF
 		ODatabaseRecord db;
 		String username;
 		String password;
-		/*if(session.isSignedIn() && !session.isUserValid())
-		{
-			session.invalidateNow();
-		}*/
 		if(session.isSignedIn())
 		{
 			username = session.getUsername();
@@ -40,10 +36,7 @@ public class DefaultODatabaseThreadLocalFactory implements ODatabaseThreadLocalF
 			username = settings.getDBUserName();
 			password = settings.getDBUserPassword();
 		}
-		log.info("Logging in with username {} and password {}", username, password);
 		db = castToODatabaseRecord(settings.getDatabasePool().acquire(settings.getDBUrl(), username, password));
-		log.info("Logginin is OK");
-		
 		return db;
 	}
 	
