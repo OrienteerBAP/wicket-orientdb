@@ -42,8 +42,8 @@ public class WicketApplication extends OrientDbWebApplication
 			
 		});
 		getOrientDbSettings().setDBUrl("local:localhost/"+DB_NAME);
-		getOrientDbSettings().setDefaultUserName("admin");
-		getOrientDbSettings().setDefaultUserPassword("admin");
+		getOrientDbSettings().setDBUserName("admin");
+		getOrientDbSettings().setDBUserPassword("admin");
 	}
 
 	@Override
