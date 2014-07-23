@@ -93,7 +93,18 @@ public class SaveSchemaCommand<T> extends SavePrototypeCommand<T> implements ISe
 
 ```
 
+OrientDB objects prototypes
+---------------------------
 
+Sometimes it's useful to work with object without actual creation of that object. Examples: OClass, OProperty, OIndex - all this objects require pre-creation in DB. Prototyping microframeworks allows creation of 'Prototype' of some objects, modify it and only after that 'realize' it in real environment. 
+
+Usage:
+```java
+OClass oClass = OClassPrototyper.newPrototype();
+oClass.setName("MyClass");
+oClass.setSuperClass(superClass);
+OClass realOClass = ((IPrototype<OClass>)oClass).realizePrototype();
+```
 
 
 
