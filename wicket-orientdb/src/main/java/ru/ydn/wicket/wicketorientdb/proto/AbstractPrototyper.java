@@ -54,9 +54,6 @@ public abstract class AbstractPrototyper<T> extends AbstractInvocationHandler im
 		}
 		
 	}
-	private static final String GET = "get";
-	private static final String IS = "is";
-	private static final String SET = "set";
 	
 	protected Map<String, Object> values = new HashMap<String, Object>();
 	
@@ -89,44 +86,52 @@ public abstract class AbstractPrototyper<T> extends AbstractInvocationHandler im
 			return proxy;
 		}
 		
-		for (Operation operation : Operation.values())
+		if(realized!=null)
 		{
-			String propertyName = operation.toPropertyName(method, args);
-			if(propertyName!=null)
+			return method.invoke(realized, args);
+		}
+		else
+		{
+			for (Operation operation : Operation.values())
 			{
-				if(thisProxy!=proxy)
+				String propertyName = operation.toPropertyName(method, args);
+				if(propertyName!=null)
 				{
-					for (Map.Entry<String, Object> entry : values.entrySet())
+					if(thisProxy!=proxy)
 					{
-						if(entry.getValue()==proxy)
+						for (Map.Entry<String, Object> entry : values.entrySet())
 						{
-							propertyName=entry.getKey()+"."+propertyName;
-							break;
+							if(entry.getValue()==proxy)
+							{
+								propertyName=entry.getKey()+"."+propertyName;
+								break;
+							}
 						}
 					}
-				}
-				if(operation.isGeeter())
-				{
-					return handleGet(propertyName, method.getReturnType());
-				}
-				else if(operation.isSeeter())
-				{
-					return handleSet(propertyName, args[0]);
+					if(operation.isGeeter())
+					{
+						return handleGet(propertyName, method.getReturnType());
+					}
+					else if(operation.isSeeter())
+					{
+						return handleSet(propertyName, args[0]);
+					}
 				}
 			}
+			
+			return handleCustom(proxy, method, args);
 		}
-		
-		return handleCustom(proxy, method, args);
 	}
 
 	
 	protected T handleRealize(T proxy)
 	{
 		T ret = createInstance(proxy);
+		PropertyResolverConverter prc = getPropertyResolverConverter();
 		for (Map.Entry<String, Object> entry: values.entrySet()) {
 			try
 			{
-				PropertyResolver.setValue(entry.getKey(), ret, entry.getValue(), null);
+				PropertyResolver.setValue(entry.getKey(), ret, entry.getValue(), prc);
 			} catch (WicketRuntimeException e)
 			{
 				// NOP
@@ -134,6 +139,11 @@ public abstract class AbstractPrototyper<T> extends AbstractInvocationHandler im
 		}
 		realized = ret;
 		return ret;
+	}
+	
+	protected PropertyResolverConverter getPropertyResolverConverter()
+	{
+		return null;
 	}
 	
 	protected abstract T createInstance(T proxy);
