@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -20,32 +21,44 @@ import com.google.common.reflect.AbstractInvocationHandler;
 public abstract class AbstractPrototyper<T> extends AbstractInvocationHandler implements Serializable {
 	public static enum Operation
 	{
-		GET("get", true, 0), IS("is", true, 0), SET("set", false, 1);
+		GET("get", new Class<?>[0], null, -1),
+		IS("is", new Class<?>[0], null, -1),
+		SET("set", new Class<?>[]{Object.class}, null, 0),
+		GET_MAPPED("get", new Class<?>[]{String.class}, "[{0}]", -1),
+		SET_MAPPED("set", new Class<?>[]{String.class, Object.class}, "[{0}]", 1);
 		
 		private final String prefix;
-		private final boolean geeter;
-		private final int requiredAttrs;
-		private Operation(String prefix, boolean getter, int requiredAttrs)
+		private final Class<?>[] requiredAttrTypes;
+		private final String suffix;
+		private final int valueArgIndex;
+		private Operation(String prefix, Class<?>[] requiredAttrTypes, String suffix, int valueArgIndex)
 		{
 			this.prefix = prefix;
-			this.geeter = getter;
-			this.requiredAttrs = requiredAttrs;
+			this.requiredAttrTypes = requiredAttrTypes;
+			this.suffix = suffix;
+			this.valueArgIndex = valueArgIndex;
 		}
 		public boolean isGeeter() {
-			return geeter;
+			return valueArgIndex<0;
 		}
 		
 		public boolean isSeeter() {
-			return !geeter;
+			return valueArgIndex>=0;
 		}
 		
 		public String toPropertyName(Method method, Object[] args)
 		{
 			String methodName = method.getName();
-			if(methodName.startsWith(prefix) && args.length==requiredAttrs)
+			if(methodName.startsWith(prefix) && args.length==requiredAttrTypes.length)
 			{
+				for(int i=0; i<args.length; i++)
+				{
+					if(args!=null && !requiredAttrTypes[i].isInstance(args[i])) return null;
+				}
 				int pLength = prefix.length();
-				return  methodName.substring(pLength, pLength+1).toLowerCase()+methodName.substring(pLength+1);
+				String simplePropertyName = methodName.substring(pLength, pLength+1).toLowerCase()+methodName.substring(pLength+1);
+				if(suffix==null) return simplePropertyName;
+				return MessageFormat.format(simplePropertyName+suffix, args);
 			}
 			else
 			{
@@ -114,7 +127,7 @@ public abstract class AbstractPrototyper<T> extends AbstractInvocationHandler im
 					}
 					else if(operation.isSeeter())
 					{
-						return handleSet(propertyName, args[0]);
+						return handleSet(propertyName, args[operation.valueArgIndex]);
 					}
 				}
 			}

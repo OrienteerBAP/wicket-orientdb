@@ -1,9 +1,13 @@
 package ru.ydn.wicket.wicketorientdb.proto;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class MyBean implements IMyBean
 {
 	private String name;
 	private Integer integer;
+	private Map<String, Object> custom = new HashMap<String, Object>();
 	
 	public String getName() {
 		return name;
@@ -20,6 +24,14 @@ public class MyBean implements IMyBean
 	@Override
 	public String getSignature() {
 		return "REAL";
+	}
+	@Override
+	public Object getCustom(String param) {
+		return custom.get(param);
+	}
+	@Override
+	public void setCustom(String param, Object value) {
+		custom.put(name, value);
 	}
 	
 }
