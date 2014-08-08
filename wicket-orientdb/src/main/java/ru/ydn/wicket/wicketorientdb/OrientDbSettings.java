@@ -11,6 +11,8 @@ public class OrientDbSettings implements IOrientDbSettings
 	private String dbUrl;
 	private String dbUserName;
 	private String dbUserPassword;
+	private String dbInstallatorUserName;
+	private String dbInstallatorUserPassword;
 	private ODatabasePoolBase<? extends ODatabase> pool = ODatabaseDocumentPool.global();
 	
 	@Override
@@ -59,6 +61,30 @@ public class OrientDbSettings implements IOrientDbSettings
 	public void setDBUserPassword(String password) {
 		this.dbUserPassword = password;
 	}
+	
+	@Override
+	public String getDBInstallatorUserName() {
+		return dbInstallatorUserName;
+	}
+
+
+	@Override
+	public String getDBInstallatorUserPassword() {
+		return dbInstallatorUserPassword;
+	}
+
+
+	@Override
+	public void setDBInstallatorUserName(String userName) {
+		this.dbInstallatorUserName = userName;
+	}
+
+
+	@Override
+	public void setDBInstallatorUserPassword(String password) {
+		this.dbInstallatorUserPassword = password;
+	}
+
 
 	@Override
 	public void setDatabaseThreadLocalFactory(
