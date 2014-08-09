@@ -10,14 +10,11 @@ public abstract class AbstractDataInstallator implements IApplicationListener
 	@Override
 	public void onAfterInitialized(Application application) {
 		OrientDbWebApplication app = (OrientDbWebApplication)application;
-		IOrientDbSettings settings = app.getOrientDbSettings();
-		String username = settings.getDBInstallatorUserName();
-		String password = settings.getDBInstallatorUserPassword();
-		ODatabaseRecord db = DefaultODatabaseThreadLocalFactory.castToODatabaseRecord(settings.getDatabasePool().acquire(settings.getDBUrl(), username, password));
+		ODatabaseRecord db = getDatabase(app);
 		db.begin();
 		try
 		{
-			installData(db);
+			installData(app, db);
 			db.commit();
 		}
 		catch(Exception ex)
@@ -30,7 +27,15 @@ public abstract class AbstractDataInstallator implements IApplicationListener
 		}
 	}
 	
-	protected abstract void installData(ODatabaseRecord db);
+	protected ODatabaseRecord getDatabase(OrientDbWebApplication app)
+	{
+		IOrientDbSettings settings = app.getOrientDbSettings();
+		String username = settings.getDBInstallatorUserName();
+		String password = settings.getDBInstallatorUserPassword();
+		return DefaultODatabaseThreadLocalFactory.castToODatabaseRecord(settings.getDatabasePool().acquire(settings.getDBUrl(), username, password));
+	}
+	
+	protected abstract void installData(OrientDbWebApplication app, ODatabaseRecord db);
 
 	@Override
 	public void onBeforeDestroyed(Application application) {
