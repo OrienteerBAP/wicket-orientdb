@@ -1,5 +1,7 @@
 package ru.ydn.wicket.wicketorientdb;
 
+import org.apache.wicket.Application;
+import org.apache.wicket.IApplicationListener;
 import org.apache.wicket.authroles.authentication.AuthenticatedWebApplication;
 import org.apache.wicket.protocol.http.WebApplication;
 
@@ -38,6 +40,18 @@ public abstract class OrientDbWebApplication extends AuthenticatedWebApplication
 		getRequestCycleListeners().add(newTransactionRequestCycleListener());
 		getRequestCycleListeners().add(new OrientDefaultExceptionsHandlingListener());
 		getSecuritySettings().setAuthorizationStrategy(new WicketOrientDbAuthorizationStrategy(this));
+		getApplicationListeners().add(new IApplicationListener() {
+			
+			
+			@Override
+			public void onAfterInitialized(Application application) {
+				Orient.instance().removeShutdownHook();
+			}
+			@Override
+			public void onBeforeDestroyed(Application application) {
+				Orient.instance().shutdown();
+			}
+		});
 	}
 	
 	protected TransactionRequestCycleListener newTransactionRequestCycleListener()
