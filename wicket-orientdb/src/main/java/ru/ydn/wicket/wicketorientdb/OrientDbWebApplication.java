@@ -1,13 +1,19 @@
 package ru.ydn.wicket.wicketorientdb;
 
 import org.apache.wicket.Application;
+import org.apache.wicket.ConverterLocator;
 import org.apache.wicket.IApplicationListener;
+import org.apache.wicket.IConverterLocator;
 import org.apache.wicket.authroles.authentication.AuthenticatedWebApplication;
 import org.apache.wicket.protocol.http.WebApplication;
 
+import ru.ydn.wicket.wicketorientdb.converter.ODocumentConverter;
+import ru.ydn.wicket.wicketorientdb.converter.OIdentifiableConverter;
 import ru.ydn.wicket.wicketorientdb.security.WicketOrientDbAuthorizationStrategy;
 
 import com.orientechnologies.orient.core.Orient;
+import com.orientechnologies.orient.core.db.record.OIdentifiable;
+import com.orientechnologies.orient.core.record.impl.ODocument;
 
 public abstract class OrientDbWebApplication extends AuthenticatedWebApplication {
 	private IOrientDbSettings orientDbSettings = new OrientDbSettings();
@@ -57,6 +63,15 @@ public abstract class OrientDbWebApplication extends AuthenticatedWebApplication
 	protected TransactionRequestCycleListener newTransactionRequestCycleListener()
 	{
 		return new TransactionRequestCycleListener();
+	}
+	
+	@Override
+	protected IConverterLocator newConverterLocator()
+	{
+		ConverterLocator locator =  new ConverterLocator();
+		locator.set(OIdentifiable.class, new OIdentifiableConverter<OIdentifiable>());
+		locator.set(ODocument.class, new ODocumentConverter());
+		return locator;
 	}
 
 }

@@ -10,6 +10,7 @@ import org.apache.wicket.request.cycle.AbstractRequestCycleListener;
 import org.apache.wicket.request.cycle.RequestCycle;
 import org.apache.wicket.util.lang.Exceptions;
 
+import com.orientechnologies.orient.core.exception.OSchemaException;
 import com.orientechnologies.orient.core.exception.OSecurityException;
 import com.orientechnologies.orient.core.exception.OValidationException;
 
@@ -21,6 +22,7 @@ public class OrientDefaultExceptionsHandlingListener extends
 		Throwable th = null;
 		if((th=Exceptions.findCause(ex, OSecurityException.class))!=null
 				|| (th=Exceptions.findCause(ex, OValidationException.class))!=null
+				|| (th=Exceptions.findCause(ex, OSchemaException.class))!=null
 				|| (th=Exceptions.findCause(ex, IllegalStateException.class))!=null && Exceptions.findCause(ex, WicketRuntimeException.class)==null)
 		{
 			Page page = extractCurrentPage();
