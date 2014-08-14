@@ -18,10 +18,15 @@ public class OQueryDataProvider <K> extends SortableDataProvider<K, String>
 	 */
 	private static final long serialVersionUID = 1L;
 	private OQueryModel<K> model;
+	
+	public OQueryDataProvider(String sql)
+	{
+		this(sql, null);
+	}
 
-    public OQueryDataProvider(String sql)
+    public OQueryDataProvider(String sql, Class<? extends K> wrapperClass)
     {
-        model = new OQueryModel<K>(sql);
+        model = new OQueryModel<K>(sql, wrapperClass);
     }
 
     public OQueryDataProvider<K> setParameter(String paramName, IModel<Object> value)

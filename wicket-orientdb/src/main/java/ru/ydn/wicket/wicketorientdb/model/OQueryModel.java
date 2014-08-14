@@ -13,8 +13,11 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 
 import ru.ydn.wicket.wicketorientdb.OrientDbWebSession;
+import ru.ydn.wicket.wicketorientdb.utils.DocumentWrapperTransformer;
 import ru.ydn.wicket.wicketorientdb.utils.GetObjectFunction;
 
+import com.google.common.collect.Iterators;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.orientechnologies.orient.core.db.record.ODatabaseRecord;
 import com.orientechnologies.orient.core.record.impl.ODocument;
@@ -30,6 +33,7 @@ public class OQueryModel<K> extends LoadableDetachableModel<List<K>>
     private static final Pattern ORDER_CHECK_PATTERN = Pattern.compile("order\\s+by", Pattern.CASE_INSENSITIVE);
 
     private String sql;
+    private DocumentWrapperTransformer<K> transformer;
     private String projection;
     private String countSql;
     private Map<String, IModel<Object>> params = new HashMap<String, IModel<Object>>();
@@ -37,10 +41,16 @@ public class OQueryModel<K> extends LoadableDetachableModel<List<K>>
     private boolean isAccessing=true;
     
     private transient Long size;
-
+    
     public OQueryModel(String sql)
     {
+    	this(sql, null);
+    }
+
+    public OQueryModel(String sql, Class<? extends K> wrapperClass)
+    {
         this.sql=sql;
+        this.transformer = wrapperClass!=null?new DocumentWrapperTransformer<K>(wrapperClass):null;
         Matcher matcher = PROJECTION_PATTERN.matcher(sql);
         if(matcher.find())
         {
@@ -64,11 +74,14 @@ public class OQueryModel<K> extends LoadableDetachableModel<List<K>>
         return this;
     }
 
-    protected List<K> load()
+	@SuppressWarnings("unchecked")
+	protected List<K> load()
     {
     	ODatabaseRecord db = OrientDbWebSession.get().getDatabase();
     	OSQLSynchQuery<K> query = new OSQLSynchQuery<K>(prepareSql(null, null));
-    	return db.query(query, prepareParams());
+    	List<?> ret = db.query(query, prepareParams());
+    	
+    	return transformer==null?(List<K>)ret:Lists.transform((List<ODocument>)ret, transformer);
     }
 
     @SuppressWarnings("unchecked")
@@ -76,7 +89,8 @@ public class OQueryModel<K> extends LoadableDetachableModel<List<K>>
     {
     	ODatabaseRecord db = OrientDbWebSession.get().getDatabase();
     	OSQLSynchQuery<K> query = new OSQLSynchQuery<K>(prepareSql((int)first, (int)count));
-    	return ((List<K>)db.query(query, prepareParams())).iterator();
+    	Iterator<?> iterator = db.query(query, prepareParams()).iterator();
+    	return transformer==null?(Iterator<K>)iterator:Iterators.transform((Iterator<ODocument>)iterator, transformer);
     }
     
     protected String prepareSql(Integer first, Integer count)

@@ -10,6 +10,11 @@ public class OClassNamingModel extends AbstractNamingModel<OClass> {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	
+	public OClassNamingModel(String className)
+	{
+		this(new OClassModel(className));
+	}
 
 	public OClassNamingModel(OClass oClass)
 	{
