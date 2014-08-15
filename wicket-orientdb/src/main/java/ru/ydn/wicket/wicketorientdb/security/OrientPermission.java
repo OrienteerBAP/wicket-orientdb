@@ -29,4 +29,9 @@ public enum OrientPermission {
 		}
 		return ret;
 	}
+	
+	public int getPermissionFlag()
+	{
+		return permissionFlag;
+	}
 }
