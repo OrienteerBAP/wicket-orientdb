@@ -16,9 +16,9 @@ public class EmbeddOrientDbApplicationListener implements IApplicationListener {
 	private URL url;
 	private File configFile;
 	private String config;
-	private OServerConfiguration serverConfiguration;
+	protected OServerConfiguration serverConfiguration;
 	
-	private OServer server;
+	protected OServer server;
 
 	public EmbeddOrientDbApplicationListener()
 	{
@@ -46,7 +46,7 @@ public class EmbeddOrientDbApplicationListener implements IApplicationListener {
 	}
 	
 	@Override
-	public void onAfterInitialized(Application arg0) {
+	public void onAfterInitialized(Application app) {
 		try {
 			server = OServerMain.create();
 			if(url!=null)
@@ -70,13 +70,13 @@ public class EmbeddOrientDbApplicationListener implements IApplicationListener {
 				server.startup();
 			}
 			server.activate();
-			onAfterServerStartupAndActivation();
+			onAfterServerStartupAndActivation((OrientDbWebApplication)app);
 		} catch (Exception e) {
 			throw new WicketRuntimeException("Can't start OrientDB Embedded Server", e);
 		}
 	}
 	
-	public void onAfterServerStartupAndActivation() throws Exception
+	public void onAfterServerStartupAndActivation(OrientDbWebApplication app) throws Exception
 	{
 		
 	}

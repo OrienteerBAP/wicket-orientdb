@@ -2,6 +2,7 @@ package ru.ydn.wicket.wicketorientdb;
 
 import org.apache.wicket.authroles.authentication.pages.SignInPage;
 import org.apache.wicket.markup.html.WebPage;
+
 import com.orientechnologies.orient.client.remote.OServerAdmin;
 
 /**
@@ -33,7 +34,7 @@ public class WicketApplication extends OrientDbWebApplication
 		{
 
 			@Override
-			public void onAfterServerStartupAndActivation() throws Exception {
+			public void onAfterServerStartupAndActivation(OrientDbWebApplication app) throws Exception {
 				OServerAdmin serverAdmin = new OServerAdmin("localhost/"+DB_NAME).connect("root", "WicketOrientDB");
 				if(!serverAdmin.existsDatabase())
 			    serverAdmin.createDatabase(DB_NAME, "graph", "local");

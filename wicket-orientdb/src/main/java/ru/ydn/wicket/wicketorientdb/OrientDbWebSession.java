@@ -102,7 +102,7 @@ public class OrientDbWebSession extends AuthenticatedWebSession {
 		}
 		else
 		{
-			user = getDatabase().getMetadata().getSecurity().getUser(username);
+			user = username!=null?getDatabase().getMetadata().getSecurity().getUser(username):null;
 			userReloaded = true;
 		}
 		return user;
