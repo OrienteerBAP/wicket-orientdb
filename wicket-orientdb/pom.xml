@@ -10,7 +10,6 @@
 	</parent>
 	<artifactId>wicket-orientdb</artifactId>
 	<name>wicket-orientdb</name>
-	<url>http://maven.apache.org</url>
 	<dependencies>
 		<dependency>
 			<groupId>junit</groupId>
@@ -23,47 +22,38 @@
 		<dependency>
 			<groupId>org.apache.wicket</groupId>
 			<artifactId>wicket-extensions</artifactId>
-			<version>${wicket.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.wicket</groupId>
 			<artifactId>wicket-auth-roles</artifactId>
-			<version>${wicket.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.orientechnologies</groupId>
 			<artifactId>orient-commons</artifactId>
-			<version>${orientdb.version}</version>
 			<type>bundle</type>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.orientechnologies</groupId>
 			<artifactId>orientdb-core</artifactId>
-			<version>${orientdb.version}</version>
 			<type>bundle</type>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.orientechnologies</groupId>
 			<artifactId>orientdb-enterprise</artifactId>
-			<version>${orientdb.version}</version>
 			<type>bundle</type>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.orientechnologies</groupId>
 			<artifactId>orientdb-server</artifactId>
-			<version>${orientdb.version}</version>
 			<type>bundle</type>
 			<scope>provided</scope>
 		</dependency>
-		<!-- INCLUDE THIS IF YOU'RE CONNECTING TO THE SERVER THROUGH THE REMOTE 
-			ENGINE -->
 		<dependency>
 			<groupId>com.orientechnologies</groupId>
 			<artifactId>orientdb-client</artifactId>
-			<version>${orientdb.version}</version>
 			<type>bundle</type>
 			<scope>provided</scope>
 		</dependency>
