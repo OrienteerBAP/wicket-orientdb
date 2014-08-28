@@ -1,25 +1,27 @@
 package ru.ydn.wicket.wicketorientdb;
 
+
 import org.apache.wicket.Application;
 import org.apache.wicket.IApplicationListener;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.orientechnologies.orient.core.db.record.ODatabaseRecord;
 
 public abstract class AbstractDataInstallator implements IApplicationListener
 {
+	private static final Logger log = LoggerFactory.getLogger(AbstractDataInstallator.class); 
 	@Override
 	public void onAfterInitialized(Application application) {
 		OrientDbWebApplication app = (OrientDbWebApplication)application;
 		ODatabaseRecord db = getDatabase(app);
-		db.begin();
 		try
 		{
 			installData(app, db);
-			db.commit();
 		}
 		catch(Exception ex)
 		{
-			db.rollback();
+			log.error("Data can't be installed", ex);
 		}
 		finally
 		{
