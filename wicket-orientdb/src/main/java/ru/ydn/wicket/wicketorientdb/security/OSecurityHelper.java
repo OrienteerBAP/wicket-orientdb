@@ -54,7 +54,12 @@ public class OSecurityHelper
 	
 	public static RequiredOrientResource[] requireOClass(final OClass oClass, final OrientPermission... permissions)
 	{
-		return requireResource(ODatabaseSecurityResources.CLASS+"."+oClass.getName(), permissions);
+		return requireOClass(oClass.getName(), permissions);
+	}
+	
+	public static RequiredOrientResource[] requireOClass(final String oClassName, final OrientPermission... permissions)
+	{
+		return requireResource(ODatabaseSecurityResources.CLASS+"."+oClassName, permissions);
 	}
 	
 	public static RequiredOrientResource[] requireResource(final String resource, final OrientPermission... permissions)
