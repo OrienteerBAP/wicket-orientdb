@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/PhantomYdn/wicket-orientdb.svg?branch=master)](https://travis-ci.org/PhantomYdn/wicket-orientdb)
+
 wicket-orientdb
 ===============
 
