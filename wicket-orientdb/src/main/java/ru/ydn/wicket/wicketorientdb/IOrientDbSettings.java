@@ -1,8 +1,11 @@
 package ru.ydn.wicket.wicketorientdb;
 
+import java.util.List;
+
 import com.orientechnologies.orient.core.db.ODatabase;
 import com.orientechnologies.orient.core.db.ODatabasePoolBase;
 import com.orientechnologies.orient.core.db.ODatabaseThreadLocalFactory;
+import com.orientechnologies.orient.core.hook.ORecordHook;
 
 public interface IOrientDbSettings {
 	public String getDBUrl();
@@ -19,4 +22,5 @@ public interface IOrientDbSettings {
 	public void setDBInstallatorUserPassword(String password);
 	public void setDatabasePool(ODatabasePoolBase<? extends ODatabase> pool);
 	public void setDatabaseThreadLocalFactory(ODatabaseThreadLocalFactory factory);
+	public List<ORecordHook> getORecordHooks();
 }

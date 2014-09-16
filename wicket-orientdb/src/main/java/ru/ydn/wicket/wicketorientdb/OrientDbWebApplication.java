@@ -1,5 +1,7 @@
 package ru.ydn.wicket.wicketorientdb;
 
+import java.util.List;
+
 import org.apache.wicket.Application;
 import org.apache.wicket.ConverterLocator;
 import org.apache.wicket.IApplicationListener;
@@ -12,7 +14,11 @@ import ru.ydn.wicket.wicketorientdb.converter.OIdentifiableConverter;
 import ru.ydn.wicket.wicketorientdb.security.WicketOrientDbAuthorizationStrategy;
 
 import com.orientechnologies.orient.core.Orient;
+import com.orientechnologies.orient.core.db.ODatabase;
+import com.orientechnologies.orient.core.db.ODatabaseComplex;
+import com.orientechnologies.orient.core.db.ODatabaseLifecycleListener;
 import com.orientechnologies.orient.core.db.record.OIdentifiable;
+import com.orientechnologies.orient.core.hook.ORecordHook;
 import com.orientechnologies.orient.core.record.impl.ODocument;
 
 public abstract class OrientDbWebApplication extends AuthenticatedWebApplication {
@@ -43,6 +49,32 @@ public abstract class OrientDbWebApplication extends AuthenticatedWebApplication
 	protected void init() {
 		super.init();
 		Orient.instance().registerThreadDatabaseFactory(new DefaultODatabaseThreadLocalFactory(this));
+		Orient.instance().addDbLifecycleListener(new ODatabaseLifecycleListener() {
+			
+			@Override
+			public void onOpen(ODatabase iDatabase) {
+				for (ORecordHook oRecordHook : getOrientDbSettings().getORecordHooks())
+				{
+					((ODatabaseComplex<?>)iDatabase).registerHook(oRecordHook);
+				}
+			}
+			
+			@Override
+			public void onCreate(ODatabase iDatabase) {
+				for (ORecordHook oRecordHook : getOrientDbSettings().getORecordHooks())
+				{
+					((ODatabaseComplex<?>)iDatabase).registerHook(oRecordHook);
+				}
+			}
+			
+			@Override
+			public void onClose(ODatabase iDatabase) {
+				for (ORecordHook oRecordHook : getOrientDbSettings().getORecordHooks())
+				{
+					((ODatabaseComplex<?>)iDatabase).unregisterHook(oRecordHook);
+				}
+			}
+		});
 		getRequestCycleListeners().add(newTransactionRequestCycleListener());
 		getRequestCycleListeners().add(new OrientDefaultExceptionsHandlingListener());
 		getSecuritySettings().setAuthorizationStrategy(new WicketOrientDbAuthorizationStrategy(this));
