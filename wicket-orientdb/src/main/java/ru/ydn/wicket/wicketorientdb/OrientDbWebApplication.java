@@ -17,6 +17,7 @@ import com.orientechnologies.orient.core.Orient;
 import com.orientechnologies.orient.core.db.ODatabase;
 import com.orientechnologies.orient.core.db.ODatabaseComplex;
 import com.orientechnologies.orient.core.db.ODatabaseLifecycleListener;
+import com.orientechnologies.orient.core.db.ODatabaseLifecycleListener.PRIORITY;
 import com.orientechnologies.orient.core.db.record.OIdentifiable;
 import com.orientechnologies.orient.core.hook.ORecordHook;
 import com.orientechnologies.orient.core.record.impl.ODocument;
@@ -73,6 +74,10 @@ public abstract class OrientDbWebApplication extends AuthenticatedWebApplication
 				{
 					((ODatabaseComplex<?>)iDatabase).unregisterHook(oRecordHook);
 				}
+			}
+			
+			public PRIORITY getPriority() {
+				return PRIORITY.REGULAR;
 			}
 		});
 		getRequestCycleListeners().add(newTransactionRequestCycleListener());

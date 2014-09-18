@@ -37,12 +37,12 @@ public class WicketApplication extends OrientDbWebApplication
 			public void onAfterServerStartupAndActivation(OrientDbWebApplication app) throws Exception {
 				OServerAdmin serverAdmin = new OServerAdmin("localhost/"+DB_NAME).connect("root", "WicketOrientDB");
 				if(!serverAdmin.existsDatabase())
-			    serverAdmin.createDatabase(DB_NAME, "graph", "local");
+			    serverAdmin.createDatabase(DB_NAME, "graph", "plocal");
 			    
 			}
 			
 		});
-		getOrientDbSettings().setDBUrl("local:localhost/"+DB_NAME);
+		getOrientDbSettings().setDBUrl("plocal:localhost/"+DB_NAME);
 		getOrientDbSettings().setDBUserName("admin");
 		getOrientDbSettings().setDBUserPassword("admin");
 	}
