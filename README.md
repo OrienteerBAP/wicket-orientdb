@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/PhantomYdn/wicket-orientdb.svg?branch=master)](https://travis-ci.org/PhantomYdn/wicket-orientdb)
+[![Build Status](https://travis-ci.org/PhantomYdn/wicket-orientdb.svg?branch=master)](https://travis-ci.org/PhantomYdn/wicket-orientdb) [![Coverage Status](https://img.shields.io/coveralls/PhantomYdn/wicket-orientdb.svg)](https://coveralls.io/r/PhantomYdn/wicket-orientdb)
 
 wicket-orientdb
 ===============
