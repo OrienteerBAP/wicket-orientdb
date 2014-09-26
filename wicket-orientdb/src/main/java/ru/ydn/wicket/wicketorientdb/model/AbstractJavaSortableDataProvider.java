@@ -50,8 +50,8 @@ public abstract class AbstractJavaSortableDataProvider<T, S> extends SortableDat
 		{
 			it=data.iterator();
 		}
-		Iterators.advance(it, (int)first);
-		return Iterators.limit(it, (int)count);
+		if(first>0) Iterators.advance(it, (int)first);
+		return count>=0?Iterators.limit(it, (int)count):it;
 	}
 	
 	protected String getSortPropertyAsString(S param)
