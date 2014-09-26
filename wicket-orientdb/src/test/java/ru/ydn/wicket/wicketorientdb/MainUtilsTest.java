@@ -4,7 +4,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 import static ru.ydn.wicket.wicketorientdb.model.AbstractNamingModel.buitify;
 
-public class MainTest
+public class MainUtilsTest
 {
 	@Test
 	public void testBuitify() throws Exception

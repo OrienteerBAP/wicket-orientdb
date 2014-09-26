@@ -10,9 +10,21 @@ public class LoggerOCommandOutputListener implements OCommandOutputListener
 	private static final Logger LOG = LoggerFactory.getLogger(LoggerOCommandOutputListener.class);
 	public static final LoggerOCommandOutputListener INSTANCE = new LoggerOCommandOutputListener();
 	
+	private final Logger logger;
+	
+	public LoggerOCommandOutputListener()
+	{
+		this(LOG);
+	}
+	
+	public LoggerOCommandOutputListener(Logger logger)
+	{
+		this.logger = logger;
+	}
+	
 	@Override
 	public void onMessage(String iText) {
-		LOG.info(iText);
+		logger.info(iText);
 	}
 
 }
