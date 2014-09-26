@@ -30,6 +30,11 @@ public class OIdentifiableConverter<T extends OIdentifiable> extends AbstractCon
 			throw newConversionException("Cannot convert '" + value + "' to "+getTargetType().getSimpleName(), value, locale);
 		}
 	}
+	
+	@Override
+	public String convertToString(T value, Locale locale) {
+		return value.getIdentity().toString();
+	}
 
 	@SuppressWarnings("unchecked")
 	@Override

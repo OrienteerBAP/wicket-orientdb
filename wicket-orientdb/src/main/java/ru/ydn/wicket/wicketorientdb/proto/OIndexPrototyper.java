@@ -3,6 +3,8 @@ package ru.ydn.wicket.wicketorientdb.proto;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.wicket.util.lang.Args;
+
 import ru.ydn.wicket.wicketorientdb.OrientDbWebSession;
 import ru.ydn.wicket.wicketorientdb.proto.OClassPrototyper.OClassSetNameFix;
 
@@ -42,6 +44,7 @@ public class OIndexPrototyper extends AbstractPrototyper<OIndex>
 	
 	public OIndexPrototyper(String className, List<String> fields)
 	{
+		Args.notEmpty(fields, "fields");
 		values.put(DEF_CLASS_NAME, className);
 		values.put(DEF_FIELDS, fields);
 	}
@@ -51,8 +54,9 @@ public class OIndexPrototyper extends AbstractPrototyper<OIndex>
 		OSchema schema = OrientDbWebSession.get().getDatabase().getMetadata().getSchema();
 		OClass oClass = schema.getClass(proxy.getDefinition().getClassName());
 		String name = proxy.getName();
-		String type = proxy.getType();
 		List<String> fields = proxy.getDefinition().getFields();
+		String type = proxy.getType();
+		if(name==null) name=oClass.getName()+"."+fields.get(0);
 		values.keySet().retainAll(RW_ATTRS);
 		return oClass.createIndex(name, type, fields.toArray(new String[0]));
 	}

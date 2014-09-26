@@ -67,9 +67,10 @@ public class OQueryModel<K> extends LoadableDetachableModel<List<K>>
         }
     }
 
-    public OQueryModel<K> setParameter(String paramName, IModel<Object> value)
+    @SuppressWarnings("unchecked")
+	public OQueryModel<K> setParameter(String paramName, IModel<?> value)
     {
-        params.put(paramName, value);
+        params.put(paramName, (IModel<Object>)value);
         super.detach();
         return this;
     }

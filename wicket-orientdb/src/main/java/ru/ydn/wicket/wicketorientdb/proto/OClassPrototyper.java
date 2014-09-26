@@ -10,6 +10,7 @@ import ru.ydn.wicket.wicketorientdb.OrientDbWebSession;
 import com.orientechnologies.orient.core.metadata.schema.OClass;
 import com.orientechnologies.orient.core.metadata.schema.OSchema;
 import com.orientechnologies.orient.core.metadata.schema.OSchemaShared;
+import com.orientechnologies.orient.core.metadata.schema.clusterselection.OClusterSelectionFactory;
 import com.orientechnologies.orient.core.metadata.schema.clusterselection.OClusterSelectionStrategy;
 
 public class OClassPrototyper extends AbstractPrototyper<OClass> {
@@ -67,19 +68,16 @@ public class OClassPrototyper extends AbstractPrototyper<OClass> {
 	protected Object handleSet(String propName, Object value) {
 		if("clusterSelection".equals(propName))
 		{
+			if(value instanceof CharSequence)
+			{
+				value = new OClusterSelectionFactory().newInstance(value.toString());
+			}
 			if(value instanceof OClusterSelectionStrategy)
 			{
 				return super.handleSet(propName, value);
 			}
-			else if(value instanceof CharSequence)
-			{
-				OSchema schema = OrientDbWebSession.get().getDatabase().getMetadata().getSchema();
-				
-				if(schema instanceof OSchemaShared)
-				{
-					return super.handleSet(propName, ((OSchemaShared)schema).getClusterSelectionFactory().newInstance(value.toString()));
-				}
-			}
+			else return null;
+			
 		}
 		//Default
 		return super.handleSet(propName, value);

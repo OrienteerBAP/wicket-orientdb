@@ -1,4 +1,4 @@
-package ru.ydn.wicket.wicketorientdb;
+package ru.ydn.wicket.wicketorientdb.web;
 
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.model.IModel;

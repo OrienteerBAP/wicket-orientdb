@@ -25,6 +25,11 @@ public abstract class DBClosure<V> implements Serializable
 		this.password = settings.getDBInstallatorUserPassword();
 	}
 	
+	public DBClosure(String username, String password)
+	{
+		this(getSettings().getDBUrl(), username, password);
+	}
+	
 	public DBClosure(String dbUrl, String username, String password)
 	{
 		this.dbUrl = dbUrl;
@@ -49,7 +54,7 @@ public abstract class DBClosure<V> implements Serializable
 		}
 	}
 	
-	protected IOrientDbSettings getSettings()
+	protected static IOrientDbSettings getSettings()
 	{
 		return OrientDbWebApplication.get().getOrientDbSettings();
 	}

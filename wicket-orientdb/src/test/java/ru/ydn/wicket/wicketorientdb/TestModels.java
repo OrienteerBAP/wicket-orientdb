@@ -3,6 +3,7 @@ package ru.ydn.wicket.wicketorientdb;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.wicket.extensions.markup.html.repeater.data.sort.SortOrder;
 import org.apache.wicket.model.IModel;
@@ -14,16 +15,26 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 import com.orientechnologies.orient.core.db.record.ODatabaseRecord;
+import com.orientechnologies.orient.core.id.ORecordId;
 import com.orientechnologies.orient.core.index.OIndex;
 import com.orientechnologies.orient.core.metadata.schema.OClass;
 import com.orientechnologies.orient.core.metadata.schema.OProperty;
 import com.orientechnologies.orient.core.metadata.schema.OSchema;
+import com.orientechnologies.orient.core.metadata.security.OUser;
+import com.orientechnologies.orient.core.record.impl.ODocument;
 
 import ru.ydn.wicket.wicketorientdb.junit.WicketTesterThreadLocal;
 import ru.ydn.wicket.wicketorientdb.model.OClassModel;
+import ru.ydn.wicket.wicketorientdb.model.OClassNamingModel;
 import ru.ydn.wicket.wicketorientdb.model.OClassesDataProvider;
+import ru.ydn.wicket.wicketorientdb.model.ODocumentMapWrapper;
+import ru.ydn.wicket.wicketorientdb.model.ODocumentModel;
+import ru.ydn.wicket.wicketorientdb.model.ODocumentPropertyModel;
 import ru.ydn.wicket.wicketorientdb.model.OIndexiesDataProvider;
 import ru.ydn.wicket.wicketorientdb.model.OPropertiesDataProvider;
+import ru.ydn.wicket.wicketorientdb.model.OPropertyModel;
+import ru.ydn.wicket.wicketorientdb.model.OPropertyNamingModel;
+import ru.ydn.wicket.wicketorientdb.model.OQueryDataProvider;
 import ru.ydn.wicket.wicketorientdb.model.SimpleNamingModel;
 
 public class TestModels extends AbstractTestClass
@@ -40,9 +51,10 @@ public class TestModels extends AbstractTestClass
 		while(it.hasNext())
 		{
 			OClass oClass = it.next();
-			assertTrue(allClasses.remove(oClass));
+			assertTrue(allClasses.remove(provider.model(oClass).getObject()));
 		}
 		assertTrue(allClasses.size()==0);
+		provider.detach();
 	}
 	
 	@Test
@@ -57,9 +69,10 @@ public class TestModels extends AbstractTestClass
 		while(it.hasNext())
 		{
 			OProperty oProperty = it.next();
-			assertTrue(allProperties.remove(oProperty));
+			assertTrue(allProperties.remove(provider.model(oProperty).getObject()));
 		}
 		assertTrue(allProperties.size()==0);
+		provider.detach();
 	}
 	
 	@Test
@@ -74,9 +87,28 @@ public class TestModels extends AbstractTestClass
 		while(it.hasNext())
 		{
 			OIndex<?> oIndex = it.next();
-			assertTrue(allIndexies.remove(oIndex));
+			assertTrue(allIndexies.remove(provider.model(oIndex).getObject()));
 		}
 		assertTrue(allIndexies.size()==0);
+		provider.detach();
+	}
+	
+	@Test
+	public void testOQueryProvider()
+	{
+		OQueryDataProvider<OUser> provider = new OQueryDataProvider<OUser>("select from OUser where name <> :other", OUser.class);
+		provider.setSort("name", SortOrder.ASCENDING);
+		provider.setParameter("other", Model.of("blalba"));
+		Iterator<OUser> it = provider.iterator(0, -1);
+		List<ODocument> allUsers = getMetadata().getSecurity().getAllUsers();
+		assertTrue(provider.size()==allUsers.size());
+		while(it.hasNext())
+		{
+			OUser oUser = it.next();
+			assertTrue(allUsers.contains(provider.model(oUser).getObject().getDocument()));
+		}
+		provider.detach();
+		assertTrue(provider.size()==allUsers.size());
 	}
 	
 	@Test
@@ -87,6 +119,33 @@ public class TestModels extends AbstractTestClass
 		assertEquals("This is my object", namingModel.getObject());
 		keyModel.setObject("myobject.thatIsMyObject");
 		assertEquals("That Is My Object", namingModel.getObject());
+		namingModel.detach();
+		assertEquals("That Is My Object", namingModel.getObject());
+	}
+	
+	@Test
+	public void testOClassNamingModel()
+	{
+		IModel<String> classNameModel = Model.of("OUser");
+		IModel<OClass> oClassModel = new OClassModel(classNameModel);
+		OClassNamingModel model = new OClassNamingModel(oClassModel);
+		assertEquals("OUser", model.getObject());
+		model.detach();
+		classNameModel.setObject("ORole");
+		assertEquals("SuperRole", model.getObject());
+	}
+	
+	@Test
+	public void testOPropertyNamingModel()
+	{
+		IModel<String> classNameModel = Model.of("OUser");
+		IModel<OClass> oClassModel = new OClassModel(classNameModel);
+		IModel<OProperty> propertyModel = new OPropertyModel(oClassModel, "name");
+		OPropertyNamingModel model = new OPropertyNamingModel(propertyModel);
+		assertEquals("Name", model.getObject());
+		model.detach();
+		classNameModel.setObject("ORole");
+		assertEquals("Role Name", model.getObject());
 	}
 	
 	@Test
@@ -95,6 +154,50 @@ public class TestModels extends AbstractTestClass
 		OClassModel model = new OClassModel("OUser");
 		OClass oUserClass = getSchema().getClass("OUser");
 		assertEquals(oUserClass, model.getObject());
+		model.detach();
+		assertEquals(oUserClass, model.getObject());
+	}
+	
+	@Test
+	public void testODocumentMapWrapper()
+	{
+		Map<String, Object> map = new ODocumentMapWrapper(new ORecordId("#5:0"));
+		assertTrue(map.containsKey("name"));
+		assertEquals("admin", map.get("name"));
+		assertTrue(map.size()>0);
+		assertTrue(map.keySet().contains("name"));
+		assertTrue(map.values().contains("admin"));
+		assertTrue(map.entrySet().size()==map.size());
+	}
+	
+	@Test
+	public void testODocumentModel()
+	{
+		ORecordId recordId = new ORecordId("#5:0");
+		ODocumentModel model = new ODocumentModel(recordId);
+		assertEquals(recordId.getRecord(), model.getObject());
+		model.detach();
+		assertEquals(recordId.getRecord(), model.getObject());
+	}
+	
+	@Test
+	public void testODocumentPropertyModel()
+	{
+		ORecordId recordId = new ORecordId("#5:0");
+		ODocumentPropertyModel<String> model = new ODocumentPropertyModel<String>(new ODocumentModel(recordId), "name");
+		assertEquals("admin", model.getObject());
+		model.detach();
+		assertEquals("admin", model.getObject());
+	}
+	
+	@Test
+	public void testOPropertyModel()
+	{
+		OProperty userNameProperty = getSchema().getClass("OUser").getProperty("name");
+		OPropertyModel propertyModel = new OPropertyModel("OUser", "name");
+		assertEquals(userNameProperty, propertyModel.getObject());
+		propertyModel.detach();
+		assertEquals(userNameProperty, propertyModel.getObject());
 	}
 	
 }

@@ -29,7 +29,7 @@ public class OQueryDataProvider <K> extends SortableDataProvider<K, String>
         model = new OQueryModel<K>(sql, wrapperClass);
     }
 
-    public OQueryDataProvider<K> setParameter(String paramName, IModel<Object> value)
+    public OQueryDataProvider<K> setParameter(String paramName, IModel<?> value)
     {
         model.setParameter(paramName, value);
         return this;
