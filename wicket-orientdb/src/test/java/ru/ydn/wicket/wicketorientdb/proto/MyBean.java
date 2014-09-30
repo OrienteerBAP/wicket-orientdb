@@ -7,7 +7,8 @@ public class MyBean implements IMyBean
 {
 	private String name;
 	private Integer integer;
-	private Map<String, Object> custom = new HashMap<String, Object>();
+	private Map<String, Object> customMap = new HashMap<String, Object>();
+	private Map<String, String> customStringMap = new HashMap<String, String>();
 	
 	public String getName() {
 		return name;
@@ -27,11 +28,21 @@ public class MyBean implements IMyBean
 	}
 	@Override
 	public Object getCustom(String param) {
-		return custom.get(param);
+		return customMap.get(param);
 	}
 	@Override
 	public void setCustom(String param, Object value) {
-		custom.put(name, value);
+		customMap.put(param, value);
+	}
+	
+	@Override
+	public Object getCustomString(String param) {
+		return customStringMap.get(param);
+	}
+	@Override
+	public IMyBean setCustomString(String param, String value) {
+		customStringMap.put(param, value);
+		return this;
 	}
 	
 }

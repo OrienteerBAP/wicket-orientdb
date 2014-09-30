@@ -4,6 +4,7 @@ import com.orientechnologies.orient.core.db.record.ODatabaseRecord;
 import com.orientechnologies.orient.core.metadata.schema.OClass;
 import com.orientechnologies.orient.core.metadata.schema.OSchema;
 import com.orientechnologies.orient.core.metadata.schema.OType;
+import com.orientechnologies.orient.core.record.impl.ODocument;
 
 public class TestDataInstallator extends AbstractDataInstallator
 {
@@ -17,6 +18,10 @@ public class TestDataInstallator extends AbstractDataInstallator
 		OClass classB = schema.createClass("ClassB");
 		classB.createProperty("name", OType.STRING);
 		classB.createProperty("description", OType.STRING);
+		
+		new ODocument("ClassA").field("name", "doc1").save();
+		new ODocument("ClassA").field("name", "doc2").save();
+		new ODocument("ClassA").field("name", "doc3").save();
 	}
 
 }

@@ -50,18 +50,23 @@ public class TestPrototypers extends AbstractTestClass
 		assertTrue(bean instanceof Serializable);
 		bean.setCustom("name", "myname");
 		bean.setCustom("int", -1);
+		bean.setCustomString("name2", "myname2");
 		assertEquals("myname", bean.getCustom("name"));
 		assertEquals(Integer.valueOf(-1), bean.getCustom("int"));
+		assertEquals("myname2", bean.getCustomString("name2"));
 		IPrototype<IMyBean> proto = (IPrototype<IMyBean>)bean;
 		assertTrue(proto instanceof IMyBean);
 		assertFalse(proto.isPrototypeRealized());
 		bean = proto.realizePrototype();
 		assertEquals("myname", bean.getCustom("name"));
 		assertEquals(Integer.valueOf(-1), bean.getCustom("int"));
+		assertEquals("myname2", bean.getCustomString("name2"));
 		assertEquals("REAL", bean.getSignature());
 		assertTrue(proto.isPrototypeRealized());
 		assertEquals("REAL", ((IMyBean)proto).getSignature());
 	}
+	
+	
 	
 	@Test
 	public void testOClassPrototyper() throws Exception
@@ -78,6 +83,7 @@ public class TestPrototypers extends AbstractTestClass
 		properties = newClass.declaredProperties();
 		assertNotNull(properties);
 		assertTrue(properties.size()==0);
+		//Realization
 		assertTrue(newClass instanceof IPrototype); 
 		OClass realizedNewClass = ((IPrototype<OClass>)newClass).realizePrototype();
 		assertEquals(getSchema().getClass("NewClass"), realizedNewClass);
@@ -91,17 +97,28 @@ public class TestPrototypers extends AbstractTestClass
 	public void testOPropertyPrototyper() throws Exception
 	{
 		OClass newClass = getSchema().createClass("NewClass");
-		OProperty newProperty = OPropertyPrototyper.newPrototype("NewClass");
-		assertNull(newClass.getProperty("newProperty"));
-		newProperty.setName("newProperty");
-		assertEquals("newProperty", newProperty.getName());
-		assertNull(newClass.getProperty("newProperty"));
-		newProperty.setType(OType.STRING);
-		assertEquals(OType.STRING, newProperty.getType());
-		assertTrue(newProperty instanceof IPrototype);
-		OProperty realizedNewProperty = ((IPrototype<OProperty>)newProperty).realizePrototype();
-		assertEquals(newClass.getProperty("newProperty"), realizedNewProperty);
-		getSchema().dropClass(newClass.getName());
+		try
+		{
+			OProperty newProperty = OPropertyPrototyper.newPrototype("NewClass");
+			assertNull(newClass.getProperty("newProperty"));
+			newProperty.setName("newProperty");
+			assertEquals("newProperty", newProperty.getName());
+			assertNull(newClass.getProperty("newProperty"));
+			newProperty.setType(OType.STRING);
+			assertEquals(OType.STRING, newProperty.getType());
+			newProperty.setCustom("myCustom", "myCustomValue");
+			assertEquals("myCustomValue", newProperty.getCustom("myCustom"));
+			//Realization
+			assertTrue(newProperty instanceof IPrototype);
+			OProperty realizedNewProperty = ((IPrototype<OProperty>)newProperty).realizePrototype();
+			assertEquals(newClass.getProperty("newProperty"), realizedNewProperty);
+			assertEquals("myCustomValue", realizedNewProperty.getCustom("myCustom"));
+		}
+		finally
+		{
+			//Drop
+			getSchema().dropClass(newClass.getName());
+		}
 	}
 	
 	@Test

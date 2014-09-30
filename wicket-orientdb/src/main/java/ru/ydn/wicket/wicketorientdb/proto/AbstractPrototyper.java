@@ -14,6 +14,9 @@ import org.apache.wicket.Session;
 import org.apache.wicket.WicketRuntimeException;
 import org.apache.wicket.core.util.lang.PropertyResolver;
 import org.apache.wicket.core.util.lang.PropertyResolverConverter;
+import org.apache.wicket.util.string.Strings;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.common.primitives.Primitives;
 import com.google.common.reflect.AbstractInvocationHandler;
@@ -24,8 +27,8 @@ public abstract class AbstractPrototyper<T> extends AbstractInvocationHandler im
 		GET("get", new Class<?>[0], null, -1),
 		IS("is", new Class<?>[0], null, -1),
 		SET("set", new Class<?>[]{Object.class}, null, 0),
-		GET_MAPPED("get", new Class<?>[]{String.class}, "[{0}]", -1),
-		SET_MAPPED("set", new Class<?>[]{String.class, Object.class}, "[{0}]", 1);
+		GET_MAPPED("get", new Class<?>[]{String.class}, ":{0}", -1),
+		SET_MAPPED("set", new Class<?>[]{String.class, Object.class}, ":{0}", 1);
 		
 		private final String prefix;
 		private final Class<?>[] requiredAttrTypes;
@@ -67,6 +70,8 @@ public abstract class AbstractPrototyper<T> extends AbstractInvocationHandler im
 		}
 		
 	}
+	
+	private static final Logger LOG = LoggerFactory.getLogger(AbstractPrototyper.class);
 	
 	protected Map<String, Object> values = new HashMap<String, Object>();
 	
@@ -142,12 +147,60 @@ public abstract class AbstractPrototyper<T> extends AbstractInvocationHandler im
 		T ret = createInstance(proxy);
 		PropertyResolverConverter prc = getPropertyResolverConverter();
 		for (Map.Entry<String, Object> entry: values.entrySet()) {
-			try
+			String propertyName = entry.getKey();
+			Object value = entry.getValue();
+			int mappedIndicatorIndx = propertyName.indexOf(':');
+			if(mappedIndicatorIndx<0)
 			{
-				PropertyResolver.setValue(entry.getKey(), ret, entry.getValue(), prc);
-			} catch (WicketRuntimeException e)
+				try
+				{
+					PropertyResolver.setValue(propertyName, ret, value, prc);
+				} catch (WicketRuntimeException e)
+				{
+//					LOG.error("Can't set property "+propertyName, e);
+					e.printStackTrace();
+					// NOP
+				}
+			}
+			else
 			{
-				// NOP
+				String propertyExp = propertyName.substring(0, mappedIndicatorIndx);
+				String fieldExp = propertyName.substring(mappedIndicatorIndx+1);
+				Object object = ret;
+				int subObject = propertyExp.lastIndexOf('.');
+				if(subObject>=0)
+				{
+					object = PropertyResolver.getValue(propertyExp.substring(0, subObject), object);
+					propertyExp = propertyExp.substring(subObject+1);
+				}
+				if(object!=null)
+				{
+					String methodName="set"+propertyExp.substring(0, 1).toUpperCase()+propertyExp.substring(1);
+					Method[] methods = object.getClass().getMethods();
+					try
+					{
+						for (Method method : methods)
+						{
+							if(method.getName().equals(methodName))
+							{
+								Class<?>[] paramTypes = method.getParameterTypes();
+								if(paramTypes.length==2 
+										&& paramTypes[0].isAssignableFrom(String.class)
+										&& (value==null || paramTypes[1].isInstance(value)))
+								{
+									method.invoke(object, fieldExp, value);
+									break;
+								}
+							}
+						}
+					} catch (Exception e)
+					{
+//						LOG.error("Can't set property "+propertyName, e);
+//						e.printStackTrace();
+						// NOP
+					} 
+					
+				}
 			}
 		}
 		realized = ret;

@@ -9,4 +9,6 @@ public interface IMyBean
 	public String getSignature();
 	public Object getCustom(String param);
 	public void setCustom(String param, Object value);
+	public Object getCustomString(String param);
+	public IMyBean setCustomString(String param, String value);
 }

@@ -35,6 +35,7 @@ import ru.ydn.wicket.wicketorientdb.model.OPropertiesDataProvider;
 import ru.ydn.wicket.wicketorientdb.model.OPropertyModel;
 import ru.ydn.wicket.wicketorientdb.model.OPropertyNamingModel;
 import ru.ydn.wicket.wicketorientdb.model.OQueryDataProvider;
+import ru.ydn.wicket.wicketorientdb.model.OQueryModel;
 import ru.ydn.wicket.wicketorientdb.model.SimpleNamingModel;
 
 public class TestModels extends AbstractTestClass
@@ -109,6 +110,25 @@ public class TestModels extends AbstractTestClass
 		}
 		provider.detach();
 		assertTrue(provider.size()==allUsers.size());
+	}
+	
+	@Test
+	public void testOQueryModelSimple()
+	{
+		IModel<String> nameModel = Model.of();
+		OQueryModel<ODocument> queryModel = new OQueryModel<ODocument>("select from ClassA where name = :name");
+		queryModel.setParameter("name", nameModel);
+		nameModel.setObject("doc1");
+		assertEquals("doc1", queryModel.getObject().get(0).field("name"));
+		queryModel.detach();
+		
+		nameModel.setObject("doc2");
+		assertEquals("doc2", queryModel.getObject().get(0).field("name"));
+		queryModel.detach();
+		
+		nameModel.setObject("doc3");
+		assertEquals("doc3", queryModel.getObject().get(0).field("name"));
+		queryModel.detach();
 	}
 	
 	@Test
