@@ -21,6 +21,11 @@ public class AbstractTestClass
 		wicketTester = WICKET_TESTER_THREAD_LOCAL.get();
 	}
 	
+	public OrientDbWebApplication getApp()
+	{
+		return OrientDbWebApplication.get();
+	}
+	
 	public OrientDbWebSession getSession()
 	{
 		return (OrientDbWebSession)wicketTester.getSession();

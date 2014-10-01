@@ -6,6 +6,8 @@ import org.apache.wicket.authroles.authentication.pages.SignInPage;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.orientechnologies.orient.core.metadata.security.OUser;
+
 import ru.ydn.wicket.wicketorientdb.web.DynamicSecuredPage;
 import ru.ydn.wicket.wicketorientdb.web.OrientDbTestPage;
 import ru.ydn.wicket.wicketorientdb.web.StaticSecuredPage;
@@ -16,16 +18,42 @@ public class TestSecurity extends AbstractTestClass
 	@Test
 	public void testSession()
 	{
+		testSession("admin");
+		testSession("reader");
+		testSession("writer");
+	}
+	
+	public void testSession(String user)
+	{
+		testSession(user, user, user);
+	}
+	
+	public void testSession(String userRole, String user, String password)
+	{
+		IOrientDbSettings settings = getApp().getOrientDbSettings();
+		//Check not signed in state
 		assertFalse(getSession().isSignedIn());
 		assertNull(getSession().getUser());
 		assertNull(getSession().getUsername());
-		assertTrue(getSession().signIn("admin", "admin"));
+		assertEquals(settings.getDBUserName(), getDatabase().getUser().getName());
+		
+		//Signin and check signed in state
+		assertTrue(getSession().signIn(user, password));
 		assertTrue(getSession().isSignedIn());
-		assertEquals(getMetadata().getSecurity().getUser("admin"), getSession().getUser());
-		assertTrue(getSession().getRoles().hasRole("admin"));
+		OUser thisUser = getMetadata().getSecurity().getUser(user);
+		assertEquals(thisUser, getSession().getUser());
+		assertEquals(thisUser, getDatabase().getUser());
+		assertTrue(getSession().getRoles().hasRole(userRole));
+		
+		//Signout and check signed out state
 		getSession().signOut();
 		assertFalse(getSession().isSignedIn());
+		assertNull(getSession().getUser());
+		assertNull(getSession().getUsername());
+		assertEquals(settings.getDBUserName(), getDatabase().getUser().getName());
 	}
+	
+	
 	
 	@Test
 	public void testTestHomePage() throws Exception

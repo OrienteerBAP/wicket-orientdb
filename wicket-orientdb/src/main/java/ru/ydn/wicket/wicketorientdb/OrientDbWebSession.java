@@ -130,6 +130,7 @@ public class OrientDbWebSession extends AuthenticatedWebSession {
 		this.username=null;
 		this.password=null;
 		this.user=null;
+		ODatabaseRecordThreadLocal.INSTANCE.remove();
 	}
 
 }
