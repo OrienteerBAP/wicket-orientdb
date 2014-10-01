@@ -132,6 +132,19 @@ public class TestModels extends AbstractTestClass
 	}
 	
 	@Test
+	public void testOQueryModelExpand()
+	{
+		IModel<String> nameModel = Model.of();
+		OQueryModel<ODocument> queryModel = new OQueryModel<ODocument>("select expand(other) from ClassA where name = :name");
+		queryModel.setParameter("name", nameModel);
+		nameModel.setObject("doc1");
+		assertEquals(2, queryModel.size());
+		
+		queryModel = new OQueryModel<ODocument>("select expand(other) from ClassA");
+		assertEquals(6, queryModel.size());
+	}
+	
+	@Test
 	public void testNamingModel()
 	{
 		IModel<String> keyModel = Model.of("myobject.thisIsMyObject");

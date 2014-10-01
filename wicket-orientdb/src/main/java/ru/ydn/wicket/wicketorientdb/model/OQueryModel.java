@@ -30,6 +30,7 @@ public class OQueryModel<K> extends LoadableDetachableModel<List<K>>
 	 */
 	private static final long serialVersionUID = 1L;
 	private static final Pattern PROJECTION_PATTERN = Pattern.compile("select\\b(.+?)\\bfrom\\b", Pattern.CASE_INSENSITIVE);
+	private static final Pattern EXPAND_PATTERN = Pattern.compile("expand\\((.+)\\)", Pattern.CASE_INSENSITIVE);
     private static final Pattern ORDER_CHECK_PATTERN = Pattern.compile("order\\s+by", Pattern.CASE_INSENSITIVE);
 
     private String sql;
@@ -55,7 +56,15 @@ public class OQueryModel<K> extends LoadableDetachableModel<List<K>>
         if(matcher.find())
         {
         	projection = matcher.group(1).trim();
-        	countSql = matcher.replaceAll("select count(*) from"); 
+        	Matcher expandMatcher = EXPAND_PATTERN.matcher(projection);
+        	if(expandMatcher.find())
+        	{
+        		countSql = matcher.replaceFirst("select sum("+expandMatcher.group(1)+".size()) as count from");
+        	}
+        	else
+        	{
+        		countSql = matcher.replaceFirst("select count(*) from"); 
+        	}
         }
         else
         {
@@ -116,7 +125,8 @@ public class OQueryModel<K> extends LoadableDetachableModel<List<K>>
 	    	ODatabaseRecord db = OrientDbWebSession.get().getDatabase();
 	    	OSQLSynchQuery<ODocument> query = new OSQLSynchQuery<ODocument>(getCountSql());
 	    	List<ODocument> ret = db.query(query, prepareParams());
-	    	size = ret.get(0).field("count");
+	    	Number sizeNumber = ret.get(0).field("count");
+	    	size = sizeNumber.longValue();
     	}
     	return size;
     }
