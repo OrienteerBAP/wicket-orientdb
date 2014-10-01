@@ -3,6 +3,7 @@ package ru.ydn.wicket.wicketorientdb;
 import org.apache.wicket.authorization.UnauthorizedActionException;
 import org.apache.wicket.authorization.UnauthorizedInstantiationException;
 import org.apache.wicket.authroles.authentication.pages.SignInPage;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -15,6 +16,11 @@ import static org.junit.Assert.*;
 
 public class TestSecurity extends AbstractTestClass
 {
+	@After
+	public void signOut()
+	{
+		getSession().signOut();
+	}
 	@Test
 	public void testSession()
 	{
@@ -58,6 +64,7 @@ public class TestSecurity extends AbstractTestClass
 	@Test
 	public void testTestHomePage() throws Exception
 	{
+		assertEquals(getApp().getOrientDbSettings().getDBUserName(), getDatabase().getUser().getName());
 		wicketTester.startPage(OrientDbTestPage.class);
 		wicketTester.assertRenderedPage(OrientDbTestPage.class);
 	}
@@ -65,6 +72,7 @@ public class TestSecurity extends AbstractTestClass
 	@Test
 	public void testStaticPageForUnsigned() throws Exception
 	{
+		assertEquals(getApp().getOrientDbSettings().getDBUserName(), getDatabase().getUser().getName());
 		wicketTester.startPage(StaticSecuredPage.class);
 		wicketTester.assertRenderedPage(SignInPage.class);
 	}
@@ -72,6 +80,7 @@ public class TestSecurity extends AbstractTestClass
 	@Test(expected=UnauthorizedInstantiationException.class)
 	public void testStaticPageForSigned()
 	{
+		assertEquals(getApp().getOrientDbSettings().getDBUserName(), getDatabase().getUser().getName());
 		assertTrue(getSession().signIn("reader", "reader"));
 		wicketTester.startPage(StaticSecuredPage.class);
 		getSession().signOut();
@@ -80,6 +89,7 @@ public class TestSecurity extends AbstractTestClass
 	@Test
 	public void testStaticPageForAdmin()
 	{
+		assertEquals(getApp().getOrientDbSettings().getDBUserName(), getDatabase().getUser().getName());
 		assertTrue(getSession().signIn("admin", "admin"));
 		wicketTester.startPage(StaticSecuredPage.class);
 		wicketTester.assertRenderedPage(StaticSecuredPage.class);
@@ -90,6 +100,7 @@ public class TestSecurity extends AbstractTestClass
 	@Test(expected=UnauthorizedActionException.class)
 	public void testDynamicPageForUnsigned() throws Exception
 	{
+		assertEquals(getApp().getOrientDbSettings().getDBUserName(), getDatabase().getUser().getName());
 		wicketTester.startPage(DynamicSecuredPage.class);
 		wicketTester.assertRenderedPage(SignInPage.class);
 	}
@@ -98,6 +109,7 @@ public class TestSecurity extends AbstractTestClass
 	@Test(expected=UnauthorizedActionException.class)
 	public void testDynamicPageForSigned()
 	{
+		assertEquals(getApp().getOrientDbSettings().getDBUserName(), getDatabase().getUser().getName());
 		assertTrue(getSession().signIn("reader", "reader"));
 		wicketTester.startPage(DynamicSecuredPage.class);
 		getSession().signOut();
@@ -106,6 +118,7 @@ public class TestSecurity extends AbstractTestClass
 	@Test
 	public void testDynamicPageForAdmin()
 	{
+		assertEquals(getApp().getOrientDbSettings().getDBUserName(), getDatabase().getUser().getName());
 		assertTrue(getSession().signIn("admin", "admin"));
 		wicketTester.startPage(DynamicSecuredPage.class);
 		wicketTester.assertRenderedPage(DynamicSecuredPage.class);
