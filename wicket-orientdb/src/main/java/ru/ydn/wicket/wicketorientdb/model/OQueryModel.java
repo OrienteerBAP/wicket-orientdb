@@ -13,9 +13,11 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 
 import ru.ydn.wicket.wicketorientdb.OrientDbWebSession;
+import ru.ydn.wicket.wicketorientdb.utils.ConvertToODocumentFunction;
 import ru.ydn.wicket.wicketorientdb.utils.DocumentWrapperTransformer;
 import ru.ydn.wicket.wicketorientdb.utils.GetObjectFunction;
 
+import com.google.common.base.Function;
 import com.google.common.collect.Iterators;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -25,6 +27,25 @@ import com.orientechnologies.orient.core.sql.query.OSQLSynchQuery;
 
 public class OQueryModel<K> extends LoadableDetachableModel<List<K>>
 {
+	/*private static class GetObjectAndWrapDocumentsFunction<T> extends GetObjectFunction<T>
+	{
+		public static final GetObjectAndWrapDocumentsFunction<?> INSTANCE = new GetObjectAndWrapDocumentsFunction<Object>();
+		@Override
+		public T apply(IModel<T> input) {
+			T ret = super.apply(input);
+			if(ret instanceof ODocument)
+			{
+				ret = (T)((ODocument)ret).getIdentity();
+			}
+			return ret;
+		}
+		
+		@SuppressWarnings("unchecked")
+		public static <T> GetObjectAndWrapDocumentsFunction<T> getInstance()
+		{
+			return (GetObjectAndWrapDocumentsFunction<T>)INSTANCE;
+		}
+	}*/
     /**
 	 * 
 	 */
@@ -34,7 +55,7 @@ public class OQueryModel<K> extends LoadableDetachableModel<List<K>>
     private static final Pattern ORDER_CHECK_PATTERN = Pattern.compile("order\\s+by", Pattern.CASE_INSENSITIVE);
 
     private String sql;
-    private DocumentWrapperTransformer<K> transformer;
+    private Function<?, K> transformer;
     private String projection;
     private String countSql;
     private Map<String, IModel<Object>> params = new HashMap<String, IModel<Object>>();
@@ -45,13 +66,19 @@ public class OQueryModel<K> extends LoadableDetachableModel<List<K>>
     
     public OQueryModel(String sql)
     {
-    	this(sql, null);
+    	this(sql, (Function<?, K>)null);
     }
-
+    
     public OQueryModel(String sql, Class<? extends K> wrapperClass)
     {
+    	this(sql, new DocumentWrapperTransformer<K>(wrapperClass));
+    }
+
+    @SuppressWarnings("unchecked")
+	public OQueryModel(String sql, Function<?, K> transformer)
+    {
         this.sql=sql;
-        this.transformer = wrapperClass!=null?new DocumentWrapperTransformer<K>(wrapperClass):null;
+        this.transformer = transformer!=null?transformer:(Function<?, K>)ConvertToODocumentFunction.INSTANCE;
         Matcher matcher = PROJECTION_PATTERN.matcher(sql);
         if(matcher.find())
         {
@@ -91,7 +118,7 @@ public class OQueryModel<K> extends LoadableDetachableModel<List<K>>
     	OSQLSynchQuery<K> query = new OSQLSynchQuery<K>(prepareSql(null, null));
     	List<?> ret = db.query(query, prepareParams());
     	
-    	return transformer==null?(List<K>)ret:Lists.transform((List<ODocument>)ret, transformer);
+    	return transformer==null?(List<K>)ret:Lists.transform(ret, (Function<Object, K>)transformer);
     }
 
     @SuppressWarnings("unchecked")
@@ -100,7 +127,7 @@ public class OQueryModel<K> extends LoadableDetachableModel<List<K>>
     	ODatabaseRecord db = OrientDbWebSession.get().getDatabase();
     	OSQLSynchQuery<K> query = new OSQLSynchQuery<K>(prepareSql((int)first, (int)count));
     	Iterator<?> iterator = db.query(query, prepareParams()).iterator();
-    	return transformer==null?(Iterator<K>)iterator:Iterators.transform((Iterator<ODocument>)iterator, transformer);
+    	return transformer==null?(Iterator<K>)iterator:Iterators.transform(iterator, (Function<Object, K>)transformer);
     }
     
     protected String prepareSql(Integer first, Integer count)

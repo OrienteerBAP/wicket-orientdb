@@ -9,6 +9,7 @@ import org.apache.wicket.extensions.markup.html.repeater.util.SortableDataProvid
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 
+import com.google.common.base.Function;
 import com.orientechnologies.orient.core.record.impl.ODocument;
 
 public class OQueryDataProvider <K> extends SortableDataProvider<K, String>
@@ -21,7 +22,12 @@ public class OQueryDataProvider <K> extends SortableDataProvider<K, String>
 	
 	public OQueryDataProvider(String sql)
 	{
-		this(sql, null);
+		model = new OQueryModel<K>(sql);
+	}
+	
+	public OQueryDataProvider(String sql, Function<?, K> transformer)
+	{
+		model = new OQueryModel<K>(sql, transformer);
 	}
 
     public OQueryDataProvider(String sql, Class<? extends K> wrapperClass)
