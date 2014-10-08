@@ -5,6 +5,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
 import org.apache.wicket.WicketRuntimeException;
+import org.apache.wicket.util.lang.Args;
 
 import com.google.common.base.Function;
 import com.orientechnologies.orient.core.record.impl.ODocument;
@@ -15,6 +16,7 @@ public class DocumentWrapperTransformer<T> implements Function<ODocument, T>, Se
 	private transient Constructor<? extends T> constructor;
 	public DocumentWrapperTransformer(Class<? extends T> wrapperClass)
 	{
+		Args.notNull(wrapperClass, "wrapperClass");
 		this.wrapperClass = wrapperClass;
 		//To check that appropriate constructor exists
 		getConstructor();

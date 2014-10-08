@@ -1,6 +1,7 @@
 package ru.ydn.wicket.wicketorientdb;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -132,7 +133,7 @@ public class TestModels extends AbstractTestClass
 	}
 	
 	@Test
-	public void testOQueryModelExpand()
+	public void testOQueryModelExpandNotEmpty()
 	{
 		IModel<String> nameModel = Model.of();
 		OQueryModel<ODocument> queryModel = new OQueryModel<ODocument>("select expand(other) from ClassA where name = :name");
@@ -142,6 +143,34 @@ public class TestModels extends AbstractTestClass
 		
 		queryModel = new OQueryModel<ODocument>("select expand(other) from ClassA");
 		assertEquals(6, queryModel.size());
+	}
+	
+	@Test
+	public void testOQueryModelExpandEmpty()
+	{
+		IModel<String> nameModel = Model.of();
+		OQueryModel<ODocument> queryModel = new OQueryModel<ODocument>("select expand(empty) from ClassA where name = :name");
+		queryModel.setParameter("name", nameModel);
+		nameModel.setObject("doc1");
+		assertEquals(0, queryModel.size());
+		
+		queryModel = new OQueryModel<ODocument>("select expand(empty) from ClassA");
+		assertEquals(0, queryModel.size());
+	}
+	
+	@Test
+	public void testOQueryModelDBTouch()
+	{
+		OClass classA = getSchema().getClass("ClassA");
+		ODocument doc = new ODocument(classA);
+		doc.field("other", Arrays.asList(doc));
+		OQueryModel<ODocument> queryModel = new OQueryModel<ODocument>("select  from ClassA where :doc in other");
+		queryModel.setParameter("doc", new ODocumentModel(doc));
+		long was = classA.count();
+		assertTrue(doc.getIdentity().isNew());
+		assertEquals(0, queryModel.size());
+		assertTrue(doc.getIdentity().isNew());
+		assertEquals(was, classA.count());
 	}
 	
 	@Test

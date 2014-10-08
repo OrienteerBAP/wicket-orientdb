@@ -1,5 +1,7 @@
 package ru.ydn.wicket.wicketorientdb.utils;
 
+import java.io.Serializable;
+
 import org.apache.wicket.WicketRuntimeException;
 
 import com.google.common.base.Function;
@@ -7,7 +9,7 @@ import com.orientechnologies.orient.core.id.ORID;
 import com.orientechnologies.orient.core.id.ORecordId;
 import com.orientechnologies.orient.core.record.impl.ODocument;
 
-public class ConvertToODocumentFunction<F> implements Function<F, ODocument>
+public class ConvertToODocumentFunction<F> implements Function<F, ODocument>, Serializable
 {
 	public static final ConvertToODocumentFunction<?> INSTANCE = new ConvertToODocumentFunction<Object>();
 	

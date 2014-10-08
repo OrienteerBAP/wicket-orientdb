@@ -62,7 +62,7 @@ public class OQueryDataProvider <K> extends SortableDataProvider<K, String>
 
     public long size()
     {
-        return model.size();        
+        return model.size();
     }
 
     public void detach()

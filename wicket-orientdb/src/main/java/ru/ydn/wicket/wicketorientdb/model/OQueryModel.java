@@ -22,20 +22,21 @@ import com.google.common.collect.Iterators;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.orientechnologies.orient.core.db.record.ODatabaseRecord;
+import com.orientechnologies.orient.core.record.ORecord;
 import com.orientechnologies.orient.core.record.impl.ODocument;
 import com.orientechnologies.orient.core.sql.query.OSQLSynchQuery;
 
 public class OQueryModel<K> extends LoadableDetachableModel<List<K>>
 {
-	/*private static class GetObjectAndWrapDocumentsFunction<T> extends GetObjectFunction<T>
+	private static class GetObjectAndWrapDocumentsFunction<T> extends GetObjectFunction<T>
 	{
 		public static final GetObjectAndWrapDocumentsFunction<?> INSTANCE = new GetObjectAndWrapDocumentsFunction<Object>();
 		@Override
 		public T apply(IModel<T> input) {
 			T ret = super.apply(input);
-			if(ret instanceof ODocument)
+			if(ret instanceof ORecord)
 			{
-				ret = (T)((ODocument)ret).getIdentity();
+				ret = (T)((ORecord)ret).getIdentity();
 			}
 			return ret;
 		}
@@ -45,7 +46,7 @@ public class OQueryModel<K> extends LoadableDetachableModel<List<K>>
 		{
 			return (GetObjectAndWrapDocumentsFunction<T>)INSTANCE;
 		}
-	}*/
+	}
     /**
 	 * 
 	 */
@@ -152,15 +153,23 @@ public class OQueryModel<K> extends LoadableDetachableModel<List<K>>
 	    	ODatabaseRecord db = OrientDbWebSession.get().getDatabase();
 	    	OSQLSynchQuery<ODocument> query = new OSQLSynchQuery<ODocument>(getCountSql());
 	    	List<ODocument> ret = db.query(query, prepareParams());
-	    	Number sizeNumber = ret.get(0).field("count");
-	    	size = sizeNumber.longValue();
+	    	if(ret!=null && ret.size()>0)
+	    	{
+	    		Number sizeNumber = ret.get(0).field("count");
+	    		size = sizeNumber.longValue();
+	    	}
+	    	else
+	    	{
+	    		size = 0L;
+	    	}
     	}
     	return size;
     }
 
     private Map<String, Object> prepareParams()
     {
-    	return Maps.transformValues(params, GetObjectFunction.getInstance());
+    	//return Maps.transformValues(params, GetObjectFunction.getInstance());
+    	return Maps.transformValues(params, GetObjectAndWrapDocumentsFunction.getInstance());
     }
 
 

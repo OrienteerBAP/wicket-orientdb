@@ -12,6 +12,8 @@ import com.orientechnologies.orient.core.db.document.ODatabaseDocumentTx;
 public class OrientDbTestWebApplication extends OrientDbWebApplication
 {
 	public static final String DB_NAME = "WicketOrientTestDb";
+	public static final String DB_MEMORY_URL = "memory:"+DB_NAME;
+//	public static final String DB_REMOTE_URL = "remote:localhost/"+DB_NAME;
 	@Override
 	public void init()
 	{
@@ -22,7 +24,7 @@ public class OrientDbTestWebApplication extends OrientDbWebApplication
 			@Override
 			public void onAfterServerStartupAndActivation(OrientDbWebApplication app) throws Exception {
 				IOrientDbSettings settings = app.getOrientDbSettings();
-				ODatabaseDocumentTx db = new ODatabaseDocumentTx(settings.getDBUrl());
+				ODatabaseDocumentTx db = new ODatabaseDocumentTx(DB_MEMORY_URL);
 				if(!db.exists()) db = db.create();
 				if(db.isClosed()) db.open(settings.getDBInstallatorUserName(), settings.getDBInstallatorUserPassword());
 				db.getMetadata().load();
@@ -30,7 +32,7 @@ public class OrientDbTestWebApplication extends OrientDbWebApplication
 			}
 			
 		});
-		getOrientDbSettings().setDBUrl("memory:"+DB_NAME);
+		getOrientDbSettings().setDBUrl(DB_MEMORY_URL);
 		getOrientDbSettings().setDBUserName("admin");
 		getOrientDbSettings().setDBUserPassword("admin");
 		getOrientDbSettings().setDBInstallatorUserName("admin");

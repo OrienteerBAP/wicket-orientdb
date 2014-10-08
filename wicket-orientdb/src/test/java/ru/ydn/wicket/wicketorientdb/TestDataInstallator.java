@@ -18,6 +18,7 @@ public class TestDataInstallator extends AbstractDataInstallator
 		classA.createProperty("name", OType.STRING);
 		classA.createProperty("description", OType.STRING);
 		classA.createProperty("other", OType.LINKLIST).setLinkedClass(classA);
+		classA.createProperty("empty", OType.LINKLIST).setLinkedClass(classA);
 		OClass classB = schema.createClass("ClassB");
 		classB.createProperty("name", OType.STRING);
 		classB.createProperty("description", OType.STRING);
