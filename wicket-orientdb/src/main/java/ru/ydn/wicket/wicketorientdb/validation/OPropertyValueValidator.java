@@ -18,6 +18,7 @@ import org.apache.wicket.validation.IValidator;
 import org.apache.wicket.validation.ValidationError;
 
 import ru.ydn.wicket.wicketorientdb.OrientDbWebSession;
+import ru.ydn.wicket.wicketorientdb.model.OPropertyModel;
 
 import com.orientechnologies.orient.core.db.record.ODatabaseRecord;
 import com.orientechnologies.orient.core.db.record.OIdentifiable;
@@ -36,6 +37,10 @@ public class OPropertyValueValidator<T> extends Behavior implements
 	private static final long serialVersionUID = 1L;
 	private Component component;
 	private IModel<OProperty> propertyModel;
+	
+	public OPropertyValueValidator(OProperty property) {
+		this(new OPropertyModel(property));
+	}
 
 	public OPropertyValueValidator(IModel<OProperty> propertyModel) {
 		this.propertyModel = propertyModel;
@@ -51,7 +56,7 @@ public class OPropertyValueValidator<T> extends Behavior implements
 		OProperty p = getProperty();
 		if (fieldValue == null) {
 			if (p.isNotNull()) {
-				validatable.error(new ValidationError(this, "null"));
+				validatable.error(newValidationError("required"));
 			}
 		} else {
 			OType type = p.getType();
@@ -258,7 +263,7 @@ public class OPropertyValueValidator<T> extends Behavior implements
 				final ODocument doc = (ODocument) rec;
 				if (doc.getSchemaClass() == null
 						|| !(doc.getSchemaClass().isSubClassOf(embeddedClass))) {
-					validatable.error(newValidationError("embeddedWrongType"));
+					validatable.error(newValidationError("embeddedWrongType", "expectedType", embeddedClass.getName()));
 					return;
 				}
 			}
@@ -273,7 +278,7 @@ public class OPropertyValueValidator<T> extends Behavior implements
 			final OProperty p, final Object value) {
 		if (value != null)
 			if (OType.convert(value, p.getLinkedType().getDefaultJavaType()) == null)
-				validatable.error(newValidationError("wrongtype"));
+				validatable.error(newValidationError("wrongtype", "expectedType", p.getLinkedType().toString()));
 	}
 
 	protected ValidationError newValidationError(String variation,
