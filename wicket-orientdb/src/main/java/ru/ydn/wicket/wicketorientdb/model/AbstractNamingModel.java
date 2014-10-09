@@ -88,17 +88,22 @@ public abstract class AbstractNamingModel<T> extends AbstractReadOnlyModel<Strin
 		{
 			char pCh = i>0?chars[i-1]:0;
 			char ch = chars[i];
-			if(i==0 && Character.isLowerCase(ch))
+			if(ch=='_')
+			{
+				sb.append(chars, lastApplied, i-lastApplied);
+				lastApplied=i+1;
+			}
+			else if(i==0 && Character.isLowerCase(ch))
 			{
 				sb.append(Character.toUpperCase(ch));
 				lastApplied=i+1;
 			}
-			else if(i>1 && Character.isUpperCase(ch) && !Character.isWhitespace(pCh) && !Character.isUpperCase(pCh))
+			else if(i>0 && Character.isUpperCase(ch) && !(Character.isWhitespace(pCh) || pCh=='_')&& !Character.isUpperCase(pCh))
 			{
 				sb.append(chars, lastApplied, i-lastApplied).append(' ').append(ch);
 				lastApplied=i+1;
 			}
-			else if(i>1 && Character.isLowerCase(ch) && Character.isWhitespace(pCh))
+			else if(i>0 && Character.isLowerCase(ch) && (Character.isWhitespace(pCh) || pCh=='_'))
 			{
 				sb.append(chars, lastApplied, i-lastApplied).append(Character.toUpperCase(ch));
 				lastApplied=i+1;

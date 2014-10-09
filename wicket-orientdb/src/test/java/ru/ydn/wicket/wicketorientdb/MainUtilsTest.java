@@ -31,6 +31,10 @@ public class MainUtilsTest extends AbstractTestClass
 		assertEquals("Test", buitify("Test"));
 		assertEquals("My Test", buitify("myTest"));
 		assertEquals("My Test", buitify("my test"));
+		assertEquals("M Test", buitify("mTest"));
+		assertEquals("Allow", buitify("_allow"));
+		assertEquals("Allow", buitify("__allow"));
+		assertEquals("Allow Read", buitify("_allowRead"));
 	}
 	
 	@Test
@@ -62,7 +66,6 @@ public class MainUtilsTest extends AbstractTestClass
 		testConverter(OIndexNameConverter.INSTANCE, getSchema().getClass("Ouser").getClassIndex("OUser.name"), "OUser.name");
 		ORID orid = new ORecordId("#5:0"); //Admin ORID
 		ODocument document = orid.getRecord();
-		System.out.println("orid: "+orid +" document: "+document);
 		testConverter(ODocumentORIDConverter.INSTANCE, document, orid);
 	}
 	
