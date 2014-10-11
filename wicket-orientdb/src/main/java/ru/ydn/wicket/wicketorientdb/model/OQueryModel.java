@@ -133,14 +133,19 @@ public class OQueryModel<K> extends LoadableDetachableModel<List<K>>
     
     protected String prepareSql(Integer first, Integer count)
     {
-    	StringBuilder sb = new StringBuilder(sql);
+    	StringBuilder sb = new StringBuilder(getSql());
     	if(first!=null) sb.append(" SKIP "+first);
     	if(count!=null && count>0) sb.append(" LIMIT "+count);
     	if(sortableParameter!=null) sb.append(" ORDER BY "+sortableParameter+(isAccessing?"":" desc"));
     	return sb.toString();
     }
+    
+    protected String getSql()
+    {
+    	return sql;
+    }
 
-    public String getCountSql()
+    protected String getCountSql()
     {
         return countSql;
     }
