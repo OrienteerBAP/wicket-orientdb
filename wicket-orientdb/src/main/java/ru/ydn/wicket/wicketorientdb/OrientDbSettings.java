@@ -10,6 +10,9 @@ import com.orientechnologies.orient.core.db.ODatabaseThreadLocalFactory;
 import com.orientechnologies.orient.core.db.document.ODatabaseDocumentPool;
 import com.orientechnologies.orient.core.hook.ORecordHook;
 
+/**
+ * Default implementation of {@link IOrientDbSettings}
+ */
 public class OrientDbSettings implements IOrientDbSettings
 {
 	private String dbUrl;

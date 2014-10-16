@@ -5,14 +5,17 @@ import java.io.Serializable;
 import ru.ydn.wicket.wicketorientdb.DefaultODatabaseThreadLocalFactory;
 import ru.ydn.wicket.wicketorientdb.IOrientDbSettings;
 import ru.ydn.wicket.wicketorientdb.OrientDbWebApplication;
-import ru.ydn.wicket.wicketorientdb.OrientDbWebSession;
 
-import com.orientechnologies.orient.core.db.ODatabase;
 import com.orientechnologies.orient.core.db.ODatabaseRecordThreadLocal;
 import com.orientechnologies.orient.core.db.record.ODatabaseRecord;
 
+/**
+ * Closure for execution of portion queries/command on database for different user (commonly, under admin)
+ * @param <V>
+ */
 public abstract class DBClosure<V> implements Serializable
 {
+	private static final long serialVersionUID = 1L;
 	private final String dbUrl;
 	private final String username;
 	private final String password;
@@ -36,7 +39,9 @@ public abstract class DBClosure<V> implements Serializable
 		this.username = username;
 		this.password = password;
 	}
-	
+	/**
+	 * @return result of execution
+	 */
 	public final V execute()
 	{
 		ODatabaseRecord db = null;
@@ -59,5 +64,9 @@ public abstract class DBClosure<V> implements Serializable
 		return OrientDbWebApplication.get().getOrientDbSettings();
 	}
 	
+	/**
+	 * @param db temporal DB for other user
+	 * @return results for execution on supplied DB
+	 */
 	protected abstract V execute(ODatabaseRecord db);
 }

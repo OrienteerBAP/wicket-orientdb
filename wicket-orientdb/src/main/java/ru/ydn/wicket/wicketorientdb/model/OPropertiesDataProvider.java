@@ -2,6 +2,7 @@ package ru.ydn.wicket.wicketorientdb.model;
 
 import java.util.Collection;
 
+import org.apache.wicket.extensions.markup.html.repeater.util.SortableDataProvider;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.Model;
@@ -9,13 +10,13 @@ import org.apache.wicket.model.Model;
 import com.orientechnologies.orient.core.metadata.schema.OClass;
 import com.orientechnologies.orient.core.metadata.schema.OProperty;
 
+/**
+ * {@link SortableDataProvider} for listing of {@link OProperty}es of specific {@link OClass}
+ */
 public class OPropertiesDataProvider
 		extends
 		AbstractJavaSortableDataProvider<OProperty, String> {
 	
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	public OPropertiesDataProvider(OClass oClass,  boolean allProperties)
@@ -26,9 +27,6 @@ public class OPropertiesDataProvider
 	public OPropertiesDataProvider(final IModel<OClass> oClassModel, final IModel<Boolean> allPropertiesModel) {
 		super(new LoadableDetachableModel<Collection<OProperty>>() {
 
-			/**
-			 * 
-			 */
 			private static final long serialVersionUID = 1L;
 
 			@Override

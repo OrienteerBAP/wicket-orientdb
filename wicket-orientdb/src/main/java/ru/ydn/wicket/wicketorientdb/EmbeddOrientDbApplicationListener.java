@@ -11,6 +11,9 @@ import com.orientechnologies.orient.server.OServer;
 import com.orientechnologies.orient.server.OServerMain;
 import com.orientechnologies.orient.server.config.OServerConfiguration;
 
+/**
+ * Implementation of {@link IApplicationListener} to run OrientDB in embedded mode
+ */
 public class EmbeddOrientDbApplicationListener implements IApplicationListener {
 	
 	private URL url;

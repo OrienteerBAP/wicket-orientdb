@@ -7,6 +7,7 @@ import org.apache.wicket.core.request.handler.PageProvider;
 import org.apache.wicket.core.request.handler.RenderPageRequestHandler;
 import org.apache.wicket.request.IRequestHandler;
 import org.apache.wicket.request.cycle.AbstractRequestCycleListener;
+import org.apache.wicket.request.cycle.IRequestCycleListener;
 import org.apache.wicket.request.cycle.RequestCycle;
 import org.apache.wicket.util.lang.Exceptions;
 
@@ -14,6 +15,10 @@ import com.orientechnologies.orient.core.exception.OSchemaException;
 import com.orientechnologies.orient.core.exception.OSecurityException;
 import com.orientechnologies.orient.core.exception.OValidationException;
 
+/**
+ * Implementation of {@link IRequestCycleListener} for handling customly exceptions:
+ * {@link OSecurityException}, {@link OValidationException}, {@link OSchemaException}, {@link IllegalStateException}
+ */
 public class OrientDefaultExceptionsHandlingListener extends
 		AbstractRequestCycleListener {
 

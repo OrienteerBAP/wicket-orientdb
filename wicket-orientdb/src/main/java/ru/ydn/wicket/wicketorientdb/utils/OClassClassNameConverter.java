@@ -9,11 +9,11 @@ import com.orientechnologies.orient.core.db.record.ODatabaseRecord;
 import com.orientechnologies.orient.core.metadata.schema.OClass;
 import com.orientechnologies.orient.core.metadata.schema.OSchema;
 
+/**
+ * Converter {@link OClass}&lt;-&gt;{@link String}
+ */
 public class OClassClassNameConverter extends Converter<OClass, String> implements Serializable
 {
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	public static final OClassClassNameConverter INSTANCE = new OClassClassNameConverter();
 

@@ -4,11 +4,12 @@ import org.apache.wicket.model.PropertyModel;
 
 import com.orientechnologies.orient.core.record.impl.ODocument;
 
+/**
+ * Model for obtaining and setting value of a {@link ODocument} property
+ * @param <T>
+ */
 public class ODocumentPropertyModel<T> extends PropertyModel<T> {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	public ODocumentPropertyModel(Object modelObject, String expression) {

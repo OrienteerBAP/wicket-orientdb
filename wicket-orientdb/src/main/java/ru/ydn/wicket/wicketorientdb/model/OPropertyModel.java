@@ -1,17 +1,15 @@
 package ru.ydn.wicket.wicketorientdb.model;
 
 import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.LoadableDetachableModel;
-import org.apache.wicket.model.Model;
-
 import ru.ydn.wicket.wicketorientdb.OrientDbWebSession;
-import ru.ydn.wicket.wicketorientdb.proto.IPrototype;
-
 import com.orientechnologies.orient.core.db.record.ODatabaseRecord;
 import com.orientechnologies.orient.core.metadata.schema.OClass;
 import com.orientechnologies.orient.core.metadata.schema.OProperty;
 import com.orientechnologies.orient.core.metadata.schema.OSchema;
 
+/**
+ * Model for storing {@link OProperty} instance
+ */
 public class OPropertyModel extends PrototypeLoadableDetachableModel<OProperty>
 {
 	private static final long serialVersionUID = 1L;

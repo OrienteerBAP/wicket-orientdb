@@ -12,11 +12,13 @@ import com.google.common.base.Function;
 import com.google.common.collect.Iterators;
 import com.google.common.collect.Ordering;
 
+/**
+ * Realization of {@link SortableDataProvider} which use properties values and in memory sorting
+ * @param <T> 
+ * @param <S> the type of the sorting parameter
+ */
 public abstract class AbstractJavaSortableDataProvider<T, S> extends SortableDataProvider<T, S>
 {
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	private IModel<? extends Collection<T>> dataModel;
 	

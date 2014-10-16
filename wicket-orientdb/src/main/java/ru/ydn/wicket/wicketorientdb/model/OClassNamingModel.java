@@ -4,11 +4,11 @@ import org.apache.wicket.model.IModel;
 
 import com.orientechnologies.orient.core.metadata.schema.OClass;
 
+/**
+ * {@link AbstractNamingModel} for {@link OClass}
+ */
 public class OClassNamingModel extends AbstractNamingModel<OClass> {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	
 	public OClassNamingModel(String className)

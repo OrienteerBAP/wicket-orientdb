@@ -9,11 +9,13 @@ import org.apache.wicket.model.IWrapModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.util.string.Strings;
 
+/**
+ * {@link IModel}&lt;{@link String}&gt; for obtaining name for particular objects. 
+ * Model calculate resource key for passed object and then return either key value from resources or buitified version of resource key.
+ * @param <T>
+ */
 public abstract class AbstractNamingModel<T> extends AbstractReadOnlyModel<String> implements IComponentAssignedModel<String>
 {
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	private String resourceKey;
 	private IModel<T> objectModel;

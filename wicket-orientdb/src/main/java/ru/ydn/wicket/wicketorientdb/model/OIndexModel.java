@@ -1,19 +1,19 @@
 package ru.ydn.wicket.wicketorientdb.model;
 
 import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.LoadableDetachableModel;
-import org.apache.wicket.model.Model;
-
 import ru.ydn.wicket.wicketorientdb.OrientDbWebSession;
 
 import com.orientechnologies.orient.core.index.OIndex;
 import com.orientechnologies.orient.core.index.OIndexDefinition;
 import com.orientechnologies.orient.core.index.OIndexManager;
 import com.orientechnologies.orient.core.metadata.schema.OClass;
-import com.orientechnologies.orient.core.metadata.schema.OProperty;
 
+/**
+ * Model for storing {@link OIndex}
+ */
 public class OIndexModel extends PrototypeLoadableDetachableModel<OIndex<?>>
 {
+	private static final long serialVersionUID = 1L;
 	private IModel<OClass> classModel;
 	private String indexName;
 	public OIndexModel(OIndex<?> object)

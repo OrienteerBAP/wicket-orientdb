@@ -29,11 +29,12 @@ import com.orientechnologies.orient.core.metadata.schema.OType;
 import com.orientechnologies.orient.core.record.ORecord;
 import com.orientechnologies.orient.core.record.impl.ODocument;
 
+/**
+ * {@link IValidator} for validating of value agains constraints specified on {@link OProperty}
+ * @param <T>
+ */
 public class OPropertyValueValidator<T> extends Behavior implements
 		IValidator<T>, INullAcceptingValidator<T> {
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	private Component component;
 	private IModel<OProperty> propertyModel;

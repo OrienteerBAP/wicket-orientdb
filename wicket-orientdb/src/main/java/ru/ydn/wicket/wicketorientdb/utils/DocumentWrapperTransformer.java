@@ -2,18 +2,24 @@ package ru.ydn.wicket.wicketorientdb.utils;
 
 import java.io.Serializable;
 import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-
 import org.apache.wicket.WicketRuntimeException;
 import org.apache.wicket.util.lang.Args;
 
 import com.google.common.base.Function;
 import com.orientechnologies.orient.core.record.impl.ODocument;
 
+/**
+ * Transformer for wrapping of {@link ODocument}
+ * @param <T>
+ */
 public class DocumentWrapperTransformer<T> implements Function<ODocument, T>, Serializable
 {
+	private static final long serialVersionUID = 1L;
 	private final Class<? extends T> wrapperClass;
 	private transient Constructor<? extends T> constructor;
+	/**
+	 * @param wrapperClass to wrap into
+	 */
 	public DocumentWrapperTransformer(Class<? extends T> wrapperClass)
 	{
 		Args.notNull(wrapperClass, "wrapperClass");

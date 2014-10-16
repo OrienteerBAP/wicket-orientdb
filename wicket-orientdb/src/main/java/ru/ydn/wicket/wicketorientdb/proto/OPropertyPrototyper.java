@@ -4,15 +4,17 @@ import java.util.Arrays;
 import java.util.List;
 
 import ru.ydn.wicket.wicketorientdb.OrientDbWebSession;
-import ru.ydn.wicket.wicketorientdb.proto.OClassPrototyper.OClassSetNameFix;
-
 import com.orientechnologies.orient.core.metadata.schema.OClass;
 import com.orientechnologies.orient.core.metadata.schema.OProperty;
 import com.orientechnologies.orient.core.metadata.schema.OSchema;
 import com.orientechnologies.orient.core.metadata.schema.OType;
 
+/**
+ * Prototyper for {@link OProperty}
+ */
 public class OPropertyPrototyper extends AbstractPrototyper<OProperty> {
 	
+	private static final long serialVersionUID = 1L;
 	public static final String NAME = "name";
 	public static final String TYPE = "type";
 	public static final String LINKED_TYPE = "linkedType";

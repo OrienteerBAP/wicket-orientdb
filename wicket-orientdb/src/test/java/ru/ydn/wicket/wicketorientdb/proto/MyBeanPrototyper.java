@@ -8,6 +8,8 @@ import org.apache.wicket.core.util.lang.PropertyResolverConverter;
 public class MyBeanPrototyper extends AbstractPrototyper<IMyBean>
 {
 
+	private static final long serialVersionUID = 1L;
+
 	@Override
 	protected IMyBean createInstance(IMyBean proxy) {
 		return new MyBean();

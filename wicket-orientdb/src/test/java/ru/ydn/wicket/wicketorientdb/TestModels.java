@@ -9,13 +9,10 @@ import java.util.Map;
 import org.apache.wicket.extensions.markup.html.repeater.data.sort.SortOrder;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
-import org.apache.wicket.util.tester.WicketTester;
-import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-import com.orientechnologies.orient.core.db.record.ODatabaseRecord;
 import com.orientechnologies.orient.core.id.ORecordId;
 import com.orientechnologies.orient.core.index.OIndex;
 import com.orientechnologies.orient.core.metadata.schema.OClass;
@@ -24,7 +21,6 @@ import com.orientechnologies.orient.core.metadata.schema.OSchema;
 import com.orientechnologies.orient.core.metadata.security.OUser;
 import com.orientechnologies.orient.core.record.impl.ODocument;
 
-import ru.ydn.wicket.wicketorientdb.junit.WicketTesterThreadLocal;
 import ru.ydn.wicket.wicketorientdb.model.OClassModel;
 import ru.ydn.wicket.wicketorientdb.model.OClassNamingModel;
 import ru.ydn.wicket.wicketorientdb.model.OClassesDataProvider;
@@ -177,7 +173,7 @@ public class TestModels extends AbstractTestClass
 	public void testNamingModel()
 	{
 		IModel<String> keyModel = Model.of("myobject.thisIsMyObject");
-		SimpleNamingModel namingModel = new SimpleNamingModel(keyModel);
+		SimpleNamingModel<String> namingModel = new SimpleNamingModel<String>(keyModel);
 		assertEquals("This is my object", namingModel.getObject());
 		keyModel.setObject("myobject.thatIsMyObject");
 		assertEquals("That Is My Object", namingModel.getObject());

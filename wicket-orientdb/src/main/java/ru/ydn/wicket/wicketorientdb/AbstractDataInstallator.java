@@ -8,6 +8,9 @@ import org.slf4j.LoggerFactory;
 
 import com.orientechnologies.orient.core.db.record.ODatabaseRecord;
 
+/**
+ * Abstract class for installing data during application starting.
+ */
 public abstract class AbstractDataInstallator implements IApplicationListener
 {
 	private static final Logger log = LoggerFactory.getLogger(AbstractDataInstallator.class); 

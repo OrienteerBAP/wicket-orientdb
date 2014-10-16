@@ -5,22 +5,20 @@ import java.util.Set;
 import org.apache.wicket.Session;
 import org.apache.wicket.authroles.authentication.AuthenticatedWebSession;
 import org.apache.wicket.authroles.authorization.strategies.role.Roles;
-import org.apache.wicket.model.AbstractReadOnlyModel;
-import org.apache.wicket.model.IModel;
+import org.apache.wicket.protocol.http.WebSession;
 import org.apache.wicket.request.Request;
 
-import com.orientechnologies.orient.core.db.ODatabase;
 import com.orientechnologies.orient.core.db.ODatabaseRecordThreadLocal;
 import com.orientechnologies.orient.core.db.record.ODatabaseRecord;
 import com.orientechnologies.orient.core.exception.OSecurityAccessException;
 import com.orientechnologies.orient.core.metadata.security.ORole;
 import com.orientechnologies.orient.core.metadata.security.OUser;
 
+/**
+ * Implemetation of {@link WebSession} which shold be used in OrientDB based applications
+ */
 public class OrientDbWebSession extends AuthenticatedWebSession {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 2L;
 	private String username;
 	private String password;
@@ -55,7 +53,9 @@ public class OrientDbWebSession extends AuthenticatedWebSession {
 		return ret;
 	}
 
-	
+	/**
+	 * @return {@link ODatabaseRecord} for current request
+	 */
 	public ODatabaseRecord getDatabase()
 	{
 		return DefaultODatabaseThreadLocalFactory.castToODatabaseRecord(ODatabaseRecordThreadLocal.INSTANCE.get().getDatabaseOwner());
@@ -93,6 +93,9 @@ public class OrientDbWebSession extends AuthenticatedWebSession {
 		this.user = null;
 	}
 	
+	/**
+	 * @return currently signed in {@link OUser}. Returns null in case of no user was signed in.
+	 */
 	public OUser getUser()
 	{
 		if(user!=null)

@@ -14,6 +14,9 @@ import com.orientechnologies.orient.core.metadata.security.ORestrictedAccessHook
 import com.orientechnologies.orient.core.metadata.security.OSecurityShared;
 import com.orientechnologies.orient.core.record.impl.ODocument;
 
+/**
+ * Helper class for security functionality
+ */
 public class OSecurityHelper 
 {
 	private static final Map<OrientPermission, String> MAPPING_FOR_HACK = new HashMap<OrientPermission, String>();
@@ -51,17 +54,29 @@ public class OSecurityHelper
 		}
 		
 	}
-	
+	/**
+	 * @param oClass subject {@link OClass} for security check
+	 * @param permissions required permissions for access {@link OClass}
+	 * @return
+	 */
 	public static RequiredOrientResource[] requireOClass(final OClass oClass, final OrientPermission... permissions)
 	{
 		return requireOClass(oClass.getName(), permissions);
 	}
-	
+	/**
+	 * @param oClassName name of the subject {@link OClass} for security check
+	 * @param permissions required permissions for access {@link OClass}
+	 * @return
+	 */
 	public static RequiredOrientResource[] requireOClass(final String oClassName, final OrientPermission... permissions)
 	{
 		return requireResource(ODatabaseSecurityResources.CLASS+"."+oClassName, permissions);
 	}
-	
+	/**
+	 * @param resource
+	 * @param permissions
+	 * @return
+	 */
 	public static RequiredOrientResource[] requireResource(final String resource, final OrientPermission... permissions)
 	{
 		return new RequiredOrientResource[]{new RequiredOrientResourceImpl(resource, permissions)};
@@ -79,6 +94,12 @@ public class OSecurityHelper
 		
 	}
 	
+	/**
+	 * Check that all required permissions present for specified {@link ODocument}
+	 * @param doc
+	 * @param permissions
+	 * @return
+	 */
 	public static boolean isAllowed(ODocument doc, OrientPermission... permissions)
 	{
 		if(!isAllowed(doc.getSchemaClass(), permissions)) return false;
@@ -91,7 +112,12 @@ public class OSecurityHelper
 		}
 		return true;
 	}
-	
+	/**
+	 * Check that all required permissions present for specified {@link OClass}
+	 * @param doc
+	 * @param permissions
+	 * @return
+	 */
 	public static boolean isAllowed(OClass oClass, OrientPermission... permissions)
 	{
 		int iOperation = OrientPermission.combinedPermission(permissions);

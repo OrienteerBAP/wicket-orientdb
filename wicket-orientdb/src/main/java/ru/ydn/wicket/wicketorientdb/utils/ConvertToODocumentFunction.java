@@ -9,8 +9,18 @@ import com.orientechnologies.orient.core.id.ORID;
 import com.orientechnologies.orient.core.id.ORecordId;
 import com.orientechnologies.orient.core.record.impl.ODocument;
 
+/**
+ * {@link Function} for convertion of following types to {@link ODocument}
+ * <ul>
+ * <li>{@link ORID}</li>
+ * <li>{@link CharSequence}</li>
+ * </ul>
+ * @param <F>
+ */
 public class ConvertToODocumentFunction<F> implements Function<F, ODocument>, Serializable
 {
+	private static final long serialVersionUID = 1L;
+	
 	public static final ConvertToODocumentFunction<?> INSTANCE = new ConvertToODocumentFunction<Object>();
 	
 	@Override

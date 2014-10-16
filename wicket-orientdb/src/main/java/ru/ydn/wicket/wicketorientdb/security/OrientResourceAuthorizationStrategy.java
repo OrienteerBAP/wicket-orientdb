@@ -14,6 +14,14 @@ import com.orientechnologies.orient.core.metadata.security.OUser;
 
 import ru.ydn.wicket.wicketorientdb.OrientDbWebSession;
 
+/**
+ * OrientDB specific {@link IAuthorizationStrategy}. It supports 3 types for components securing
+ * <ul>
+ * <li>Statically by {@link RequiredOrientResource} and {@link RequiredOrientResources} annotations</li>
+ * <li>Dynamically by {@link ISecuredComponent}
+ * <li>Dynamically by {@link Map}&lt;{@link String}, {@link OrientPermission}[]> object assigned to meta data key {@link OrientPermission}.REQUIRED_ORIENT_RESOURCES_KEY </li>
+ * </ul> 
+ */
 public class OrientResourceAuthorizationStrategy  implements IAuthorizationStrategy
 {
 
@@ -61,6 +69,11 @@ public class OrientResourceAuthorizationStrategy  implements IAuthorizationStrat
 		}
 	}
 	
+	/**
+	 * Check that current user has access to all mentioned resources
+	 * @param resources
+	 * @return
+	 */
 	public boolean checkResources(RequiredOrientResource[] resources)
 	{
 		for (int i = 0; i < resources.length; i++) {
@@ -70,6 +83,11 @@ public class OrientResourceAuthorizationStrategy  implements IAuthorizationStrat
 		return true;
 	}
 	
+	/**
+	 * Check that current user has access to mentioned resource
+	 * @param resource
+	 * @return
+	 */
 	public boolean checkResource(RequiredOrientResource resource)
 	{
 		OUser user = OrientDbWebSession.get().getUser();
@@ -84,6 +102,11 @@ public class OrientResourceAuthorizationStrategy  implements IAuthorizationStrat
 		return false;
 	}
 	
+	/**
+	 * Check that current user has access to all mentioned resources
+	 * @param resources
+	 * @return
+	 */
 	public boolean checkResources(Map<String, OrientPermission[]> resources)
 	{
 		for (Map.Entry<String, OrientPermission[]> entry : resources.entrySet()) {
@@ -92,6 +115,11 @@ public class OrientResourceAuthorizationStrategy  implements IAuthorizationStrat
 		return true;
 	}
 	
+	/**
+	 * Check that current user has access to mentioned resource
+	 * @param resource
+	 * @return
+	 */
 	public boolean checkResource(String resource, OrientPermission[] permissions)
 	{
 		OUser user = OrientDbWebSession.get().getUser();
@@ -99,7 +127,10 @@ public class OrientResourceAuthorizationStrategy  implements IAuthorizationStrat
 				?user.checkIfAllowed(resource, OrientPermission.combinedPermission(permissions))!=null
 				:false;
 	}
-	
+	/**
+	 * @param clazz
+	 * @return statically defined {@link RequiredOrientResource}s on specified class
+	 */
 	public RequiredOrientResource[] getRequiredOrientResources(Class<?> clazz)
 	{
 		RequiredOrientResources resources = clazz.getAnnotation(RequiredOrientResources.class);

@@ -2,8 +2,13 @@ package ru.ydn.wicket.wicketorientdb.model;
 
 import org.apache.wicket.model.IModel;
 
+/**
+ * Simple naming model which use {@link Object}.toString() for obtaining resource key. 
+ * @param <T>
+ */
 public class SimpleNamingModel<T> extends AbstractNamingModel<T>
 {
+	private static final long serialVersionUID = 1L;
 	private String prefix;
 	
 	public SimpleNamingModel(IModel<T> objectModel)

@@ -10,11 +10,11 @@ import com.orientechnologies.orient.core.exception.ORecordNotFoundException;
 import com.orientechnologies.orient.core.id.ORID;
 import com.orientechnologies.orient.core.record.impl.ODocument;
 
+/**
+ * Model for storing of {@link ODocument}
+ */
 public class ODocumentModel extends LoadableDetachableModel<ODocument> implements IObjectClassAwareModel<ODocument>
 {
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	private ORID orid;
 	private ODocument savedDocument;

@@ -6,7 +6,6 @@ import org.apache.wicket.markup.html.WebPage;
 
 import ru.ydn.wicket.wicketorientdb.web.OrientDbTestPage;
 
-import com.orientechnologies.orient.client.remote.OServerAdmin;
 import com.orientechnologies.orient.core.db.document.ODatabaseDocumentTx;
 
 public class OrientDbTestWebApplication extends OrientDbWebApplication

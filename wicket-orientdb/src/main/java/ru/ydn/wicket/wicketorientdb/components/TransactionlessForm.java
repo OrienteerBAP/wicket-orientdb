@@ -5,8 +5,14 @@ import org.apache.wicket.model.IModel;
 
 import ru.ydn.wicket.wicketorientdb.OrientDbWebSession;
 
+/**
+ * Form component which stops transaction for models updates
+ * @param <T>
+ */
 public class TransactionlessForm<T> extends Form<T>
 {
+
+	private static final long serialVersionUID = 1L;
 
 	public TransactionlessForm(String id, IModel<T> model)
 	{

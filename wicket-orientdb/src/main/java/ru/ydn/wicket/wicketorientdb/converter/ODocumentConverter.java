@@ -3,13 +3,15 @@ package ru.ydn.wicket.wicketorientdb.converter;
 import java.util.Locale;
 
 import org.apache.wicket.util.convert.ConversionException;
-import org.apache.wicket.util.convert.IConverter;
-
-import com.orientechnologies.orient.core.db.record.OIdentifiable;
 import com.orientechnologies.orient.core.record.impl.ODocument;
 
+/**
+ * Converter for {@link ODocument} &lt;-&gt; {@link String}
+ */
 public class ODocumentConverter extends OIdentifiableConverter<ODocument>
 {
+	private static final long serialVersionUID = 1L;
+
 	@Override
 	public ODocument convertToObject(String value, Locale locale)
 			throws ConversionException {

@@ -1,7 +1,5 @@
 package ru.ydn.wicket.wicketorientdb;
 
-import java.util.List;
-
 import org.apache.wicket.Application;
 import org.apache.wicket.ConverterLocator;
 import org.apache.wicket.IApplicationListener;
@@ -17,11 +15,13 @@ import com.orientechnologies.orient.core.Orient;
 import com.orientechnologies.orient.core.db.ODatabase;
 import com.orientechnologies.orient.core.db.ODatabaseComplex;
 import com.orientechnologies.orient.core.db.ODatabaseLifecycleListener;
-import com.orientechnologies.orient.core.db.ODatabaseLifecycleListener.PRIORITY;
 import com.orientechnologies.orient.core.db.record.OIdentifiable;
 import com.orientechnologies.orient.core.hook.ORecordHook;
 import com.orientechnologies.orient.core.record.impl.ODocument;
 
+/**
+ * {@link WebApplication} realization for applications on top of OrientDB
+ */
 public abstract class OrientDbWebApplication extends AuthenticatedWebApplication {
 	private IOrientDbSettings orientDbSettings = new OrientDbSettings();
 
@@ -31,11 +31,18 @@ public abstract class OrientDbWebApplication extends AuthenticatedWebApplication
 		return OrientDbWebSession.class;
 	}
 	
+	/**
+	 * @return settings for the application
+	 */
 	public IOrientDbSettings getOrientDbSettings()
 	{
 		return orientDbSettings;
 	}
 	
+	/**
+	 * Explicit set of settings for the application. Doesn't recommended to use this method. Consider to use getOrientDBSettings().setXXX()
+	 * @param orientDbSettings
+	 */
 	public void setOrientDbSettings(IOrientDbSettings orientDbSettings)
 	{
 		this.orientDbSettings=orientDbSettings;

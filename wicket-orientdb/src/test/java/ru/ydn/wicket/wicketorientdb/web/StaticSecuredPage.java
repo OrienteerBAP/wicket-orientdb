@@ -8,5 +8,6 @@ import ru.ydn.wicket.wicketorientdb.security.RequiredOrientResource;
 @RequiredOrientResource(value=ODatabaseSecurityResources.CLASS+".ORole", permissions=OrientPermission.UPDATE)
 public class StaticSecuredPage extends OrientDbTestPage
 {
+	private static final long serialVersionUID = 1L;
 
 }

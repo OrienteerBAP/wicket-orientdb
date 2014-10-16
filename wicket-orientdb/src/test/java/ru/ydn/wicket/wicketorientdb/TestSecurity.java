@@ -4,7 +4,6 @@ import org.apache.wicket.authorization.UnauthorizedActionException;
 import org.apache.wicket.authorization.UnauthorizedInstantiationException;
 import org.apache.wicket.authroles.authentication.pages.SignInPage;
 import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
 import com.orientechnologies.orient.core.metadata.security.OUser;

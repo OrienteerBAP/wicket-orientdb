@@ -9,12 +9,15 @@ import ru.ydn.wicket.wicketorientdb.OrientDbWebSession;
 
 import com.orientechnologies.orient.core.metadata.schema.OClass;
 import com.orientechnologies.orient.core.metadata.schema.OSchema;
-import com.orientechnologies.orient.core.metadata.schema.OSchemaShared;
 import com.orientechnologies.orient.core.metadata.schema.clusterselection.OClusterSelectionFactory;
 import com.orientechnologies.orient.core.metadata.schema.clusterselection.OClusterSelectionStrategy;
 
+/**
+ * Prototyper for {@link OClass}
+ */
 public class OClassPrototyper extends AbstractPrototyper<OClass> {
 	
+	private static final long serialVersionUID = 1L;
 	public static final String NAME = "name";
 	public static final String SHORT_NAME = "shortName";
 	public static final String SUPER_CLASS = "superClass";

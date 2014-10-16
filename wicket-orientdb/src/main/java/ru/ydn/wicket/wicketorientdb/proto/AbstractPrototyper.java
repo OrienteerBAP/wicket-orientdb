@@ -1,27 +1,27 @@
 package ru.ydn.wicket.wicketorientdb.proto;
 
 import java.io.Serializable;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.text.MessageFormat;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.wicket.Application;
-import org.apache.wicket.Session;
 import org.apache.wicket.WicketRuntimeException;
 import org.apache.wicket.core.util.lang.PropertyResolver;
 import org.apache.wicket.core.util.lang.PropertyResolverConverter;
-import org.apache.wicket.util.string.Strings;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.google.common.primitives.Primitives;
 import com.google.common.reflect.AbstractInvocationHandler;
 
+/**
+ * Base class for creation of Prototypers. Creation of new {@link IPrototype} should look like MyPrototyper.newPrototype(...)
+ * 
+ * @param <T>
+ */
 public abstract class AbstractPrototyper<T> extends AbstractInvocationHandler implements Serializable {
+	private static final long serialVersionUID = 1L;
+
 	public static enum Operation
 	{
 		GET("get", new Class<?>[0], null, -1),
@@ -70,8 +70,6 @@ public abstract class AbstractPrototyper<T> extends AbstractInvocationHandler im
 		}
 		
 	}
-	
-	private static final Logger LOG = LoggerFactory.getLogger(AbstractPrototyper.class);
 	
 	protected Map<String, Object> values = new HashMap<String, Object>();
 	
@@ -141,7 +139,11 @@ public abstract class AbstractPrototyper<T> extends AbstractInvocationHandler im
 		}
 	}
 
-	
+	/**
+	 * Creation of actual instance from {@link IPrototype}
+	 * @param proxy
+	 * @return realized instance
+	 */
 	protected T handleRealize(T proxy)
 	{
 		T ret = createInstance(proxy);
@@ -212,10 +214,21 @@ public abstract class AbstractPrototyper<T> extends AbstractInvocationHandler im
 		return null;
 	}
 	
+	/**
+	 * Creation of instance from proxy. In realizaion of this method only creation is required: properties will be copied automatically.
+	 * @param proxy
+	 * @return instantiated instance
+	 */
 	protected abstract T createInstance(T proxy);
 	
+	/**
+	 * @return Main interface for the {@link IPrototype}
+	 */
 	protected abstract Class<T> getMainInterface();
 	
+	/**
+	 * @return additional interfaces for the instance if they are required
+	 */
 	protected Class<?>[] getAdditionalInterfaces()
 	{
 		return null;
@@ -231,7 +244,11 @@ public abstract class AbstractPrototyper<T> extends AbstractInvocationHandler im
 		}
 		return ret;
 	}
-	
+	/**
+	 * @param propName
+	 * @param returnType
+	 * @return default value for particular property
+	 */
 	protected Object getDefaultValue(String propName, Class<?> returnType)
 	{
 		Object ret = null;

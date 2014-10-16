@@ -1,16 +1,15 @@
 package ru.ydn.wicket.wicketorientdb;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.orientechnologies.orient.core.db.ODatabase;
 import com.orientechnologies.orient.core.db.ODatabaseComplex;
 import com.orientechnologies.orient.core.db.ODatabaseThreadLocalFactory;
 import com.orientechnologies.orient.core.db.record.ODatabaseRecord;
 
+/**
+ * Implemenetation of {@link ODatabaseThreadLocalFactory} for obtaining {@link ODatabaseRecord} according to {@link IOrientDbSettings}
+ */
 public class DefaultODatabaseThreadLocalFactory implements ODatabaseThreadLocalFactory
 {
-	private static final Logger log = LoggerFactory.getLogger(DefaultODatabaseThreadLocalFactory.class);
 	private OrientDbWebApplication app;
 	
 	public DefaultODatabaseThreadLocalFactory(OrientDbWebApplication app)
@@ -19,7 +18,6 @@ public class DefaultODatabaseThreadLocalFactory implements ODatabaseThreadLocalF
 	}
 	
 	@Override
-	@SuppressWarnings({ "resource", "rawtypes" })
 	public ODatabaseRecord getThreadDatabase() {
 		IOrientDbSettings settings = app.getOrientDbSettings();
 		OrientDbWebSession session = OrientDbWebSession.get();
@@ -40,6 +38,11 @@ public class DefaultODatabaseThreadLocalFactory implements ODatabaseThreadLocalF
 		return db;
 	}
 	
+	/**
+	 * Utility method to obtain {@link ODatabaseRecord} from {@link ODatabase}
+	 * @param db
+	 * @return
+	 */
 	public static ODatabaseRecord castToODatabaseRecord(ODatabase db)
 	{
 		while(db!=null && !(db instanceof ODatabaseRecord))

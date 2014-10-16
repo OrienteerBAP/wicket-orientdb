@@ -5,12 +5,14 @@ import org.apache.wicket.validation.IValidatable;
 import org.apache.wicket.validation.IValidator;
 import org.apache.wicket.validation.ValidationError;
 
+import com.orientechnologies.orient.core.metadata.schema.OClass;
+import com.orientechnologies.orient.core.metadata.schema.OProperty;
 import com.orientechnologies.orient.core.metadata.schema.OSchemaShared;
 
+/**
+ * Validation of names for schema related objects, for example: {@link OClass}, {@link OProperty}, etc.
+ */
 public class OSchemaNamesValidator implements IValidator<String>{
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	public static final OSchemaNamesValidator INSTANCE = new OSchemaNamesValidator();
 	

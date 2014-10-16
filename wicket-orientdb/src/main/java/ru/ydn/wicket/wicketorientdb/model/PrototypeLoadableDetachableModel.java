@@ -4,6 +4,10 @@ import org.apache.wicket.model.LoadableDetachableModel;
 
 import ru.ydn.wicket.wicketorientdb.proto.IPrototype;
 
+/**
+ * Abstract class for storing {@link IPrototype} and transparent switching to realized object
+ * @param <T>
+ */
 public abstract class PrototypeLoadableDetachableModel<T> extends
 		LoadableDetachableModel<T> {
 
@@ -55,8 +59,16 @@ public abstract class PrototypeLoadableDetachableModel<T> extends
 		super.setObject(object);
 	}
 
+	/**
+	 * Load real object. Invoked if object is definetly real
+	 * @return real object
+	 */
 	protected abstract T loadInstance();
 	
+	/**
+	 * Method for obtaining PK parameters from the object 
+	 * @param object
+	 */
 	protected abstract void handleObject(T object);
 
 }

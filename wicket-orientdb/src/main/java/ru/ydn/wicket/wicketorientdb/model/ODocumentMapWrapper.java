@@ -12,11 +12,11 @@ import com.orientechnologies.orient.core.id.ORID;
 import com.orientechnologies.orient.core.record.impl.ODocument;
 import com.orientechnologies.orient.core.type.ODocumentWrapper;
 
+/**
+ * {@link ODocumentWrapper} for representing of {@link ODocument} as {@link Map}
+ */
 public class ODocumentMapWrapper extends ODocumentWrapper implements Map<String, Object>
 {
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	public ODocumentMapWrapper() {

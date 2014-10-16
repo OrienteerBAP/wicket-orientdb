@@ -8,7 +8,6 @@ import com.google.common.base.Converter;
 import com.orientechnologies.orient.core.db.record.ODatabaseRecord;
 import com.orientechnologies.orient.core.id.ORID;
 import com.orientechnologies.orient.core.id.ORecordId;
-import com.orientechnologies.orient.core.metadata.schema.OProperty;
 import com.orientechnologies.orient.core.metadata.security.OUser;
 import com.orientechnologies.orient.core.record.impl.ODocument;
 
@@ -41,6 +40,8 @@ public class MainUtilsTest extends AbstractTestClass
 	public void testDBClosure() throws Exception
 	{
 		DBClosure<OUser> adminClosure = new DBClosure<OUser>() {
+			
+			private static final long serialVersionUID = 1L;
 
 			@Override
 			protected OUser execute(ODatabaseRecord db) {
@@ -49,6 +50,8 @@ public class MainUtilsTest extends AbstractTestClass
 		};
 		assertEquals(getMetadata().getSecurity().getUser("admin"), adminClosure.execute());
 		DBClosure<OUser> readerClosure = new DBClosure<OUser>("reader", "reader") {
+
+			private static final long serialVersionUID = 1L;
 
 			@Override
 			protected OUser execute(ODatabaseRecord db) {

@@ -5,11 +5,11 @@ import java.io.Serializable;
 import com.google.common.base.Function;
 import com.orientechnologies.orient.core.metadata.schema.OProperty;
 
+/**
+ * {@link Function} for obtaing of custom property from {@link OProperty}
+ */
 public class GetCustomFromOPropertyFunction implements Function<OProperty, String>, Serializable
 {
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	private final String customName;
 	

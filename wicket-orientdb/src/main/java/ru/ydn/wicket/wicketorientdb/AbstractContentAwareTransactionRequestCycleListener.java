@@ -1,21 +1,18 @@
 package ru.ydn.wicket.wicketorientdb;
 
+import org.apache.wicket.IRequestListener;
 import org.apache.wicket.MetaDataKey;
 import org.apache.wicket.request.IRequestHandler;
 import org.apache.wicket.request.cycle.AbstractRequestCycleListener;
 import org.apache.wicket.request.cycle.RequestCycle;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
+/**
+ * {@link IRequestListener} for wrapping interesting content by methods start() and end().
+ * Usefull for transactions
+ */
 public abstract class AbstractContentAwareTransactionRequestCycleListener extends AbstractRequestCycleListener
 {
-	private final static Logger log = LoggerFactory.getLogger(AbstractContentAwareTransactionRequestCycleListener.class);
-	private final static MetaDataKey<Boolean> IN_PROGRESS_KEY = new MetaDataKey<Boolean>(){
-
-		/**
-		 * 
-		 */
-		private static final long serialVersionUID = 1L;};
+	private final static MetaDataKey<Boolean> IN_PROGRESS_KEY = new MetaDataKey<Boolean>(){private static final long serialVersionUID = 1L;};
 	
 	@Override
 	public void onRequestHandlerResolved(RequestCycle cycle,
@@ -47,9 +44,23 @@ public abstract class AbstractContentAwareTransactionRequestCycleListener extend
 		cycle.setMetaData(IN_PROGRESS_KEY, inProgress);
 	}
 	
+	/**
+	 * Request starts.
+	 * @param cycle
+	 */
 	public abstract void start(RequestCycle cycle);
 	
+	/**
+	 * Request ends.
+	 * @param cycle
+	 */
 	public abstract void end(RequestCycle cycle);
 	
+	/**
+	 * Predicate method to identify is that our content or not.
+	 * @param cycle
+	 * @param handler
+	 * @return
+	 */
 	public abstract boolean isOurContent(RequestCycle cycle, IRequestHandler handler);
 }

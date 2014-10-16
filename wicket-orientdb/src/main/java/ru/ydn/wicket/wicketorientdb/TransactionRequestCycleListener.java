@@ -1,15 +1,19 @@
 package ru.ydn.wicket.wicketorientdb;
 
-import org.apache.wicket.WicketRuntimeException;
 import org.apache.wicket.request.IRequestHandler;
+import org.apache.wicket.request.cycle.IRequestCycleListener;
 import org.apache.wicket.request.cycle.RequestCycle;
 import org.apache.wicket.request.handler.resource.ResourceReferenceRequestHandler;
 import org.apache.wicket.request.resource.PackageResourceReference;
 import org.apache.wicket.request.resource.ResourceReference;
+
 import com.orientechnologies.orient.core.db.ODatabaseRecordThreadLocal;
 import com.orientechnologies.orient.core.db.record.ODatabaseRecord;
 import com.orientechnologies.orient.core.metadata.security.OUser;
 
+/**
+ * Implementation of {@link IRequestCycleListener} for starting and stoping transactions just for pages and dynamic resources
+ */
 public class TransactionRequestCycleListener extends
 		AbstractContentAwareTransactionRequestCycleListener {
 	@Override

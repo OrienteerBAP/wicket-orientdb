@@ -5,7 +5,6 @@ import java.util.Arrays;
 import java.util.Collection;
 
 import org.apache.wicket.core.util.lang.PropertyResolver;
-import org.apache.wicket.core.util.lang.PropertyResolverConverter;
 import org.junit.Test;
 
 import com.orientechnologies.orient.core.index.OIndex;
@@ -15,9 +14,9 @@ import com.orientechnologies.orient.core.metadata.schema.OType;
 import com.orientechnologies.orient.core.metadata.schema.clusterselection.ORoundRobinClusterSelectionStrategy;
 
 import ru.ydn.wicket.wicketorientdb.AbstractTestClass;
-import ru.ydn.wicket.wicketorientdb.model.PrototypeLoadableDetachableModel;
 import static org.junit.Assert.*;
 
+@SuppressWarnings("unchecked")
 public class TestPrototypers extends AbstractTestClass
 {
 	@Test

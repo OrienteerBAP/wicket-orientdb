@@ -6,20 +6,19 @@ import java.util.List;
 import org.apache.wicket.util.lang.Args;
 
 import ru.ydn.wicket.wicketorientdb.OrientDbWebSession;
-import ru.ydn.wicket.wicketorientdb.proto.OClassPrototyper.OClassSetNameFix;
-
-import com.google.common.base.Predicate;
-import com.google.common.base.Splitter.MapSplitter;
-import com.google.common.collect.Maps;
 import com.orientechnologies.orient.core.index.OIndex;
 import com.orientechnologies.orient.core.index.OIndexDefinition;
 import com.orientechnologies.orient.core.metadata.schema.OClass;
-import com.orientechnologies.orient.core.metadata.schema.OProperty;
 import com.orientechnologies.orient.core.metadata.schema.OSchema;
 
+/**
+ * Prototyper for {@link OIndex}
+ */
 @SuppressWarnings("rawtypes")
 public class OIndexPrototyper extends AbstractPrototyper<OIndex>
 {
+	private static final long serialVersionUID = 1L;
+
 	public static interface MakeNameAndTypeWritableFix
 	{
 		public void setName(String name);

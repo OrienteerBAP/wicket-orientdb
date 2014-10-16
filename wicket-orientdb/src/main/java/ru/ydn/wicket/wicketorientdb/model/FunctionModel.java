@@ -6,11 +6,13 @@ import org.apache.wicket.model.IModel;
 import com.google.common.base.Converter;
 import com.google.common.base.Function;
 
+/**
+ * Model for lazy apply of function on object from underling model
+ * @param <F>
+ * @param <T>
+ */
 public class FunctionModel<F, T> implements IModel<T>
 {
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	private IModel<F> fromModel;
 	private Function<? super F, ? extends T> function;

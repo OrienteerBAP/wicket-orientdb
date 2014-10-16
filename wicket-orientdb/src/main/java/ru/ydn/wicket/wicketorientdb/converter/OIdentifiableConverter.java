@@ -3,15 +3,19 @@ package ru.ydn.wicket.wicketorientdb.converter;
 import java.util.Locale;
 
 import org.apache.wicket.util.convert.ConversionException;
-import org.apache.wicket.util.convert.IConverter;
 import org.apache.wicket.util.convert.converter.AbstractConverter;
-import org.apache.wicket.util.convert.converter.BooleanConverter;
-
 import com.orientechnologies.orient.core.db.record.OIdentifiable;
 import com.orientechnologies.orient.core.id.ORecordId;
 
+/**
+ * Converter for {@link OIdentifiable} &lt;-&gt; {@link String}
+ * Can be overridden for subclasses of {@link OIdentifiable}
+ * @param <T>
+ */
 public class OIdentifiableConverter<T extends OIdentifiable> extends AbstractConverter<T>
 {
+
+	private static final long serialVersionUID = 1L;
 
 	@SuppressWarnings("unchecked")
 	@Override

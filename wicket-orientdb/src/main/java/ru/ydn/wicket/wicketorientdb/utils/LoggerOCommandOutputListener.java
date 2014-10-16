@@ -5,6 +5,9 @@ import org.slf4j.LoggerFactory;
 
 import com.orientechnologies.orient.core.command.OCommandOutputListener;
 
+/**
+ * Utility {@link OCommandOutputListener} for logging of messages to log
+ */
 public class LoggerOCommandOutputListener implements OCommandOutputListener
 {
 	private static final Logger LOG = LoggerFactory.getLogger(LoggerOCommandOutputListener.class);

@@ -26,17 +26,24 @@ import com.orientechnologies.orient.core.record.ORecord;
 import com.orientechnologies.orient.core.record.impl.ODocument;
 import com.orientechnologies.orient.core.sql.query.OSQLSynchQuery;
 
+/**
+ * Model to obtain data from OrientDB by query
+ * @param <K>
+ */
 public class OQueryModel<K> extends LoadableDetachableModel<List<K>>
 {
 	private static class GetObjectAndWrapDocumentsFunction<T> extends GetObjectFunction<T>
 	{
+		private static final long serialVersionUID = 1L;
 		public static final GetObjectAndWrapDocumentsFunction<?> INSTANCE = new GetObjectAndWrapDocumentsFunction<Object>();
+		
 		@Override
+		@SuppressWarnings("unchecked")
 		public T apply(IModel<T> input) {
 			T ret = super.apply(input);
 			if(ret instanceof ORecord)
 			{
-				ret = (T)((ORecord)ret).getIdentity();
+				ret = (T)((ORecord<?>)ret).getIdentity();
 			}
 			return ret;
 		}
@@ -47,9 +54,6 @@ public class OQueryModel<K> extends LoadableDetachableModel<List<K>>
 			return (GetObjectAndWrapDocumentsFunction<T>)INSTANCE;
 		}
 	}
-    /**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	private static final Pattern PROJECTION_PATTERN = Pattern.compile("select\\b(.+?)\\bfrom\\b", Pattern.CASE_INSENSITIVE);
 	private static final Pattern EXPAND_PATTERN = Pattern.compile("expand\\((.+)\\)", Pattern.CASE_INSENSITIVE);
@@ -65,16 +69,27 @@ public class OQueryModel<K> extends LoadableDetachableModel<List<K>>
     
     private transient Long size;
     
+    /**
+	 * @param sql SQL to be executed to obtain data
+	 */
     public OQueryModel(String sql)
     {
     	this(sql, (Function<?, K>)null);
     }
     
+    /**
+	 * @param sql SQL to be executed to obtain data
+	 * @param wrapperClass target type for wrapping of {@link ODocument}
+	 */
     public OQueryModel(String sql, Class<? extends K> wrapperClass)
     {
     	this(sql, new DocumentWrapperTransformer<K>(wrapperClass));
     }
 
+    /**
+	 * @param sql SQL to be executed to obtain data
+	 * @param transformer transformer for wrapping of {@link ODocument} ot required type
+	 */
     @SuppressWarnings("unchecked")
 	public OQueryModel(String sql, Function<?, K> transformer)
     {
@@ -104,6 +119,12 @@ public class OQueryModel<K> extends LoadableDetachableModel<List<K>>
         }
     }
 
+    /**
+     * Set value for named parameter
+     * @param paramName name of the parameter to set
+     * @param value {@link IModel} for the parameter value
+     * @return
+     */
     @SuppressWarnings("unchecked")
 	public OQueryModel<K> setParameter(String paramName, IModel<?> value)
     {
@@ -122,6 +143,12 @@ public class OQueryModel<K> extends LoadableDetachableModel<List<K>>
     	return transformer==null?(List<K>)ret:Lists.transform(ret, (Function<Object, K>)transformer);
     }
 
+	/**
+	 * Get resulta as {@link Iterator}&lt;K&gt;. Suitable for pagination
+	 * @param first
+	 * @param count
+	 * @return
+	 */
     @SuppressWarnings("unchecked")
 	public Iterator<K> iterator(long first, long count)
     {
@@ -151,6 +178,10 @@ public class OQueryModel<K> extends LoadableDetachableModel<List<K>>
     }
 
 
+    /**
+     * Get the size of the data
+     * @return
+     */
     public long size()
     {
     	if(size==null)
@@ -178,11 +209,20 @@ public class OQueryModel<K> extends LoadableDetachableModel<List<K>>
     }
 
 
+    /**
+     * Is data shold be in accessing order?
+     * @return
+     */
     public boolean isAccessing()
     {
         return isAccessing;
     }
 
+    /**
+     * Set order
+     * @param accessing
+     * @return
+     */
     public OQueryModel<K> setAccessing(boolean accessing)
     {
         isAccessing = accessing;
@@ -190,11 +230,19 @@ public class OQueryModel<K> extends LoadableDetachableModel<List<K>>
         return this;
     }
 
+    /**
+     * @return paramer to sort on
+     */
     public String getSortableParameter()
     {
         return sortableParameter;
     }
 
+    /**
+     * Set sortable parameter
+     * @param sortableParameter
+     * @return
+     */
     public OQueryModel<K> setSortableParameter(String sortableParameter)
     {
         this.sortableParameter = sortableParameter;
@@ -202,6 +250,12 @@ public class OQueryModel<K> extends LoadableDetachableModel<List<K>>
         return this;
     }
     
+    /**
+     * Set sorting configration
+     * @param sortableParameter
+     * @param order
+     * @return
+     */
     public OQueryModel<K> setSort(String sortableParameter, SortOrder order)
     {
     	setSortableParameter(sortableParameter);
@@ -209,10 +263,14 @@ public class OQueryModel<K> extends LoadableDetachableModel<List<K>>
     	return this;
     }
     
+    /**
+     * @return projection of the query
+     */
     public String getProjection() {
 		return projection;
 	}
 
+    @Override
 	public void detach()
     {
         for (IModel<?> model : params.values())
@@ -223,6 +281,9 @@ public class OQueryModel<K> extends LoadableDetachableModel<List<K>>
         size=null;
     }
     
+    /**
+     * @return Current {@link ODatabaseRecord}
+     */
     public ODatabaseRecord getDatabase()
 	{
 		return OrientDbWebSession.get().getDatabase();
