@@ -21,7 +21,7 @@ public class ODocumentModel extends LoadableDetachableModel<ODocument> implement
 	
 	public ODocumentModel(ODocument iDocument) {
 		super(iDocument);
-		orid=iDocument.getIdentity();
+		if(iDocument!=null) orid=iDocument.getIdentity();
 	}
 
 	public ODocumentModel(ORID iRID) {
