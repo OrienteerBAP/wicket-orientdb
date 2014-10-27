@@ -174,11 +174,11 @@ public class TestModels extends AbstractTestClass
 	{
 		IModel<String> keyModel = Model.of("myobject.thisIsMyObject");
 		SimpleNamingModel<String> namingModel = new SimpleNamingModel<String>(keyModel);
-		assertEquals("This is my object", namingModel.getObject());
+		assertModelObjectEquals("This is my object", namingModel);
 		keyModel.setObject("myobject.thatIsMyObject");
-		assertEquals("That Is My Object", namingModel.getObject());
+		assertModelObjectEquals("That Is My Object", namingModel);
 		namingModel.detach();
-		assertEquals("That Is My Object", namingModel.getObject());
+		assertModelObjectEquals("That Is My Object", namingModel);
 	}
 	
 	@Test
@@ -187,10 +187,10 @@ public class TestModels extends AbstractTestClass
 		IModel<String> classNameModel = Model.of("OUser");
 		IModel<OClass> oClassModel = new OClassModel(classNameModel);
 		OClassNamingModel model = new OClassNamingModel(oClassModel);
-		assertEquals("OUser", model.getObject());
+		assertModelObjectEquals("OUser", model);
 		model.detach();
 		classNameModel.setObject("ORole");
-		assertEquals("SuperRole", model.getObject());
+		assertModelObjectEquals("SuperRole", model);
 	}
 	
 	@Test
@@ -200,10 +200,10 @@ public class TestModels extends AbstractTestClass
 		IModel<OClass> oClassModel = new OClassModel(classNameModel);
 		IModel<OProperty> propertyModel = new OPropertyModel(oClassModel, "name");
 		OPropertyNamingModel model = new OPropertyNamingModel(propertyModel);
-		assertEquals("Name", model.getObject());
+		assertModelObjectEquals("Name", model);
 		model.detach();
 		classNameModel.setObject("ORole");
-		assertEquals("Role Name", model.getObject());
+		assertModelObjectEquals("Role Name", model);
 	}
 	
 	@Test
@@ -211,9 +211,7 @@ public class TestModels extends AbstractTestClass
 	{
 		OClassModel model = new OClassModel("OUser");
 		OClass oUserClass = getSchema().getClass("OUser");
-		assertEquals(oUserClass, model.getObject());
-		model.detach();
-		assertEquals(oUserClass, model.getObject());
+		assertModelObjectEquals(oUserClass, model);
 	}
 	
 	@Test
@@ -233,9 +231,14 @@ public class TestModels extends AbstractTestClass
 	{
 		ORecordId recordId = new ORecordId("#5:0");
 		ODocumentModel model = new ODocumentModel(recordId);
-		assertEquals(recordId.getRecord(), model.getObject());
-		model.detach();
-		assertEquals(recordId.getRecord(), model.getObject());
+		assertModelObjectEquals(recordId.getRecord(), model);
+		
+		recordId = new ORecordId("#5:1");
+		model.setObject((ODocument)recordId.getRecord());
+		assertModelObjectEquals(recordId.getRecord(), model);
+		
+		model.setObject(null);
+		assertModelObjectEquals(null, model);
 	}
 	
 	@Test
@@ -243,9 +246,7 @@ public class TestModels extends AbstractTestClass
 	{
 		ORecordId recordId = new ORecordId("#5:0");
 		ODocumentPropertyModel<String> model = new ODocumentPropertyModel<String>(new ODocumentModel(recordId), "name");
-		assertEquals("admin", model.getObject());
-		model.detach();
-		assertEquals("admin", model.getObject());
+		assertModelObjectEquals("admin", model);
 	}
 	
 	@Test
@@ -253,9 +254,14 @@ public class TestModels extends AbstractTestClass
 	{
 		OProperty userNameProperty = getSchema().getClass("OUser").getProperty("name");
 		OPropertyModel propertyModel = new OPropertyModel("OUser", "name");
-		assertEquals(userNameProperty, propertyModel.getObject());
-		propertyModel.detach();
-		assertEquals(userNameProperty, propertyModel.getObject());
+		assertModelObjectEquals(userNameProperty, propertyModel);
+	}
+	
+	public static void assertModelObjectEquals(Object expected, IModel<?> model)
+	{
+		assertEquals(expected, model.getObject());
+		model.detach();
+		assertEquals(expected, model.getObject());
 	}
 	
 }

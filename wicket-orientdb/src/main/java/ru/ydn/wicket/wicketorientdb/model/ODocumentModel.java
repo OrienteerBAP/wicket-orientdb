@@ -55,19 +55,27 @@ public class ODocumentModel extends LoadableDetachableModel<ODocument> implement
 	@Override
     public void detach()
     {
-		ODocument doc = isAttached()?getObject():null;
-		if(doc!=null)
+		if(isAttached())
 		{
-	        this.orid = doc.getIdentity();
-	        if(orid!=null && orid.isValid())
-	        {
-	        	savedDocument=null;
-	        }
-	        else
-	        {
-	        	orid=null;
-	        	savedDocument = doc;
-	        }
+			ODocument doc = getObject();
+			if(doc!=null)
+			{
+		        this.orid = doc.getIdentity();
+		        if(orid!=null && orid.isValid())
+		        {
+		        	savedDocument=null;
+		        }
+		        else
+		        {
+		        	orid=null;
+		        	savedDocument = doc;
+		        }
+			}
+			else
+			{
+				orid=null;
+				savedDocument=null;
+			}
 		}
 		super.detach();
     }
