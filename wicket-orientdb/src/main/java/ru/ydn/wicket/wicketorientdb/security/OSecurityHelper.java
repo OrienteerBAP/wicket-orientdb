@@ -4,6 +4,8 @@ import java.lang.annotation.Annotation;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.wicket.Component;
+
 import ru.ydn.wicket.wicketorientdb.OrientDbWebSession;
 
 import com.orientechnologies.orient.core.db.record.ODatabaseRecord;
@@ -128,6 +130,27 @@ public class OSecurityHelper
 		} catch (OSecurityAccessException e) {
 			return false;
 		}
+	}
+	
+	public static <T extends Component> T secureComponent(T component, RequiredOrientResource... resources)
+	{
+		return secureComponent(component, toSecureMap(resources));
+	}
+	
+	public static <T extends Component> T secureComponent(T component, HashMap<String, OrientPermission[]> secureMap)
+	{
+		component.setMetaData(OrientPermission.REQUIRED_ORIENT_RESOURCES_KEY, secureMap);
+		return component;
+	}
+	
+	public static HashMap<String, OrientPermission[]> toSecureMap(RequiredOrientResource... resources)
+	{
+		HashMap<String, OrientPermission[]> secureMap = new HashMap<String, OrientPermission[]>();
+		for (RequiredOrientResource requiredOrientResource : resources)
+		{
+			secureMap.put(requiredOrientResource.value(), requiredOrientResource.permissions());
+		}
+		return secureMap;
 	}
 	
 }
