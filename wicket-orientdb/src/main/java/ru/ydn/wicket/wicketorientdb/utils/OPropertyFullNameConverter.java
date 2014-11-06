@@ -7,7 +7,7 @@ import org.apache.wicket.util.string.Strings;
 import ru.ydn.wicket.wicketorientdb.OrientDbWebSession;
 
 import com.google.common.base.Converter;
-import com.orientechnologies.orient.core.db.record.ODatabaseRecord;
+import com.orientechnologies.orient.core.db.document.ODatabaseDocument;
 import com.orientechnologies.orient.core.index.OIndex;
 import com.orientechnologies.orient.core.metadata.schema.OClass;
 import com.orientechnologies.orient.core.metadata.schema.OProperty;
@@ -28,7 +28,7 @@ public class OPropertyFullNameConverter extends Converter<OProperty, String> imp
 
 	@Override
 	protected OProperty doBackward(String b) {
-		ODatabaseRecord db = OrientDbWebSession.get().getDatabase();
+		ODatabaseDocument db = OrientDbWebSession.get().getDatabase();
 		OSchema schema = db.getMetadata().getSchema();
 		String className = Strings.beforeFirst(b, '.');
 		String propertyName = Strings.afterFirst(b, '.');

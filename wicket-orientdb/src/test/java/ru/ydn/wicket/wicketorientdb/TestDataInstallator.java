@@ -2,7 +2,7 @@ package ru.ydn.wicket.wicketorientdb;
 
 import java.util.Arrays;
 
-import com.orientechnologies.orient.core.db.record.ODatabaseRecord;
+import com.orientechnologies.orient.core.db.document.ODatabaseDocument;
 import com.orientechnologies.orient.core.metadata.schema.OClass;
 import com.orientechnologies.orient.core.metadata.schema.OSchema;
 import com.orientechnologies.orient.core.metadata.schema.OType;
@@ -12,7 +12,7 @@ public class TestDataInstallator extends AbstractDataInstallator
 {
 
 	@Override
-	protected void installData(OrientDbWebApplication app, ODatabaseRecord db) {
+	protected void installData(OrientDbWebApplication app, ODatabaseDocument db) {
 		OSchema schema = db.getMetadata().getSchema();
 		OClass classA = schema.createClass("ClassA");
 		classA.createProperty("name", OType.STRING);

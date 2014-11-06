@@ -6,7 +6,7 @@ import org.apache.wicket.IApplicationListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.orientechnologies.orient.core.db.record.ODatabaseRecord;
+import com.orientechnologies.orient.core.db.document.ODatabaseDocument;
 
 /**
  * Abstract class for installing data during application starting.
@@ -17,7 +17,7 @@ public abstract class AbstractDataInstallator implements IApplicationListener
 	@Override
 	public void onAfterInitialized(Application application) {
 		OrientDbWebApplication app = (OrientDbWebApplication)application;
-		ODatabaseRecord db = getDatabase(app);
+		ODatabaseDocument db = getDatabase(app);
 		try
 		{
 			installData(app, db);
@@ -32,15 +32,15 @@ public abstract class AbstractDataInstallator implements IApplicationListener
 		}
 	}
 	
-	protected ODatabaseRecord getDatabase(OrientDbWebApplication app)
+	protected ODatabaseDocument getDatabase(OrientDbWebApplication app)
 	{
 		IOrientDbSettings settings = app.getOrientDbSettings();
 		String username = settings.getDBInstallatorUserName();
 		String password = settings.getDBInstallatorUserPassword();
-		return DefaultODatabaseThreadLocalFactory.castToODatabaseRecord(settings.getDatabasePool().acquire(settings.getDBUrl(), username, password));
+		return DefaultODatabaseThreadLocalFactory.castToODatabaseDocument(settings.getDatabasePool().acquire(settings.getDBUrl(), username, password));
 	}
 	
-	protected abstract void installData(OrientDbWebApplication app, ODatabaseRecord db);
+	protected abstract void installData(OrientDbWebApplication app, ODatabaseDocument db);
 
 	@Override
 	public void onBeforeDestroyed(Application application) {

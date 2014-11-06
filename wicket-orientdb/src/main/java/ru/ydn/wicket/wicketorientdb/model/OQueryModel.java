@@ -21,7 +21,7 @@ import com.google.common.base.Function;
 import com.google.common.collect.Iterators;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.orientechnologies.orient.core.db.record.ODatabaseRecord;
+import com.orientechnologies.orient.core.db.document.ODatabaseDocument;
 import com.orientechnologies.orient.core.record.ORecord;
 import com.orientechnologies.orient.core.record.impl.ODocument;
 import com.orientechnologies.orient.core.sql.query.OSQLSynchQuery;
@@ -43,7 +43,7 @@ public class OQueryModel<K> extends LoadableDetachableModel<List<K>>
 			T ret = super.apply(input);
 			if(ret instanceof ORecord)
 			{
-				ret = (T)((ORecord<?>)ret).getIdentity();
+				ret = (T)((ORecord)ret).getIdentity();
 			}
 			return ret;
 		}
@@ -136,7 +136,7 @@ public class OQueryModel<K> extends LoadableDetachableModel<List<K>>
 	@SuppressWarnings("unchecked")
 	protected List<K> load()
     {
-    	ODatabaseRecord db = OrientDbWebSession.get().getDatabase();
+    	ODatabaseDocument db = OrientDbWebSession.get().getDatabase();
     	OSQLSynchQuery<K> query = new OSQLSynchQuery<K>(prepareSql(null, null));
     	List<?> ret = db.query(query, prepareParams());
     	
@@ -152,7 +152,7 @@ public class OQueryModel<K> extends LoadableDetachableModel<List<K>>
     @SuppressWarnings("unchecked")
 	public Iterator<K> iterator(long first, long count)
     {
-    	ODatabaseRecord db = OrientDbWebSession.get().getDatabase();
+    	ODatabaseDocument db = OrientDbWebSession.get().getDatabase();
     	OSQLSynchQuery<K> query = new OSQLSynchQuery<K>(prepareSql((int)first, (int)count));
     	Iterator<?> iterator = db.query(query, prepareParams()).iterator();
     	return transformer==null?(Iterator<K>)iterator:Iterators.transform(iterator, (Function<Object, K>)transformer);
@@ -186,7 +186,7 @@ public class OQueryModel<K> extends LoadableDetachableModel<List<K>>
     {
     	if(size==null)
     	{
-	    	ODatabaseRecord db = OrientDbWebSession.get().getDatabase();
+	    	ODatabaseDocument db = OrientDbWebSession.get().getDatabase();
 	    	OSQLSynchQuery<ODocument> query = new OSQLSynchQuery<ODocument>(getCountSql());
 	    	List<ODocument> ret = db.query(query, prepareParams());
 	    	if(ret!=null && ret.size()>0)
@@ -284,7 +284,7 @@ public class OQueryModel<K> extends LoadableDetachableModel<List<K>>
     /**
      * @return Current {@link ODatabaseRecord}
      */
-    public ODatabaseRecord getDatabase()
+    public ODatabaseDocument getDatabase()
 	{
 		return OrientDbWebSession.get().getDatabase();
 	}

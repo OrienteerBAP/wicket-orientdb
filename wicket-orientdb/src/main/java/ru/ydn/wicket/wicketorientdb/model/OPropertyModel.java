@@ -1,8 +1,10 @@
 package ru.ydn.wicket.wicketorientdb.model;
 
 import org.apache.wicket.model.IModel;
+
 import ru.ydn.wicket.wicketorientdb.OrientDbWebSession;
-import com.orientechnologies.orient.core.db.record.ODatabaseRecord;
+
+import com.orientechnologies.orient.core.db.document.ODatabaseDocument;
 import com.orientechnologies.orient.core.metadata.schema.OClass;
 import com.orientechnologies.orient.core.metadata.schema.OProperty;
 import com.orientechnologies.orient.core.metadata.schema.OSchema;
@@ -57,7 +59,7 @@ public class OPropertyModel extends PrototypeLoadableDetachableModel<OProperty>
 		return getDatabase().getMetadata().getSchema();
 	}
 	
-	public ODatabaseRecord getDatabase()
+	public ODatabaseDocument getDatabase()
 	{
 		return OrientDbWebSession.get().getDatabase();
 	}

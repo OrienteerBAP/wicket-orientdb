@@ -13,10 +13,11 @@ import ru.ydn.wicket.wicketorientdb.security.WicketOrientDbAuthorizationStrategy
 
 import com.orientechnologies.orient.core.Orient;
 import com.orientechnologies.orient.core.db.ODatabase;
-import com.orientechnologies.orient.core.db.ODatabaseComplex;
+import com.orientechnologies.orient.core.db.ODatabaseInternal;
 import com.orientechnologies.orient.core.db.ODatabaseLifecycleListener;
 import com.orientechnologies.orient.core.db.record.OIdentifiable;
 import com.orientechnologies.orient.core.hook.ORecordHook;
+import com.orientechnologies.orient.core.metadata.schema.OClass;
 import com.orientechnologies.orient.core.record.impl.ODocument;
 
 /**
@@ -60,31 +61,41 @@ public abstract class OrientDbWebApplication extends AuthenticatedWebApplication
 		Orient.instance().addDbLifecycleListener(new ODatabaseLifecycleListener() {
 			
 			@Override
-			public void onOpen(ODatabase iDatabase) {
+			public void onOpen(ODatabaseInternal iDatabase) {
 				for (ORecordHook oRecordHook : getOrientDbSettings().getORecordHooks())
 				{
-					((ODatabaseComplex<?>)iDatabase).registerHook(oRecordHook);
+					iDatabase.registerHook(oRecordHook);
 				}
 			}
 			
 			@Override
-			public void onCreate(ODatabase iDatabase) {
+			public void onCreate(ODatabaseInternal iDatabase) {
 				for (ORecordHook oRecordHook : getOrientDbSettings().getORecordHooks())
 				{
-					((ODatabaseComplex<?>)iDatabase).registerHook(oRecordHook);
+					iDatabase.registerHook(oRecordHook);
 				}
 			}
 			
 			@Override
-			public void onClose(ODatabase iDatabase) {
+			public void onClose(ODatabaseInternal iDatabase) {
 				for (ORecordHook oRecordHook : getOrientDbSettings().getORecordHooks())
 				{
-					((ODatabaseComplex<?>)iDatabase).unregisterHook(oRecordHook);
+					iDatabase.unregisterHook(oRecordHook);
 				}
 			}
 			
 			public PRIORITY getPriority() {
 				return PRIORITY.REGULAR;
+			}
+
+			@Override
+			public void onCreateClass(ODatabaseInternal iDatabase, OClass iClass) {
+				
+			}
+
+			@Override
+			public void onDropClass(ODatabaseInternal iDatabase, OClass iClass) {
+				
 			}
 		});
 		getRequestCycleListeners().add(newTransactionRequestCycleListener());

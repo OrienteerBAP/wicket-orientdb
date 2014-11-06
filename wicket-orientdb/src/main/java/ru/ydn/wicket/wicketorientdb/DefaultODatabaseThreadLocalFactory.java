@@ -1,9 +1,10 @@
 package ru.ydn.wicket.wicketorientdb;
 
 import com.orientechnologies.orient.core.db.ODatabase;
-import com.orientechnologies.orient.core.db.ODatabaseComplex;
+import com.orientechnologies.orient.core.db.ODatabaseDocumentInternal;
+import com.orientechnologies.orient.core.db.ODatabaseInternal;
 import com.orientechnologies.orient.core.db.ODatabaseThreadLocalFactory;
-import com.orientechnologies.orient.core.db.record.ODatabaseRecord;
+import com.orientechnologies.orient.core.db.document.ODatabaseDocument;
 
 /**
  * Implemenetation of {@link ODatabaseThreadLocalFactory} for obtaining {@link ODatabaseRecord} according to {@link IOrientDbSettings}
@@ -18,10 +19,10 @@ public class DefaultODatabaseThreadLocalFactory implements ODatabaseThreadLocalF
 	}
 	
 	@Override
-	public ODatabaseRecord getThreadDatabase() {
+	public ODatabaseDocumentInternal getThreadDatabase() {
 		IOrientDbSettings settings = app.getOrientDbSettings();
 		OrientDbWebSession session = OrientDbWebSession.get();
-		ODatabaseRecord db;
+		ODatabaseDocumentInternal db;
 		String username;
 		String password;
 		if(session.isSignedIn())
@@ -34,7 +35,7 @@ public class DefaultODatabaseThreadLocalFactory implements ODatabaseThreadLocalF
 			username = settings.getDBUserName();
 			password = settings.getDBUserPassword();
 		}
-		db = castToODatabaseRecord(settings.getDatabasePool().acquire(settings.getDBUrl(), username, password));
+		db = (ODatabaseDocumentInternal)settings.getDatabasePool().acquire(settings.getDBUrl(), username, password);
 		return db;
 	}
 	
@@ -43,15 +44,15 @@ public class DefaultODatabaseThreadLocalFactory implements ODatabaseThreadLocalF
 	 * @param db
 	 * @return
 	 */
-	public static ODatabaseRecord castToODatabaseRecord(ODatabase db)
+	public static ODatabaseDocument castToODatabaseDocument(ODatabase db)
 	{
-		while(db!=null && !(db instanceof ODatabaseRecord))
+		while(db!=null && !(db instanceof ODatabaseDocument))
 		{
-			if(db instanceof ODatabaseComplex)
+			if(db instanceof ODatabaseInternal<?>)
 			{
-				db = ((ODatabaseComplex<?>)db).getUnderlying();
+				db = ((ODatabaseInternal<?>)db).getUnderlying();
 			}
 		}
-		return (ODatabaseRecord)db;
+		return (ODatabaseDocument)db;
 	}
 }

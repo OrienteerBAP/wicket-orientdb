@@ -8,8 +8,9 @@ import org.apache.wicket.authroles.authorization.strategies.role.Roles;
 import org.apache.wicket.protocol.http.WebSession;
 import org.apache.wicket.request.Request;
 
+import com.orientechnologies.orient.core.db.ODatabaseDocumentInternal;
 import com.orientechnologies.orient.core.db.ODatabaseRecordThreadLocal;
-import com.orientechnologies.orient.core.db.record.ODatabaseRecord;
+import com.orientechnologies.orient.core.db.document.ODatabaseDocument;
 import com.orientechnologies.orient.core.exception.OSecurityAccessException;
 import com.orientechnologies.orient.core.metadata.security.ORole;
 import com.orientechnologies.orient.core.metadata.security.OUser;
@@ -56,25 +57,25 @@ public class OrientDbWebSession extends AuthenticatedWebSession {
 	/**
 	 * @return {@link ODatabaseRecord} for current request
 	 */
-	public ODatabaseRecord getDatabase()
+	public ODatabaseDocument getDatabase()
 	{
-		return DefaultODatabaseThreadLocalFactory.castToODatabaseRecord(ODatabaseRecordThreadLocal.INSTANCE.get().getDatabaseOwner());
+		return DefaultODatabaseThreadLocalFactory.castToODatabaseDocument(ODatabaseRecordThreadLocal.INSTANCE.get().getDatabaseOwner());
 	}
 
 	@Override
 	public boolean authenticate(String username, String password) {
 		try
 		{
-			ODatabaseRecord currentDB = getDatabase();
+			ODatabaseDocument currentDB = getDatabase();
 			IOrientDbSettings settings = OrientDbWebApplication.get().getOrientDbSettings();
-			ODatabaseRecord newDB = DefaultODatabaseThreadLocalFactory.castToODatabaseRecord(
+			ODatabaseDocument newDB = DefaultODatabaseThreadLocalFactory.castToODatabaseDocument(
 								settings.getDatabasePool().acquire(settings.getDBUrl(), username, password));
 			if(newDB!=currentDB)
 			{
 				currentDB.commit();
 				currentDB.close();
 			}
-			ODatabaseRecordThreadLocal.INSTANCE.set(newDB);
+			ODatabaseRecordThreadLocal.INSTANCE.set((ODatabaseDocumentInternal)newDB);
 			setUser(username, password);
 			user = newDB.getMetadata().getSecurity().getUser(username);
 			newDB.setUser(user);

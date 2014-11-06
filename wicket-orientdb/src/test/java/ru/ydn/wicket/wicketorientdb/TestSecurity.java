@@ -46,8 +46,8 @@ public class TestSecurity extends AbstractTestClass
 		assertTrue(getSession().signIn(user, password));
 		assertTrue(getSession().isSignedIn());
 		OUser thisUser = getMetadata().getSecurity().getUser(user);
-		assertEquals(thisUser, getSession().getUser());
-		assertEquals(thisUser, getDatabase().getUser());
+		assertEquals(thisUser.getIdentity(), getSession().getUser().getIdentity());
+		assertEquals(thisUser.getIdentity(), getDatabase().getUser().getIdentity());
 		assertTrue(getSession().getRoles().hasRole(userRole));
 		
 		//Signout and check signed out state

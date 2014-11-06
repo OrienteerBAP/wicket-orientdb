@@ -8,7 +8,8 @@ import org.apache.wicket.request.resource.PackageResourceReference;
 import org.apache.wicket.request.resource.ResourceReference;
 
 import com.orientechnologies.orient.core.db.ODatabaseRecordThreadLocal;
-import com.orientechnologies.orient.core.db.record.ODatabaseRecord;
+import com.orientechnologies.orient.core.db.document.ODatabaseDocument;
+import com.orientechnologies.orient.core.metadata.security.OSecurityUser;
 import com.orientechnologies.orient.core.metadata.security.OUser;
 
 /**
@@ -19,9 +20,9 @@ public class TransactionRequestCycleListener extends
 	@Override
 	public void start(RequestCycle cycle) {
 		OrientDbWebSession session = OrientDbWebSession.get();
-		ODatabaseRecord db = session.getDatabase();
+		ODatabaseDocument db = session.getDatabase();
 		//It's required to have ability to check security rights locally
-		OUser oUser = db.getUser();
+		OSecurityUser oUser = db.getUser();
 		if(oUser.getDocument()!=null && oUser.getDocument().getIdentity()!=null && !oUser.getDocument().getIdentity().isValid())
 		{
 			db.setUser(db.getMetadata().getSecurity().getUser(oUser.getName()));
@@ -33,7 +34,7 @@ public class TransactionRequestCycleListener extends
 	@Override
 	public void end(RequestCycle cycle) {
 		OrientDbWebSession session = OrientDbWebSession.get();
-		ODatabaseRecord db = session.getDatabase();
+		ODatabaseDocument db = session.getDatabase();
 		try
 		{
 			session.getDatabase().commit();

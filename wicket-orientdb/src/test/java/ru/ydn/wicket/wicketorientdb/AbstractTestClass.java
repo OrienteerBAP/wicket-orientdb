@@ -5,7 +5,7 @@ import org.junit.Before;
 
 import ru.ydn.wicket.wicketorientdb.junit.WicketTesterThreadLocal;
 
-import com.orientechnologies.orient.core.db.record.ODatabaseRecord;
+import com.orientechnologies.orient.core.db.document.ODatabaseDocument;
 import com.orientechnologies.orient.core.metadata.OMetadata;
 import com.orientechnologies.orient.core.metadata.schema.OSchema;
 
@@ -31,7 +31,7 @@ public class AbstractTestClass
 		return (OrientDbWebSession)wicketTester.getSession();
 	}
 	
-	public ODatabaseRecord getDatabase()
+	public ODatabaseDocument getDatabase()
 	{
 		return getSession().getDatabase();
 	}

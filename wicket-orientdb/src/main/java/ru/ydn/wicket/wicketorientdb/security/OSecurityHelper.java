@@ -8,7 +8,7 @@ import org.apache.wicket.Component;
 
 import ru.ydn.wicket.wicketorientdb.OrientDbWebSession;
 
-import com.orientechnologies.orient.core.db.record.ODatabaseRecord;
+import com.orientechnologies.orient.core.db.document.ODatabaseDocument;
 import com.orientechnologies.orient.core.exception.OSecurityAccessException;
 import com.orientechnologies.orient.core.metadata.schema.OClass;
 import com.orientechnologies.orient.core.metadata.security.ODatabaseSecurityResources;
@@ -123,7 +123,7 @@ public class OSecurityHelper
 	public static boolean isAllowed(OClass oClass, OrientPermission... permissions)
 	{
 		int iOperation = OrientPermission.combinedPermission(permissions);
-		ODatabaseRecord db = OrientDbWebSession.get().getDatabase();
+		ODatabaseDocument db = OrientDbWebSession.get().getDatabase();
 		try {
 			db.checkSecurity(ODatabaseSecurityResources.CLASS, iOperation, oClass.getName());
 			return true;

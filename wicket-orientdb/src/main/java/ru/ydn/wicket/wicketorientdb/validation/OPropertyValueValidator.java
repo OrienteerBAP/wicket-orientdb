@@ -20,7 +20,8 @@ import org.apache.wicket.validation.ValidationError;
 import ru.ydn.wicket.wicketorientdb.OrientDbWebSession;
 import ru.ydn.wicket.wicketorientdb.model.OPropertyModel;
 
-import com.orientechnologies.orient.core.db.record.ODatabaseRecord;
+import com.orientechnologies.orient.core.db.ODatabaseDocumentInternal;
+import com.orientechnologies.orient.core.db.document.ODatabaseDocument;
 import com.orientechnologies.orient.core.db.record.OIdentifiable;
 import com.orientechnologies.orient.core.id.ORecordId;
 import com.orientechnologies.orient.core.metadata.schema.OClass;
@@ -213,7 +214,7 @@ public class OPropertyValueValidator<T> extends Behavior implements
 		if (linkValue == null)
 			validatable.error(newValidationError("nulllink"));
 		else {
-			ORecord<?> linkedRecord = null;
+			ORecord linkedRecord = null;
 			if (linkValue instanceof OIdentifiable)
 				linkedRecord = ((OIdentifiable) linkValue).getRecord();
 			else if (linkValue instanceof String)
@@ -255,7 +256,7 @@ public class OPropertyValueValidator<T> extends Behavior implements
 
 			final OClass embeddedClass = p.getLinkedClass();
 			if (embeddedClass != null) {
-				final ORecord<?> rec = ((OIdentifiable) fieldValue).getRecord();
+				final ORecord rec = ((OIdentifiable) fieldValue).getRecord();
 				if (!(rec instanceof ODocument)) {
 					validatable.error(newValidationError("embeddedNotDoc"));
 					return;
@@ -293,9 +294,9 @@ public class OPropertyValueValidator<T> extends Behavior implements
 		return error;
 	}
 	
-	protected ODatabaseRecord getDatabase()
+	protected ODatabaseDocumentInternal getDatabase()
 	{
-		return OrientDbWebSession.get().getDatabase();
+		return (ODatabaseDocumentInternal)OrientDbWebSession.get().getDatabase();
 	}
 
 	@Override

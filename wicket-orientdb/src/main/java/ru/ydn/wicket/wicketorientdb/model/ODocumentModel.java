@@ -5,7 +5,7 @@ import org.apache.wicket.model.LoadableDetachableModel;
 
 import ru.ydn.wicket.wicketorientdb.OrientDbWebSession;
 
-import com.orientechnologies.orient.core.db.record.ODatabaseRecord;
+import com.orientechnologies.orient.core.db.document.ODatabaseDocument;
 import com.orientechnologies.orient.core.exception.ORecordNotFoundException;
 import com.orientechnologies.orient.core.id.ORID;
 import com.orientechnologies.orient.core.record.impl.ODocument;
@@ -40,7 +40,7 @@ public class ODocumentModel extends LoadableDetachableModel<ODocument> implement
 		if(orid!=null && orid.isValid())
 		{
 			try {
-				ODatabaseRecord db = OrientDbWebSession.get().getDatabase();
+				ODatabaseDocument db = OrientDbWebSession.get().getDatabase();
 				return db.load(orid);
 			} catch (ORecordNotFoundException e) {
 				return null;

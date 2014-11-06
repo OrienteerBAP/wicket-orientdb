@@ -5,9 +5,10 @@ import java.util.Locale;
 import org.junit.Test;
 
 import com.google.common.base.Converter;
-import com.orientechnologies.orient.core.db.record.ODatabaseRecord;
+import com.orientechnologies.orient.core.db.document.ODatabaseDocument;
 import com.orientechnologies.orient.core.id.ORID;
 import com.orientechnologies.orient.core.id.ORecordId;
+import com.orientechnologies.orient.core.metadata.security.OSecurityUser;
 import com.orientechnologies.orient.core.metadata.security.OUser;
 import com.orientechnologies.orient.core.record.impl.ODocument;
 
@@ -39,26 +40,26 @@ public class MainUtilsTest extends AbstractTestClass
 	@Test
 	public void testDBClosure() throws Exception
 	{
-		DBClosure<OUser> adminClosure = new DBClosure<OUser>() {
+		DBClosure<OSecurityUser> adminClosure = new DBClosure<OSecurityUser>() {
 			
 			private static final long serialVersionUID = 1L;
 
 			@Override
-			protected OUser execute(ODatabaseRecord db) {
+			protected OSecurityUser execute(ODatabaseDocument db) {
 				return db.getUser();
 			}
 		};
-		assertEquals(getMetadata().getSecurity().getUser("admin"), adminClosure.execute());
-		DBClosure<OUser> readerClosure = new DBClosure<OUser>("reader", "reader") {
+		assertEquals(getMetadata().getSecurity().getUser("admin").getIdentity(), adminClosure.execute().getIdentity());
+		DBClosure<OSecurityUser> readerClosure = new DBClosure<OSecurityUser>("reader", "reader") {
 
 			private static final long serialVersionUID = 1L;
 
 			@Override
-			protected OUser execute(ODatabaseRecord db) {
+			protected OSecurityUser execute(ODatabaseDocument db) {
 				return db.getUser();
 			}
 		};
-		assertEquals(getMetadata().getSecurity().getUser("reader"), readerClosure.execute());
+		assertEquals(getMetadata().getSecurity().getUser("reader").getIdentity(), readerClosure.execute().getIdentity());
 	}
 	
 	@Test

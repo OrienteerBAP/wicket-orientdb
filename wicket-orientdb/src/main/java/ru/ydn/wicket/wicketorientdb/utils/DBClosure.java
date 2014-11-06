@@ -6,8 +6,9 @@ import ru.ydn.wicket.wicketorientdb.DefaultODatabaseThreadLocalFactory;
 import ru.ydn.wicket.wicketorientdb.IOrientDbSettings;
 import ru.ydn.wicket.wicketorientdb.OrientDbWebApplication;
 
+import com.orientechnologies.orient.core.db.ODatabaseDocumentInternal;
 import com.orientechnologies.orient.core.db.ODatabaseRecordThreadLocal;
-import com.orientechnologies.orient.core.db.record.ODatabaseRecord;
+import com.orientechnologies.orient.core.db.document.ODatabaseDocument;
 
 /**
  * Closure for execution of portion queries/command on database for different user (commonly, under admin)
@@ -44,17 +45,17 @@ public abstract class DBClosure<V> implements Serializable
 	 */
 	public final V execute()
 	{
-		ODatabaseRecord db = null;
-		ODatabaseRecord oldDb = ODatabaseRecordThreadLocal.INSTANCE.getIfDefined();
+		ODatabaseDocument db = null;
+		ODatabaseDocument oldDb = ODatabaseRecordThreadLocal.INSTANCE.getIfDefined();
 		try
 		{
-			db = DefaultODatabaseThreadLocalFactory.castToODatabaseRecord(getSettings().getDatabasePool().acquire(dbUrl, username, password));
+			db = DefaultODatabaseThreadLocalFactory.castToODatabaseDocument(getSettings().getDatabasePool().acquire(dbUrl, username, password));
 			return execute(db);
 		} 
 		finally
 		{
 			if(db!=null) db.close();
-			if(oldDb!=null) ODatabaseRecordThreadLocal.INSTANCE.set(oldDb);
+			if(oldDb!=null) ODatabaseRecordThreadLocal.INSTANCE.set((ODatabaseDocumentInternal)oldDb);
 			else ODatabaseRecordThreadLocal.INSTANCE.remove();
 		}
 	}
@@ -68,5 +69,5 @@ public abstract class DBClosure<V> implements Serializable
 	 * @param db temporal DB for other user
 	 * @return results for execution on supplied DB
 	 */
-	protected abstract V execute(ODatabaseRecord db);
+	protected abstract V execute(ODatabaseDocument db);
 }
