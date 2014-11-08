@@ -24,17 +24,10 @@ public class OPropertyPrototyper extends AbstractPrototyper<OProperty> {
 	public static final String NOT_NULL = "notNull";
 	public static final String MIN = "min";
 	public static final String MAX = "max";
+	public static final String REGEXP = "regexp";
 	public static final String COLLATE = "collate";
-	public static final List<String> OPROPERTY_ATTRS = Arrays.asList(NAME, TYPE, LINKED_TYPE, LINKED_CLASS, MANDATORY, READONLY, NOT_NULL, MIN, MAX, COLLATE);
+	public static final List<String> OPROPERTY_ATTRS = Arrays.asList(NAME, TYPE, LINKED_TYPE, LINKED_CLASS, MANDATORY, READONLY, NOT_NULL, MIN, MAX, REGEXP, COLLATE);
 
-	public static interface OPropertyFix
-	{
-		public OProperty setLinkedClass(OClass oClass);
-		public OProperty setLinkedType(OType type);
-	}
-	
-	private static final Class<?>[] FIX_INTERFACES = new Class<?>[]{OPropertyFix.class};
-	
 	private final String className;
 	
 	private OPropertyPrototyper(String className)
@@ -62,11 +55,6 @@ public class OPropertyPrototyper extends AbstractPrototyper<OProperty> {
 	@Override
 	protected Class<OProperty> getMainInterface() {
 		return OProperty.class;
-	}
-	
-	@Override
-	protected Class<?>[] getAdditionalInterfaces() {
-		return FIX_INTERFACES;
 	}
 	
 	public static OProperty newPrototype(String className)

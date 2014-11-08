@@ -28,13 +28,6 @@ public class OClassPrototyper extends AbstractPrototyper<OClass> {
 	
 	public static final List<String> OCLASS_ATTRS = Arrays.asList(NAME, SHORT_NAME, SUPER_CLASS, OVER_SIZE, STRICT_MODE, ABSTRACT, CLUSTER_SELECTION);
 	
-	public static interface OClassSetNameFix
-	{
-		public OClass setName(String iName);
-	}
-	
-	private static final Class<?>[] FIX_INTERFACES = new Class<?>[]{OClassSetNameFix.class}; 
-	
 
 	private OClassPrototyper()
 	{
@@ -57,16 +50,6 @@ public class OClassPrototyper extends AbstractPrototyper<OClass> {
 		return newPrototype(new OClassPrototyper());
 	}
 	
-	
-	
-
-	@Override
-	protected Class<?>[] getAdditionalInterfaces() {
-		return FIX_INTERFACES;
-	}
-	
-	
-
 	@Override
 	protected Object handleSet(String propName, Object value) {
 		if("clusterSelection".equals(propName))

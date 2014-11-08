@@ -167,9 +167,9 @@ public class OPropertyValueValidator<T> extends Behavior implements
 			          || p.getType().equals(OType.LINKLIST) || p.getType().equals(OType.LINKSET))
 			          && (fieldValue != null && ((Collection<?>) fieldValue).size() < Integer.parseInt(min)))
 			    	  validatable.error(newValidationError("minviolationCollection", "min", min));
-			    }
+		    }
 
-			    if (p.getMax() != null) {
+		    if (p.getMax() != null) {
 			      // MAX
 			      final String max = p.getMax();
 
@@ -205,7 +205,16 @@ public class OPropertyValueValidator<T> extends Behavior implements
 			          || p.getType().equals(OType.LINKLIST) || p.getType().equals(OType.LINKSET))
 			          && (fieldValue != null && ((Collection<?>) fieldValue).size() > Integer.parseInt(max)))
 			    	  validatable.error(newValidationError("maxviolationCollection", "max", max));
-			    }			
+		    }
+		    
+		    if(p.getRegexp()!=null && fieldValue!=null)
+		    {
+		    	String stringFieldValue = fieldValue.toString();
+		    	if(!stringFieldValue.matches(p.getRegexp()))
+		    	{
+		    		validatable.error(newValidationError("regexpMismatch", "regexp", p.getRegexp()));
+		    	}
+		    }
 		}
 	}
 

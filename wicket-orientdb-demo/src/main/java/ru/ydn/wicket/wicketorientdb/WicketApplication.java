@@ -4,6 +4,7 @@ import org.apache.wicket.authroles.authentication.pages.SignInPage;
 import org.apache.wicket.markup.html.WebPage;
 
 import com.orientechnologies.orient.client.remote.OServerAdmin;
+import com.orientechnologies.orient.core.db.document.ODatabaseDocumentTx;
 
 /**
  * Application object for your web application.
@@ -35,14 +36,17 @@ public class WicketApplication extends OrientDbWebApplication
 
 			@Override
 			public void onAfterServerStartupAndActivation(OrientDbWebApplication app) throws Exception {
-				OServerAdmin serverAdmin = new OServerAdmin("localhost/"+DB_NAME).connect("root", "WicketOrientDB");
-				if(!serverAdmin.existsDatabase())
-			    serverAdmin.createDatabase(DB_NAME, "graph", "plocal");
-			    
+				
+				IOrientDbSettings settings = app.getOrientDbSettings();
+				ODatabaseDocumentTx db = new ODatabaseDocumentTx(settings.getDBUrl());
+				if(!db.exists()) db = db.create();
+				if(db.isClosed()) db.open(settings.getDBInstallatorUserName(), settings.getDBInstallatorUserPassword());
+				db.getMetadata().load();
+				db.close();
 			}
 			
 		});
-		getOrientDbSettings().setDBUrl("plocal:localhost/"+DB_NAME);
+		getOrientDbSettings().setDBUrl("memory:"+DB_NAME);
 		getOrientDbSettings().setDBUserName("admin");
 		getOrientDbSettings().setDBUserPassword("admin");
 	}
