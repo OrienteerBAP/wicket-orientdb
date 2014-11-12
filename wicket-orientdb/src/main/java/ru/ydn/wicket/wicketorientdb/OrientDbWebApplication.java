@@ -53,6 +53,26 @@ public abstract class OrientDbWebApplication extends AuthenticatedWebApplication
     {
         return (OrientDbWebApplication) WebApplication.get();
     }
+	
+	public static OrientDbWebApplication lookupApplication()
+	{
+		return lookupApplication(OrientDbWebApplication.class);
+	}
+	
+	protected static <T extends OrientDbWebApplication> T lookupApplication(Class<T> appClass)
+	{
+		Application app = Application.get();
+		if(app!=null && appClass.isInstance(app)) return (T)app;
+		else
+		{
+			for(String appKey: Application.getApplicationKeys())
+			{
+				app = Application.get(appKey);
+				if(appClass.isInstance(app)) return (T)app;
+			}
+		}
+		return null;
+	}
 
 	@Override
 	protected void init() {
