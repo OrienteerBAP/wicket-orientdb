@@ -54,6 +54,14 @@
 		<!-- allowed values: R7, 1.0, 1.5, 2.0 or none -->
 		<wtp.version>none</wtp.version>
 	</properties>
+	<repositories>
+	    <repository>
+		<id>snapshots-repo</id>
+		<url>https://oss.sonatype.org/content/repositories/snapshots</url>
+		<releases><enabled>false</enabled></releases>
+		<snapshots><enabled>true</enabled></snapshots>
+	    </repository>
+	</repositories>
 	<modules>
 		<module>wicket-orientdb</module>
 		<module>wicket-orientdb-demo</module>
@@ -87,19 +95,7 @@
 			</dependency>
 			<dependency>
 				<groupId>com.orientechnologies</groupId>
-				<artifactId>orient-commons</artifactId>
-				<version>${orientdb.version}</version>
-				<type>bundle</type>
-			</dependency>
-			<dependency>
-				<groupId>com.orientechnologies</groupId>
 				<artifactId>orientdb-core</artifactId>
-				<version>${orientdb.version}</version>
-				<type>bundle</type>
-			</dependency>
-			<dependency>
-				<groupId>com.orientechnologies</groupId>
-				<artifactId>orientdb-enterprise</artifactId>
 				<version>${orientdb.version}</version>
 				<type>bundle</type>
 			</dependency>
