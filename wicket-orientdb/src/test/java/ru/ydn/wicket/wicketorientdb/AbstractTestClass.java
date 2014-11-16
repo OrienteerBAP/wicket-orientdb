@@ -1,6 +1,7 @@
 package ru.ydn.wicket.wicketorientdb;
 
 import org.apache.wicket.util.tester.WicketTester;
+import org.junit.AfterClass;
 import org.junit.Before;
 
 import ru.ydn.wicket.wicketorientdb.junit.WicketTesterThreadLocal;
@@ -19,6 +20,12 @@ public class AbstractTestClass
 	public void setup()
 	{
 		wicketTester = WICKET_TESTER_THREAD_LOCAL.get();
+	}
+	
+	@AfterClass
+	public static void shutdown()
+	{
+		WICKET_TESTER_THREAD_LOCAL.remove();
 	}
 	
 	public OrientDbWebApplication getApp()

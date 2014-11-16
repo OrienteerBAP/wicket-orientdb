@@ -34,4 +34,16 @@ public class WicketTesterThreadLocal extends ThreadLocal<WicketTester>
 		return new OrientDbTestWebApplication();
 	}
 	
+	@Override
+	public void remove() {
+		try
+		{
+			((ClosableWicketTester)get()).close();
+		} catch (IOException e)
+		{
+			e.printStackTrace();
+		}
+		super.remove();
+	}
+	
 }

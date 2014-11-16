@@ -1,7 +1,9 @@
 package ru.ydn.wicket.wicketorientdb;
 
 import org.apache.wicket.util.tester.WicketTester;
+import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
@@ -9,12 +11,18 @@ import org.junit.Test;
  */
 public class TestHomePage
 {
-	private WicketTester tester;
+	private static WicketTester tester;
 
-	@Before
-	public void setUp()
+	@BeforeClass
+	public static void setUp()
 	{
 		tester = new WicketTester(new WicketApplication());
+	}
+	
+	@AfterClass
+	public static void shutdown()
+	{
+		tester.destroy();
 	}
 
 	@Test
