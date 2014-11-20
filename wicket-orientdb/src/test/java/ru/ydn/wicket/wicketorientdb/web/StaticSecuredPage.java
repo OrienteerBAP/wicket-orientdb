@@ -5,7 +5,9 @@ import com.orientechnologies.orient.core.metadata.security.ODatabaseSecurityReso
 import ru.ydn.wicket.wicketorientdb.security.OrientPermission;
 import ru.ydn.wicket.wicketorientdb.security.RequiredOrientResource;
 
-@RequiredOrientResource(value=ODatabaseSecurityResources.CLASS+".ORole", permissions=OrientPermission.UPDATE)
+import com.orientechnologies.orient.core.metadata.security.ORule;
+
+@RequiredOrientResource(value=ORule.ResourceGeneric.CLASS, specific="ORole", permissions=OrientPermission.UPDATE)
 public class StaticSecuredPage extends OrientDbTestPage
 {
 	private static final long serialVersionUID = 1L;

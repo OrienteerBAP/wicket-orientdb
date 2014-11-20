@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.wicket.Component;
+import org.apache.wicket.util.string.Strings;
 
 import ru.ydn.wicket.wicketorientdb.OrientDbWebSession;
 
@@ -13,6 +14,7 @@ import com.orientechnologies.orient.core.exception.OSecurityAccessException;
 import com.orientechnologies.orient.core.metadata.schema.OClass;
 import com.orientechnologies.orient.core.metadata.security.ODatabaseSecurityResources;
 import com.orientechnologies.orient.core.metadata.security.ORestrictedAccessHook;
+import com.orientechnologies.orient.core.metadata.security.ORule;
 import com.orientechnologies.orient.core.metadata.security.OSecurityShared;
 import com.orientechnologies.orient.core.record.impl.ODocument;
 
@@ -31,12 +33,14 @@ public class OSecurityHelper
 	
 	private static class RequiredOrientResourceImpl implements RequiredOrientResource
 	{
-		private final String value;
+		private final ORule.ResourceGeneric value;
+		private final String specific;
 		private final OrientPermission[] permissions;
 		
-		public RequiredOrientResourceImpl(String value, OrientPermission[] permissions)
+		public RequiredOrientResourceImpl(ORule.ResourceGeneric value, String specific, OrientPermission[] permissions)
 		{
 			this.value = value;
+			this.specific = specific;
 			this.permissions = permissions;
 		}
 		
@@ -46,8 +50,13 @@ public class OSecurityHelper
 		}
 
 		@Override
-		public String value() {
+		public ORule.ResourceGeneric value() {
 			return value;
+		}
+		
+		@Override
+		public String specific() {
+			return specific;
 		}
 
 		@Override
@@ -72,16 +81,16 @@ public class OSecurityHelper
 	 */
 	public static RequiredOrientResource[] requireOClass(final String oClassName, final OrientPermission... permissions)
 	{
-		return requireResource(ODatabaseSecurityResources.CLASS+"."+oClassName, permissions);
+		return requireResource(ORule.ResourceGeneric.CLASS, oClassName, permissions);
 	}
 	/**
 	 * @param resource
 	 * @param permissions
 	 * @return
 	 */
-	public static RequiredOrientResource[] requireResource(final String resource, final OrientPermission... permissions)
+	public static RequiredOrientResource[] requireResource(final ORule.ResourceGeneric resource, final String specific, final OrientPermission... permissions)
 	{
-		return new RequiredOrientResource[]{new RequiredOrientResourceImpl(resource, permissions)};
+		return new RequiredOrientResource[]{new RequiredOrientResourceImpl(resource, specific, permissions)};
 	}
 	
 	//Very bad hack - should be changed in OrientDB
@@ -125,7 +134,7 @@ public class OSecurityHelper
 		int iOperation = OrientPermission.combinedPermission(permissions);
 		ODatabaseDocument db = OrientDbWebSession.get().getDatabase();
 		try {
-			db.checkSecurity(ODatabaseSecurityResources.CLASS, iOperation, oClass.getName());
+			db.checkSecurity(ORule.ResourceGeneric.CLASS, iOperation, oClass.getName());
 			return true;
 		} catch (OSecurityAccessException e) {
 			return false;
@@ -148,7 +157,10 @@ public class OSecurityHelper
 		HashMap<String, OrientPermission[]> secureMap = new HashMap<String, OrientPermission[]>();
 		for (RequiredOrientResource requiredOrientResource : resources)
 		{
-			secureMap.put(requiredOrientResource.value(), requiredOrientResource.permissions());
+			String resource = ORule.mapResourceGenericToLegacyResource(requiredOrientResource.value());
+			String specific = requiredOrientResource.specific();
+			if(!Strings.isEmpty(specific)) resource = resource+"."+specific;
+			secureMap.put(resource, requiredOrientResource.permissions());
 		}
 		return secureMap;
 	}

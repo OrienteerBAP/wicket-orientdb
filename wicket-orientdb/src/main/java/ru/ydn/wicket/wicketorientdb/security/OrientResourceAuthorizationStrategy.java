@@ -10,6 +10,7 @@ import org.apache.wicket.request.component.IRequestableComponent;
 import org.apache.wicket.util.string.Strings;
 
 import com.orientechnologies.orient.core.metadata.security.ODatabaseSecurityResources;
+import com.orientechnologies.orient.core.metadata.security.ORule;
 import com.orientechnologies.orient.core.metadata.security.OUser;
 
 import ru.ydn.wicket.wicketorientdb.OrientDbWebSession;
@@ -93,11 +94,13 @@ public class OrientResourceAuthorizationStrategy  implements IAuthorizationStrat
 		OUser user = OrientDbWebSession.get().getUser();
 		if(user==null) return false;
 		int iOperation = OrientPermission.combinedPermission(resource.permissions());
-		String iResource = resource.value();
-		if(user.checkIfAllowed(iResource, iOperation)!=null) return true;
-		while(!Strings.isEmpty(iResource=Strings.beforeLastPathComponent(iResource, '.')))
+		ORule.ResourceGeneric value = resource.value();
+		String specific = resource.specific();
+		if(Strings.isEmpty(specific)) specific = null;
+		if(user.checkIfAllowed(value, specific, iOperation)!=null) return true;
+		while(!Strings.isEmpty(specific=Strings.beforeLastPathComponent(specific, '.')))
 		{
-			if(user.checkIfAllowed(iResource+"."+ODatabaseSecurityResources.ALL, iOperation)!=null) return true;
+			if(user.checkIfAllowed(value, specific+"."+ODatabaseSecurityResources.ALL, iOperation)!=null) return true;
 		}
 		return false;
 	}
@@ -123,8 +126,12 @@ public class OrientResourceAuthorizationStrategy  implements IAuthorizationStrat
 	public boolean checkResource(String resource, OrientPermission[] permissions)
 	{
 		OUser user = OrientDbWebSession.get().getUser();
+		if(user==null) return false;
+		ORule.ResourceGeneric generic = ORule.mapLegacyResourceToGenericResource(resource);
+		String specific = ORule.mapLegacyResourceToSpecificResource(resource);
+		
 		return user!=null
-				?user.checkIfAllowed(resource, OrientPermission.combinedPermission(permissions))!=null
+				?user.checkIfAllowed(generic, specific, OrientPermission.combinedPermission(permissions))!=null
 				:false;
 	}
 	/**
