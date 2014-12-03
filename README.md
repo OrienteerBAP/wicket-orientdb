@@ -6,6 +6,8 @@ wicket-orientdb
 Everything you need to work with Apache Wicket and OrientDB.
 Library contains several functional part which can be used separatly or all together.
 
+Looking for examples? [Orienteer - Modern Data Warehouse System](https://github.com/PhantomYdn/Orienteer)
+
 Initial setup of application
 -----------------------
 
@@ -68,14 +70,14 @@ It's easy to integrate with OrientDB security stuff:
 You can either specify static required orientDB resources
 
 ```java
-@RequiredOrientResource(value = ODatabaseSecurityResources.SCHEMA, permissions={OrientPermission.READ, OrientPermission.WRITE})
+@RequiredOrientResource(value=ORule.ResourceGeneric.CLASS, specific="ORole", permissions={OrientPermission.READ, OrientPermission.UPDATE})
 public class MyPage extends WebPage {
 ...
 ```
 ```java
 @RequiredOrientResources({
-	@RequiredOrientResource(value = ODatabaseSecurityResources.SCHEMA, permissions=OrientPermission.READ),
-	@RequiredOrientResource(value = ODatabaseSecurityResources.ALL_CLASSES, permissions=OrientPermission.READ),
+	@RequiredOrientResource(value = ORule.ResourceGeneric.SCHEMA, permissions=OrientPermission.READ),
+	@RequiredOrientResource(value = ORule.ResourceGeneric.CLASS, permissions=OrientPermission.READ),
 })
 public class MyPanel extends Panel {
 ...
@@ -90,7 +92,7 @@ public class SaveSchemaCommand<T> extends SavePrototypeCommand<T> implements ISe
 	public RequiredOrientResource[] getRequiredResources() {
 		T object = objectModel.getObject();
 		OrientPermission permission = (object instanceof IPrototype<?>)?OrientPermission.CREATE:OrientPermission.UPDATE;
-		return OSecurityHelper.requireResource(ODatabaseSecurityResources.SCHEMA, permission);
+		return OSecurityHelper.requireResource(ORule.ResourceGeneric.SCHEMA, null, permission);
 	}
 
 ```
