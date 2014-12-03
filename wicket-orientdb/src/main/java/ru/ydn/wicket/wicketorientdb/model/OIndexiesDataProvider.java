@@ -27,29 +27,7 @@ public class OIndexiesDataProvider extends
 	public OIndexiesDataProvider(final IModel<OClass> oClassModel,
 			final IModel<Boolean> allIndexiesModel)
 	{
-		super(new LoadableDetachableModel<Collection<OIndex<?>>>() {
-
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			protected Collection<OIndex<?>> load() {
-				if (Boolean.TRUE.equals(allIndexiesModel.getObject()))
-				{
-					return oClassModel.getObject().getIndexes();
-				} else
-				{
-					return oClassModel.getObject().getClassIndexes();
-				}
-			}
-
-			@Override
-			public void detach() {
-				super.detach();
-				oClassModel.detach();
-				allIndexiesModel.detach();
-			}
-
-		});
+		super(new ListOIndexiesModel(oClassModel, allIndexiesModel));
 	}
 
 	public OIndexiesDataProvider(IModel<Collection<OIndex<?>>> dataModel) {

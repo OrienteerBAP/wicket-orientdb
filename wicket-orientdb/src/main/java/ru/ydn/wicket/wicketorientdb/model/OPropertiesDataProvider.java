@@ -25,30 +25,7 @@ public class OPropertiesDataProvider
 	}
 
 	public OPropertiesDataProvider(final IModel<OClass> oClassModel, final IModel<Boolean> allPropertiesModel) {
-		super(new LoadableDetachableModel<Collection<OProperty>>() {
-
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			protected Collection<OProperty> load() {
-				if(Boolean.TRUE.equals(allPropertiesModel.getObject()))
-				{
-					return oClassModel.getObject().properties();
-				}
-				else
-				{
-					return oClassModel.getObject().declaredProperties();
-				}
-			}
-
-			@Override
-			public void detach() {
-				super.detach();
-				oClassModel.detach();
-				allPropertiesModel.detach();
-			}
-			
-		});
+		super(new ListOPropertiesModel(oClassModel, allPropertiesModel));
 	}
 	
 	public OPropertiesDataProvider(IModel<Collection<OProperty>> dataModel) {
