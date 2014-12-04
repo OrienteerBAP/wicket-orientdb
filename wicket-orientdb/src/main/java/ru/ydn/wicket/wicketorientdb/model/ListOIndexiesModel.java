@@ -25,13 +25,18 @@ public class ListOIndexiesModel extends AbstractListModel<OIndex<?>>
 
 	@Override
 	public Collection<OIndex<?>> getData() {
-		if(allIndexiesModel==null||Boolean.TRUE.equals(allIndexiesModel.getObject()))
+		OClass oClass = oClassModel.getObject();
+		if(oClass==null)
 		{
-			return oClassModel.getObject().getIndexes();
+			return null;
+		}
+		else if(allIndexiesModel==null||Boolean.TRUE.equals(allIndexiesModel.getObject()))
+		{
+			return oClass.getIndexes();
 		}
 		else
 		{
-			return oClassModel.getObject().getClassIndexes();
+			return oClass.getClassIndexes();
 		}
 	}
 

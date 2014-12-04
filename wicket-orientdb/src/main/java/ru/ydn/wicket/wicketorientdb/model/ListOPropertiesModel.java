@@ -26,13 +26,18 @@ public class ListOPropertiesModel extends AbstractListModel<OProperty>
 
 	@Override
 	public Collection<OProperty> getData() {
-		if(allPropertiesModel==null||Boolean.TRUE.equals(allPropertiesModel.getObject()))
+		OClass oClass = oClassModel.getObject();
+		if(oClass==null)
 		{
-			return oClassModel.getObject().properties();
+			return null;
+		}
+		else if(allPropertiesModel==null||Boolean.TRUE.equals(allPropertiesModel.getObject()))
+		{
+			return oClass.properties();
 		}
 		else
 		{
-			return oClassModel.getObject().declaredProperties();
+			return oClass.declaredProperties();
 		}
 	}
 

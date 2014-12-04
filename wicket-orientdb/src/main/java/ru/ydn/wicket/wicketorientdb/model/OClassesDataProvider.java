@@ -19,15 +19,7 @@ public class OClassesDataProvider extends AbstractJavaSortableDataProvider<OClas
 	private static final long serialVersionUID = 1L;
 
 	public OClassesDataProvider() {
-		super(new LoadableDetachableModel<Collection<OClass>>() {
-
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			protected Collection<OClass> load() {
-				return getSchema().getClasses();
-			}
-		});
+		super(new ListOClassesModel());
 	}
 	
 	public OClassesDataProvider(IModel<Collection<OClass>> dataModel) {

@@ -21,6 +21,8 @@ import com.orientechnologies.orient.core.metadata.schema.OSchema;
 import com.orientechnologies.orient.core.metadata.security.OUser;
 import com.orientechnologies.orient.core.record.impl.ODocument;
 
+import ru.ydn.wicket.wicketorientdb.model.ListOIndexiesModel;
+import ru.ydn.wicket.wicketorientdb.model.ListOPropertiesModel;
 import ru.ydn.wicket.wicketorientdb.model.OClassModel;
 import ru.ydn.wicket.wicketorientdb.model.OClassNamingModel;
 import ru.ydn.wicket.wicketorientdb.model.OClassesDataProvider;
@@ -89,6 +91,32 @@ public class TestModels extends AbstractTestClass
 		}
 		assertTrue(allIndexies.size()==0);
 		provider.detach();
+	}
+	
+	@Test
+	public void testListModels()
+	{
+		IModel<String> classNameModel = Model.of();
+		IModel<OClass> classModel = new OClassModel(classNameModel);
+		IModel<List<OProperty>> propertiesModel = new ListOPropertiesModel(classModel, null);
+		IModel<List<OIndex<?>>> indexiesModel = new ListOIndexiesModel(classModel, null);
+		List<OProperty> properties = propertiesModel.getObject();
+		List<OIndex<?>> indexies = indexiesModel.getObject();
+		assertNotNull(properties);
+		assertNotNull(indexies);
+		assertTrue(properties.isEmpty());
+		assertTrue(indexies.isEmpty());
+		classModel.detach();
+		propertiesModel.detach();
+		indexiesModel.detach();
+		
+		classNameModel.setObject("OUser");
+		properties = propertiesModel.getObject();
+		indexies = indexiesModel.getObject();
+		assertNotNull(properties);
+		assertNotNull(indexies);
+		assertFalse(properties.isEmpty());
+		assertFalse(indexies.isEmpty());
 	}
 	
 	@Test
