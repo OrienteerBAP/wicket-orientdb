@@ -7,6 +7,7 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 
 import ru.ydn.wicket.wicketorientdb.OrientDbWebSession;
+import ru.ydn.wicket.wicketorientdb.proto.OClassPrototyper;
 
 import com.orientechnologies.orient.core.metadata.schema.OClass;
 import com.orientechnologies.orient.core.metadata.schema.OSchema;
@@ -35,4 +36,12 @@ public class OClassesDataProvider extends AbstractJavaSortableDataProvider<OClas
 	{
 		return OrientDbWebSession.get().getDatabase().getMetadata().getSchema();
 	}
+
+	@Override
+	protected String getSortPropertyExpression(String param) {
+		if(OClassPrototyper.SUPER_CLASS.equals(param)) return param+".name";
+		else return super.getSortPropertyExpression(param);
+	}
+	
+	
 }

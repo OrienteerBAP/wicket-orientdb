@@ -34,15 +34,13 @@ public abstract class AbstractJavaSortableDataProvider<T, S> extends SortableDat
 		if(data==null || data.size()==0) return Iterators.emptyIterator();
 		Iterator<T> it;
 		final SortParam<S> sortParam = getSort();
-		final String sortParamAsString = getSortPropertyAsString(sortParam.getProperty());
-		if(sortParamAsString!=null)
+		if(sortParam!=null && sortParam.getProperty()!=null)
 		{
 			Ordering<T> ordering = Ordering.natural().nullsFirst().onResultOf(new Function<T, Comparable<?>>() {
 
 				@Override
 				public Comparable<?> apply(T input) {
-					Object value = PropertyResolver.getValue(sortParamAsString, input);
-					return value instanceof Comparable?(Comparable<?>)value:null;
+					return comparableValue(input, sortParam.getProperty());
 				}
 			});
 			if(!sortParam.isAscending()) ordering = ordering.reverse();
@@ -56,7 +54,15 @@ public abstract class AbstractJavaSortableDataProvider<T, S> extends SortableDat
 		return count>=0?Iterators.limit(it, (int)count):it;
 	}
 	
-	protected String getSortPropertyAsString(S param)
+	protected Comparable<?> comparableValue(T input, S sortParam)
+	{
+		String property = getSortPropertyExpression(sortParam);
+		if(property==null) return null;
+		Object value = PropertyResolver.getValue(property, input);
+		return value instanceof Comparable?(Comparable<?>)value:null;
+	}
+	
+	protected String getSortPropertyExpression(S param)
 	{
 		return param!=null?param.toString():null;
 	}
