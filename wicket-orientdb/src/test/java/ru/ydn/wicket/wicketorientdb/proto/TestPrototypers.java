@@ -26,8 +26,10 @@ public class TestPrototypers extends AbstractTestClass
 		assertTrue(bean instanceof IPrototype<?>);
 		assertTrue(bean instanceof Serializable);
 		bean.setName("name");
+		bean.setDescription(null);
 		bean.setInteger(-1);
 		assertEquals("name", bean.getName());
+		assertNull(bean.getDescription());
 		assertEquals(Integer.valueOf(-1), bean.getInteger());
 		assertNull(bean.getSignature());
 		IPrototype<IMyBean> proto = (IPrototype<IMyBean>)bean;
@@ -35,6 +37,7 @@ public class TestPrototypers extends AbstractTestClass
 		assertFalse(proto.isPrototypeRealized());
 		bean = proto.realizePrototype();
 		assertEquals("name", bean.getName());
+		assertNull(bean.getDescription());
 		assertEquals(Integer.valueOf(-1), bean.getInteger());
 		assertEquals("REAL", bean.getSignature());
 		assertTrue(proto.isPrototypeRealized());
@@ -50,9 +53,11 @@ public class TestPrototypers extends AbstractTestClass
 		bean.setCustom("name", "myname");
 		bean.setCustom("int", -1);
 		bean.setCustomString("name2", "myname2");
+		bean.setCustomString("name3", null);
 		assertEquals("myname", bean.getCustom("name"));
 		assertEquals(Integer.valueOf(-1), bean.getCustom("int"));
 		assertEquals("myname2", bean.getCustomString("name2"));
+		assertNull(bean.getCustomString("name3"));
 		IPrototype<IMyBean> proto = (IPrototype<IMyBean>)bean;
 		assertTrue(proto instanceof IMyBean);
 		assertFalse(proto.isPrototypeRealized());
@@ -60,6 +65,7 @@ public class TestPrototypers extends AbstractTestClass
 		assertEquals("myname", bean.getCustom("name"));
 		assertEquals(Integer.valueOf(-1), bean.getCustom("int"));
 		assertEquals("myname2", bean.getCustomString("name2"));
+		assertNull(bean.getCustomString("name3"));
 		assertEquals("REAL", bean.getSignature());
 		assertTrue(proto.isPrototypeRealized());
 		assertEquals("REAL", ((IMyBean)proto).getSignature());

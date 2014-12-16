@@ -56,7 +56,7 @@ public abstract class AbstractPrototyper<T> extends AbstractInvocationHandler im
 			{
 				for(int i=0; i<args.length; i++)
 				{
-					if(args!=null && !requiredAttrTypes[i].isInstance(args[i])) return null;
+					if(args!=null && !(requiredAttrTypes[i].isInstance(args[i]) || args[i]==null)) return null;
 				}
 				int pLength = prefix.length();
 				String simplePropertyName = methodName.substring(pLength, pLength+1).toLowerCase()+methodName.substring(pLength+1);

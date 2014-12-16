@@ -6,6 +6,7 @@ import java.util.Map;
 public class MyBean implements IMyBean
 {
 	private String name;
+	private String description;
 	private Integer integer;
 	private Map<String, Object> customMap = new HashMap<String, Object>();
 	private Map<String, String> customStringMap = new HashMap<String, String>();
@@ -15,6 +16,12 @@ public class MyBean implements IMyBean
 	}
 	public void setName(String name) {
 		this.name = name;
+	}
+	public String getDescription() {
+		return description;
+	}
+	public void setDescription(String description) {
+		this.description = description;
 	}
 	public Integer getInteger() {
 		return integer;

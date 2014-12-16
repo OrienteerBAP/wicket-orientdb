@@ -4,6 +4,8 @@ public interface IMyBean
 {
 	public String getName();
 	public void setName(String name);
+	public String getDescription();
+	public void setDescription(String description);
 	public Integer getInteger();
 	public void setInteger(Integer integer);
 	public String getSignature();
