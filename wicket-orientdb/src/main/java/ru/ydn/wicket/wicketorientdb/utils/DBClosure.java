@@ -49,7 +49,7 @@ public abstract class DBClosure<V> implements Serializable
 		ODatabaseDocument oldDb = ODatabaseRecordThreadLocal.INSTANCE.getIfDefined();
 		try
 		{
-			db = DefaultODatabaseThreadLocalFactory.castToODatabaseDocument(getSettings().getDatabasePool().acquire(dbUrl, username, password));
+			db = getSettings().getDatabasePoolFactory().get(dbUrl, username, password).acquire();
 			return execute(db);
 		} 
 		finally

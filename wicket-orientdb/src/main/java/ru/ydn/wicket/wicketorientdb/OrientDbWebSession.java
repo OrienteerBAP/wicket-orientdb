@@ -68,8 +68,7 @@ public class OrientDbWebSession extends AuthenticatedWebSession {
 		{
 			ODatabaseDocument currentDB = getDatabase();
 			IOrientDbSettings settings = OrientDbWebApplication.get().getOrientDbSettings();
-			ODatabaseDocument newDB = DefaultODatabaseThreadLocalFactory.castToODatabaseDocument(
-								settings.getDatabasePool().acquire(settings.getDBUrl(), username, password));
+			ODatabaseDocument newDB = settings.getDatabasePoolFactory().get(settings.getDBUrl(), username, password).acquire();
 			if(newDB!=currentDB)
 			{
 				currentDB.commit();

@@ -5,6 +5,7 @@ import java.util.List;
 import com.orientechnologies.orient.core.db.ODatabase;
 import com.orientechnologies.orient.core.db.ODatabasePoolBase;
 import com.orientechnologies.orient.core.db.ODatabaseThreadLocalFactory;
+import com.orientechnologies.orient.core.db.OPartitionedDatabasePoolFactory;
 import com.orientechnologies.orient.core.hook.ORecordHook;
 
 /**
@@ -32,9 +33,9 @@ public interface IOrientDbSettings {
 	 */
 	public String getDBInstallatorUserPassword();
 	/**
-	 * @return {@link ODatabasePoolBase} for DB pool for the application
+	 * @return {@link OPartitionedDatabasePoolFactory} for DB pool for the application
 	 */
-	public ODatabasePoolBase<? extends ODatabase> getDatabasePool();
+	public OPartitionedDatabasePoolFactory getDatabasePoolFactory();
 	/**
 	 * @return factory for {@link ODatabaseRecord}
 	 */
@@ -68,7 +69,7 @@ public interface IOrientDbSettings {
 	 * Set {@link ODatabasePoolBase} which should be used for DB connections pooling
 	 * @param pool
 	 */
-	public void setDatabasePool(ODatabasePoolBase<? extends ODatabase> pool);
+	public void setDatabasePoolFactory(OPartitionedDatabasePoolFactory poolFactory);
 	/**
 	 * Set {@link ODatabaseThreadLocalFactory} which should be used for obtaining {@link ODatabaseRecord}
 	 * @param factory

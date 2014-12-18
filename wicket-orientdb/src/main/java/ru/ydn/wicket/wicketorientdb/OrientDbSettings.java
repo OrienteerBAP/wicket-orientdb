@@ -7,6 +7,7 @@ import com.orientechnologies.orient.core.Orient;
 import com.orientechnologies.orient.core.db.ODatabase;
 import com.orientechnologies.orient.core.db.ODatabasePoolBase;
 import com.orientechnologies.orient.core.db.ODatabaseThreadLocalFactory;
+import com.orientechnologies.orient.core.db.OPartitionedDatabasePoolFactory;
 import com.orientechnologies.orient.core.db.document.ODatabaseDocumentPool;
 import com.orientechnologies.orient.core.hook.ORecordHook;
 
@@ -20,7 +21,8 @@ public class OrientDbSettings implements IOrientDbSettings
 	private String dbUserPassword;
 	private String dbInstallatorUserName;
 	private String dbInstallatorUserPassword;
-	private ODatabasePoolBase<? extends ODatabase> pool = ODatabaseDocumentPool.global();
+	private OPartitionedDatabasePoolFactory poolFactory = new OPartitionedDatabasePoolFactory();
+	
 	private List<ORecordHook> oRecordHooks = new ArrayList<ORecordHook>();
 	
 	@Override
@@ -30,8 +32,8 @@ public class OrientDbSettings implements IOrientDbSettings
 
 
 	@Override
-	public ODatabasePoolBase<? extends ODatabase> getDatabasePool() {
-		return pool;
+	public OPartitionedDatabasePoolFactory getDatabasePoolFactory() {
+		return poolFactory;
 	}
 
 	@Override
@@ -45,8 +47,8 @@ public class OrientDbSettings implements IOrientDbSettings
 	}
 
 	@Override
-	public void setDatabasePool(ODatabasePoolBase<? extends ODatabase> pool) {
-		this.pool = pool;
+	public void setDatabasePoolFactory(OPartitionedDatabasePoolFactory poolFactory) {
+		this.poolFactory = poolFactory;
 	}
 	
 
