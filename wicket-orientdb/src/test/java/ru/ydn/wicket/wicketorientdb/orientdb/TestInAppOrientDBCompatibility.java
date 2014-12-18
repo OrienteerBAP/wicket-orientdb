@@ -1,15 +1,16 @@
-package ru.ydn.wicket.wicketorientdb;
+package ru.ydn.wicket.wicketorientdb.orientdb;
 
 import org.junit.Ignore;
 import org.junit.Test;
 
+import ru.ydn.wicket.wicketorientdb.AbstractTestClass;
 import static org.junit.Assert.*;
 
 import com.orientechnologies.orient.core.metadata.schema.OClass;
 import com.orientechnologies.orient.core.metadata.schema.OSchema;
 import com.orientechnologies.orient.core.metadata.schema.OType;
 
-public class TestOrientDBCompatibility extends AbstractTestClass
+public class TestInAppOrientDBCompatibility extends AbstractTestClass
 {
 	@Test
 	@Ignore
