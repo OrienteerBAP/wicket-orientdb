@@ -16,6 +16,7 @@ import com.orientechnologies.orient.core.metadata.security.ODatabaseSecurityReso
 import com.orientechnologies.orient.core.metadata.security.ORestrictedAccessHook;
 import com.orientechnologies.orient.core.metadata.security.ORule;
 import com.orientechnologies.orient.core.metadata.security.OSecurityShared;
+import com.orientechnologies.orient.core.metadata.security.OUser;
 import com.orientechnologies.orient.core.record.impl.ODocument;
 
 /**
@@ -131,14 +132,20 @@ public class OSecurityHelper
 	 */
 	public static boolean isAllowed(OClass oClass, OrientPermission... permissions)
 	{
-		int iOperation = OrientPermission.combinedPermission(permissions);
-		ODatabaseDocument db = OrientDbWebSession.get().getDatabase();
-		try {
-			db.checkSecurity(ORule.ResourceGeneric.CLASS, iOperation, oClass.getName());
-			return true;
-		} catch (OSecurityAccessException e) {
-			return false;
-		}
+		return isAllowed(ORule.ResourceGeneric.CLASS, oClass.getName(), permissions);
+	}
+	
+	/**
+	 * Check that all required permissions present for specified resource and specific
+	 * @param resource
+	 * @param specific
+	 * @param permissions
+	 * @return
+	 */
+	public static boolean isAllowed(ORule.ResourceGeneric resource, String specific, OrientPermission... permissions)
+	{
+		return OrientDbWebSession.get().getUser()
+					.checkIfAllowed(resource, specific, OrientPermission.combinedPermission(permissions))!=null;
 	}
 	
 	public static <T extends Component> T secureComponent(T component, RequiredOrientResource... resources)
