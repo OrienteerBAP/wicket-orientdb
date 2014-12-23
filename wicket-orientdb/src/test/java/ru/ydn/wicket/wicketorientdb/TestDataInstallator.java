@@ -2,6 +2,8 @@ package ru.ydn.wicket.wicketorientdb;
 
 import java.util.Arrays;
 
+import ru.ydn.wicket.wicketorientdb.rest.TestRestApi;
+
 import com.orientechnologies.orient.core.db.document.ODatabaseDocument;
 import com.orientechnologies.orient.core.metadata.schema.OClass;
 import com.orientechnologies.orient.core.metadata.schema.OSchema;
@@ -33,6 +35,16 @@ public class TestDataInstallator extends AbstractDataInstallator
 		doc1.save();
 		doc2.save();
 		doc3.save();
+		
+		OClass testRest = schema.createClass(TestRestApi.TEST_REST_CLASS);
+		testRest.createProperty("a", OType.STRING);
+		testRest.createProperty("b", OType.INTEGER);
+		testRest.createProperty("c", OType.BOOLEAN);
+		ODocument restDoc = new ODocument(testRest);
+		restDoc.field("a", "test");
+		restDoc.field("b", 10);
+		restDoc.field("c", true);
+		restDoc.save();
 	}
 
 }

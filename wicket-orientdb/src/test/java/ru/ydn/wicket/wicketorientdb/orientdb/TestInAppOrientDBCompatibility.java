@@ -13,7 +13,6 @@ import com.orientechnologies.orient.core.metadata.schema.OType;
 public class TestInAppOrientDBCompatibility extends AbstractTestClass
 {
 	@Test
-	@Ignore
 	public void testExistsProperty()
 	{
 		OSchema schema = getSchema();

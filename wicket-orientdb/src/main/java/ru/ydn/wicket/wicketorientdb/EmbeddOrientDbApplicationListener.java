@@ -20,8 +20,6 @@ public class EmbeddOrientDbApplicationListener implements IApplicationListener {
 	private File configFile;
 	private String config;
 	protected OServerConfiguration serverConfiguration;
-	
-	protected OServer server;
 
 	public EmbeddOrientDbApplicationListener()
 	{
@@ -51,7 +49,8 @@ public class EmbeddOrientDbApplicationListener implements IApplicationListener {
 	@Override
 	public void onAfterInitialized(Application application) {
 		try {
-			server = OServerMain.create();
+			OrientDbWebApplication app = (OrientDbWebApplication)application;
+			OServer server = OServerMain.create();
 			if(url!=null)
 			{
 				server.startup(url.openStream());
@@ -74,7 +73,7 @@ public class EmbeddOrientDbApplicationListener implements IApplicationListener {
 			}
 			server.activate();
 			server.removeShutdownHook();
-			OrientDbWebApplication app = (OrientDbWebApplication)application;
+			app.setServer(server);
 			app.getOrientDbSettings().setDatabasePoolFactory(server.getDatabasePoolFactory());
 			onAfterServerStartupAndActivation(app);
 		} catch (Exception e) {
@@ -88,8 +87,10 @@ public class EmbeddOrientDbApplicationListener implements IApplicationListener {
 	}
 
 	@Override
-	public void onBeforeDestroyed(Application arg0) {
-		server.shutdown();
+	public void onBeforeDestroyed(Application application) {
+		OrientDbWebApplication app = (OrientDbWebApplication)application;
+		OServer server = app.getServer();
+		if(server!=null) server.shutdown();
 	}
 
 }

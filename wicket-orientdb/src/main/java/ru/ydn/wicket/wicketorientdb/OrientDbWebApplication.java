@@ -19,12 +19,15 @@ import com.orientechnologies.orient.core.db.record.OIdentifiable;
 import com.orientechnologies.orient.core.hook.ORecordHook;
 import com.orientechnologies.orient.core.metadata.schema.OClass;
 import com.orientechnologies.orient.core.record.impl.ODocument;
+import com.orientechnologies.orient.server.OServer;
 
 /**
  * {@link WebApplication} realization for applications on top of OrientDB
  */
 public abstract class OrientDbWebApplication extends AuthenticatedWebApplication {
+	
 	private IOrientDbSettings orientDbSettings = new OrientDbSettings();
+	private OServer server;
 
 	@Override
 	protected Class<? extends OrientDbWebSession> getWebSessionClass()
@@ -149,4 +152,12 @@ public abstract class OrientDbWebApplication extends AuthenticatedWebApplication
 		return locator;
 	}
 
+	public OServer getServer() {
+		return server;
+	}
+
+	public void setServer(OServer server) {
+		this.server = server;
+	}
+	
 }
