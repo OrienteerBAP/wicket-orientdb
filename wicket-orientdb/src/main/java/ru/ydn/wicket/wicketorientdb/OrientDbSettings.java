@@ -10,6 +10,9 @@ import com.orientechnologies.orient.core.db.ODatabaseThreadLocalFactory;
 import com.orientechnologies.orient.core.db.OPartitionedDatabasePoolFactory;
 import com.orientechnologies.orient.core.db.document.ODatabaseDocumentPool;
 import com.orientechnologies.orient.core.hook.ORecordHook;
+import com.orientechnologies.orient.server.OServer;
+import com.orientechnologies.orient.server.network.OServerNetworkListener;
+import com.orientechnologies.orient.server.network.protocol.http.ONetworkProtocolHttpAbstract;
 
 /**
  * Default implementation of {@link IOrientDbSettings}
@@ -21,6 +24,7 @@ public class OrientDbSettings implements IOrientDbSettings
 	private String dbUserPassword;
 	private String dbInstallatorUserName;
 	private String dbInstallatorUserPassword;
+	private String orientDbRestApiUrl;
 	private OPartitionedDatabasePoolFactory poolFactory = new OPartitionedDatabasePoolFactory();
 	
 	private List<ORecordHook> oRecordHooks = new ArrayList<ORecordHook>();
@@ -106,6 +110,38 @@ public class OrientDbSettings implements IOrientDbSettings
 	@Override
 	public List<ORecordHook> getORecordHooks() {
 		return oRecordHooks;
+	}
+
+
+	@Override
+	public String getOrientDBRestApiUrl() {
+		if(orientDbRestApiUrl==null)
+		{
+			setOrientDBRestApiUrl(resolveOrientDBRestApiUrl());
+		}
+		return orientDbRestApiUrl;
+	}
+
+
+	@Override
+	public void setOrientDBRestApiUrl(String orientDbRestApiUrl) {
+		if(orientDbRestApiUrl!=null && !orientDbRestApiUrl.endsWith("/")) orientDbRestApiUrl+="/";
+		this.orientDbRestApiUrl = orientDbRestApiUrl;
+	}
+	
+	public String resolveOrientDBRestApiUrl()
+	{
+		OrientDbWebApplication app = OrientDbWebApplication.get();
+		OServer server = app.getServer();
+		if(server!=null)
+		{
+			OServerNetworkListener http = server.getListenerByProtocol(ONetworkProtocolHttpAbstract.class);
+			if(http!=null)
+			{
+				return "http://"+http.getListeningAddress(true);
+			}
+		}
+		return null;
 	}
 
 }

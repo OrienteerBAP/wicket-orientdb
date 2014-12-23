@@ -9,6 +9,7 @@ import org.apache.wicket.protocol.http.WebApplication;
 
 import ru.ydn.wicket.wicketorientdb.converter.ODocumentConverter;
 import ru.ydn.wicket.wicketorientdb.converter.OIdentifiableConverter;
+import ru.ydn.wicket.wicketorientdb.rest.OrientDBHttpAPIResource;
 import ru.ydn.wicket.wicketorientdb.security.WicketOrientDbAuthorizationStrategy;
 
 import com.orientechnologies.orient.core.Orient;
@@ -158,6 +159,11 @@ public abstract class OrientDbWebApplication extends AuthenticatedWebApplication
 
 	public void setServer(OServer server) {
 		this.server = server;
+	}
+
+	protected void mountOrientDbRestApi()
+	{
+		OrientDBHttpAPIResource.mountOrientDbRestApi(this);
 	}
 	
 }

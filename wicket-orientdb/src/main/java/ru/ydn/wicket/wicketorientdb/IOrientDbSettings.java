@@ -40,6 +40,11 @@ public interface IOrientDbSettings {
 	 * @return factory for {@link ODatabaseRecord}
 	 */
 	public ODatabaseThreadLocalFactory getDatabaseThreadLocalFactory();
+	
+	/**
+	 * @return default url for orientdb rest API
+	 */
+	public String getOrientDBRestApiUrl();
 	/**
 	 * Set URL for the OrientDB
 	 * @param url
@@ -75,6 +80,10 @@ public interface IOrientDbSettings {
 	 * @param factory
 	 */
 	public void setDatabaseThreadLocalFactory(ODatabaseThreadLocalFactory factory);
+	/**
+	 * Set OrientDB Rest API URL
+	 */
+	public void setOrientDBRestApiUrl(String orientDbRestApiUrl);
 	/**
 	 * @return {@link List} of {@link ORecordHook} which should be registered for every DB instance created
 	 */

@@ -14,6 +14,7 @@ import java.net.URL;
 import java.util.Enumeration;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.wicket.protocol.http.WebApplication;
 import org.apache.wicket.request.http.WebRequest;
@@ -27,6 +28,10 @@ import org.apache.wicket.util.string.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.orientechnologies.orient.server.OServer;
+import com.orientechnologies.orient.server.network.OServerNetworkListener;
+import com.orientechnologies.orient.server.network.protocol.http.ONetworkProtocolHttpAbstract;
+
 import ru.ydn.wicket.wicketorientdb.IOrientDbSettings;
 import ru.ydn.wicket.wicketorientdb.OrientDbWebApplication;
 import ru.ydn.wicket.wicketorientdb.OrientDbWebSession;
@@ -39,19 +44,6 @@ public class OrientDBHttpAPIResource extends AbstractResource
 	
 	private static final Logger LOG = LoggerFactory.getLogger(OrientDBHttpAPIResource.class);
 	
-	private String orientDbHttpURL;
-	
-	public OrientDBHttpAPIResource()
-	{
-		this("http://localhost:2480/");
-	}
-	
-	public OrientDBHttpAPIResource(String orientDbHttpURL)
-	{
-		Args.notNull(orientDbHttpURL, "orientDbHttpURL");
-		if(!orientDbHttpURL.endsWith("/")) orientDbHttpURL+="/";
-		this.orientDbHttpURL = orientDbHttpURL;
-	}
 	
 	@Override
 	protected ResourceResponse newResourceResponse(Attributes attributes) {
@@ -61,85 +53,89 @@ public class OrientDBHttpAPIResource extends AbstractResource
 		final ResourceResponse response = new ResourceResponse();
 		if(response.dataNeedsToBeWritten(attributes))
 		{
-			StringBuilder sb = new StringBuilder(orientDbHttpURL);
-			for(int i=0; i<params.getIndexedCount();i++)
+			String orientDbHttpURL = OrientDbWebApplication.get().getOrientDbSettings().getOrientDBRestApiUrl();
+			if(orientDbHttpURL!=null)
 			{
-				if(i==1)
-				{
-					//replace provided database name
-					sb.append(OrientDbWebSession.get().getDatabase().getName()).append('/');
-				}
-				else
-				{
-					sb.append(params.get(i).toString()).append('/');
-				}
-			}
-			if(sb.charAt(sb.length()-1)=='/')sb.setLength(sb.length()-1);
-			String queryString = request.getUrl().getQueryString();
-			if(!Strings.isEmpty(queryString)) sb.append('?').append(queryString);
-			
-			final String url = sb.toString();
-			final StringWriter sw = new StringWriter();
-			final PrintWriter out = new PrintWriter(sw);
-			HttpURLConnection con=null;
-			try
-			{
-				URL orientURL = new URL(url);
-				con = (HttpURLConnection)orientURL.openConnection();
-				con.setDoInput(true);
-				/*Enumeration<String> headers = httpRequest.getHeaderNames();
-						while(headers.hasMoreElements())
-						{
-							String header = headers.nextElement();
-							Enumeration<String> headerValues = httpRequest.getHeaders(header);
-							while(headerValues.hasMoreElements())
-							{
-								String value = headerValues.nextElement();
-								con.addRequestProperty(header, value);
-							}
-						}*/
-				con.setUseCaches(false);
 				
-				String method = httpRequest.getMethod();
-				con.setRequestMethod(method);
-				if("post".equalsIgnoreCase(method) || "put".equalsIgnoreCase(method))
+				StringBuilder sb = new StringBuilder(orientDbHttpURL);
+				
+				for(int i=0; i<params.getIndexedCount();i++)
 				{
-					con.setDoOutput(true);
-					IOUtils.copy(httpRequest.getInputStream(), con.getOutputStream());
-				}
-				IOUtils.copy(con.getInputStream(), out, "UTF-8");
-				response.setStatusCode(con.getResponseCode());
-				response.setContentType(con.getContentType());
-			} catch (IOException e)
-			{
-				LOG.error("Can't communicate with OrientDB REST", e);
-				if(con!=null)
-				{
-					try
+					if(i==1)
 					{
-						response.setError(con.getResponseCode(), con.getResponseMessage());
-						InputStream errorStream = con.getErrorStream();
-						if(errorStream!=null) IOUtils.copy(errorStream, out, "UTF-8");
-					} catch (IOException e1)
+						//replace provided database name
+						sb.append(OrientDbWebSession.get().getDatabase().getName()).append('/');
+					}
+					else
 					{
-						LOG.error("Can't response by error", e1);
+						sb.append(params.get(i).toString()).append('/');
 					}
 				}
-			}
-			response.setWriteCallback(new WriteCallback() {
+				if(sb.charAt(sb.length()-1)=='/')sb.setLength(sb.length()-1);
+				String queryString = request.getUrl().getQueryString();
+				if(!Strings.isEmpty(queryString)) sb.append('?').append(queryString);
 				
-				@Override
-				public void writeData(Attributes attributes) throws IOException {
-					attributes.getResponse().write(sw.toString());
+				final String url = sb.toString();
+				final StringWriter sw = new StringWriter();
+				final PrintWriter out = new PrintWriter(sw);
+				HttpURLConnection con=null;
+				try
+				{
+					URL orientURL = new URL(url);
+					con = (HttpURLConnection)orientURL.openConnection();
+					con.setDoInput(true);
+					con.setUseCaches(false);
+					
+					String method = httpRequest.getMethod();
+					con.setRequestMethod(method);
+					if("post".equalsIgnoreCase(method) || "put".equalsIgnoreCase(method))
+					{
+						con.setDoOutput(true);
+						IOUtils.copy(httpRequest.getInputStream(), con.getOutputStream());
+					}
+					IOUtils.copy(con.getInputStream(), out, "UTF-8");
+					response.setStatusCode(con.getResponseCode());
+					response.setContentType(con.getContentType());
+				} catch (IOException e)
+				{
+					LOG.error("Can't communicate with OrientDB REST", e);
+					if(con!=null)
+					{
+						try
+						{
+							response.setError(con.getResponseCode(), con.getResponseMessage());
+							InputStream errorStream = con.getErrorStream();
+							if(errorStream!=null) IOUtils.copy(errorStream, out, "UTF-8");
+						} catch (IOException e1)
+						{
+							LOG.error("Can't response by error", e1);
+						}
+					}
 				}
-			});
+				response.setWriteCallback(new WriteCallback() {
+					
+					@Override
+					public void writeData(Attributes attributes) throws IOException {
+						attributes.getResponse().write(sw.toString());
+					}
+				});
+			}
+			else
+			{
+				response.setError(HttpServletResponse.SC_BAD_GATEWAY, "OrientDB REST URL is not specified");
+			}
 		}
 		return response;
 	}
 	
-	public void register(WebApplication app)
+	public static void mountOrientDbRestApi(WebApplication app)
 	{
-		app.getSharedResources().add(ORIENT_DB_KEY, this);
+		mountOrientDbRestApi(new OrientDBHttpAPIResource(), app);
+	}
+	
+	public static void mountOrientDbRestApi(OrientDBHttpAPIResource resource, WebApplication app)
+	{
+		app.getSharedResources().add(ORIENT_DB_KEY, resource);
 		app.mountResource(MOUNT_PATH, new SharedResourceReference(ORIENT_DB_KEY));
 		Authenticator.setDefault(new Authenticator() {
 			@Override
