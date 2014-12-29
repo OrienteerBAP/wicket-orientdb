@@ -1,5 +1,6 @@
 package ru.ydn.wicket.wicketorientdb;
 
+import org.apache.wicket.authorization.AuthorizationException;
 import org.apache.wicket.authorization.UnauthorizedActionException;
 import org.apache.wicket.authorization.UnauthorizedInstantiationException;
 import org.apache.wicket.authroles.authentication.pages.SignInPage;
@@ -95,8 +96,6 @@ public class TestSecurity extends AbstractTestClass
 		getSession().signOut();
 	}
 
-	//TODO: consider this difference with staticly secured pages
-	@Test(expected=UnauthorizedActionException.class)
 	public void testDynamicPageForUnsigned() throws Exception
 	{
 		assertEquals(getApp().getOrientDbSettings().getDBUserName(), getDatabase().getUser().getName());
@@ -104,8 +103,7 @@ public class TestSecurity extends AbstractTestClass
 		wicketTester.assertRenderedPage(SignInPage.class);
 	}
 	
-	//TODO: consider this difference with staticly secured pages
-	@Test(expected=UnauthorizedActionException.class)
+	@Test(expected=UnauthorizedInstantiationException.class)
 	public void testDynamicPageForSigned()
 	{
 		assertEquals(getApp().getOrientDbSettings().getDBUserName(), getDatabase().getUser().getName());

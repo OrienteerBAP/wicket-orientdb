@@ -2,9 +2,11 @@ package ru.ydn.wicket.wicketorientdb;
 
 import org.apache.wicket.Page;
 import org.apache.wicket.WicketRuntimeException;
+import org.apache.wicket.authorization.UnauthorizedActionException;
 import org.apache.wicket.core.request.handler.IPageRequestHandler;
 import org.apache.wicket.core.request.handler.PageProvider;
 import org.apache.wicket.core.request.handler.RenderPageRequestHandler;
+import org.apache.wicket.request.IRequestCycle;
 import org.apache.wicket.request.IRequestHandler;
 import org.apache.wicket.request.cycle.AbstractRequestCycleListener;
 import org.apache.wicket.request.cycle.IRequestCycleListener;
@@ -21,7 +23,7 @@ import com.orientechnologies.orient.core.exception.OValidationException;
  */
 public class OrientDefaultExceptionsHandlingListener extends
 		AbstractRequestCycleListener {
-
+	
 	@Override
 	public IRequestHandler onException(RequestCycle cycle, Exception ex) {
 		Throwable th = null;
@@ -35,6 +37,21 @@ public class OrientDefaultExceptionsHandlingListener extends
 			OrientDbWebSession.get().error(th.getMessage());
 			return new RenderPageRequestHandler(new PageProvider(page),
 			RenderPageRequestHandler.RedirectPolicy.ALWAYS_REDIRECT);
+		}
+		else if((th=Exceptions.findCause(ex, UnauthorizedActionException.class))!=null)
+		{
+			final UnauthorizedActionException unauthorizedActionException = (UnauthorizedActionException)th;
+			return new IRequestHandler()
+				{
+					@Override
+					public void respond(IRequestCycle requestCycle) {
+						OrientDbWebApplication.get().onUnauthorizedInstantiation(unauthorizedActionException.getComponent());
+					}
+	
+					@Override
+					public void detach(IRequestCycle requestCycle) {
+					}
+				};
 		}
 		else
 		{
