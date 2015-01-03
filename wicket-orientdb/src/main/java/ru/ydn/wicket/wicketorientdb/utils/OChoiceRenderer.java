@@ -2,6 +2,7 @@ package ru.ydn.wicket.wicketorientdb.utils;
 
 import org.apache.wicket.markup.html.form.IChoiceRenderer;
 
+import com.orientechnologies.orient.core.metadata.schema.OProperty;
 import com.orientechnologies.orient.core.record.impl.ODocument;
 
 public class OChoiceRenderer implements IChoiceRenderer<ODocument>
@@ -17,6 +18,16 @@ public class OChoiceRenderer implements IChoiceRenderer<ODocument>
 		super();
 		this.displayExpression = null;
 		this.idExpression = null;
+	}
+	
+	public OChoiceRenderer(OProperty displayProperty)
+	{
+		this(displayProperty.getName());
+	}
+	
+	public OChoiceRenderer(OProperty displayProperty, OProperty idProperty)
+	{
+		this(displayProperty.getName(), idProperty.getName());
 	}
 
 	public OChoiceRenderer(String displayExpression)
