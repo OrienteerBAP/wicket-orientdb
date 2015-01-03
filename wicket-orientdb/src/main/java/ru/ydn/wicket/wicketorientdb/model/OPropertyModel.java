@@ -37,15 +37,23 @@ public class OPropertyModel extends PrototypeLoadableDetachableModel<OProperty>
 
 	@Override
 	protected OProperty loadInstance() {
-			OClass oClass = classModel.getObject();
+			OClass oClass = classModel!=null?classModel.getObject():null;
 			return oClass!=null && propertyName!=null?oClass.getProperty(propertyName):null;
 	}
 	
 
 	@Override
 	protected void handleObject(OProperty object) {
-		classModel = new OClassModel(object.getOwnerClass());
-		propertyName = object.getName();
+		if(object!=null)
+		{
+			classModel = new OClassModel(object.getOwnerClass());
+			propertyName = object.getName();
+		}
+		else
+		{
+			classModel=null;
+			propertyName=null;
+		}
 	}
 	
 	@Override

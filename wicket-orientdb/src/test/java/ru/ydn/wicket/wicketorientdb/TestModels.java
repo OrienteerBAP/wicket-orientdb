@@ -240,6 +240,9 @@ public class TestModels extends AbstractTestClass
 		OClassModel model = new OClassModel("OUser");
 		OClass oUserClass = getSchema().getClass("OUser");
 		assertModelObjectEquals(oUserClass, model);
+		//Test for null
+		model.setObject(null);
+		assertModelObjectEquals(null, model);
 	}
 	
 	@Test
@@ -283,6 +286,9 @@ public class TestModels extends AbstractTestClass
 		OProperty userNameProperty = getSchema().getClass("OUser").getProperty("name");
 		OPropertyModel propertyModel = new OPropertyModel("OUser", "name");
 		assertModelObjectEquals(userNameProperty, propertyModel);
+		//Test for null
+		propertyModel.setObject(null);
+		assertModelObjectEquals(null, propertyModel);
 	}
 	
 	public static void assertModelObjectEquals(Object expected, IModel<?> model)
