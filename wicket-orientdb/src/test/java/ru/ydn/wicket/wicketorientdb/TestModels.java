@@ -9,6 +9,7 @@ import java.util.Map;
 import org.apache.wicket.extensions.markup.html.repeater.data.sort.SortOrder;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
+import org.junit.ClassRule;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -21,6 +22,7 @@ import com.orientechnologies.orient.core.metadata.schema.OSchema;
 import com.orientechnologies.orient.core.metadata.security.OUser;
 import com.orientechnologies.orient.core.record.impl.ODocument;
 
+import ru.ydn.wicket.wicketorientdb.junit.WicketOrientDbTesterScope;
 import ru.ydn.wicket.wicketorientdb.model.ListOIndexiesModel;
 import ru.ydn.wicket.wicketorientdb.model.ListOPropertiesModel;
 import ru.ydn.wicket.wicketorientdb.model.OClassModel;
@@ -37,8 +39,11 @@ import ru.ydn.wicket.wicketorientdb.model.OQueryDataProvider;
 import ru.ydn.wicket.wicketorientdb.model.OQueryModel;
 import ru.ydn.wicket.wicketorientdb.model.SimpleNamingModel;
 
-public class TestModels extends AbstractTestClass
+public class TestModels
 {
+	@ClassRule
+	public static WicketOrientDbTesterScope wicket = new WicketOrientDbTesterScope();
+	
 	@Test
 	public void testOClassesDataProvider()
 	{
@@ -46,7 +51,7 @@ public class TestModels extends AbstractTestClass
 		provider.setSort("name", SortOrder.ASCENDING);
 		assertTrue(provider.size()>5);
 		Iterator<? extends OClass> it = provider.iterator(0, -1);
-		OSchema schema = getSchema();
+		OSchema schema = wicket.getTester().getSchema();
 		List<OClass> allClasses = new ArrayList<OClass>(schema.getClasses());
 		while(it.hasNext())
 		{
@@ -60,7 +65,7 @@ public class TestModels extends AbstractTestClass
 	@Test
 	public void testOPropertiesDataProvider()
 	{
-		OSchema schema = getSchema();
+		OSchema schema = wicket.getTester().getSchema();
 		OClass oClass = schema.getClass("ClassA");
 		OPropertiesDataProvider provider = new OPropertiesDataProvider(oClass, true);
 		provider.setSort("name", SortOrder.ASCENDING);
@@ -78,7 +83,7 @@ public class TestModels extends AbstractTestClass
 	@Test
 	public void testOIndexDataProvider()
 	{
-		OSchema schema = getSchema();
+		OSchema schema = wicket.getTester().getSchema();
 		OClass oClass = schema.getClass("OUser");
 		OIndexiesDataProvider provider = new OIndexiesDataProvider(oClass, true);
 		provider.setSort("name", SortOrder.ASCENDING);
@@ -126,7 +131,7 @@ public class TestModels extends AbstractTestClass
 		provider.setSort("name", SortOrder.ASCENDING);
 		provider.setParameter("other", Model.of("blalba"));
 		Iterator<OUser> it = provider.iterator(0, -1);
-		List<ODocument> allUsers = getMetadata().getSecurity().getAllUsers();
+		List<ODocument> allUsers = wicket.getTester().getMetadata().getSecurity().getAllUsers();
 		assertTrue(provider.size()==allUsers.size());
 		while(it.hasNext())
 		{
@@ -185,7 +190,7 @@ public class TestModels extends AbstractTestClass
 	@Test
 	public void testOQueryModelDBTouch()
 	{
-		OClass classA = getSchema().getClass("ClassA");
+		OClass classA = wicket.getTester().getSchema().getClass("ClassA");
 		ODocument doc = new ODocument(classA);
 		doc.field("other", Arrays.asList(doc));
 		OQueryModel<ODocument> queryModel = new OQueryModel<ODocument>("select  from ClassA where :doc in other");
@@ -238,7 +243,7 @@ public class TestModels extends AbstractTestClass
 	public void testOClassModel()
 	{
 		OClassModel model = new OClassModel("OUser");
-		OClass oUserClass = getSchema().getClass("OUser");
+		OClass oUserClass = wicket.getTester().getSchema().getClass("OUser");
 		assertModelObjectEquals(oUserClass, model);
 		//Test for null
 		model.setObject(null);
@@ -283,7 +288,7 @@ public class TestModels extends AbstractTestClass
 	@Test
 	public void testOPropertyModel()
 	{
-		OProperty userNameProperty = getSchema().getClass("OUser").getProperty("name");
+		OProperty userNameProperty = wicket.getTester().getSchema().getClass("OUser").getProperty("name");
 		OPropertyModel propertyModel = new OPropertyModel("OUser", "name");
 		assertModelObjectEquals(userNameProperty, propertyModel);
 		//Test for null

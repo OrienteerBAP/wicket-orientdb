@@ -13,15 +13,20 @@ import javax.servlet.ServletInputStream;
 
 import org.apache.wicket.protocol.http.mock.MockHttpServletRequest;
 import org.apache.wicket.request.Url;
+import org.junit.ClassRule;
 import org.junit.Test;
 
-import ru.ydn.wicket.wicketorientdb.AbstractTestClass;
+import ru.ydn.wicket.wicketorientdb.junit.WicketOrientDbTester;
+import ru.ydn.wicket.wicketorientdb.junit.WicketOrientDbTesterScope;
 
 import com.orientechnologies.orient.core.id.ORID;
 import com.orientechnologies.orient.core.record.impl.ODocument;
 
-public class TestRestApi extends AbstractTestClass
+public class TestRestApi
 {
+	@ClassRule
+	public static WicketOrientDbTesterScope wicket = new WicketOrientDbTesterScope();
+	
 	public static final String TEST_REST_CLASS="TestRest";
 	private static final Pattern RID_PATTERN = Pattern.compile("#(\\d+:\\d+)");
 	private static final Random RANDOM = new Random();
@@ -29,7 +34,7 @@ public class TestRestApi extends AbstractTestClass
 	@Test
 	public void testGetDocument() throws Exception
 	{
-		ODocument doc = (ODocument) getDatabase().browseClass(TEST_REST_CLASS).current();
+		ODocument doc = (ODocument) wicket.getTester().getDatabase().browseClass(TEST_REST_CLASS).current();
 		ORID id = doc.getIdentity();
 		String ret = executeUrl("orientdb/document/db/"+id.getClusterId()+":"+id.getClusterPosition(), "GET", null);
 		assertEquals(doc.toJSON(), ret);
@@ -38,29 +43,29 @@ public class TestRestApi extends AbstractTestClass
 	@Test
 	public void testPostDocument() throws Exception
 	{
-		long current = getDatabase().countClass(TEST_REST_CLASS);
+		long current = wicket.getTester().getDatabase().countClass(TEST_REST_CLASS);
 		String content = "{\"@class\":\"TestRest\",\"a\":\"test2\",\"b\":11,\"c\":false}";
 		executeUrl("orientdb/document/db/", "POST", content);
-		assertEquals(current+1, getDatabase().countClass(TEST_REST_CLASS));
+		assertEquals(current+1, wicket.getTester().getDatabase().countClass(TEST_REST_CLASS));
 	}
 	
 	@Test
 	public void testDeleteDocument() throws Exception
 	{
-		long current = getDatabase().countClass(TEST_REST_CLASS);
+		long current = wicket.getTester().getDatabase().countClass(TEST_REST_CLASS);
 		String content = "{\"@class\":\"TestRest\",\"a\":\"todelete\",\"b\":11,\"c\":false}";
 		String created = executeUrl("orientdb/document/db/", "POST", content);
-		assertEquals(current+1, getDatabase().countClass(TEST_REST_CLASS));
+		assertEquals(current+1, wicket.getTester().getDatabase().countClass(TEST_REST_CLASS));
 		Matcher rid = RID_PATTERN.matcher(created);
 		assertTrue(rid.find());
 		executeUrl("orientdb/document/db/"+rid.group(1), "DELETE", content);
-		assertEquals(current, getDatabase().countClass(TEST_REST_CLASS));
+		assertEquals(current, wicket.getTester().getDatabase().countClass(TEST_REST_CLASS));
 	}
 	
 	@Test
 	public void testQueryAndUpdate() throws Exception
 	{
-		ODocument doc = (ODocument) getDatabase().browseClass(TEST_REST_CLASS).current();
+		ODocument doc = (ODocument) wicket.getTester().getDatabase().browseClass(TEST_REST_CLASS).current();
 		String ret = executeUrl("orientdb/query/db/sql/select+from+"+TEST_REST_CLASS, "GET", null);
 		assertTrue(ret.contains(doc.toJSON()));
 		
@@ -72,7 +77,8 @@ public class TestRestApi extends AbstractTestClass
 	
 	private String executeUrl(String _url, final String method, final String content) throws Exception
 	{
-		MockHttpServletRequest request = new MockHttpServletRequest(getApp(), wicketTester.getHttpSession(), wicketTester.getServletContext())
+		WicketOrientDbTester tester = wicket.getTester();
+		MockHttpServletRequest request = new MockHttpServletRequest(tester.getApplication(), tester.getHttpSession(), tester.getServletContext())
 		{
 			{
 				setMethod(method);
@@ -98,8 +104,8 @@ public class TestRestApi extends AbstractTestClass
 		Url url = Url.parse(_url, Charset.forName(request.getCharacterEncoding()));
 		request.setUrl(url);
 		request.setMethod(method);
-		wicketTester.processRequest(request);
-		return wicketTester.getLastResponseAsString();
+		tester.processRequest(request);
+		return tester.getLastResponseAsString();
 	}
 	
 }

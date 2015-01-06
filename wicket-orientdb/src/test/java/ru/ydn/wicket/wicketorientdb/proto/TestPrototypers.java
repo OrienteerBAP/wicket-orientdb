@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.Collection;
 
 import org.apache.wicket.core.util.lang.PropertyResolver;
+import org.junit.ClassRule;
 import org.junit.Test;
 
 import com.orientechnologies.orient.core.index.OIndex;
@@ -13,12 +14,15 @@ import com.orientechnologies.orient.core.metadata.schema.OProperty;
 import com.orientechnologies.orient.core.metadata.schema.OType;
 import com.orientechnologies.orient.core.metadata.schema.clusterselection.ORoundRobinClusterSelectionStrategy;
 
-import ru.ydn.wicket.wicketorientdb.AbstractTestClass;
+import ru.ydn.wicket.wicketorientdb.junit.WicketOrientDbTesterScope;
 import static org.junit.Assert.*;
 
 @SuppressWarnings("unchecked")
-public class TestPrototypers extends AbstractTestClass
+public class TestPrototypers
 {
+	@ClassRule
+	public static WicketOrientDbTesterScope wicket = new WicketOrientDbTesterScope();
+	
 	@Test
 	public void testMyBeanPrototyper() throws Exception
 	{
@@ -77,7 +81,7 @@ public class TestPrototypers extends AbstractTestClass
 	public void testOClassPrototyper() throws Exception
 	{
 		OClass newClass = OClassPrototyper.newPrototype();
-		assertNull(getSchema().getClass("NewClass"));
+		assertNull(wicket.getTester().getSchema().getClass("NewClass"));
 		newClass.setName("NewClass");
 		assertEquals("NewClass", newClass.getName());
 		newClass.setClusterSelection(ORoundRobinClusterSelectionStrategy.NAME);
@@ -91,17 +95,17 @@ public class TestPrototypers extends AbstractTestClass
 		//Realization
 		assertTrue(newClass instanceof IPrototype); 
 		OClass realizedNewClass = ((IPrototype<OClass>)newClass).realizePrototype();
-		assertEquals(getSchema().getClass("NewClass"), realizedNewClass);
+		assertEquals(wicket.getTester().getSchema().getClass("NewClass"), realizedNewClass);
 		assertFalse(realizedNewClass instanceof IPrototype);
 		assertEquals("NewClass", realizedNewClass.getName());
 		assertEquals(ORoundRobinClusterSelectionStrategy.NAME, realizedNewClass.getClusterSelection().getName());
-		getSchema().dropClass(realizedNewClass.getName());
+		wicket.getTester().getSchema().dropClass(realizedNewClass.getName());
 	}
 	
 	@Test
 	public void testOPropertyPrototyper() throws Exception
 	{
-		OClass newClass = getSchema().createClass("NewClass");
+		OClass newClass = wicket.getTester().getSchema().createClass("NewClass");
 		try
 		{
 			OProperty newProperty = OPropertyPrototyper.newPrototype("NewClass");
@@ -122,14 +126,14 @@ public class TestPrototypers extends AbstractTestClass
 		finally
 		{
 			//Drop
-			getSchema().dropClass(newClass.getName());
+			wicket.getTester().getSchema().dropClass(newClass.getName());
 		}
 	}
 	
 	@Test
 	public void testOIndexPrototyper() throws Exception
 	{
-		OClass newClass = getSchema().createClass("NewClass");
+		OClass newClass = wicket.getTester().getSchema().createClass("NewClass");
 		OProperty property = newClass.createProperty("name", OType.STRING);
 		OIndex<?> newIndex = OIndexPrototyper.newPrototype("NewClass", Arrays.asList("name"));
 		assertTrue(property.getAllIndexes().size()==0);
@@ -140,7 +144,7 @@ public class TestPrototypers extends AbstractTestClass
 		OIndex<?> realizedNewIndes = ((IPrototype<OIndex<?>>)newIndex).realizePrototype();
 		assertTrue(property.getAllIndexes().size()==1);
 		
-		getSchema().dropClass(newClass.getName());
+		wicket.getTester().getSchema().dropClass(newClass.getName());
 	}
 	
 }

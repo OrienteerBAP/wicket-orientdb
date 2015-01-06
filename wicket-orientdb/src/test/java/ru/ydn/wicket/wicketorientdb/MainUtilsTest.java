@@ -2,17 +2,21 @@ package ru.ydn.wicket.wicketorientdb;
 
 import java.util.Locale;
 
+import org.apache.wicket.util.tester.WicketTesterScope;
+import org.junit.ClassRule;
 import org.junit.Test;
 
 import com.google.common.base.Converter;
 import com.orientechnologies.orient.core.db.document.ODatabaseDocument;
 import com.orientechnologies.orient.core.id.ORID;
 import com.orientechnologies.orient.core.id.ORecordId;
+import com.orientechnologies.orient.core.metadata.schema.OSchema;
 import com.orientechnologies.orient.core.metadata.security.OSecurityUser;
 import com.orientechnologies.orient.core.metadata.security.OUser;
 import com.orientechnologies.orient.core.record.impl.ODocument;
 
 import ru.ydn.wicket.wicketorientdb.converter.ODocumentConverter;
+import ru.ydn.wicket.wicketorientdb.junit.WicketOrientDbTesterScope;
 import ru.ydn.wicket.wicketorientdb.utils.DBClosure;
 import ru.ydn.wicket.wicketorientdb.utils.DocumentWrapperTransformer;
 import ru.ydn.wicket.wicketorientdb.utils.OClassClassNameConverter;
@@ -22,8 +26,11 @@ import ru.ydn.wicket.wicketorientdb.utils.OPropertyFullNameConverter;
 import static org.junit.Assert.*;
 import static ru.ydn.wicket.wicketorientdb.model.AbstractNamingModel.buitify;
 
-public class MainUtilsTest extends AbstractTestClass
+public class MainUtilsTest
 {
+	@ClassRule
+	public static WicketOrientDbTesterScope wicket = new WicketOrientDbTesterScope();
+	
 	@Test
 	public void testBuitify() throws Exception
 	{
@@ -49,7 +56,7 @@ public class MainUtilsTest extends AbstractTestClass
 				return db.getUser();
 			}
 		};
-		assertEquals(getMetadata().getSecurity().getUser("admin").getIdentity(), adminClosure.execute().getIdentity());
+		assertEquals(wicket.getTester().getMetadata().getSecurity().getUser("admin").getIdentity(), adminClosure.execute().getIdentity());
 		DBClosure<OSecurityUser> readerClosure = new DBClosure<OSecurityUser>("reader", "reader") {
 
 			private static final long serialVersionUID = 1L;
@@ -59,15 +66,16 @@ public class MainUtilsTest extends AbstractTestClass
 				return db.getUser();
 			}
 		};
-		assertEquals(getMetadata().getSecurity().getUser("reader").getIdentity(), readerClosure.execute().getIdentity());
+		assertEquals(wicket.getTester().getMetadata().getSecurity().getUser("reader").getIdentity(), readerClosure.execute().getIdentity());
 	}
 	
 	@Test
 	public void testConverters() throws Exception
 	{
-		testConverter(OClassClassNameConverter.INSTANCE, getSchema().getClass("OUser"), "OUser");
-		testConverter(OPropertyFullNameConverter.INSTANCE, getSchema().getClass("Ouser").getProperty("name"), "OUser.name");
-		testConverter(OIndexNameConverter.INSTANCE, getSchema().getClass("Ouser").getClassIndex("OUser.name"), "OUser.name");
+		OSchema schema = wicket.getTester().getSchema();
+		testConverter(OClassClassNameConverter.INSTANCE, schema.getClass("OUser"), "OUser");
+		testConverter(OPropertyFullNameConverter.INSTANCE, schema.getClass("Ouser").getProperty("name"), "OUser.name");
+		testConverter(OIndexNameConverter.INSTANCE, schema.getClass("Ouser").getClassIndex("OUser.name"), "OUser.name");
 		ORID orid = new ORecordId("#5:0"); //Admin ORID
 		ODocument document = orid.getRecord();
 		testConverter(ODocumentORIDConverter.INSTANCE, document, orid);
@@ -84,7 +92,7 @@ public class MainUtilsTest extends AbstractTestClass
 	{
 		ORID orid = new ORecordId("#5:0"); //Admin ORID
 		ODocument adminDocument = orid.getRecord();
-		OUser admin = getMetadata().getSecurity().getUser("admin");
+		OUser admin = wicket.getTester().getMetadata().getSecurity().getUser("admin");
 		DocumentWrapperTransformer<OUser> transformer = new DocumentWrapperTransformer<OUser>(OUser.class);
 		assertEquals(admin, transformer.apply(adminDocument));
 	}

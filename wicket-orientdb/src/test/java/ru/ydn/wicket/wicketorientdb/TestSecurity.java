@@ -1,25 +1,29 @@
 package ru.ydn.wicket.wicketorientdb;
 
-import org.apache.wicket.authorization.AuthorizationException;
-import org.apache.wicket.authorization.UnauthorizedActionException;
 import org.apache.wicket.authorization.UnauthorizedInstantiationException;
 import org.apache.wicket.authroles.authentication.pages.SignInPage;
 import org.junit.After;
+import org.junit.ClassRule;
 import org.junit.Test;
 
 import com.orientechnologies.orient.core.metadata.security.OUser;
 
+import ru.ydn.wicket.wicketorientdb.junit.WicketOrientDbTester;
+import ru.ydn.wicket.wicketorientdb.junit.WicketOrientDbTesterScope;
 import ru.ydn.wicket.wicketorientdb.web.DynamicSecuredPage;
 import ru.ydn.wicket.wicketorientdb.web.OrientDbTestPage;
 import ru.ydn.wicket.wicketorientdb.web.StaticSecuredPage;
 import static org.junit.Assert.*;
 
-public class TestSecurity extends AbstractTestClass
+public class TestSecurity
 {
+	@ClassRule
+	public static WicketOrientDbTesterScope wicket = new WicketOrientDbTesterScope();
+	
 	@After
 	public void signOut()
 	{
-		getSession().signOut();
+		wicket.getTester().signOut();
 	}
 	@Test
 	public void testSession()
@@ -36,27 +40,29 @@ public class TestSecurity extends AbstractTestClass
 	
 	public void testSession(String userRole, String user, String password)
 	{
-		IOrientDbSettings settings = getApp().getOrientDbSettings();
+		IOrientDbSettings settings = wicket.getTester().getApplication().getOrientDbSettings();
+		WicketOrientDbTester tester = wicket.getTester();
+		
 		//Check not signed in state
-		assertFalse(getSession().isSignedIn());
-		assertNull(getSession().getUser());
-		assertNull(getSession().getUsername());
-		assertEquals(settings.getDBUserName(), getDatabase().getUser().getName());
+		assertFalse(tester.getSession().isSignedIn());
+		assertNull(tester.getSession().getUser());
+		assertNull(tester.getSession().getUsername());
+		assertEquals(settings.getDBUserName(), tester.getDatabase().getUser().getName());
 		
 		//Signin and check signed in state
-		assertTrue(getSession().signIn(user, password));
-		assertTrue(getSession().isSignedIn());
-		OUser thisUser = getMetadata().getSecurity().getUser(user);
-		assertEquals(thisUser.getIdentity(), getSession().getUser().getIdentity());
-		assertEquals(thisUser.getIdentity(), getDatabase().getUser().getIdentity());
-		assertTrue(getSession().getRoles().hasRole(userRole));
+		assertTrue(tester.signIn(user, password));
+		assertTrue(tester.isSignedIn());
+		OUser thisUser = tester.getMetadata().getSecurity().getUser(user);
+		assertEquals(thisUser.getIdentity(), tester.getSession().getUser().getIdentity());
+		assertEquals(thisUser.getIdentity(), tester.getDatabase().getUser().getIdentity());
+		assertTrue(tester.getSession().getRoles().hasRole(userRole));
 		
 		//Signout and check signed out state
-		getSession().signOut();
-		assertFalse(getSession().isSignedIn());
-		assertNull(getSession().getUser());
-		assertNull(getSession().getUsername());
-		assertEquals(settings.getDBUserName(), getDatabase().getUser().getName());
+		tester.signOut();
+		assertFalse(tester.getSession().isSignedIn());
+		assertNull(tester.getSession().getUser());
+		assertNull(tester.getSession().getUsername());
+		assertEquals(settings.getDBUserName(), tester.getDatabase().getUser().getName());
 	}
 	
 	
@@ -64,61 +70,68 @@ public class TestSecurity extends AbstractTestClass
 	@Test
 	public void testTestHomePage() throws Exception
 	{
-		assertEquals(getApp().getOrientDbSettings().getDBUserName(), getDatabase().getUser().getName());
-		wicketTester.startPage(OrientDbTestPage.class);
-		wicketTester.assertRenderedPage(OrientDbTestPage.class);
+		WicketOrientDbTester tester = wicket.getTester();
+		assertEquals(tester.getApplication().getOrientDbSettings().getDBUserName(), tester.getDatabase().getUser().getName());
+		tester.startPage(OrientDbTestPage.class);
+		tester.assertRenderedPage(OrientDbTestPage.class);
 	}
 	
 	@Test
 	public void testStaticPageForUnsigned() throws Exception
 	{
-		assertEquals(getApp().getOrientDbSettings().getDBUserName(), getDatabase().getUser().getName());
-		wicketTester.startPage(StaticSecuredPage.class);
-		wicketTester.assertRenderedPage(SignInPage.class);
+		WicketOrientDbTester tester = wicket.getTester();
+		assertEquals(tester.getApplication().getOrientDbSettings().getDBUserName(), tester.getDatabase().getUser().getName());
+		tester.startPage(StaticSecuredPage.class);
+		tester.assertRenderedPage(SignInPage.class);
 	}
 	
 	@Test(expected=UnauthorizedInstantiationException.class)
 	public void testStaticPageForSigned()
 	{
-		assertEquals(getApp().getOrientDbSettings().getDBUserName(), getDatabase().getUser().getName());
-		assertTrue(getSession().signIn("reader", "reader"));
-		wicketTester.startPage(StaticSecuredPage.class);
-		getSession().signOut();
+		WicketOrientDbTester tester = wicket.getTester();
+		assertEquals(tester.getApplication().getOrientDbSettings().getDBUserName(), tester.getDatabase().getUser().getName());
+		assertTrue(tester.signIn("reader", "reader"));
+		tester.startPage(StaticSecuredPage.class);
+		tester.signOut();
 	}
 	
 	@Test
 	public void testStaticPageForAdmin()
 	{
-		assertEquals(getApp().getOrientDbSettings().getDBUserName(), getDatabase().getUser().getName());
-		assertTrue(getSession().signIn("admin", "admin"));
-		wicketTester.startPage(StaticSecuredPage.class);
-		wicketTester.assertRenderedPage(StaticSecuredPage.class);
-		getSession().signOut();
+		WicketOrientDbTester tester = wicket.getTester();
+		assertEquals(tester.getApplication().getOrientDbSettings().getDBUserName(), tester.getDatabase().getUser().getName());
+		assertTrue(tester.signIn("admin", "admin"));
+		tester.startPage(StaticSecuredPage.class);
+		tester.assertRenderedPage(StaticSecuredPage.class);
+		tester.signOut();
 	}
 
 	public void testDynamicPageForUnsigned() throws Exception
 	{
-		assertEquals(getApp().getOrientDbSettings().getDBUserName(), getDatabase().getUser().getName());
-		wicketTester.startPage(DynamicSecuredPage.class);
-		wicketTester.assertRenderedPage(SignInPage.class);
+		WicketOrientDbTester tester = wicket.getTester();
+		assertEquals(tester.getApplication().getOrientDbSettings().getDBUserName(), tester.getDatabase().getUser().getName());
+		tester.startPage(DynamicSecuredPage.class);
+		tester.assertRenderedPage(SignInPage.class);
 	}
 	
 	@Test(expected=UnauthorizedInstantiationException.class)
 	public void testDynamicPageForSigned()
 	{
-		assertEquals(getApp().getOrientDbSettings().getDBUserName(), getDatabase().getUser().getName());
-		assertTrue(getSession().signIn("reader", "reader"));
-		wicketTester.startPage(DynamicSecuredPage.class);
-		getSession().signOut();
+		WicketOrientDbTester tester = wicket.getTester();
+		assertEquals(tester.getApplication().getOrientDbSettings().getDBUserName(), tester.getDatabase().getUser().getName());
+		assertTrue(tester.signIn("reader", "reader"));
+		tester.startPage(DynamicSecuredPage.class);
+		tester.signOut();
 	}
 	
 	@Test
 	public void testDynamicPageForAdmin()
 	{
-		assertEquals(getApp().getOrientDbSettings().getDBUserName(), getDatabase().getUser().getName());
-		assertTrue(getSession().signIn("admin", "admin"));
-		wicketTester.startPage(DynamicSecuredPage.class);
-		wicketTester.assertRenderedPage(DynamicSecuredPage.class);
-		getSession().signOut();
+		WicketOrientDbTester tester = wicket.getTester();
+		assertEquals(tester.getApplication().getOrientDbSettings().getDBUserName(), tester.getDatabase().getUser().getName());
+		assertTrue(tester.signIn("admin", "admin"));
+		tester.startPage(DynamicSecuredPage.class);
+		tester.assertRenderedPage(DynamicSecuredPage.class);
+		tester.signOut();
 	}
 }
