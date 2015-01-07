@@ -10,8 +10,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.servlet.ServletInputStream;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.wicket.protocol.http.mock.MockHttpServletRequest;
+import org.apache.wicket.protocol.http.mock.MockHttpServletResponse;
 import org.apache.wicket.request.Url;
 import org.junit.ClassRule;
 import org.junit.Test;
@@ -75,6 +77,22 @@ public class TestRestApi
 		assertEquals(nextB, doc.field("b"));
 	}
 	
+	@Test
+	public void testExecuteFunction() throws Exception
+	{
+		String ret = executeUrl("orientdb/function/db/fun1", "GET", null);
+		assertTrue(ret.contains("fun1"));
+		ret = executeUrl("orientdb/function/db/fun2", "POST", null);
+		assertTrue(ret.contains("fun2"));
+	}
+	
+	@Test(expected=IOException.class)
+	public void testExecuteFailing() throws Exception
+	{
+		String ret = executeUrl("orientdb/function/db/fun2", "GET", null);
+		System.out.println("ret="+ret);
+	}
+	
 	private String executeUrl(String _url, final String method, final String content) throws Exception
 	{
 		WicketOrientDbTester tester = wicket.getTester();
@@ -105,7 +123,16 @@ public class TestRestApi
 		request.setUrl(url);
 		request.setMethod(method);
 		tester.processRequest(request);
-		return tester.getLastResponseAsString();
+		MockHttpServletResponse response = tester.getLastResponse();
+		int status = response.getStatus();
+		if(status>=HttpServletResponse.SC_OK+100)
+		{
+			throw new IOException("Code: "+response.getStatus()+" Message: "+response.getErrorMessage()+" Content: "+response.getDocument());
+		}
+		else
+		{
+			return response.getDocument();
+		}
 	}
 	
 }

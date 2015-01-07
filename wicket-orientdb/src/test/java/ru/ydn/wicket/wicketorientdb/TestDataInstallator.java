@@ -45,6 +45,21 @@ public class TestDataInstallator extends AbstractDataInstallator
 		restDoc.field("b", 10);
 		restDoc.field("c", true);
 		restDoc.save();
+		
+		OClass function = schema.getClass("OFunction");
+		ODocument fun1 = new ODocument(function);
+		fun1.field("name", "fun1");
+		fun1.field("language", "javascript");
+		fun1.field("idempotent", true);
+		fun1.field("code", "return \"fun1\";");
+		fun1.save();
+		
+		ODocument fun2 = new ODocument(function);
+		fun2.field("name", "fun2");
+		fun2.field("language", "javascript");
+		fun2.field("idempotent", false);
+		fun2.field("code", "return \"fun2\";");
+		fun2.save();
 	}
 
 }
