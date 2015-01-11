@@ -102,7 +102,7 @@ public class OrientDbWebSession extends AuthenticatedWebSession {
 		{
 			if(!userReloaded)
 			{
-				user.reload();
+				user.load();
 				userReloaded = true;
 			}
 		}
