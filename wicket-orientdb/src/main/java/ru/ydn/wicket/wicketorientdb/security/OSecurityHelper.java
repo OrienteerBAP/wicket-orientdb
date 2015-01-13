@@ -34,11 +34,11 @@ public class OSecurityHelper
 	
 	private static class RequiredOrientResourceImpl implements RequiredOrientResource
 	{
-		private final ORule.ResourceGeneric value;
+		private final String value;
 		private final String specific;
 		private final OrientPermission[] permissions;
 		
-		public RequiredOrientResourceImpl(ORule.ResourceGeneric value, String specific, OrientPermission[] permissions)
+		public RequiredOrientResourceImpl(String value, String specific, OrientPermission[] permissions)
 		{
 			this.value = value;
 			this.specific = specific;
@@ -51,7 +51,7 @@ public class OSecurityHelper
 		}
 
 		@Override
-		public ORule.ResourceGeneric value() {
+		public String value() {
 			return value;
 		}
 		
@@ -91,7 +91,7 @@ public class OSecurityHelper
 	 */
 	public static RequiredOrientResource[] requireResource(final ORule.ResourceGeneric resource, final String specific, final OrientPermission... permissions)
 	{
-		return new RequiredOrientResource[]{new RequiredOrientResourceImpl(resource, specific, permissions)};
+		return new RequiredOrientResource[]{new RequiredOrientResourceImpl(resource.getName(), specific, permissions)};
 	}
 	
 	//Very bad hack - should be changed in OrientDB
@@ -164,7 +164,7 @@ public class OSecurityHelper
 		HashMap<String, OrientPermission[]> secureMap = new HashMap<String, OrientPermission[]>();
 		for (RequiredOrientResource requiredOrientResource : resources)
 		{
-			String resource = ORule.mapResourceGenericToLegacyResource(requiredOrientResource.value());
+			String resource = requiredOrientResource.value();
 			String specific = requiredOrientResource.specific();
 			if(!Strings.isEmpty(specific)) resource = resource+"."+specific;
 			secureMap.put(resource, requiredOrientResource.permissions());

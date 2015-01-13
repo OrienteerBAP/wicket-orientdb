@@ -1,6 +1,5 @@
 package ru.ydn.wicket.wicketorientdb.security;
 
-import com.orientechnologies.orient.core.metadata.security.ORule;
 
 @java.lang.annotation.Target(value = {java.lang.annotation.ElementType.TYPE})
 @java.lang.annotation.Retention(value = java.lang.annotation.RetentionPolicy.RUNTIME)
@@ -9,7 +8,7 @@ import com.orientechnologies.orient.core.metadata.security.ORule;
  * Annotation for specification of required OrientDB resources
  */
 public @interface RequiredOrientResource {
-	ORule.ResourceGeneric value();
+	String value();
 	String specific() default "";
 	OrientPermission[] permissions() default {OrientPermission.CREATE, OrientPermission.READ, OrientPermission.UPDATE, OrientPermission.DELETE};
 }

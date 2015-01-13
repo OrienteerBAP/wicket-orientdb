@@ -14,7 +14,18 @@ import com.orientechnologies.orient.core.metadata.schema.OSchemaShared;
  */
 public class OSchemaNamesValidator implements IValidator<String>{
 	private static final long serialVersionUID = 1L;
-	public static final OSchemaNamesValidator INSTANCE = new OSchemaNamesValidator();
+	public static final OSchemaNamesValidator CLASS_NAME_VALIDATOR = new OSchemaNamesValidator(true, false);
+	public static final OSchemaNamesValidator FIELD_NAME_VALIDATOR = new OSchemaNamesValidator(false, true);
+	public static final OSchemaNamesValidator ALL_VALIDATOR = new OSchemaNamesValidator(true, true);
+	
+	private final boolean checkClassNameValidity;
+	private final boolean checkFieldNameValidity;
+	
+	public OSchemaNamesValidator(boolean checkClassNameValidity, boolean checkFieldNameValidity)
+	{
+		this.checkClassNameValidity = checkClassNameValidity;
+		this.checkFieldNameValidity = checkFieldNameValidity;
+	}
 	
 	@Override
 	public void validate(IValidatable<String> validatable) {
@@ -25,7 +36,9 @@ public class OSchemaNamesValidator implements IValidator<String>{
 		}
 		else
 		{
-			Character ch = OSchemaShared.checkNameIfValid(value);
+			Character ch = null;
+			if(checkClassNameValidity) ch = OSchemaShared.checkClassNameIfValid(value);
+			if(ch==null && checkFieldNameValidity) ch = OSchemaShared.checkFieldNameIfValid(value); 
 			if(ch!=null)
 			{
 				ValidationError error = new ValidationError(this, "invalidchar");
