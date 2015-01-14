@@ -59,6 +59,7 @@ public class TestStandaloneOrientDBCompatibility
 		assertNotNull(db.getMetadata());
 		db.close();
 		assertTrue(db.isClosed());
+		server.shutdown();
 	}
 	
 	private OServer startServer() throws Exception

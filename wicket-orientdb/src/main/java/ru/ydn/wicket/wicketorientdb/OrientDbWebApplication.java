@@ -130,6 +130,7 @@ public abstract class OrientDbWebApplication extends AuthenticatedWebApplication
 			
 			@Override
 			public void onAfterInitialized(Application application) {
+				Orient.instance().startup();
 				Orient.instance().removeShutdownHook();
 			}
 			@Override
