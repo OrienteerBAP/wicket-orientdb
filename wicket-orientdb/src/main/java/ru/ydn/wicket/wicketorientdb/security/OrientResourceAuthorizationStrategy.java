@@ -94,7 +94,7 @@ public class OrientResourceAuthorizationStrategy  implements IAuthorizationStrat
 		OUser user = OrientDbWebSession.get().getUser();
 		if(user==null) return false;
 		int iOperation = OrientPermission.combinedPermission(resource.permissions());
-		ORule.ResourceGeneric value = ORule.ResourceGeneric.valueOf(resource.value());
+		ORule.ResourceGeneric value = OSecurityHelper.getResourceGeneric(resource.value());
 		String specific = resource.specific();
 		if(Strings.isEmpty(specific)) specific = null;
 		if(user.checkIfAllowed(value, specific, iOperation)!=null) return true;
@@ -127,7 +127,7 @@ public class OrientResourceAuthorizationStrategy  implements IAuthorizationStrat
 	{
 		OUser user = OrientDbWebSession.get().getUser();
 		if(user==null) return false;
-		ORule.ResourceGeneric generic = ORule.ResourceGeneric.valueOf(resource);
+		ORule.ResourceGeneric generic = OSecurityHelper.getResourceGeneric(resource);
 		if(generic==null) generic = ORule.mapLegacyResourceToGenericResource(resource);
 		String specific = ORule.mapLegacyResourceToSpecificResource(resource);
 		

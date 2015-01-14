@@ -24,6 +24,15 @@ import com.orientechnologies.orient.core.record.impl.ODocument;
  */
 public class OSecurityHelper 
 {
+	public static final String FUNCTION = "FUNCTION";
+	public static final String CLASS = "CLASS";
+	public static final String CLUSTER = "CLUSTER";
+	public static final String BYPASS_RESTRICTED = "BYPASS_RESTRICTED";
+	public static final String DATABASE = "DATABASE";
+	public static final String SCHEMA = "SCHEMA";
+	public static final String COMMAND = "COMMAND";
+	public static final String RECORD_HOOK = "RECORD_HOOK";
+	
 	private static final Map<OrientPermission, String> MAPPING_FOR_HACK = new HashMap<OrientPermission, String>();
 	static
 	{
@@ -170,6 +179,13 @@ public class OSecurityHelper
 			secureMap.put(resource, requiredOrientResource.permissions());
 		}
 		return secureMap;
+	}
+	
+	public static ORule.ResourceGeneric getResourceGeneric(String name)
+	{
+		ORule.ResourceGeneric value = ORule.ResourceGeneric.valueOf(name);
+		if(value==null) value = ORule.mapLegacyResourceToGenericResource(name);
+		return value;
 	}
 	
 }
