@@ -1,5 +1,6 @@
 package ru.ydn.wicket.wicketorientdb;
 
+import org.apache.wicket.Application;
 import org.apache.wicket.Page;
 import org.apache.wicket.authroles.authentication.pages.SignInPage;
 import org.apache.wicket.markup.html.WebPage;
@@ -29,6 +30,13 @@ public class OrientDbTestWebApplication extends OrientDbWebApplication
 				if(db.isClosed()) db.open(settings.getDBInstallatorUserName(), settings.getDBInstallatorUserPassword());
 				db.getMetadata().load();
 				db.close();
+			}
+
+			@Override
+			public void onBeforeDestroyed(Application application) {
+				super.onBeforeDestroyed(application);
+				//TODO: remove this after fixing bug orientdb Bug#3387
+				try{Thread.sleep(100);} catch (InterruptedException e){}
 			}
 			
 		});
