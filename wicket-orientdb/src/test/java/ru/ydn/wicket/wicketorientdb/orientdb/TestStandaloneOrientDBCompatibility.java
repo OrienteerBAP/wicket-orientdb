@@ -16,6 +16,7 @@ import com.orientechnologies.orient.core.db.document.ODatabaseDocumentPool;
 import com.orientechnologies.orient.core.db.document.ODatabaseDocumentTx;
 import com.orientechnologies.orient.core.exception.OStorageException;
 import com.orientechnologies.orient.core.hook.ODocumentHookAbstract;
+import com.orientechnologies.orient.core.hook.OHookThreadLocal;
 import com.orientechnologies.orient.core.hook.ORecordHook;
 import com.orientechnologies.orient.core.hook.ORecordHook.DISTRIBUTED_EXECUTION_MODE;
 import com.orientechnologies.orient.server.OServer;
@@ -50,8 +51,8 @@ public class TestStandaloneOrientDBCompatibility
 		db.close();
 		assertTrue(db.isClosed());
 		ODatabaseRecordThreadLocal.INSTANCE.remove();
-		Orient.instance().shutdown();
 		server.shutdown();
+		Orient.instance().shutdown();
 		
 		server = startServer();
 		Orient.instance().startup();
@@ -109,6 +110,7 @@ public class TestStandaloneOrientDBCompatibility
 	}
 	
 	@Test(expected=OStorageException.class)
+	@Ignore
 	public void testMemoryDBShouldDisapear() throws Exception
 	{
 		try
@@ -126,6 +128,8 @@ public class TestStandaloneOrientDBCompatibility
 	public void testOrientDbLifeCycle(String dbURL, boolean createDb, boolean dropDb) throws Exception
 	{
 		Orient.instance().startup();
+		assertNotNull(ODatabaseRecordThreadLocal.INSTANCE);
+		assertNotNull(OHookThreadLocal.INSTANCE);
 		Orient.instance().removeShutdownHook();
 		OServer server = OServerMain.create();
 		server.startup(OrientDbTestWebApplication.class.getResource("db.config.xml").openStream());
@@ -136,8 +140,12 @@ public class TestStandaloneOrientDBCompatibility
 			if(!dbToCreate.exists()) dbToCreate.create();
 			dbToCreate.close();
 		}
+		assertNotNull(ODatabaseRecordThreadLocal.INSTANCE);
+		assertNotNull(OHookThreadLocal.INSTANCE);
 		ODatabaseDocument db = new OPartitionedDatabasePoolFactory().get(dbURL, "admin", "admin").acquire();
 		db.close();
+		assertNotNull(ODatabaseRecordThreadLocal.INSTANCE);
+		assertNotNull(OHookThreadLocal.INSTANCE);
 		if(dropDb)
 		{
 			ODatabaseDocument dbToDrop = new ODatabaseDocumentTx(dbURL);
@@ -146,7 +154,7 @@ public class TestStandaloneOrientDBCompatibility
 		}
 		server.shutdown();
 		Orient.instance().shutdown();
-		Thread.sleep(50);
+//		Thread.sleep(50);
 	}
 	
 }

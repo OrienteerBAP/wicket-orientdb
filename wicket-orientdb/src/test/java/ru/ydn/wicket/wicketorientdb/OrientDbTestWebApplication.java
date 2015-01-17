@@ -32,12 +32,12 @@ public class OrientDbTestWebApplication extends OrientDbWebApplication
 				db.close();
 			}
 
-			@Override
+			/*@Override
 			public void onBeforeDestroyed(Application application) {
 				super.onBeforeDestroyed(application);
 				//TODO: remove this after fixing bug orientdb Bug#3387
 				try{Thread.sleep(100);} catch (InterruptedException e){}
-			}
+			}*/
 			
 		});
 		getOrientDbSettings().setDBUrl(DB_MEMORY_URL);
