@@ -50,7 +50,7 @@ public class EmbeddOrientDbApplicationListener implements IApplicationListener {
 	public void onAfterInitialized(Application application) {
 		try {
 			OrientDbWebApplication app = (OrientDbWebApplication)application;
-			OServer server = OServerMain.create();
+			OServer server = OServerMain.create(false);
 			if(url!=null)
 			{
 				server.startup(url.openStream());

@@ -9,6 +9,9 @@ import static org.junit.Assert.*;
 
 import com.orientechnologies.orient.core.db.ODatabase;
 import com.orientechnologies.orient.core.db.document.ODatabaseDocument;
+import com.orientechnologies.orient.core.hook.ODocumentHookAbstract;
+import com.orientechnologies.orient.core.hook.ORecordHook.DISTRIBUTED_EXECUTION_MODE;
+import com.orientechnologies.orient.core.hook.ORecordHook.RESULT;
 import com.orientechnologies.orient.core.metadata.schema.OClass;
 import com.orientechnologies.orient.core.metadata.schema.OProperty;
 import com.orientechnologies.orient.core.metadata.schema.OSchema;
@@ -34,7 +37,6 @@ public class TestInAppOrientDBCompatibility
 	}
 	
 	@Test
-	@Ignore
 	public void testRemovingReadonlyField()
 	{
 		ODatabaseDocument db = wicket.getTester().getDatabase();
@@ -51,12 +53,11 @@ public class TestInAppOrientDBCompatibility
 		
 		doc.field("name", "My Name 2");
 		doc.field("property", "value2");
-		doc.removeField("property");
+		doc.undo("property");
 		doc.save();
 	}
 	
 	@Test
-	@Ignore
 	public void testRemovingReadonlyField2()
 	{
 		ODatabaseDocument db = wicket.getTester().getDatabase();
@@ -76,5 +77,58 @@ public class TestInAppOrientDBCompatibility
 		doc.undo();
 		doc.field("name", "My Name 3");
 		doc.save();
+	}
+	
+	private static final String TEST_VALIDATION_AND_HOOKS_CLASS= "TestValidationAndHooks";
+	@Test
+	@Ignore
+	public void testValidationAndHooksOrder()
+	{
+		ODatabaseDocument db = wicket.getTester().getDatabase();
+		OSchema schema = db.getMetadata().getSchema();
+		OClass classA = schema.createClass(TEST_VALIDATION_AND_HOOKS_CLASS);
+		classA.createProperty("property1", OType.STRING).setNotNull(true);
+		classA.createProperty("property2", OType.STRING).setReadonly(true);
+		classA.createProperty("property3", OType.STRING).setMandatory(true);
+		db.registerHook(new ODocumentHookAbstract() {
+			
+			
+			
+			@Override
+			public RESULT onRecordBeforeCreate(ODocument doc) {
+				doc.field("property1", "value1-create");
+				doc.field("property2", "value2-create");
+				doc.field("property3", "value3-create");
+				return RESULT.RECORD_CHANGED;
+			}
+
+			@Override
+			public RESULT onRecordBeforeUpdate(ODocument doc) {
+				doc.undo("property2");
+				if(doc.field("property3")==null) doc.field("property3", "value3-update");
+				return RESULT.RECORD_CHANGED;
+			}
+
+			@Override
+			public DISTRIBUTED_EXECUTION_MODE getDistributedExecutionMode() {
+				return DISTRIBUTED_EXECUTION_MODE.SOURCE_NODE;
+			}
+		});
+		ODocument doc = new ODocument(classA);
+		//doc.field("property3", "value3-create"); //Magic line #1
+		doc.save();
+		assertEquals("value1-create", doc.field("property1"));
+		assertEquals("value2-create", doc.field("property2"));
+		assertEquals("value3-create", doc.field("property3"));
+		
+		doc.field("property1", "value1-update");
+		doc.field("property2", "value2-update");
+		doc.removeField("property3");
+		//doc.undo("property2"); //Magic line #2
+		//doc.field("property3", "value3-update"); //Magic line #3
+		doc.save();
+		assertEquals("value1-update", doc.field("property1"));
+		assertEquals("value2-create", doc.field("property2"));
+		assertEquals("value3-update", doc.field("property3"));
 	}
 }
