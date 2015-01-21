@@ -47,21 +47,20 @@
 	</licenses>
 	<properties>
 		<wicket.version>6.18.0</wicket.version>
-		<orientdb.version>2.0-SNAPSHOT</orientdb.version>
-		<!--<orientdb.version>2.0-rc2</orientdb.version>-->
+		<orientdb.version>2.0</orientdb.version>
 		<jetty.version>7.6.13.v20130916</jetty.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<!-- allowed values: R7, 1.0, 1.5, 2.0 or none -->
 		<wtp.version>none</wtp.version>
 	</properties>
-	<repositories>
+	<!--<repositories>
 	    <repository>
 		<id>snapshots-repo</id>
 		<url>https://oss.sonatype.org/content/repositories/snapshots</url>
 		<releases><enabled>false</enabled></releases>
 		<snapshots><enabled>true</enabled></snapshots>
 	    </repository>
-	</repositories>
+	</repositories>-->
 	<modules>
 		<module>wicket-orientdb</module>
 		<module>wicket-orientdb-demo</module>
