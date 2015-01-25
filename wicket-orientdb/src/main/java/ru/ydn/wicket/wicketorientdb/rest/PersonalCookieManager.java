@@ -11,6 +11,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.wicket.Session;
+import org.apache.wicket.ThreadContext;
 
 import ru.ydn.wicket.wicketorientdb.OrientDbWebSession;
 
@@ -31,6 +32,7 @@ public class PersonalCookieManager extends CookieHandler
 																return new CookieManager();
 															}
 														});
+	private CookieManager defaultManager = new CookieManager();
 	
 	@Override
 	public Map<String, List<String>> get(URI uri,
@@ -48,6 +50,8 @@ public class PersonalCookieManager extends CookieHandler
 	{
 		try
 		{
+			if(!ThreadContext.exists()) return defaultManager;
+			
 			OrientDbWebSession session = OrientDbWebSession.get();
 			session.bind();
 			String id = session.getId();

@@ -8,6 +8,7 @@ import ru.ydn.wicket.wicketorientdb.OrientDbWebApplication;
 
 import com.orientechnologies.orient.core.db.ODatabaseDocumentInternal;
 import com.orientechnologies.orient.core.db.ODatabaseRecordThreadLocal;
+import com.orientechnologies.orient.core.db.OPartitionedDatabasePoolFactory;
 import com.orientechnologies.orient.core.db.document.ODatabaseDocument;
 
 /**
@@ -23,15 +24,12 @@ public abstract class DBClosure<V> implements Serializable
 	
 	public DBClosure()
 	{
-		IOrientDbSettings settings = getSettings();
-		this.dbUrl = settings.getDBUrl();
-		this.username = settings.getDBInstallatorUserName();
-		this.password = settings.getDBInstallatorUserPassword();
+		this(null, null, null);
 	}
 	
 	public DBClosure(String username, String password)
 	{
-		this(getSettings().getDBUrl(), username, password);
+		this(null, username, password);
 	}
 	
 	public DBClosure(String dbUrl, String username, String password)
@@ -49,7 +47,7 @@ public abstract class DBClosure<V> implements Serializable
 		ODatabaseDocument oldDb = ODatabaseRecordThreadLocal.INSTANCE.getIfDefined();
 		try
 		{
-			db = getSettings().getDatabasePoolFactory().get(dbUrl, username, password).acquire();
+			db = getSettings().getDatabasePoolFactory().get(getDBUrl(), getUsername(), getPassword()).acquire();
 			return execute(db);
 		} 
 		finally
@@ -60,7 +58,22 @@ public abstract class DBClosure<V> implements Serializable
 		}
 	}
 	
-	protected static IOrientDbSettings getSettings()
+	protected String getDBUrl()
+	{
+		return dbUrl!=null?dbUrl:getSettings().getDBUrl();
+	}
+	
+	protected String getUsername()
+	{
+		return username!=null?username:getSettings().getDBInstallatorUserName();
+	}
+	
+	protected String getPassword()
+	{
+		return password!=null?password:getSettings().getDBInstallatorUserPassword();
+	}
+	
+	protected IOrientDbSettings getSettings()
 	{
 		return OrientDbWebApplication.get().getOrientDbSettings();
 	}
