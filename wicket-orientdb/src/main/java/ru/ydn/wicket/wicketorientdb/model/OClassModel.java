@@ -51,7 +51,15 @@ public class OClassModel extends PrototypeLoadableDetachableModel<OClass> {
 	
 	@Override
 	protected void onDetach() {
-		if(classNameModel!=null) classNameModel.detach();
+		if(classNameModel!=null)
+		{
+			OClass thisClass = getObject();
+			if(thisClass!=null && !thisClass.getName().equals(classNameModel.getObject()))
+			{
+				classNameModel.setObject(thisClass.getName());
+			}
+			classNameModel.detach();
+		}
 	}
 
 	public OSchema getSchema()

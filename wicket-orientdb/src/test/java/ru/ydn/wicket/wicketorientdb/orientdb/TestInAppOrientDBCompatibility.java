@@ -79,6 +79,23 @@ public class TestInAppOrientDBCompatibility
 		doc.save();
 	}
 	
+	@Test
+	@Ignore
+	public void testPropertyRenaming()
+	{
+		ODatabaseDocument db = wicket.getTester().getDatabase();
+		OSchema schema = db.getMetadata().getSchema();
+		OClass classA = schema.createClass("TestPropertyRenaming");
+		OProperty property = classA.createProperty("propertyOld", OType.STRING);
+		assertEquals(property, classA.getProperty("propertyOld"));
+		assertNull(classA.getProperty("propertyNew"));
+		property.setName("propertyNew");
+		//schema.reload();
+		//classA = schema.getClass("TestPropertyRenaming");
+		assertNull(classA.getProperty("propertyOld"));
+		assertEquals(property, classA.getProperty("propertyNew"));
+	}
+	
 	private static final String TEST_VALIDATION_AND_HOOKS_CLASS= "TestValidationAndHooks";
 	@Test
 	@Ignore

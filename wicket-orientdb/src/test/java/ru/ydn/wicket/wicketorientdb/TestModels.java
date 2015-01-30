@@ -19,6 +19,7 @@ import com.orientechnologies.orient.core.index.OIndex;
 import com.orientechnologies.orient.core.metadata.schema.OClass;
 import com.orientechnologies.orient.core.metadata.schema.OProperty;
 import com.orientechnologies.orient.core.metadata.schema.OSchema;
+import com.orientechnologies.orient.core.metadata.schema.OType;
 import com.orientechnologies.orient.core.metadata.security.OUser;
 import com.orientechnologies.orient.core.record.impl.ODocument;
 
@@ -248,6 +249,12 @@ public class TestModels
 		//Test for null
 		model.setObject(null);
 		assertModelObjectEquals(null, model);
+		//Test for classRename
+		OClass newClass = wicket.getTester().getSchema().createClass("TestRenameOClass");
+		model.setObject(newClass);
+		assertModelObjectEquals(newClass, model);
+		newClass.setName("TestRenameOClassRenamed");
+		assertModelObjectEquals(newClass, model);
 	}
 	
 	@Test
@@ -294,6 +301,13 @@ public class TestModels
 		//Test for null
 		propertyModel.setObject(null);
 		assertModelObjectEquals(null, propertyModel);
+		//Test for classRename
+		OClass newClass = wicket.getTester().getSchema().createClass("TestRenameOProperty");
+		OProperty property = newClass.createProperty("newProperty", OType.STRING);
+		propertyModel.setObject(property);
+		assertModelObjectEquals(property, propertyModel);
+		property.setName("newProperty2");
+		assertModelObjectEquals(property, propertyModel);
 	}
 	
 	public static void assertModelObjectEquals(Object expected, IModel<?> model)
