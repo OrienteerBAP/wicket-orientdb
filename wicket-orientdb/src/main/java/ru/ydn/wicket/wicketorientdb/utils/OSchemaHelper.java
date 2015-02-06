@@ -84,6 +84,12 @@ public class OSchemaHelper
 		return this;
 	}
 	
+	public OSchemaHelper oIndex(INDEX_TYPE type)
+	{
+		checkOProperty();
+		return oIndex(lastProperty.getFullName(), type);
+	}
+	
 	public OSchemaHelper oIndex(String name, INDEX_TYPE type)
 	{
 		checkOProperty();
