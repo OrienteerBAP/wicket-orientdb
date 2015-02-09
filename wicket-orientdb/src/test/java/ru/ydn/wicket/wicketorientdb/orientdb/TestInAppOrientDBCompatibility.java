@@ -1,5 +1,8 @@
 package ru.ydn.wicket.wicketorientdb.orientdb;
 
+import java.util.Arrays;
+import java.util.Collection;
+
 import org.junit.ClassRule;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -22,6 +25,26 @@ public class TestInAppOrientDBCompatibility
 {
 	@ClassRule
 	public static WicketOrientDbTesterScope wicket = new WicketOrientDbTesterScope();
+	
+	@Test
+	public void testGettingFields()
+	{
+		OSchema schema = wicket.getTester().getSchema();
+		OClass classA = schema.createClass("GettingFields");
+		classA.createProperty("title", OType.STRING);
+		classA.createProperty("link", OType.LINK).setLinkedClass(classA);
+		classA.createProperty("multi", OType.LINKLIST).setLinkedClass(classA);
+		ODocument doc = new ODocument(classA);
+		doc.field("title", "test");
+		doc.save();
+		doc.field("link", doc);
+		doc.field("multi", Arrays.asList(doc));
+		doc.save();
+		doc.reload();
+		String title = doc.field("title");
+		ODocument link = doc.field("link");
+		Collection<ODocument> multi = doc.field("multi");
+	}
 	
 	@Test
 	public void testExistsProperty()

@@ -22,6 +22,7 @@ import org.apache.wicket.request.http.WebResponse;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.request.resource.AbstractResource;
 import org.apache.wicket.request.resource.SharedResourceReference;
+import org.apache.wicket.util.encoding.UrlEncoder;
 import org.apache.wicket.util.io.IOUtils;
 import org.apache.wicket.util.lang.Args;
 import org.apache.wicket.util.string.Strings;
@@ -61,15 +62,9 @@ public class OrientDBHttpAPIResource extends AbstractResource
 				
 				for(int i=0; i<params.getIndexedCount();i++)
 				{
-					if(i==1)
-					{
-						//replace provided database name
-						sb.append(OrientDbWebSession.get().getDatabase().getName()).append('/');
-					}
-					else
-					{
-						sb.append(params.get(i).toString()).append('/');
-					}
+					//replace provided database name
+					String segment = i==1?OrientDbWebSession.get().getDatabase().getName():params.get(i).toString();
+					sb.append(UrlEncoder.PATH_INSTANCE.encode(segment, "UTF8")).append('/');
 				}
 				if(sb.charAt(sb.length()-1)=='/')sb.setLength(sb.length()-1);
 				String queryString = request.getUrl().getQueryString();

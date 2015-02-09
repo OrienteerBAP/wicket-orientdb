@@ -4,6 +4,7 @@ import static org.junit.Assert.*;
 
 import java.io.IOException;
 import java.io.StringReader;
+import java.net.URLEncoder;
 import java.nio.charset.Charset;
 import java.util.Random;
 import java.util.regex.Matcher;
@@ -22,6 +23,7 @@ import ru.ydn.wicket.wicketorientdb.junit.WicketOrientDbTester;
 import ru.ydn.wicket.wicketorientdb.junit.WicketOrientDbTesterScope;
 
 import com.orientechnologies.orient.core.id.ORID;
+import com.orientechnologies.orient.core.metadata.security.OSecurityUser;
 import com.orientechnologies.orient.core.record.impl.ODocument;
 
 public class TestRestApi
@@ -75,6 +77,18 @@ public class TestRestApi
 		ret = executeUrl("orientdb/command/db/sql", "POST", "update "+TEST_REST_CLASS+" set b = "+nextB);
 		doc.reload();
 		assertEquals(nextB, doc.field("b"));
+	}
+	
+	@Test
+	public void testQueryCoding() throws Exception
+	{
+		OSecurityUser currentUser = wicket.getTester().getDatabase().getUser();
+		ODocument userDoc = currentUser.getDocument();
+		String rid = userDoc.getIdentity().toString();
+		String sql = "select * from OUser where @rid = "+rid;
+		String url = "orientdb/query/db/sql/"+URLEncoder.encode(sql, "UTF8");
+		String ret = executeUrl(url, "GET", null);
+		assertTrue(ret.contains(userDoc.toJSON()));
 	}
 	
 	@Test
