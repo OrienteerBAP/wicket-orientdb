@@ -2,6 +2,7 @@ package ru.ydn.wicket.wicketorientdb.orientdb;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 
 import org.junit.ClassRule;
 import org.junit.Ignore;
@@ -170,5 +171,79 @@ public class TestInAppOrientDBCompatibility
 		assertEquals("value1-update", doc.field("property1"));
 		assertEquals("value2-create", doc.field("property2"));
 		assertEquals("value3-update", doc.field("property3"));
+	}
+	
+	@Test
+	@Ignore
+	public void testUpdatesInHooks()
+	{
+		final String className = "TestUpdatesInHook";
+		ODatabaseDocument db = wicket.getTester().getDatabase();
+		db.registerHook(new ODocumentHookAbstract() {
+			
+			{
+				setIncludeClasses(className);
+			}
+			
+			@Override
+			public DISTRIBUTED_EXECUTION_MODE getDistributedExecutionMode() {
+				return DISTRIBUTED_EXECUTION_MODE.SOURCE_NODE;
+			}
+			
+			@Override
+			public RESULT onRecordBeforeCreate(ODocument iDocument) {
+				return onRecordBeforeUpdate(iDocument);
+			}
+
+			@Override
+			public RESULT onRecordBeforeUpdate(ODocument iDocument) {
+				iDocument.undo("b");
+				return RESULT.RECORD_CHANGED;
+			}
+			
+			@Override
+			public void onRecordAfterCreate(ODocument iDocument) {
+				onRecordAfterUpdate(iDocument);
+			}
+			
+			@Override
+			public void onRecordAfterUpdate(ODocument iDocument) {
+				onRecordAfterRead(iDocument);
+			}
+			
+			@Override
+			public void onRecordAfterRead(ODocument iDocument) {
+				if(!iDocument.containsField("b"))
+					iDocument.field("b", iDocument.field("a"));
+			}
+			
+			
+		});
+		OSchema schema = db.getMetadata().getSchema();
+		OClass classA = schema.createClass(className);
+		classA.createProperty("a", OType.STRING);
+		classA.createProperty("b", OType.STRING);
+		db.commit();
+		ODocument doc = new ODocument(classA);
+		/*doc.field("a", "test1");
+		doc.save();
+		doc.reload();
+		assertEquals(doc.field("a"), doc.field("b"));
+		doc.field("a", "test2");
+		doc.save();
+		doc.reload();
+		assertEquals(doc.field("a"), doc.field("b"));*/
+		db.begin();
+		doc.field("a", "test3");
+		doc.save();
+		doc.reload();
+//		doc = db.reload(doc, null, true);
+		assertEquals(doc.field("a"), doc.field("b"));
+		doc.field("a", "test4");
+		doc.save();
+		doc.reload();
+//		doc = db.reload(doc, null, true);
+		assertEquals(doc.field("a"), doc.field("b"));
+		db.commit();
 	}
 }
