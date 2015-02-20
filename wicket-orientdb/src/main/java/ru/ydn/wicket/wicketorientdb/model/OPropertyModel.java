@@ -60,12 +60,11 @@ public class OPropertyModel extends PrototypeLoadableDetachableModel<OProperty>
 	protected void onDetach() {
 		if(classModel!=null)
 		{
-			/* Uncomment after fixing #3498 in OrientDB
 			OProperty property = getObject();
 			if(property!=null && !property.getName().equals(propertyName))
 			{
 				propertyName=property.getName();
-			}*/
+			}
 			classModel.detach();
 		}
 	}
