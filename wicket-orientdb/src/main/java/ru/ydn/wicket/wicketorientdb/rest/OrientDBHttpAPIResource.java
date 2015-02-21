@@ -12,6 +12,8 @@ import java.net.HttpURLConnection;
 import java.net.PasswordAuthentication;
 import java.net.URL;
 import java.util.Enumeration;
+import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -44,6 +46,19 @@ public class OrientDBHttpAPIResource extends AbstractResource
 	public static final String ORIENT_DB_KEY=OrientDBHttpAPIResource.class.getSimpleName();
 	
 	private static final Logger LOG = LoggerFactory.getLogger(OrientDBHttpAPIResource.class);
+	
+	@SuppressWarnings("restriction")
+	private static class MultiUserCache implements sun.net.www.protocol.http.AuthCache{
+	     public void put(String pkey, sun.net.www.protocol.http.AuthCacheValue value){
+
+	     }
+	     public sun.net.www.protocol.http.AuthCacheValue get(String pkey, String skey){
+	         return null;
+	     }
+	     public void remove(String pkey, sun.net.www.protocol.http.AuthCacheValue entry){
+
+	     }
+	}
 	
 	
 	@Override
@@ -83,6 +98,7 @@ public class OrientDBHttpAPIResource extends AbstractResource
 					
 					String method = httpRequest.getMethod();
 					con.setRequestMethod(method);
+					con.setUseCaches(false);
 					if("post".equalsIgnoreCase(method) || "put".equalsIgnoreCase(method))
 					{
 						con.setDoOutput(true);
@@ -128,6 +144,7 @@ public class OrientDBHttpAPIResource extends AbstractResource
 		mountOrientDbRestApi(new OrientDBHttpAPIResource(), app);
 	}
 	
+	@SuppressWarnings("restriction")
 	public static void mountOrientDbRestApi(OrientDBHttpAPIResource resource, WebApplication app)
 	{
 		app.getSharedResources().add(ORIENT_DB_KEY, resource);
@@ -153,7 +170,8 @@ public class OrientDBHttpAPIResource extends AbstractResource
 			}
 			
 		});
-		CookieHandler.setDefault(new PersonalCookieManager());
+		 CookieHandler.setDefault(new PersonalCookieManager());
+		 sun.net.www.protocol.http.AuthCacheValue.setAuthCache(new MultiUserCache());
 	}
 
 }

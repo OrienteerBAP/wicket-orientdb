@@ -17,6 +17,7 @@ import org.apache.wicket.protocol.http.mock.MockHttpServletRequest;
 import org.apache.wicket.protocol.http.mock.MockHttpServletResponse;
 import org.apache.wicket.request.Url;
 import org.junit.ClassRule;
+import org.junit.ComparisonFailure;
 import org.junit.Test;
 
 import ru.ydn.wicket.wicketorientdb.junit.WicketOrientDbTester;
@@ -105,6 +106,39 @@ public class TestRestApi
 	{
 		String ret = executeUrl("orientdb/function/db/fun2", "GET", null);
 		System.out.println("ret="+ret);
+	}
+	
+	@Test
+	public void testAuthentication() throws Exception
+	{
+		WicketOrientDbTester tester = wicket.getTester();
+//		assertFalse(tester.isSignedIn());
+//		assertNull(tester.getSession().getUser());
+//		assertContains(tester.getDatabase().getUser().getDocument().toJSON(), getCurrentUser());
+		tester.signIn("writer", "writer");
+		assertTrue(tester.isSignedIn());
+		assertEquals("writer", tester.getSession().getUser().getName());
+		assertContains(tester.getSession().getUser().getDocument().toJSON(), getCurrentUser());
+		tester.signOut();
+		assertFalse(tester.isSignedIn());
+		assertContains(tester.getDatabase().getUser().getDocument().toJSON(), getCurrentUser());
+		tester.signIn("admin", "admin");
+		assertTrue(tester.isSignedIn());
+		assertEquals("admin", tester.getSession().getUser().getName());
+		assertContains(tester.getSession().getUser().getDocument().toJSON(),getCurrentUser());
+	}
+	
+	private static void assertContains(String where, String what)
+	{
+		if(what!=null && !what.contains(where))
+		{
+			throw new ComparisonFailure("Expected containing.", where, what);
+		}
+	}
+	
+	private String getCurrentUser() throws Exception
+	{
+		return executeUrl("orientdb/query/db/sql/select+from+$user", "GET", null);
 	}
 	
 	private String executeUrl(String _url, final String method, final String content) throws Exception
