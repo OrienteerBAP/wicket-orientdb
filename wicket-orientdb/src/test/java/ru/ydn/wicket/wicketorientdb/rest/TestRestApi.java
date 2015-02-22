@@ -16,10 +16,12 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.wicket.protocol.http.mock.MockHttpServletRequest;
 import org.apache.wicket.protocol.http.mock.MockHttpServletResponse;
 import org.apache.wicket.request.Url;
+import org.apache.wicket.util.crypt.Base64;
 import org.junit.ClassRule;
 import org.junit.ComparisonFailure;
 import org.junit.Test;
 
+import ru.ydn.wicket.wicketorientdb.LazyAuthorizationRequestCycleListener;
 import ru.ydn.wicket.wicketorientdb.junit.WicketOrientDbTester;
 import ru.ydn.wicket.wicketorientdb.junit.WicketOrientDbTesterScope;
 
@@ -112,9 +114,9 @@ public class TestRestApi
 	public void testAuthentication() throws Exception
 	{
 		WicketOrientDbTester tester = wicket.getTester();
-//		assertFalse(tester.isSignedIn());
-//		assertNull(tester.getSession().getUser());
-//		assertContains(tester.getDatabase().getUser().getDocument().toJSON(), getCurrentUser());
+		assertFalse(tester.isSignedIn());
+		assertNull(tester.getSession().getUser());
+		assertContains(tester.getDatabase().getUser().getDocument().toJSON(), getCurrentUser());
 		tester.signIn("writer", "writer");
 		assertTrue(tester.isSignedIn());
 		assertEquals("writer", tester.getSession().getUser().getName());
@@ -126,6 +128,16 @@ public class TestRestApi
 		assertTrue(tester.isSignedIn());
 		assertEquals("admin", tester.getSession().getUser().getName());
 		assertContains(tester.getSession().getUser().getDocument().toJSON(),getCurrentUser());
+		
+		tester.signOut();
+		assertFalse(tester.isSignedIn());
+		assertContains(tester.getDatabase().getUser().getDocument().toJSON(), getCurrentUser());
+		
+		String currentUser = getCurrentUser("admin", "admin");
+		assertTrue(tester.isSignedIn());
+		assertEquals("admin", tester.getSession().getUser().getName());
+		assertContains(tester.getSession().getUser().getDocument().toJSON(), currentUser);
+		
 	}
 	
 	private static void assertContains(String where, String what)
@@ -138,10 +150,20 @@ public class TestRestApi
 	
 	private String getCurrentUser() throws Exception
 	{
-		return executeUrl("orientdb/query/db/sql/select+from+$user", "GET", null);
+		return getCurrentUser(null, null);
+	}
+	
+	private String getCurrentUser(String username, String password) throws Exception
+	{
+		return executeUrl("orientdb/query/db/sql/select+from+$user", "GET", null, username, password);
 	}
 	
 	private String executeUrl(String _url, final String method, final String content) throws Exception
+	{
+		return executeUrl(_url, method, content, null, null);
+	}
+	
+	private String executeUrl(String _url, final String method, final String content, String username, String password) throws Exception
 	{
 		WicketOrientDbTester tester = wicket.getTester();
 		MockHttpServletRequest request = new MockHttpServletRequest(tester.getApplication(), tester.getHttpSession(), tester.getServletContext())
@@ -170,6 +192,10 @@ public class TestRestApi
 		Url url = Url.parse(_url, Charset.forName(request.getCharacterEncoding()));
 		request.setUrl(url);
 		request.setMethod(method);
+		if(username!=null && password!=null)
+		{
+			request.setHeader(LazyAuthorizationRequestCycleListener.AUTHORIZATION_HEADER, "Basic "+Base64.encodeBase64String((username+":"+password).getBytes()));
+		}
 		tester.processRequest(request);
 		MockHttpServletResponse response = tester.getLastResponse();
 		int status = response.getStatus();
