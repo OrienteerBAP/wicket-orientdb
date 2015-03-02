@@ -1,6 +1,6 @@
 package ru.ydn.wicket.wicketorientdb.utils;
 
-import java.util.Objects;
+import org.apache.wicket.util.lang.Objects;
 
 import ru.ydn.wicket.wicketorientdb.OrientDbWebSession;
 
@@ -77,7 +77,7 @@ public class OSchemaHelper
 		checkOProperty();
 		OClass linkedToClass =  schema.getClass(className);
 		if(linkedToClass==null) throw new IllegalArgumentException("Target OClass '"+className+"' to link to not found");
-		if(!Objects.equals(linkedToClass, lastProperty.getLinkedClass()))
+		if(!Objects.equal(linkedToClass, lastProperty.getLinkedClass()))
 		{
 			lastProperty.setLinkedClass(linkedToClass);
 		}
