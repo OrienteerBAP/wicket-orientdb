@@ -43,7 +43,7 @@ public class TestRestApi
 	{
 		ODocument doc = (ODocument) wicket.getTester().getDatabase().browseClass(TEST_REST_CLASS).current();
 		ORID id = doc.getIdentity();
-		String ret = executeUrl("orientdb/document/db/"+id.getClusterId()+":"+id.getClusterPosition(), "GET", null);
+		String ret = wicket.getTester().executeUrl("orientdb/document/db/"+id.getClusterId()+":"+id.getClusterPosition(), "GET", null);
 		assertEquals(doc.toJSON(), ret);
 	}
 	
@@ -52,7 +52,7 @@ public class TestRestApi
 	{
 		long current = wicket.getTester().getDatabase().countClass(TEST_REST_CLASS);
 		String content = "{\"@class\":\"TestRest\",\"a\":\"test2\",\"b\":11,\"c\":false}";
-		executeUrl("orientdb/document/db/", "POST", content);
+		wicket.getTester().executeUrl("orientdb/document/db/", "POST", content);
 		assertEquals(current+1, wicket.getTester().getDatabase().countClass(TEST_REST_CLASS));
 	}
 	
@@ -61,11 +61,11 @@ public class TestRestApi
 	{
 		long current = wicket.getTester().getDatabase().countClass(TEST_REST_CLASS);
 		String content = "{\"@class\":\"TestRest\",\"a\":\"todelete\",\"b\":11,\"c\":false}";
-		String created = executeUrl("orientdb/document/db/", "POST", content);
+		String created = wicket.getTester().executeUrl("orientdb/document/db/", "POST", content);
 		assertEquals(current+1, wicket.getTester().getDatabase().countClass(TEST_REST_CLASS));
 		Matcher rid = RID_PATTERN.matcher(created);
 		assertTrue(rid.find());
-		executeUrl("orientdb/document/db/"+rid.group(1), "DELETE", content);
+		wicket.getTester().executeUrl("orientdb/document/db/"+rid.group(1), "DELETE", content);
 		assertEquals(current, wicket.getTester().getDatabase().countClass(TEST_REST_CLASS));
 	}
 	
@@ -73,11 +73,11 @@ public class TestRestApi
 	public void testQueryAndUpdate() throws Exception
 	{
 		ODocument doc = (ODocument) wicket.getTester().getDatabase().browseClass(TEST_REST_CLASS).current();
-		String ret = executeUrl("orientdb/query/db/sql/select+from+"+TEST_REST_CLASS, "GET", null);
+		String ret = wicket.getTester().executeUrl("orientdb/query/db/sql/select+from+"+TEST_REST_CLASS, "GET", null);
 		assertTrue(ret.contains(doc.toJSON()));
 		
 		int nextB = RANDOM.nextInt();
-		ret = executeUrl("orientdb/command/db/sql", "POST", "update "+TEST_REST_CLASS+" set b = "+nextB);
+		ret = wicket.getTester().executeUrl("orientdb/command/db/sql", "POST", "update "+TEST_REST_CLASS+" set b = "+nextB);
 		doc.reload();
 		assertEquals(nextB, doc.field("b"));
 	}
@@ -90,23 +90,23 @@ public class TestRestApi
 		String rid = userDoc.getIdentity().toString();
 		String sql = "select * from OUser where @rid = "+rid;
 		String url = "orientdb/query/db/sql/"+URLEncoder.encode(sql, "UTF8");
-		String ret = executeUrl(url, "GET", null);
+		String ret = wicket.getTester().executeUrl(url, "GET", null);
 		assertTrue(ret.contains(userDoc.toJSON()));
 	}
 	
 	@Test
 	public void testExecuteFunction() throws Exception
 	{
-		String ret = executeUrl("orientdb/function/db/fun1", "GET", null);
+		String ret = wicket.getTester().executeUrl("orientdb/function/db/fun1", "GET", null);
 		assertTrue(ret.contains("fun1"));
-		ret = executeUrl("orientdb/function/db/fun2", "POST", null);
+		ret = wicket.getTester().executeUrl("orientdb/function/db/fun2", "POST", null);
 		assertTrue(ret.contains("fun2"));
 	}
 	
 	@Test(expected=IOException.class)
 	public void testExecuteFailing() throws Exception
 	{
-		String ret = executeUrl("orientdb/function/db/fun2", "GET", null);
+		String ret = wicket.getTester().executeUrl("orientdb/function/db/fun2", "GET", null);
 		System.out.println("ret="+ret);
 	}
 	
@@ -155,58 +155,7 @@ public class TestRestApi
 	
 	private String getCurrentUser(String username, String password) throws Exception
 	{
-		return executeUrl("orientdb/query/db/sql/select+from+$user", "GET", null, username, password);
-	}
-	
-	private String executeUrl(String _url, final String method, final String content) throws Exception
-	{
-		return executeUrl(_url, method, content, null, null);
-	}
-	
-	private String executeUrl(String _url, final String method, final String content, String username, String password) throws Exception
-	{
-		WicketOrientDbTester tester = wicket.getTester();
-		MockHttpServletRequest request = new MockHttpServletRequest(tester.getApplication(), tester.getHttpSession(), tester.getServletContext())
-		{
-			{
-				setMethod(method);
-			}
-
-			@Override
-			public ServletInputStream getInputStream() throws IOException {
-				if(content==null) return super.getInputStream();
-				else
-				{
-					final StringReader sr = new StringReader(content);
-					return new ServletInputStream() {
-						@Override
-						public int read() throws IOException {
-							return sr.read();
-						}
-					};
-				}
-			}
-			
-		};
-		
-		Url url = Url.parse(_url, Charset.forName(request.getCharacterEncoding()));
-		request.setUrl(url);
-		request.setMethod(method);
-		if(username!=null && password!=null)
-		{
-			request.setHeader(LazyAuthorizationRequestCycleListener.AUTHORIZATION_HEADER, "Basic "+Base64.encodeBase64String((username+":"+password).getBytes()));
-		}
-		tester.processRequest(request);
-		MockHttpServletResponse response = tester.getLastResponse();
-		int status = response.getStatus();
-		if(status>=HttpServletResponse.SC_OK+100)
-		{
-			throw new IOException("Code: "+response.getStatus()+" Message: "+response.getErrorMessage()+" Content: "+response.getDocument());
-		}
-		else
-		{
-			return response.getDocument();
-		}
+		return wicket.getTester().executeUrl("orientdb/query/db/sql/select+from+$user", "GET", null, username, password);
 	}
 	
 }
