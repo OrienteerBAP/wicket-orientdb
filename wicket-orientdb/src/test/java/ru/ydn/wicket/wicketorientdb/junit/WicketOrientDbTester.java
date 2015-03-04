@@ -107,7 +107,10 @@ public class WicketOrientDbTester extends WicketTester
 		{
 			request.setHeader(LazyAuthorizationRequestCycleListener.AUTHORIZATION_HEADER, "Basic "+Base64.encodeBase64String((username+":"+password).getBytes()));
 		}
-		processRequest(request);
+		if(!processRequest(request))
+		{
+			throw new IOException("Request was not sucessfully sent");
+		}
 		MockHttpServletResponse response = getLastResponse();
 		int status = response.getStatus();
 		if(status>=HttpServletResponse.SC_OK+100)

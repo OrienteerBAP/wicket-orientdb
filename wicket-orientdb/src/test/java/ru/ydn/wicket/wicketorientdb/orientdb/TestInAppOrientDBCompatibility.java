@@ -3,8 +3,10 @@ package ru.ydn.wicket.wicketorientdb.orientdb;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Random;
 
 import org.junit.ClassRule;
+import org.junit.ComparisonFailure;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -16,6 +18,8 @@ import com.orientechnologies.orient.core.db.document.ODatabaseDocument;
 import com.orientechnologies.orient.core.hook.ODocumentHookAbstract;
 import com.orientechnologies.orient.core.hook.ORecordHook.DISTRIBUTED_EXECUTION_MODE;
 import com.orientechnologies.orient.core.hook.ORecordHook.RESULT;
+import com.orientechnologies.orient.core.id.ORID;
+import com.orientechnologies.orient.core.metadata.function.OFunction;
 import com.orientechnologies.orient.core.metadata.schema.OClass;
 import com.orientechnologies.orient.core.metadata.schema.OProperty;
 import com.orientechnologies.orient.core.metadata.schema.OSchema;
@@ -104,7 +108,6 @@ public class TestInAppOrientDBCompatibility
 	}
 	
 	@Test
-	@Ignore
 	public void testPropertyRenaming()
 	{
 		ODatabaseDocument db = wicket.getTester().getDatabase();
@@ -114,10 +117,65 @@ public class TestInAppOrientDBCompatibility
 		assertEquals(property, classA.getProperty("propertyOld"));
 		assertNull(classA.getProperty("propertyNew"));
 		property.setName("propertyNew");
-		//schema.reload();
-		//classA = schema.getClass("TestPropertyRenaming");
+		schema.reload();
+		classA = schema.getClass("TestPropertyRenaming");
 		assertNull(classA.getProperty("propertyOld"));
 		assertEquals(property, classA.getProperty("propertyNew"));
+	}
+	
+	private static final Random RANDOM = new Random();
+	
+	@Test
+	public void testOFunctions() throws Exception
+	{
+		ODatabaseDocument db = wicket.getTester().getDatabase();
+		ODocument doc =  new ODocument(OFunction.CLASS_NAME);
+		doc.field("name", "testResurection");
+		doc.field("language", "JavaScript");
+		doc.field("idempotent", true);
+		doc.save();
+		ORID orid = doc.getIdentity();
+		for(int i=0;i<10;i++)
+		{
+			db = wicket.getTester().getDatabase();
+			String signature = "signature"+RANDOM.nextLong();
+			boolean isGoodCall = (i+1)%3 != 0;
+			db.begin();
+			doc = orid.getRecord();
+			String code = isGoodCall?"return \""+signature+"\";":"return nosuchvar;";
+			doc.field("code", code);
+			doc.save();
+			db.commit();
+			db.close();
+			if(isGoodCall)
+			{
+				String result;
+				for(int j=0; j<3;j++)
+				{
+					result = wicket.getTester().executeUrl("orientdb/function/db/testResurection", "GET", null);
+					assertContains(signature, result);
+				}
+			}
+			else
+			{
+				try
+				{
+					wicket.getTester().executeUrl("orientdb/function/db/testResurection", "GET", null);
+					assertFalse("We should be there, because function should have 400 response", true);
+				} catch (Exception e)
+				{
+					//NOP
+				}
+			}
+		}
+	}
+	
+	private static void assertContains(String where, String what)
+	{
+		if(what!=null && !what.contains(where))
+		{
+			throw new ComparisonFailure("Expected containing.", where, what);
+		}
 	}
 	
 	private static final String TEST_VALIDATION_AND_HOOKS_CLASS= "TestValidationAndHooks";
