@@ -120,6 +120,7 @@ public class TestRestApi
 		tester.signIn("writer", "writer");
 		assertTrue(tester.isSignedIn());
 		assertEquals("writer", tester.getSession().getUser().getName());
+		assertContains("writer", tester.getSession().getUser().getDocument().toJSON());
 		assertContains(tester.getSession().getUser().getDocument().toJSON(), getCurrentUser());
 		tester.signOut();
 		assertFalse(tester.isSignedIn());

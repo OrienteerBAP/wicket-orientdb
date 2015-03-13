@@ -123,6 +123,10 @@ public class OrientDBHttpAPIResource extends AbstractResource
 						}
 					}
 				}
+				finally
+				{
+					if(con!=null)con.disconnect();
+				}
 				response.setWriteCallback(new WriteCallback() {
 					
 					@Override

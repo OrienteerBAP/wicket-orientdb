@@ -10,6 +10,7 @@ import org.junit.ComparisonFailure;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import ru.ydn.wicket.wicketorientdb.junit.WicketOrientDbTester;
 import ru.ydn.wicket.wicketorientdb.junit.WicketOrientDbTesterScope;
 import static org.junit.Assert.*;
 
@@ -303,5 +304,20 @@ public class TestInAppOrientDBCompatibility
 //		doc = db.reload(doc, null, true);
 		assertEquals(doc.field("a"), doc.field("b"));
 		db.commit();
+	}
+	
+	@Test
+	public void testAuthentication() throws Exception
+	{
+		WicketOrientDbTester tester = wicket.getTester();
+		String content = tester.executeUrl("orientdb/query/db/sql/select+from+$user", "GET", null, "reader", "reader");
+		System.out.println(content);
+		assertTrue(content.contains("reader"));
+		content = tester.executeUrl("orientdb/query/db/sql/select+from+$user", "GET", null, "writer",  "writer");
+		System.out.println(content);
+		assertTrue(content.contains("writer"));
+		content = tester.executeUrl("orientdb/query/db/sql/select+from+$user", "GET", null, "admin",  "admin");
+		System.out.println(content);
+		assertTrue(content.contains("admin"));
 	}
 }
