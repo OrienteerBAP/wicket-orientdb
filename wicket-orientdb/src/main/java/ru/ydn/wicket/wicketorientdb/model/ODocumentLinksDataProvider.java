@@ -16,6 +16,10 @@ public class ODocumentLinksDataProvider extends ForwardingDataProvider<ODocument
 	
 	private SortableDataProvider<ODocument, String> thisRunProvider;
 	
+	public ODocumentLinksDataProvider(IModel<ODocument> docModel, OProperty property) {
+		this(docModel, new OPropertyModel(property));
+	}
+	
 	public ODocumentLinksDataProvider(IModel<ODocument> docModel, IModel<OProperty> propertyModel) {
 		this.docModel = docModel;
 		this.propertyModel = propertyModel;
