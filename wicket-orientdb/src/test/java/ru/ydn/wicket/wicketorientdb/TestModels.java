@@ -29,6 +29,7 @@ import ru.ydn.wicket.wicketorientdb.model.ListOPropertiesModel;
 import ru.ydn.wicket.wicketorientdb.model.OClassModel;
 import ru.ydn.wicket.wicketorientdb.model.OClassNamingModel;
 import ru.ydn.wicket.wicketorientdb.model.OClassesDataProvider;
+import ru.ydn.wicket.wicketorientdb.model.ODocumentLinksDataProvider;
 import ru.ydn.wicket.wicketorientdb.model.ODocumentMapWrapper;
 import ru.ydn.wicket.wicketorientdb.model.ODocumentModel;
 import ru.ydn.wicket.wicketorientdb.model.ODocumentPropertyModel;
@@ -308,6 +309,31 @@ public class TestModels
 		assertModelObjectEquals(property, propertyModel);
 		property.setName("newProperty2");
 		assertModelObjectEquals(property, propertyModel);
+	}
+	
+	@Test
+	public void testODocumentLinksDataProvider()
+	{
+		ODocument doc1 = new ODocument("ClassA");
+		doc1.field("name", "doc1Ext");
+		doc1.save();
+		ODocument doc2 = new ODocument("ClassA");
+		doc2.field("name", "doc2Ext");
+		doc2.field("other", Arrays.asList(doc1));
+		try {
+			ODocumentModel documentModel = new ODocumentModel(doc2);
+			OPropertyModel propertyModel = new OPropertyModel("ClassA", "other");
+			ODocumentLinksDataProvider provider = new ODocumentLinksDataProvider(documentModel, propertyModel);
+			assertEquals(1, provider.size());
+			assertEquals(doc1, provider.iterator(0, 1).next());
+			doc2.save();
+			provider.detach();
+			assertEquals(1, provider.size());
+			assertEquals(doc1, provider.iterator(0, 1).next());
+		} finally {
+			doc1.delete();
+			doc2.delete();
+		}
 	}
 	
 	public static void assertModelObjectEquals(Object expected, IModel<?> model)

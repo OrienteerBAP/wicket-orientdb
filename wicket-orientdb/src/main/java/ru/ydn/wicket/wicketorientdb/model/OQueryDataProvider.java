@@ -73,10 +73,7 @@ public class OQueryDataProvider <K> extends SortableDataProvider<K, String>
     @SuppressWarnings("unchecked")
 	public IModel<K> model(K o)
     {
-    	if(o instanceof ODocument) return (IModel<K>)new ODocumentModel((ODocument)o);
-    	else if(o instanceof ODocumentWrapper) return (IModel<K>)new ODocumentWrapperModel<ODocumentWrapper>((ODocumentWrapper)o);
-    	else if(o instanceof Serializable) return (IModel<K>)Model.of((Serializable)o);
-    	else throw new WicketRuntimeException(OQueryDataProvider.class.getSimpleName()+" can't work with non serializable objects: "+o);
+    	return ModelUtils.model(o);
     }
 
     @Override
