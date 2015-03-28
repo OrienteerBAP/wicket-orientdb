@@ -48,6 +48,7 @@ public abstract class DBClosure<V> implements Serializable
 		try
 		{
 			db = getSettings().getDatabasePoolFactory().get(getDBUrl(), getUsername(), getPassword()).acquire();
+			ODatabaseRecordThreadLocal.INSTANCE.set((ODatabaseDocumentInternal)db);
 			return execute(db);
 		} 
 		finally

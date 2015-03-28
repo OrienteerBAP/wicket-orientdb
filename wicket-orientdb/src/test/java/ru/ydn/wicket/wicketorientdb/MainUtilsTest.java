@@ -7,6 +7,7 @@ import org.junit.ClassRule;
 import org.junit.Test;
 
 import com.google.common.base.Converter;
+import com.orientechnologies.orient.core.db.ODatabaseRecordThreadLocal;
 import com.orientechnologies.orient.core.db.document.ODatabaseDocument;
 import com.orientechnologies.orient.core.id.ORID;
 import com.orientechnologies.orient.core.id.ORecordId;
@@ -53,6 +54,7 @@ public class MainUtilsTest
 
 			@Override
 			protected OSecurityUser execute(ODatabaseDocument db) {
+				assertEquals(db, ODatabaseRecordThreadLocal.INSTANCE.get());
 				return db.getUser();
 			}
 		};
@@ -63,6 +65,7 @@ public class MainUtilsTest
 
 			@Override
 			protected OSecurityUser execute(ODatabaseDocument db) {
+				assertEquals(db, ODatabaseRecordThreadLocal.INSTANCE.get());
 				return db.getUser();
 			}
 		};
