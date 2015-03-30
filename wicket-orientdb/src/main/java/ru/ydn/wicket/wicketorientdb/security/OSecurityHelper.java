@@ -153,7 +153,7 @@ public class OSecurityHelper
 	 */
 	public static boolean isAllowed(ORule.ResourceGeneric resource, String specific, OrientPermission... permissions)
 	{
-		return OrientDbWebSession.get().getUser()
+		return OrientDbWebSession.get().getEffectiveUser()
 					.checkIfAllowed(resource, specific, OrientPermission.combinedPermission(permissions))!=null;
 	}
 	

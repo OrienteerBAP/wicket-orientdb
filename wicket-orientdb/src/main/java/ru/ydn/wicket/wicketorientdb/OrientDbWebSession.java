@@ -13,6 +13,7 @@ import com.orientechnologies.orient.core.db.ODatabaseRecordThreadLocal;
 import com.orientechnologies.orient.core.db.document.ODatabaseDocument;
 import com.orientechnologies.orient.core.exception.OSecurityAccessException;
 import com.orientechnologies.orient.core.metadata.security.ORole;
+import com.orientechnologies.orient.core.metadata.security.OSecurityUser;
 import com.orientechnologies.orient.core.metadata.security.OUser;
 
 /**
@@ -91,6 +92,12 @@ public class OrientDbWebSession extends AuthenticatedWebSession {
 		this.username = username;
 		this.password = password;
 		this.user = null;
+	}
+	
+	public OSecurityUser getEffectiveUser()
+	{
+		OUser ret = getUser();
+		return ret!=null?ret:getDatabase().getUser();
 	}
 	
 	/**
