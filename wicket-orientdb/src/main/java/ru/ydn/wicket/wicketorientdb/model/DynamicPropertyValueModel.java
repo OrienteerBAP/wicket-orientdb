@@ -14,8 +14,8 @@ public class DynamicPropertyValueModel<T> extends LoadableDetachableModel<T>
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private final IModel<ODocument> docModel;
-	private final IModel<OProperty> propertyModel;
+	protected final IModel<ODocument> docModel;
+	protected final IModel<OProperty> propertyModel;
 	
 	public DynamicPropertyValueModel(IModel<ODocument> docModel, IModel<OProperty> propertyModel)
 	{
