@@ -27,10 +27,14 @@ public class ODocumentLinksDataProvider extends ForwardingDataProvider<ODocument
 	
 	@Override
 	public void detach() {
-		super.detach();
+//		super.detach();
 		propertyModel.detach();
 		docModel.detach();
-		thisRunProvider = null;
+		if(thisRunProvider!=null)
+		{
+			thisRunProvider.detach();
+			thisRunProvider = null;
+		}
 	}
 	
 	@Override

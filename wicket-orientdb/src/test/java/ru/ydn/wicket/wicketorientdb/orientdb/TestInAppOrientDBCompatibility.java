@@ -1,5 +1,6 @@
 package ru.ydn.wicket.wicketorientdb.orientdb;
 
+import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -319,5 +320,61 @@ public class TestInAppOrientDBCompatibility
 		content = tester.executeUrl("orientdb/query/db/sql/select+from+$user", "GET", null, "admin",  "admin");
 		System.out.println(content);
 		assertTrue(content.contains("admin"));
+	}
+	
+	@Test
+	@Ignore
+	public void testLoosingLinkedClass() throws Exception
+	{
+		ODatabaseDocument db = wicket.getTester().getDatabase();
+		OSchema schema = wicket.getTester().getSchema();
+		OClass mainClass = schema.createClass("LMainClass");
+		OClass embeddedClass = schema.createClass("LEmbeddedClass");
+		mainClass.createProperty("name", OType.STRING);
+		mainClass.createProperty("embedded", OType.EMBEDDED).setLinkedClass(embeddedClass);
+		embeddedClass.createProperty("name", OType.STRING);
+		
+		db.begin();
+		ODocument main = new ODocument(mainClass);
+		main.field("name", "main");
+		ODocument embedded = new ODocument(embeddedClass);
+		//embedded.field("name", "embedded");
+		main.field("embedded", embedded);
+		//NO Save here!
+		db.commit();
+		db.close();
+		
+		main.fromStream(main.toStream());
+		
+		db = wicket.getTester().getDatabase();
+		db.begin();
+		assertEmbeddedIsCorrect(main);
+		main.save();
+		ORID recordId = main.getIdentity();
+		db.commit();
+		db.close();
+		
+		db = wicket.getTester().getDatabase();
+		db.begin();
+		main = recordId.getRecord();
+		assertEmbeddedIsCorrect(main);
+		db.commit();
+	}
+	
+	private void assertEmbeddedIsCorrect(ODocument doc) throws Exception
+	{
+		assertEquals("main", doc.field("name"));
+		ODocument embedded = doc.field("embedded");
+		assertNotNull(embedded);
+//		assertEquals("embedded", embedded.field("name"));
+		assertNotNull(getImmutableClass(embedded));
+		assertNotNull(embedded.getSchemaClass());
+	}
+	
+	private static OClass getImmutableClass(ODocument doc) throws Exception
+	{
+		Method method = ODocument.class.getDeclaredMethod("getImmutableSchemaClass");
+		method.setAccessible(true);
+		return (OClass) method.invoke(doc);
 	}
 }

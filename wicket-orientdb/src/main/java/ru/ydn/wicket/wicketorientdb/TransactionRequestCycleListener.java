@@ -33,21 +33,13 @@ public class TransactionRequestCycleListener extends
 
 	@Override
 	public void end(RequestCycle cycle) {
-		OrientDbWebSession session = OrientDbWebSession.get();
-		ODatabaseDocument db = session.getDatabase();
-		try
-		{
-			session.getDatabase().commit();
-		} 
-		finally
-		{
-			//Following 3 lines are required to correctly close pooled resource: pool is using username as a key
-			/*IOrientDbSettings settings = OrientDbWebApplication.get().getOrientDbSettings();
-			OUser oUser = db.getMetadata().getSecurity().getUser(settings.getDBUserName());
-			db.setUser(oUser);*/
-			db.close();
-			ODatabaseRecordThreadLocal.INSTANCE.remove();
-		}
+		ODatabaseRecordThreadLocal.INSTANCE.get().commit();
+	}
+	
+	@Override
+	public void onDetach(RequestCycle cycle) {
+		ODatabaseRecordThreadLocal.INSTANCE.get().close();
+		ODatabaseRecordThreadLocal.INSTANCE.remove();
 	}
 	
 	
