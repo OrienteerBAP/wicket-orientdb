@@ -1,5 +1,7 @@
 package ru.ydn.wicket.wicketorientdb.utils;
 
+import java.util.List;
+
 import org.apache.wicket.util.lang.Objects;
 
 import ru.ydn.wicket.wicketorientdb.OrientDbWebSession;
@@ -11,6 +13,8 @@ import com.orientechnologies.orient.core.metadata.schema.OProperty;
 import com.orientechnologies.orient.core.metadata.schema.OSchema;
 import com.orientechnologies.orient.core.metadata.schema.OType;
 import com.orientechnologies.orient.core.metadata.schema.OClass.INDEX_TYPE;
+import com.orientechnologies.orient.core.record.impl.ODocument;
+import com.orientechnologies.orient.core.sql.query.OSQLSynchQuery;
 
 public class OSchemaHelper
 {
@@ -20,6 +24,7 @@ public class OSchemaHelper
 	protected OClass lastClass;
 	protected OProperty lastProperty;
 	protected OIndex<?> lastIndex;
+	protected ODocument lastDocument;
 	
 	protected OSchemaHelper(ODatabaseDocument db)
 	{
@@ -110,6 +115,43 @@ public class OSchemaHelper
 		}
 		return this;
 	}
+	
+	public OSchemaHelper oDocument()
+	{
+		checkOClass();
+		lastDocument = new ODocument(lastClass);
+		return this;
+	}
+	
+	public OSchemaHelper oDocument(String pkField, Object pkValue)
+	{
+		checkOClass();
+		List<ODocument> docs = db.query(new OSQLSynchQuery<ODocument>("select from "+lastClass.getName()+" where "+pkField+" = ?", 1), pkValue);
+		if(docs!=null && !docs.isEmpty())
+		{
+			lastDocument = docs.get(0);
+		}
+		else
+		{
+			lastDocument = new ODocument(lastClass);
+			lastDocument.field(pkField, pkValue);
+		}
+		return this;
+	}
+	
+	public OSchemaHelper field(String field, Object value)
+	{
+		checkODocument();
+		lastDocument.field(field, value);
+		return this;
+	}
+	
+	public OSchemaHelper saveDocument()
+	{
+		checkODocument();
+		lastDocument.save();
+		return this;
+	}
 
 	public OClass getOClass() {
 		return lastClass;
@@ -121,6 +163,10 @@ public class OSchemaHelper
 
 	public OIndex<?> getOIndex() {
 		return lastIndex;
+	}
+	
+	public ODocument getODocument() {
+		return lastDocument;
 	}
 	
 	protected void checkOClass()
@@ -136,6 +182,11 @@ public class OSchemaHelper
 	protected void checkOIndex()
 	{
 		if(lastIndex==null) throw new IllegalStateException("Last OIndex should not be null");
+	}
+	
+	protected void checkODocument()
+	{
+		if(lastDocument==null) throw new IllegalStateException("Last ODocument should not be null");
 	}
 	
 }
