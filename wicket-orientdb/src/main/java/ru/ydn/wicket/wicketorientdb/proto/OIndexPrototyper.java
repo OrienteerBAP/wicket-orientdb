@@ -19,7 +19,7 @@ public class OIndexPrototyper extends AbstractPrototyper<OIndex>
 {
 	private static final long serialVersionUID = 1L;
 
-	public static interface MakeNameAndTypeWritableFix
+	public static interface IMakeNameAndTypeWritableFix
 	{
 		public void setName(String name);
 		public void setType(String type);
@@ -38,7 +38,7 @@ public class OIndexPrototyper extends AbstractPrototyper<OIndex>
 	public static final List<String> OINDEX_ATTRS = Arrays.asList(NAME, TYPE, DEF_CLASS_NAME, DEF_FIELDS, DEF_COLLATE, DEF_NULLS_IGNORED, SIZE, KEY_SIZE);
 	public static final List<String> RW_ATTRS = Arrays.asList(DEF_COLLATE, DEF_NULLS_IGNORED);
 
-	private static final Class<?>[] FIX_INTERFACES = new Class<?>[]{MakeNameAndTypeWritableFix.class}; 
+	private static final Class<?>[] FIX_INTERFACES = new Class<?>[]{IMakeNameAndTypeWritableFix.class}; 
 	
 	
 	public OIndexPrototyper(String className, List<String> fields)

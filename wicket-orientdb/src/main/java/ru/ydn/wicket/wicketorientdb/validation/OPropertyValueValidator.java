@@ -70,23 +70,19 @@ public class OPropertyValueValidator<T> extends Behavior implements
 				if (!(fieldValue instanceof List))
 					validatable.error(newValidationError("wrongtype"));
 				else if (p.getLinkedClass() != null)
-					for (Object item : ((List<?>) fieldValue))
-						validateLink(validatable, p, item);
+					for (Object item : ((List<?>) fieldValue)) validateLink(validatable, p, item);
 				break;
 			case LINKSET:
 				if (!(fieldValue instanceof Set))
 					validatable.error(newValidationError("wrongtype"));
 				else if (p.getLinkedClass() != null)
-					for (Object item : ((Set<?>) fieldValue))
-						validateLink(validatable, p, item);
+					for (Object item : ((Set<?>) fieldValue)) validateLink(validatable, p, item);
 				break;
 			case LINKMAP:
 				if (!(fieldValue instanceof Map))
 					validatable.error(newValidationError("wrongtype"));
 				else if (p.getLinkedClass() != null)
-					for (Entry<?, ?> entry : ((Map<?, ?>) fieldValue)
-							.entrySet())
-						validateLink(validatable, p, entry.getValue());
+					for (Entry<?, ?> entry : ((Map<?, ?>) fieldValue).entrySet()) validateLink(validatable, p, entry.getValue());
 				break;
 
 			case EMBEDDED:
@@ -96,35 +92,28 @@ public class OPropertyValueValidator<T> extends Behavior implements
 				if (!(fieldValue instanceof List))
 					validatable.error(newValidationError("wrongtype"));
 				else if (p.getLinkedClass() != null) {
-					for (Object item : ((List<?>) fieldValue))
-						validateEmbedded(validatable, p, item);
+					for (Object item : ((List<?>) fieldValue)) validateEmbedded(validatable, p, item);
 				} else if (p.getLinkedType() != null) {
-					for (Object item : ((List<?>) fieldValue))
-						validateType(validatable, p, item);
+					for (Object item : ((List<?>) fieldValue)) validateType(validatable, p, item);
 				}
 				break;
 			case EMBEDDEDSET:
 				if (!(fieldValue instanceof Set))
 					validatable.error(newValidationError("wrongtype"));
 				else if (p.getLinkedClass() != null) {
-					for (Object item : ((Set<?>) fieldValue))
-						validateEmbedded(validatable, p, item);
+					for (Object item : ((Set<?>) fieldValue)) validateEmbedded(validatable, p, item);
 				} else if (p.getLinkedType() != null) {
-					for (Object item : ((Set<?>) fieldValue))
-						validateType(validatable, p, item);
+					for (Object item : ((Set<?>) fieldValue)) validateType(validatable, p, item);
 				}
 				break;
 			case EMBEDDEDMAP:
 				if (!(fieldValue instanceof Map))
 					validatable.error(newValidationError("wrongtype"));
 				else if (p.getLinkedClass() != null) {
-					for (Entry<?, ?> entry : ((Map<?, ?>) fieldValue)
-							.entrySet())
-						validateEmbedded(validatable, p,
-								entry.getValue());
+					for (Entry<?, ?> entry : ((Map<?, ?>) fieldValue).entrySet())
+						validateEmbedded(validatable, p, entry.getValue());
 				} else if (p.getLinkedType() != null) {
-					for (Entry<?, ?> entry : ((Map<?, ?>) fieldValue)
-							.entrySet())
+					for (Entry<?, ?> entry : ((Map<?, ?>) fieldValue).entrySet())
 						validateType(validatable, p, entry.getValue());
 				}
 				break;
@@ -153,16 +142,14 @@ public class OPropertyValueValidator<T> extends Behavior implements
 			              && ((Date) fieldValue).before(getDatabase().getStorage().getConfiguration().getDateFormatInstance()
 			                  .parse(min)))
 			        	  validatable.error(newValidationError("minviolationDate", "min", min));
-			        } catch (ParseException e) {
-			        }
+			        } catch (ParseException e) {/*NOP*/}
 			      } else if (p.getType().equals(OType.DATETIME)) {
 			        try {
 			          if (fieldValue != null
 			              && ((Date) fieldValue).before(getDatabase().getStorage().getConfiguration().getDateTimeFormatInstance()
 			                  .parse(min)))
 			        	  validatable.error(newValidationError("minviolationDate", "min", min));
-			        } catch (ParseException e) {
-			        }
+			        } catch (ParseException e) {/*NOP*/}
 			      } else if ((p.getType().equals(OType.EMBEDDEDLIST) || p.getType().equals(OType.EMBEDDEDSET)
 			          || p.getType().equals(OType.LINKLIST) || p.getType().equals(OType.LINKSET))
 			          && (fieldValue != null && ((Collection<?>) fieldValue).size() < Integer.parseInt(min)))
@@ -191,16 +178,14 @@ public class OPropertyValueValidator<T> extends Behavior implements
 			              && ((Date) fieldValue).before(getDatabase().getStorage().getConfiguration().getDateFormatInstance()
 			                  .parse(max)))
 			        	  validatable.error(newValidationError("maxviolationDate", "max", max));
-			        } catch (ParseException e) {
-			        }
+			        } catch (ParseException e) {/*NOP*/}
 			      } else if (p.getType().equals(OType.DATETIME)) {
 			        try {
 			          if (fieldValue != null
 			              && ((Date) fieldValue).before(getDatabase().getStorage().getConfiguration().getDateTimeFormatInstance()
 			                  .parse(max)))
 			        	  validatable.error(newValidationError("maxviolationDate", "max", max));
-			        } catch (ParseException e) {
-			        }
+			        } catch (ParseException e) {/*NOP*/}
 			      } else if ((p.getType().equals(OType.EMBEDDEDLIST) || p.getType().equals(OType.EMBEDDEDSET)
 			          || p.getType().equals(OType.LINKLIST) || p.getType().equals(OType.LINKSET))
 			          && (fieldValue != null && ((Collection<?>) fieldValue).size() > Integer.parseInt(max)))

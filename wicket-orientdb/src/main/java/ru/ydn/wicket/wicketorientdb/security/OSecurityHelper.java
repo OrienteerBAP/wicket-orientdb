@@ -75,6 +75,10 @@ public class OSecurityHelper
 		}
 		
 	}
+	private OSecurityHelper()
+	{
+		
+	}
 	/**
 	 * @param oClass subject {@link OClass} for security check
 	 * @param permissions required permissions for access {@link OClass}
@@ -106,7 +110,7 @@ public class OSecurityHelper
 	//Very bad hack - should be changed in OrientDB
 	private static class AccessToIsAllowedInRestrictedAccessHook extends ORestrictedAccessHook
 	{
-		public static AccessToIsAllowedInRestrictedAccessHook INSTANCE = new AccessToIsAllowedInRestrictedAccessHook();
+		public final static AccessToIsAllowedInRestrictedAccessHook INSTANCE = new AccessToIsAllowedInRestrictedAccessHook();
 		@Override
 		public boolean isAllowed(ODocument iDocument,
 				String iAllowOperation, boolean iReadOriginal) {

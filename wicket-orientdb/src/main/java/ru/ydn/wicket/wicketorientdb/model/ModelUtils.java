@@ -11,6 +11,9 @@ import com.orientechnologies.orient.core.type.ODocumentWrapper;
 
 public class ModelUtils {
 	
+	private ModelUtils() {
+	}
+	
 	@SuppressWarnings("unchecked")
 	public static <K> IModel<K> model(K o)
     {

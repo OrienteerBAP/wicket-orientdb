@@ -1,19 +1,18 @@
 package ru.ydn.wicket.wicketorientdb;
 
-import org.apache.wicket.IRequestListener;
 import org.apache.wicket.MetaDataKey;
 import org.apache.wicket.request.IRequestHandler;
 import org.apache.wicket.request.cycle.AbstractRequestCycleListener;
 import org.apache.wicket.request.cycle.RequestCycle;
 
 /**
- * {@link IRequestListener} for wrapping interesting content by methods start() and end().
+ * {@link org.apache.wicket.request.cycle.IRequestListener} for wrapping interesting content by methods start() and end().
  * Usefull for transactions
  */
 public abstract class AbstractContentAwareTransactionRequestCycleListener extends AbstractRequestCycleListener
 {
 	private final static MetaDataKey<Boolean> IN_PROGRESS_KEY = new MetaDataKey<Boolean>(){private static final long serialVersionUID = 1L;};
-	
+
 	@Override
 	public void onRequestHandlerResolved(RequestCycle cycle,
 			IRequestHandler handler) {

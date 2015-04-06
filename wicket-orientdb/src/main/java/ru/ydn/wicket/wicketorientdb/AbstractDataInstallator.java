@@ -13,7 +13,7 @@ import com.orientechnologies.orient.core.db.document.ODatabaseDocument;
  */
 public abstract class AbstractDataInstallator implements IApplicationListener
 {
-	private static final Logger log = LoggerFactory.getLogger(AbstractDataInstallator.class); 
+	private static final Logger LOG = LoggerFactory.getLogger(AbstractDataInstallator.class); 
 	@Override
 	public void onAfterInitialized(Application application) {
 		OrientDbWebApplication app = (OrientDbWebApplication)application;
@@ -24,7 +24,7 @@ public abstract class AbstractDataInstallator implements IApplicationListener
 		}
 		catch(Exception ex)
 		{
-			log.error("Data can't be installed", ex);
+			LOG.error("Data can't be installed", ex);
 		}
 		finally
 		{
