@@ -1,3 +1,18 @@
+/**
+ * Copyright (C) 2015 Ilia Naryzhny (phantom@ydn.ru)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package ru.ydn.wicket.wicketorientdb;
 
 import java.util.Locale;
@@ -27,88 +42,82 @@ import ru.ydn.wicket.wicketorientdb.utils.OPropertyFullNameConverter;
 import static org.junit.Assert.*;
 import static ru.ydn.wicket.wicketorientdb.model.AbstractNamingModel.buitify;
 
-public class MainUtilsTest
-{
-	@ClassRule
-	public static WicketOrientDbTesterScope wicket = new WicketOrientDbTesterScope();
-	
-	@Test
-	public void testBuitify() throws Exception
-	{
-		assertEquals("Test", buitify("test"));
-		assertEquals("Test", buitify("Test"));
-		assertEquals("My Test", buitify("myTest"));
-		assertEquals("My Test", buitify("my test"));
-		assertEquals("M Test", buitify("mTest"));
-		assertEquals("Allow", buitify("_allow"));
-		assertEquals("Allow", buitify("__allow"));
-		assertEquals("Allow Read", buitify("_allowRead"));
-	}
-	
-	@Test
-	public void testDBClosure() throws Exception
-	{
-		DBClosure<OSecurityUser> adminClosure = new DBClosure<OSecurityUser>() {
-			
-			private static final long serialVersionUID = 1L;
+public class MainUtilsTest {
 
-			@Override
-			protected OSecurityUser execute(ODatabaseDocument db) {
-				assertEquals(db, ODatabaseRecordThreadLocal.INSTANCE.get());
-				return db.getUser();
-			}
-		};
-		assertEquals(wicket.getTester().getMetadata().getSecurity().getUser("admin").getIdentity(), adminClosure.execute().getIdentity());
-		DBClosure<OSecurityUser> readerClosure = new DBClosure<OSecurityUser>("reader", "reader") {
+    @ClassRule
+    public static WicketOrientDbTesterScope wicket = new WicketOrientDbTesterScope();
 
-			private static final long serialVersionUID = 1L;
+    @Test
+    public void testBuitify() throws Exception {
+        assertEquals("Test", buitify("test"));
+        assertEquals("Test", buitify("Test"));
+        assertEquals("My Test", buitify("myTest"));
+        assertEquals("My Test", buitify("my test"));
+        assertEquals("M Test", buitify("mTest"));
+        assertEquals("Allow", buitify("_allow"));
+        assertEquals("Allow", buitify("__allow"));
+        assertEquals("Allow Read", buitify("_allowRead"));
+    }
 
-			@Override
-			protected OSecurityUser execute(ODatabaseDocument db) {
-				assertEquals(db, ODatabaseRecordThreadLocal.INSTANCE.get());
-				return db.getUser();
-			}
-		};
-		assertEquals(wicket.getTester().getMetadata().getSecurity().getUser("reader").getIdentity(), readerClosure.execute().getIdentity());
-	}
-	
-	@Test
-	public void testConverters() throws Exception
-	{
-		OSchema schema = wicket.getTester().getSchema();
-		testConverter(OClassClassNameConverter.INSTANCE, schema.getClass("OUser"), "OUser");
-		testConverter(OPropertyFullNameConverter.INSTANCE, schema.getClass("Ouser").getProperty("name"), "OUser.name");
-		testConverter(OIndexNameConverter.INSTANCE, schema.getClass("Ouser").getClassIndex("OUser.name"), "OUser.name");
-		ORID orid = new ORecordId("#5:0"); //Admin ORID
-		ODocument document = orid.getRecord();
-		testConverter(ODocumentORIDConverter.INSTANCE, document, orid);
-	}
-	
-	public <F, T> void testConverter(Converter<F, T> converter, F fromObject, T toObject)
-	{
-		assertEquals(toObject, converter.convert(fromObject));
-		assertEquals(fromObject, converter.reverse().convert(toObject));
-	}
-	
-	@Test
-	public void testDocumentWrapper() throws Exception
-	{
-		ORID orid = new ORecordId("#5:0"); //Admin ORID
-		ODocument adminDocument = orid.getRecord();
-		OUser admin = wicket.getTester().getMetadata().getSecurity().getUser("admin");
-		DocumentWrapperTransformer<OUser> transformer = new DocumentWrapperTransformer<OUser>(OUser.class);
-		assertEquals(admin, transformer.apply(adminDocument));
-	}
-	
-	@Test
-	public void testDocumentConverter() throws Exception
-	{
-		ORID orid = new ORecordId("#5:0"); //Admin ORID
-		ODocument adminDocument = orid.getRecord();
-		ODocumentConverter converter = new ODocumentConverter();
-		assertEquals(adminDocument, converter.convertToObject("#5:0", Locale.getDefault()));
-		assertEquals(orid, converter.convertToOIdentifiable("#5:0", Locale.getDefault()));
-		assertEquals("#5:0", converter.convertToString(adminDocument, Locale.getDefault()));
-	}
-	
+    @Test
+    public void testDBClosure() throws Exception {
+        DBClosure<OSecurityUser> adminClosure = new DBClosure<OSecurityUser>() {
+
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            protected OSecurityUser execute(ODatabaseDocument db) {
+                assertEquals(db, ODatabaseRecordThreadLocal.INSTANCE.get());
+                return db.getUser();
+            }
+        };
+        assertEquals(wicket.getTester().getMetadata().getSecurity().getUser("admin").getIdentity(), adminClosure.execute().getIdentity());
+        DBClosure<OSecurityUser> readerClosure = new DBClosure<OSecurityUser>("reader", "reader") {
+
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            protected OSecurityUser execute(ODatabaseDocument db) {
+                assertEquals(db, ODatabaseRecordThreadLocal.INSTANCE.get());
+                return db.getUser();
+            }
+        };
+        assertEquals(wicket.getTester().getMetadata().getSecurity().getUser("reader").getIdentity(), readerClosure.execute().getIdentity());
+    }
+
+    @Test
+    public void testConverters() throws Exception {
+        OSchema schema = wicket.getTester().getSchema();
+        testConverter(OClassClassNameConverter.INSTANCE, schema.getClass("OUser"), "OUser");
+        testConverter(OPropertyFullNameConverter.INSTANCE, schema.getClass("Ouser").getProperty("name"), "OUser.name");
+        testConverter(OIndexNameConverter.INSTANCE, schema.getClass("Ouser").getClassIndex("OUser.name"), "OUser.name");
+        ORID orid = new ORecordId("#5:0"); //Admin ORID
+        ODocument document = orid.getRecord();
+        testConverter(ODocumentORIDConverter.INSTANCE, document, orid);
+    }
+
+    public <F, T> void testConverter(Converter<F, T> converter, F fromObject, T toObject) {
+        assertEquals(toObject, converter.convert(fromObject));
+        assertEquals(fromObject, converter.reverse().convert(toObject));
+    }
+
+    @Test
+    public void testDocumentWrapper() throws Exception {
+        ORID orid = new ORecordId("#5:0"); //Admin ORID
+        ODocument adminDocument = orid.getRecord();
+        OUser admin = wicket.getTester().getMetadata().getSecurity().getUser("admin");
+        DocumentWrapperTransformer<OUser> transformer = new DocumentWrapperTransformer<OUser>(OUser.class);
+        assertEquals(admin, transformer.apply(adminDocument));
+    }
+
+    @Test
+    public void testDocumentConverter() throws Exception {
+        ORID orid = new ORecordId("#5:0"); //Admin ORID
+        ODocument adminDocument = orid.getRecord();
+        ODocumentConverter converter = new ODocumentConverter();
+        assertEquals(adminDocument, converter.convertToObject("#5:0", Locale.getDefault()));
+        assertEquals(orid, converter.convertToOIdentifiable("#5:0", Locale.getDefault()));
+        assertEquals("#5:0", converter.convertToString(adminDocument, Locale.getDefault()));
+    }
+
 }

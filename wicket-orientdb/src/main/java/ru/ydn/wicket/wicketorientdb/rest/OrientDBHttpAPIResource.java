@@ -1,3 +1,18 @@
+/**
+ * Copyright (C) 2015 Ilia Naryzhny (phantom@ydn.ru)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package ru.ydn.wicket.wicketorientdb.rest;
 
 import java.io.IOException;
@@ -39,143 +54,134 @@ import ru.ydn.wicket.wicketorientdb.IOrientDbSettings;
 import ru.ydn.wicket.wicketorientdb.OrientDbWebApplication;
 import ru.ydn.wicket.wicketorientdb.OrientDbWebSession;
 
+public class OrientDBHttpAPIResource extends AbstractResource {
 
-public class OrientDBHttpAPIResource extends AbstractResource
-{
-	public static final String MOUNT_PATH = "/orientdb";
-	public static final String ORIENT_DB_KEY=OrientDBHttpAPIResource.class.getSimpleName();
-	
-	private static final Logger LOG = LoggerFactory.getLogger(OrientDBHttpAPIResource.class);
-	
-	@SuppressWarnings("restriction")
-	private static class MultiUserCache implements sun.net.www.protocol.http.AuthCache{
-	     public void put(String pkey, sun.net.www.protocol.http.AuthCacheValue value){
+    public static final String MOUNT_PATH = "/orientdb";
+    public static final String ORIENT_DB_KEY = OrientDBHttpAPIResource.class.getSimpleName();
 
-	     }
-	     public sun.net.www.protocol.http.AuthCacheValue get(String pkey, String skey){
-	         return null;
-	     }
-	     public void remove(String pkey, sun.net.www.protocol.http.AuthCacheValue entry){
+    private static final Logger LOG = LoggerFactory.getLogger(OrientDBHttpAPIResource.class);
 
-	     }
-	}
-	
-	
-	@Override
-	protected ResourceResponse newResourceResponse(Attributes attributes) {
-		final WebRequest request = (WebRequest) attributes.getRequest();
-		final HttpServletRequest httpRequest = (HttpServletRequest) request.getContainerRequest();
-		final PageParameters params = attributes.getParameters();
-		final ResourceResponse response = new ResourceResponse();
-		if(response.dataNeedsToBeWritten(attributes))
-		{
-			String orientDbHttpURL = OrientDbWebApplication.get().getOrientDbSettings().getOrientDBRestApiUrl();
-			if(orientDbHttpURL!=null)
-			{
-				
-				StringBuilder sb = new StringBuilder(orientDbHttpURL);
-				
-				for(int i=0; i<params.getIndexedCount();i++)
-				{
-					//replace provided database name
-					String segment = i==1?OrientDbWebSession.get().getDatabase().getName():params.get(i).toString();
-					sb.append(UrlEncoder.PATH_INSTANCE.encode(segment, "UTF8")).append('/');
-				}
-				if(sb.charAt(sb.length()-1)=='/')sb.setLength(sb.length()-1);
-				String queryString = request.getUrl().getQueryString();
-				if(!Strings.isEmpty(queryString)) sb.append('?').append(queryString);
-				
-				final String url = sb.toString();
-				final StringWriter sw = new StringWriter();
-				final PrintWriter out = new PrintWriter(sw);
-				HttpURLConnection con=null;
-				try
-				{
-					URL orientURL = new URL(url);
-					con = (HttpURLConnection)orientURL.openConnection();
-					con.setDoInput(true);
-					con.setUseCaches(false);
-					
-					String method = httpRequest.getMethod();
-					con.setRequestMethod(method);
-					con.setUseCaches(false);
-					if("post".equalsIgnoreCase(method) || "put".equalsIgnoreCase(method))
-					{
-						con.setDoOutput(true);
-						IOUtils.copy(httpRequest.getInputStream(), con.getOutputStream());
-					}
-					IOUtils.copy(con.getInputStream(), out, "UTF-8");
-					response.setStatusCode(con.getResponseCode());
-					response.setContentType(con.getContentType());
-				} catch (IOException e)
-				{
-					LOG.error("Can't communicate with OrientDB REST", e);
-					if(con!=null)
-					{
-						try
-						{
-							response.setError(con.getResponseCode(), con.getResponseMessage());
-							InputStream errorStream = con.getErrorStream();
-							if(errorStream!=null) IOUtils.copy(errorStream, out, "UTF-8");
-						} catch (IOException e1)
-						{
-							LOG.error("Can't response by error", e1);
-						}
-					}
-				}
-				finally
-				{
-					if(con!=null)con.disconnect();
-				}
-				response.setWriteCallback(new WriteCallback() {
-					
-					@Override
-					public void writeData(Attributes attributes) throws IOException {
-						attributes.getResponse().write(sw.toString());
-					}
-				});
-			}
-			else
-			{
-				response.setError(HttpServletResponse.SC_BAD_GATEWAY, "OrientDB REST URL is not specified");
-			}
-		}
-		return response;
-	}
-	
-	public static void mountOrientDbRestApi(WebApplication app)
-	{
-		mountOrientDbRestApi(new OrientDBHttpAPIResource(), app);
-	}
-	
-	@SuppressWarnings("restriction")
-	public static void mountOrientDbRestApi(OrientDBHttpAPIResource resource, WebApplication app)
-	{
-		app.getSharedResources().add(ORIENT_DB_KEY, resource);
-		app.mountResource(MOUNT_PATH, new SharedResourceReference(ORIENT_DB_KEY));
-		Authenticator.setDefault(new Authenticator() {
-			@Override
-			protected PasswordAuthentication getPasswordAuthentication() {
-				String username;
-				String password;
-				OrientDbWebSession session = OrientDbWebSession.get();
-				if(session.isSignedIn())
-				{
-					username = session.getUsername();
-					password = session.getPassword();
-				}
-				else
-				{
-					IOrientDbSettings settings = OrientDbWebApplication.get().getOrientDbSettings();
-					username = settings.getDBUserName();
-					password = settings.getDBUserPassword();
-				}
-				return new PasswordAuthentication (username, password.toCharArray());
-			}
-			
-		});
-		 CookieHandler.setDefault(new PersonalCookieManager());
-		 sun.net.www.protocol.http.AuthCacheValue.setAuthCache(new MultiUserCache());
-	}
+    @SuppressWarnings("restriction")
+    private static class MultiUserCache implements sun.net.www.protocol.http.AuthCache {
+
+        public void put(String pkey, sun.net.www.protocol.http.AuthCacheValue value) {
+
+        }
+
+        public sun.net.www.protocol.http.AuthCacheValue get(String pkey, String skey) {
+            return null;
+        }
+
+        public void remove(String pkey, sun.net.www.protocol.http.AuthCacheValue entry) {
+
+        }
+    }
+
+    @Override
+    protected ResourceResponse newResourceResponse(Attributes attributes) {
+        final WebRequest request = (WebRequest) attributes.getRequest();
+        final HttpServletRequest httpRequest = (HttpServletRequest) request.getContainerRequest();
+        final PageParameters params = attributes.getParameters();
+        final ResourceResponse response = new ResourceResponse();
+        if (response.dataNeedsToBeWritten(attributes)) {
+            String orientDbHttpURL = OrientDbWebApplication.get().getOrientDbSettings().getOrientDBRestApiUrl();
+            if (orientDbHttpURL != null) {
+
+                StringBuilder sb = new StringBuilder(orientDbHttpURL);
+
+                for (int i = 0; i < params.getIndexedCount(); i++) {
+                    //replace provided database name
+                    String segment = i == 1 ? OrientDbWebSession.get().getDatabase().getName() : params.get(i).toString();
+                    sb.append(UrlEncoder.PATH_INSTANCE.encode(segment, "UTF8")).append('/');
+                }
+                if (sb.charAt(sb.length() - 1) == '/') {
+                    sb.setLength(sb.length() - 1);
+                }
+                String queryString = request.getUrl().getQueryString();
+                if (!Strings.isEmpty(queryString)) {
+                    sb.append('?').append(queryString);
+                }
+
+                final String url = sb.toString();
+                final StringWriter sw = new StringWriter();
+                final PrintWriter out = new PrintWriter(sw);
+                HttpURLConnection con = null;
+                try {
+                    URL orientURL = new URL(url);
+                    con = (HttpURLConnection) orientURL.openConnection();
+                    con.setDoInput(true);
+                    con.setUseCaches(false);
+
+                    String method = httpRequest.getMethod();
+                    con.setRequestMethod(method);
+                    con.setUseCaches(false);
+                    if ("post".equalsIgnoreCase(method) || "put".equalsIgnoreCase(method)) {
+                        con.setDoOutput(true);
+                        IOUtils.copy(httpRequest.getInputStream(), con.getOutputStream());
+                    }
+                    IOUtils.copy(con.getInputStream(), out, "UTF-8");
+                    response.setStatusCode(con.getResponseCode());
+                    response.setContentType(con.getContentType());
+                } catch (IOException e) {
+                    LOG.error("Can't communicate with OrientDB REST", e);
+                    if (con != null) {
+                        try {
+                            response.setError(con.getResponseCode(), con.getResponseMessage());
+                            InputStream errorStream = con.getErrorStream();
+                            if (errorStream != null) {
+                                IOUtils.copy(errorStream, out, "UTF-8");
+                            }
+                        } catch (IOException e1) {
+                            LOG.error("Can't response by error", e1);
+                        }
+                    }
+                } finally {
+                    if (con != null) {
+                        con.disconnect();
+                    }
+                }
+                response.setWriteCallback(new WriteCallback() {
+
+                    @Override
+                    public void writeData(Attributes attributes) throws IOException {
+                        attributes.getResponse().write(sw.toString());
+                    }
+                });
+            } else {
+                response.setError(HttpServletResponse.SC_BAD_GATEWAY, "OrientDB REST URL is not specified");
+            }
+        }
+        return response;
+    }
+
+    public static void mountOrientDbRestApi(WebApplication app) {
+        mountOrientDbRestApi(new OrientDBHttpAPIResource(), app);
+    }
+
+    @SuppressWarnings("restriction")
+    public static void mountOrientDbRestApi(OrientDBHttpAPIResource resource, WebApplication app) {
+        app.getSharedResources().add(ORIENT_DB_KEY, resource);
+        app.mountResource(MOUNT_PATH, new SharedResourceReference(ORIENT_DB_KEY));
+        Authenticator.setDefault(new Authenticator() {
+            @Override
+            protected PasswordAuthentication getPasswordAuthentication() {
+                String username;
+                String password;
+                OrientDbWebSession session = OrientDbWebSession.get();
+                if (session.isSignedIn()) {
+                    username = session.getUsername();
+                    password = session.getPassword();
+                } else {
+                    IOrientDbSettings settings = OrientDbWebApplication.get().getOrientDbSettings();
+                    username = settings.getDBUserName();
+                    password = settings.getDBUserPassword();
+                }
+                return new PasswordAuthentication(username, password.toCharArray());
+            }
+
+        });
+        CookieHandler.setDefault(new PersonalCookieManager());
+        sun.net.www.protocol.http.AuthCacheValue.setAuthCache(new MultiUserCache());
+    }
 
 }

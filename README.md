@@ -19,9 +19,9 @@ public class WicketApplication extends OrientDbWebApplication
 
 Specify connection properties
 ```java
-		getOrientDbSettings().setDBUrl("local:localhost/"+DB_NAME);
-		getOrientDbSettings().setDefaultUserName("admin");
-		getOrientDbSettings().setDefaultUserPassword("admin");
+        getOrientDbSettings().setDBUrl("local:localhost/"+DB_NAME);
+        getOrientDbSettings().setDefaultUserName("admin");
+        getOrientDbSettings().setDefaultUserPassword("admin");
 ```
 
 Embedded OrientDB Server
@@ -33,25 +33,25 @@ If you need to run OrientDB in embedded mode please use `EmbeddOrientDbApplicati
 public class WicketApplication extends OrientDbWebApplication
 {
 @Override
-	public void init()
-	{
-		super.init();
-		getApplicationListeners().add(new EmbeddOrientDbApplicationListener(WicketApplication.class.getResource("db.config.xml"))
-		{
+    public void init()
+    {
+        super.init();
+        getApplicationListeners().add(new EmbeddOrientDbApplicationListener(WicketApplication.class.getResource("db.config.xml"))
+        {
 
-			@Override
-			public void onAfterServerStartupAndActivation() throws Exception {
-				OServerAdmin serverAdmin = new OServerAdmin("localhost/"+DB_NAME).connect("root", "WicketOrientDB");
-				if(!serverAdmin.existsDatabase())
-			    serverAdmin.createDatabase(DB_NAME, "graph", "local");
-			    
-			}
-			
-		});
-		getOrientDbSettings().setDBUrl("local:localhost/"+DB_NAME);
-		getOrientDbSettings().setDefaultUserName("admin");
-		getOrientDbSettings().setDefaultUserPassword("admin");
-	}
+            @Override
+            public void onAfterServerStartupAndActivation() throws Exception {
+                OServerAdmin serverAdmin = new OServerAdmin("localhost/"+DB_NAME).connect("root", "WicketOrientDB");
+                if(!serverAdmin.existsDatabase())
+                serverAdmin.createDatabase(DB_NAME, "graph", "local");
+                
+            }
+            
+        });
+        getOrientDbSettings().setDBUrl("local:localhost/"+DB_NAME);
+        getOrientDbSettings().setDefaultUserName("admin");
+        getOrientDbSettings().setDefaultUserPassword("admin");
+    }
 }
 ```
 
@@ -76,8 +76,8 @@ public class MyPage extends WebPage {
 ```
 ```java
 @RequiredOrientResources({
-	@RequiredOrientResource(value = ORule.ResourceGeneric.SCHEMA, permissions=OrientPermission.READ),
-	@RequiredOrientResource(value = ORule.ResourceGeneric.CLASS, permissions=OrientPermission.READ),
+    @RequiredOrientResource(value = ORule.ResourceGeneric.SCHEMA, permissions=OrientPermission.READ),
+    @RequiredOrientResource(value = ORule.ResourceGeneric.CLASS, permissions=OrientPermission.READ),
 })
 public class MyPanel extends Panel {
 ...
@@ -88,12 +88,12 @@ or provide them dynamically: just implement ISecuredComponent
 ```java
 public class SaveSchemaCommand<T> extends SavePrototypeCommand<T> implements ISecuredComponent {
 ...
-	@Override
-	public RequiredOrientResource[] getRequiredResources() {
-		T object = objectModel.getObject();
-		OrientPermission permission = (object instanceof IPrototype<?>)?OrientPermission.CREATE:OrientPermission.UPDATE;
-		return OSecurityHelper.requireResource(ORule.ResourceGeneric.SCHEMA, null, permission);
-	}
+    @Override
+    public RequiredOrientResource[] getRequiredResources() {
+        T object = objectModel.getObject();
+        OrientPermission permission = (object instanceof IPrototype<?>)?OrientPermission.CREATE:OrientPermission.UPDATE;
+        return OSecurityHelper.requireResource(ORule.ResourceGeneric.SCHEMA, null, permission);
+    }
 
 ```
 
