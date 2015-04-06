@@ -1,3 +1,18 @@
+/**
+ * Copyright (C) 2015 Ilia Naryzhny (phantom@ydn.ru)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package ru.ydn.wicket.wicketorientdb.model;
 
 import java.util.ArrayList;
@@ -15,103 +30,103 @@ import com.orientechnologies.orient.core.type.ODocumentWrapper;
 /**
  * {@link ODocumentWrapper} for representing of {@link ODocument} as {@link Map}
  */
-public class ODocumentMapWrapper extends ODocumentWrapper implements Map<String, Object>
-{
-	private static final long serialVersionUID = 1L;
+public class ODocumentMapWrapper extends ODocumentWrapper implements Map<String, Object> {
 
-	public ODocumentMapWrapper() {
-		super();
-	}
+    private static final long serialVersionUID = 1L;
 
-	public ODocumentMapWrapper(ODocument iDocument) {
-		super(iDocument);
-	}
+    public ODocumentMapWrapper() {
+        super();
+    }
 
-	public ODocumentMapWrapper(ORID iRID) {
-		super(iRID);
-	}
+    public ODocumentMapWrapper(ODocument iDocument) {
+        super(iDocument);
+    }
 
-	public ODocumentMapWrapper(String iClassName) {
-		super(iClassName);
-	}
+    public ODocumentMapWrapper(ORID iRID) {
+        super(iRID);
+    }
 
-	@Override
-	public int size() {
-		return document.fieldNames().length;
-	}
+    public ODocumentMapWrapper(String iClassName) {
+        super(iClassName);
+    }
 
-	@Override
-	public boolean isEmpty() {
-		return size()==0;
-	}
+    @Override
+    public int size() {
+        return document.fieldNames().length;
+    }
 
-	@Override
-	public boolean containsKey(Object key) {
-		return key instanceof String?document.containsField((String)key):false;
-	}
+    @Override
+    public boolean isEmpty() {
+        return size() == 0;
+    }
 
-	@Override
-	public boolean containsValue(Object value) {
-		// TODO Auto-generated method stub
-		return false;
-	}
+    @Override
+    public boolean containsKey(Object key) {
+        return key instanceof String ? document.containsField((String) key) : false;
+    }
 
-	@Override
-	public Object get(Object key) {
-		return key instanceof String?document.field((String)key):null;
-	}
+    @Override
+    public boolean containsValue(Object value) {
+        // TODO Auto-generated method stub
+        return false;
+    }
 
-	@Override
-	public Object put(String key, Object value) {
-		Object ret = get(key);
-		document.field(key, value);
-		return ret;
-	}
+    @Override
+    public Object get(Object key) {
+        return key instanceof String ? document.field((String) key) : null;
+    }
 
-	@Override
-	public Object remove(Object key) {
-		Object ret = get(key);
-		if(key instanceof String) document.removeField((String)key);
-		return ret;
-	}
+    @Override
+    public Object put(String key, Object value) {
+        Object ret = get(key);
+        document.field(key, value);
+        return ret;
+    }
 
-	@Override
-	public void putAll(Map<? extends String, ? extends Object> m) {
-		for (Map.Entry<? extends String, ? extends Object> newData : m.entrySet()) {
-			put(newData.getKey(), newData.getValue());
-		}
-	}
+    @Override
+    public Object remove(Object key) {
+        Object ret = get(key);
+        if (key instanceof String) {
+            document.removeField((String) key);
+        }
+        return ret;
+    }
 
-	@Override
-	public void clear() {
-		for (String field : document.fieldNames()) {
-			remove(field);
-		}
-	}
+    @Override
+    public void putAll(Map<? extends String, ? extends Object> m) {
+        for (Map.Entry<? extends String, ? extends Object> newData : m.entrySet()) {
+            put(newData.getKey(), newData.getValue());
+        }
+    }
 
-	@Override
-	public Set<String> keySet() {
-		return new HashSet<String>(Arrays.asList(document.fieldNames()));
-	}
+    @Override
+    public void clear() {
+        for (String field : document.fieldNames()) {
+            remove(field);
+        }
+    }
 
-	@Override
-	public Collection<Object> values() {
-		List<Object> ret = new ArrayList<Object>();
-		for(java.util.Map.Entry<String, Object> entry : document)
-		{
-			ret.add(entry.getValue());
-		}
-		return ret;
-	}
+    @Override
+    public Set<String> keySet() {
+        return new HashSet<String>(Arrays.asList(document.fieldNames()));
+    }
 
-	@Override
-	public Set<java.util.Map.Entry<String, Object>> entrySet() {
-		Set<java.util.Map.Entry<String, Object>> ret = new HashSet<java.util.Map.Entry<String, Object>>();
-		for(java.util.Map.Entry<String, Object> entry : document)
-		{
-			ret.add(entry);
-		}
-		return ret;
-	}
+    @Override
+    public Collection<Object> values() {
+        List<Object> ret = new ArrayList<Object>();
+        for (java.util.Map.Entry<String, Object> entry : document) {
+            ret.add(entry.getValue());
+        }
+        return ret;
+    }
+
+    @Override
+    public Set<java.util.Map.Entry<String, Object>> entrySet() {
+        Set<java.util.Map.Entry<String, Object>> ret = new HashSet<java.util.Map.Entry<String, Object>>();
+        for (java.util.Map.Entry<String, Object> entry : document) {
+            ret.add(entry);
+        }
+        return ret;
+    }
 
 }
