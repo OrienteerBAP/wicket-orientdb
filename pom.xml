@@ -193,6 +193,25 @@
 			    <aggregate>true</aggregate>
 			</configuration>
 		    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-checkstyle-plugin</artifactId>
+                        <version>2.15</version>
+                        <executions>
+                            <execution>
+                                <id>checkstyle</id>
+                                <phase>validate</phase>
+                                <goals>
+                                    <goal>check</goal>
+                                </goals>
+                                <configuration>
+                                    <configLocation>check_style.xml</configLocation>
+                                    <failOnViolation>true</failOnViolation>
+                                    <sourceDirectory>.</sourceDirectory>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
 		</plugins>
 	</build>
 	<profiles>
