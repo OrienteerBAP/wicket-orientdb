@@ -1,4 +1,4 @@
-package ru.ydn.wicket.wicketorientdb;
+package ru.ydn.wicket.wicketorientdb.demo;
 
 import org.apache.wicket.util.time.Duration;
 import org.eclipse.jetty.server.Server;

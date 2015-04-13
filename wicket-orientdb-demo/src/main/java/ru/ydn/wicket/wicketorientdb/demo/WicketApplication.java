@@ -1,7 +1,11 @@
-package ru.ydn.wicket.wicketorientdb;
+package ru.ydn.wicket.wicketorientdb.demo;
 
 import org.apache.wicket.authroles.authentication.pages.SignInPage;
 import org.apache.wicket.markup.html.WebPage;
+
+import ru.ydn.wicket.wicketorientdb.EmbeddOrientDbApplicationListener;
+import ru.ydn.wicket.wicketorientdb.IOrientDbSettings;
+import ru.ydn.wicket.wicketorientdb.OrientDbWebApplication;
 
 import com.orientechnologies.orient.client.remote.OServerAdmin;
 import com.orientechnologies.orient.core.db.document.ODatabaseDocumentTx;
@@ -10,7 +14,7 @@ import com.orientechnologies.orient.core.db.document.ODatabaseDocumentTx;
  * Application object for your web application.
  * If you want to run this application without deploying, run the Start class.
  * 
- * @see ru.ydn.wicket.wicketorientdb.Start#main(String[])
+ * @see ru.ydn.wicket.wicketorientdb.demo.Start#main(String[])
  */
 public class WicketApplication extends OrientDbWebApplication
 {

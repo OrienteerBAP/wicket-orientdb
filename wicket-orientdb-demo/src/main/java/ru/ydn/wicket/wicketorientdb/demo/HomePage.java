@@ -1,4 +1,4 @@
-package ru.ydn.wicket.wicketorientdb;
+package ru.ydn.wicket.wicketorientdb.demo;
 
 import org.apache.wicket.authroles.authentication.panel.SignInPanel;
 import org.apache.wicket.devutils.debugbar.DebugBar;
