@@ -8,18 +8,18 @@
 	<packaging>pom</packaging>
 	<name>wicket-orientdb-parent</name>
 	<description>Wicket library for OrientDB</description>
-	<url>https://github.com/PhantomYdn/wicket-orientdb</url>
+	<url>https://github.com/OrienteerDW/wicket-orientdb</url>
 
 	<scm>
-		<url>https://github.com/PhantomYdn/wicket-orientdb</url>
-		<connection>scm:git:ssh://github.com/PhantomYdn/wicket-orientdb.git</connection>
-		<developerConnection>scm:git:ssh://git@github.com/PhantomYdn/wicket-orientdb.git</developerConnection>
+		<url>https://github.com/OrienteerDW/wicket-orientdb</url>
+		<connection>scm:git:ssh://github.com/OrienteerDW/wicket-orientdb.git</connection>
+		<developerConnection>scm:git:ssh://git@github.com/OrienteerDW/wicket-orientdb.git</developerConnection>
 		<tag>HEAD</tag>
 	</scm>
 
 	<issueManagement>
 		<system>github</system>
-		<url>https://github.com/PhantomYdn/wicket-orientdb/issues</url>
+		<url>https://github.com/OrienteerDW/wicket-orientdb/issues</url>
 	</issueManagement>
 	<distributionManagement>
 	  <snapshotRepository>
