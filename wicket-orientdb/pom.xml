@@ -36,25 +36,16 @@
 			<groupId>com.orientechnologies</groupId>
 			<artifactId>orientdb-core</artifactId>
 			<type>bundle</type>
-			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.orientechnologies</groupId>
 			<artifactId>orientdb-server</artifactId>
 			<type>bundle</type>
-			<scope>provided</scope>
 		</dependency>
-		<dependency>
-			<groupId>com.orientechnologies</groupId>
-			<artifactId>orientdb-client</artifactId>
-			<type>bundle</type>
-			<scope>provided</scope>
-		</dependency>
-		<!-- END REMOTE ENGINE DEPENDENCY -->
 		<dependency>
 		    <groupId>com.google.guava</groupId>
 		    <artifactId>guava</artifactId>
-		    <version>17.0</version>
+		    <version>18.0</version>
 		</dependency>
 	</dependencies>
 	<build>
