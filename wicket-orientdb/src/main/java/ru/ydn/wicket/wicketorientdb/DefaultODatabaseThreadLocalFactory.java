@@ -40,11 +40,11 @@ public class DefaultODatabaseThreadLocalFactory implements ODatabaseThreadLocalF
 	}
 	
 	/**
-	 * Utility method to obtain {@link ODatabaseRecord} from {@link ODatabase}
-	 * @param db
-	 * @return
+	 * Utility method to obtain {@link ODatabaseDocument} from {@link ODatabase}
+	 * @param db {@link ODatabase} to cast from
+	 * @return {@link ODatabaseDocument} for a specified {@link ODatabase}
 	 */
-	public static ODatabaseDocument castToODatabaseDocument(ODatabase db)
+	public static ODatabaseDocument castToODatabaseDocument(ODatabase<?> db)
 	{
 		while(db!=null && !(db instanceof ODatabaseDocument))
 		{

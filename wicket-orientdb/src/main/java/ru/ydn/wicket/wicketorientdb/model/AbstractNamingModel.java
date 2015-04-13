@@ -53,6 +53,12 @@ public abstract class AbstractNamingModel<T> extends AbstractReadOnlyModel<Strin
 	{
 		return getObject(null);
 	}
+	
+	/**
+	 * Returns name
+	 * @param component component to look associated localization 
+	 * @return name
+	 */
 	public String getObject(Component component) {
 		if(objectModel!=null)
 		{
@@ -81,6 +87,11 @@ public abstract class AbstractNamingModel<T> extends AbstractReadOnlyModel<Strin
 		if(objectModel!=null) objectModel.detach();
 	}
 
+	/**
+	 * Utility method to make source string more human readable
+	 * @param string source string
+	 * @return buitified source string
+	 */
 	public static String buitify(String string)
 	{
 		char[] chars = string.toCharArray();

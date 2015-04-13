@@ -121,9 +121,9 @@ public class OSecurityHelper
 	
 	/**
 	 * Check that all required permissions present for specified {@link ODocument}
-	 * @param doc
-	 * @param permissions
-	 * @return
+	 * @param doc {@link ODocument} to check security rights for
+	 * @param permissions {@link OrientPermission}s to check
+	 * @return true if all permissions are allowable
 	 */
 	public static boolean isAllowed(ODocument doc, OrientPermission... permissions)
 	{
@@ -139,9 +139,9 @@ public class OSecurityHelper
 	}
 	/**
 	 * Check that all required permissions present for specified {@link OClass}
-	 * @param doc
-	 * @param permissions
-	 * @return
+	 * @param oClass {@link OClass} to check security rights for
+	 * @param permissions {@link OrientPermission}s to check
+	 * @return true of all permissions are allowable
 	 */
 	public static boolean isAllowed(OClass oClass, OrientPermission... permissions)
 	{
@@ -172,6 +172,12 @@ public class OSecurityHelper
 		return component;
 	}
 	
+	/**
+	 * Transform array of {@link RequiredOrientResource}s to a {@link HashMap}.
+	 * {@link HashMap} is required to be serializable
+	 * @param resources {@link RequiredOrientResource}s to convert
+	 * @return {@link HashMap} representation of an {@link OrientPermission}s
+	 */
 	public static HashMap<String, OrientPermission[]> toSecureMap(RequiredOrientResource... resources)
 	{
 		HashMap<String, OrientPermission[]> secureMap = new HashMap<String, OrientPermission[]>();
@@ -185,6 +191,11 @@ public class OSecurityHelper
 		return secureMap;
 	}
 	
+	/**
+	 * Tranform name to {@link ORule.ResourceGeneric}
+	 * @param name name to transform
+	 * @return {@link ORule.ResourceGeneric} or null
+	 */
 	public static ORule.ResourceGeneric getResourceGeneric(String name)
 	{
 		ORule.ResourceGeneric value = ORule.ResourceGeneric.valueOf(name);

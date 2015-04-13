@@ -16,6 +16,11 @@ public class ODocumentPropertyModel<T> extends PropertyModel<T> {
 		super(wrapDocumentIfRequired(modelObject), expression);
 	}
 	
+	/**
+	 * Wrap object to {@link ODocumentMapWrapper} if {@link ODocument} was specified
+	 * @param obj object to wrap
+	 * @return wrapped object
+	 */
 	public static Object wrapDocumentIfRequired(Object obj)
 	{
 		return obj instanceof ODocument
@@ -23,6 +28,10 @@ public class ODocumentPropertyModel<T> extends PropertyModel<T> {
 					:obj;
 	}
 	
+	/**
+	 * Extract {@link ODocument} from inner model
+	 * @return {@link ODocument}
+	 */
 	public ODocument getDocument()
 	{
 		Object target = getInnermostModelOrObject();

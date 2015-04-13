@@ -4,7 +4,9 @@ import java.util.Locale;
 
 import org.apache.wicket.util.convert.ConversionException;
 import org.apache.wicket.util.convert.converter.AbstractConverter;
+
 import com.orientechnologies.orient.core.db.record.OIdentifiable;
+import com.orientechnologies.orient.core.id.ORID;
 import com.orientechnologies.orient.core.id.ORecordId;
 
 /**
@@ -24,6 +26,12 @@ public class OIdentifiableConverter<T extends OIdentifiable> extends AbstractCon
 		return (T) convertToOIdentifiable(value, locale);
 	}
 	
+	/**
+	 * Converts string to {@link ORecordId}
+	 * @param value string representation of a {@link ORID}
+	 * @param locale locale
+	 * @return {@link ORecordId} for a specified rid
+	 */
 	public OIdentifiable convertToOIdentifiable(String value, Locale locale)
 	{
 		try

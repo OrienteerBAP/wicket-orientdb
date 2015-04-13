@@ -32,12 +32,22 @@ public abstract class AbstractContentAwareTransactionRequestCycleListener extend
 		}
 	}
 	
+	/**
+	 * Is current 'transaction' in progress?
+	 * @param cycle {@link RequestCycle}
+	 * @return true - if we are within a transaction, false - if not
+	 */
 	public boolean isInProgress(RequestCycle cycle)
 	{
 		Boolean inProgress = cycle.getMetaData(IN_PROGRESS_KEY);
 		return inProgress!=null?inProgress:false;
 	}
 	
+	/**
+	 * Change current state of 'transaction'
+	 * @param cycle current {@link RequestCycle}
+	 * @param inProgress state to set
+	 */
 	public void setInProgress(RequestCycle cycle, boolean inProgress)
 	{
 		cycle.setMetaData(IN_PROGRESS_KEY, inProgress);
@@ -45,21 +55,21 @@ public abstract class AbstractContentAwareTransactionRequestCycleListener extend
 	
 	/**
 	 * Request starts.
-	 * @param cycle
+	 * @param cycle - current {@link RequestCycle}
 	 */
 	public abstract void start(RequestCycle cycle);
 	
 	/**
 	 * Request ends.
-	 * @param cycle
+	 * @param cycle current {@link RequestCycle}
 	 */
 	public abstract void end(RequestCycle cycle);
 	
 	/**
 	 * Predicate method to identify is that our content or not.
-	 * @param cycle
-	 * @param handler
-	 * @return
+	 * @param cycle current {@link RequestCycle}
+	 * @param handler current {@link IRequestHandler}
+	 * @return true if content should wrapped to a transaction, falst - if content is not interesting
 	 */
 	public abstract boolean isOurContent(RequestCycle cycle, IRequestHandler handler);
 }

@@ -52,6 +52,12 @@ public abstract class AbstractPrototyper<T> extends AbstractInvocationHandler im
 			return valueArgIndex>=0;
 		}
 		
+		/**
+		 * Get wicket compatible property expression
+		 * @param method {@link Method}
+		 * @param args arguments for an invocation
+		 * @return wicket compatible property expression
+		 */
 		public String toPropertyName(Method method, Object[] args)
 		{
 			String methodName = method.getName();

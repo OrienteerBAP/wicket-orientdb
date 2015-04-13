@@ -36,16 +36,30 @@ public class OSchemaHelper
 		this.schema = db.getMetadata().getSchema();
 	}
 	
+	/**
+	 * Create helper binded to a current {@link ODatabaseDocument}
+	 * @return helper
+	 */
 	public static OSchemaHelper bind()
 	{
 		return new OSchemaHelper(OrientDbWebSession.get().getDatabase());
 	}
 	
+	/**
+	 * Create helper binded to specified {@link ODatabaseDocument}
+	 * @param db {@link ODatabaseDocument} to bind to
+	 * @return helper
+	 */
 	public static OSchemaHelper bind(ODatabaseDocument db)
 	{
 		return new OSchemaHelper(db);
 	}
 	
+	/**
+	 * Create if required {@link OClass}
+	 * @param className name of a class to create
+	 * @return this helper
+	 */
 	public OSchemaHelper oClass(String className)
 	{
 		lastClass = schema.getClass(className);
@@ -58,11 +72,22 @@ public class OSchemaHelper
 		return this;
 	}
 	
+	/**
+	 * Check that class exists
+	 * @param className name of a class to check existance
+	 * @return true if class exists
+	 */
 	public boolean existsClass(String className)
 	{
 		return schema.existsClass(className);
 	}
 	
+	/**
+	 * Create {@link OProperty} if required 
+	 * @param propertyName property name to create
+	 * @param type type of property to create
+	 * @return this helper
+	 */
 	public OSchemaHelper oProperty(String propertyName, OType type)
 	{
 		checkOClass();
@@ -81,6 +106,11 @@ public class OSchemaHelper
 		return this;
 	}
 	
+	/**
+	 * Set linked class to a current property
+	 * @param className class name to set as a linked class
+	 * @return this helper
+	 */
 	public OSchemaHelper linkedClass(String className)
 	{
 		checkOProperty();
@@ -93,18 +123,36 @@ public class OSchemaHelper
 		return this;
 	}
 	
+	/**
+	 * Create {@link OIndex} if required on a current property
+	 * @param type type of an {@link OIndex}
+	 * @return this helper
+	 */
 	public OSchemaHelper oIndex(INDEX_TYPE type)
 	{
 		checkOProperty();
 		return oIndex(lastProperty.getFullName(), type);
 	}
 	
+	/**
+	 * Create {@link OIndex} if required on a current property
+	 * @param name name of an index
+	 * @param type type of an {@link OIndex}
+	 * @return this helper
+	 */
 	public OSchemaHelper oIndex(String name, INDEX_TYPE type)
 	{
 		checkOProperty();
 		return oIndex(name, type, lastProperty.getName());
 	}
 	
+	/**
+	 * Create {@link OIndex} on a set of fields if required
+	 * @param name name of an index
+	 * @param type type of an index
+	 * @param fields fields to create index on
+	 * @return this helper
+	 */
 	public OSchemaHelper oIndex(String name, INDEX_TYPE type, String... fields)
 	{
 		checkOClass();
@@ -120,6 +168,10 @@ public class OSchemaHelper
 		return this;
 	}
 	
+	/**
+	 * Create an {@link ODocument} of an current class
+	 * @return this helper
+	 */
 	public OSchemaHelper oDocument()
 	{
 		checkOClass();
@@ -127,6 +179,13 @@ public class OSchemaHelper
 		return this;
 	}
 	
+	/**
+	 * Create an {@link ODocument} if required of an current class.
+	 * Existance of an document checked by specified primary key field name and required value
+	 * @param pkField primary key field name
+	 * @param pkValue required primary key value
+	 * @return this helper
+	 */
 	public OSchemaHelper oDocument(String pkField, Object pkValue)
 	{
 		checkOClass();
@@ -143,6 +202,12 @@ public class OSchemaHelper
 		return this;
 	}
 	
+	/**
+	 * Sets a field value for a current document
+	 * @param field field name
+	 * @param value value to set
+	 * @return this helper
+	 */
 	public OSchemaHelper field(String field, Object value)
 	{
 		checkODocument();
@@ -150,6 +215,10 @@ public class OSchemaHelper
 		return this;
 	}
 	
+	/**
+	 * Save document
+	 * @return this helper
+	 */
 	public OSchemaHelper saveDocument()
 	{
 		checkODocument();
@@ -157,18 +226,30 @@ public class OSchemaHelper
 		return this;
 	}
 
+	/**
+	 * @return current {@link OClass}
+	 */
 	public OClass getOClass() {
 		return lastClass;
 	}
 
+	/**
+	 * @return current {@link OProperty}
+	 */
 	public OProperty getOProperty() {
 		return lastProperty;
 	}
 
+	/**
+	 * @return current {@link OIndex}
+	 */
 	public OIndex<?> getOIndex() {
 		return lastIndex;
 	}
 	
+	/**
+	 * @return current {@link ODocument}
+	 */
 	public ODocument getODocument() {
 		return lastDocument;
 	}

@@ -129,6 +129,10 @@ public class OrientDbSettings implements IOrientDbSettings
 		this.orientDbRestApiUrl = orientDbRestApiUrl;
 	}
 	
+	/**
+	 * Resolve OrientDB REST API URL to be used for OrientDb REST bridge
+	 * @return OrientDB REST API URL
+	 */
 	public String resolveOrientDBRestApiUrl()
 	{
 		OrientDbWebApplication app = OrientDbWebApplication.get();

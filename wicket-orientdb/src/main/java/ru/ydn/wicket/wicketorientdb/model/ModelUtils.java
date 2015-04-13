@@ -20,6 +20,7 @@ public class ModelUtils {
 	/**
 	 * Wrap object to a corresponding {@link IModel}
 	 * @param o object to wrap
+	 * @param <K> type of a model to wrap
 	 * @return {@link IModel} which contains passed object o
 	 */
 	@SuppressWarnings("unchecked")

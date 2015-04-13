@@ -72,8 +72,8 @@ public class OrientResourceAuthorizationStrategy  implements IAuthorizationStrat
 	
 	/**
 	 * Check that current user has access to all mentioned resources
-	 * @param resources
-	 * @return
+	 * @param resources {@link RequiredOrientResource}s to check
+	 * @return true if access is allowed
 	 */
 	public boolean checkResources(RequiredOrientResource[] resources)
 	{
@@ -86,8 +86,8 @@ public class OrientResourceAuthorizationStrategy  implements IAuthorizationStrat
 	
 	/**
 	 * Check that current user has access to mentioned resource
-	 * @param resource
-	 * @return
+	 * @param resource {@link RequiredOrientResource} to check
+	 * @return true if access is allowed
 	 */
 	public boolean checkResource(RequiredOrientResource resource)
 	{
@@ -107,8 +107,8 @@ public class OrientResourceAuthorizationStrategy  implements IAuthorizationStrat
 	
 	/**
 	 * Check that current user has access to all mentioned resources
-	 * @param resources
-	 * @return
+	 * @param resources map with {@link OrientPermission}s to check
+	 * @return true if access is allowed
 	 */
 	public boolean checkResources(Map<String, OrientPermission[]> resources)
 	{
@@ -120,8 +120,9 @@ public class OrientResourceAuthorizationStrategy  implements IAuthorizationStrat
 	
 	/**
 	 * Check that current user has access to mentioned resource
-	 * @param resource
-	 * @return
+	 * @param resource resource check
+	 * @param permissions {@link OrientPermission}s to check
+	 * @return true if access is allowed
 	 */
 	public boolean checkResource(String resource, OrientPermission[] permissions)
 	{
@@ -136,7 +137,8 @@ public class OrientResourceAuthorizationStrategy  implements IAuthorizationStrat
 				:false;
 	}
 	/**
-	 * @param clazz
+	 * Extract {@link RequiredOrientResource}s from a Class
+	 * @param clazz Class to extract {@link RequiredOrientResource}s from
 	 * @return statically defined {@link RequiredOrientResource}s on specified class
 	 */
 	public RequiredOrientResource[] getRequiredOrientResources(Class<?> clazz)

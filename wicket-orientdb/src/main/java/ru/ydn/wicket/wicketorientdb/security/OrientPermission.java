@@ -22,8 +22,8 @@ public enum OrientPermission {
 	
 	/**
 	 * Calculates combined permissions flag
-	 * @param permissions
-	 * @return
+	 * @param permissions permissions to combine
+	 * @return combined int flag for a permisssions
 	 */
 	public static int combinedPermission(OrientPermission... permissions)
 	{

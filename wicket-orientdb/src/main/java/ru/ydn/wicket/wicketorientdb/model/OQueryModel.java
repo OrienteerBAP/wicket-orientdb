@@ -123,7 +123,7 @@ public class OQueryModel<K> extends LoadableDetachableModel<List<K>>
      * Set value for named parameter
      * @param paramName name of the parameter to set
      * @param value {@link IModel} for the parameter value
-     * @return
+     * @return this {@link OQueryModel}
      */
     @SuppressWarnings("unchecked")
 	public OQueryModel<K> setParameter(String paramName, IModel<?> value)
@@ -144,10 +144,10 @@ public class OQueryModel<K> extends LoadableDetachableModel<List<K>>
     }
 
 	/**
-	 * Get resulta as {@link Iterator}&lt;K&gt;. Suitable for pagination
-	 * @param first
-	 * @param count
-	 * @return
+	 * Get result as {@link Iterator}&lt;K&gt;. Suitable for pagination
+	 * @param first first element to start from
+	 * @param count maximum size of a result set
+	 * @return {@link Iterator} over results
 	 */
     @SuppressWarnings("unchecked")
 	public Iterator<K> iterator(long first, long count)
@@ -180,7 +180,7 @@ public class OQueryModel<K> extends LoadableDetachableModel<List<K>>
 
     /**
      * Get the size of the data
-     * @return
+     * @return results size
      */
     public long size()
     {
@@ -211,7 +211,7 @@ public class OQueryModel<K> extends LoadableDetachableModel<List<K>>
 
     /**
      * Is data shold be in accessing order?
-     * @return
+     * @return true if sort is accessing
      */
     public boolean isAccessing()
     {
@@ -220,8 +220,8 @@ public class OQueryModel<K> extends LoadableDetachableModel<List<K>>
 
     /**
      * Set order
-     * @param accessing
-     * @return
+     * @param accessing true - for accessing, false - descessing
+     * @return this {@link OQueryModel}
      */
     public OQueryModel<K> setAccessing(boolean accessing)
     {
@@ -240,8 +240,8 @@ public class OQueryModel<K> extends LoadableDetachableModel<List<K>>
 
     /**
      * Set sortable parameter
-     * @param sortableParameter
-     * @return
+     * @param sortableParameter sortable parameter to sort on
+     * @return this {@link OQueryModel}
      */
     public OQueryModel<K> setSortableParameter(String sortableParameter)
     {
@@ -252,9 +252,9 @@ public class OQueryModel<K> extends LoadableDetachableModel<List<K>>
     
     /**
      * Set sorting configration
-     * @param sortableParameter
-     * @param order
-     * @return
+     * @param sortableParameter sortable parameter to sort on
+     * @param order {@link SortOrder} to sort on
+     * @return this {@link OQueryModel}
      */
     public OQueryModel<K> setSort(String sortableParameter, SortOrder order)
     {

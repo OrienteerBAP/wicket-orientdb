@@ -150,6 +150,11 @@ public class OrientDBHttpAPIResource extends AbstractResource
 		mountOrientDbRestApi(new OrientDBHttpAPIResource(), app);
 	}
 	
+	/**
+	 * Mounts OrientDB REST API Bridge to an app
+	 * @param resource {@link OrientDBHttpAPIResource} to mount
+	 * @param app {@link WebApplication} to mount to
+	 */
 	@SuppressWarnings("restriction")
 	public static void mountOrientDbRestApi(OrientDBHttpAPIResource resource, WebApplication app)
 	{
