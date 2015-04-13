@@ -4,10 +4,15 @@ import org.apache.wicket.MetaDataKey;
 import org.apache.wicket.authorization.AuthorizationException;
 import org.apache.wicket.request.IRequestHandler;
 import org.apache.wicket.request.cycle.AbstractRequestCycleListener;
+import org.apache.wicket.request.cycle.IRequestCycleListener;
 import org.apache.wicket.request.cycle.RequestCycle;
 import org.apache.wicket.request.http.WebRequest;
 import org.apache.wicket.util.crypt.Base64;
 
+/**
+ * {@link IRequestCycleListener} for transparent/lazy authentication of a request.
+ * It checks for HTTP Basic Authentication header and authorize if it's present.
+ */
 public class LazyAuthorizationRequestCycleListener extends
 		AbstractRequestCycleListener {
 	

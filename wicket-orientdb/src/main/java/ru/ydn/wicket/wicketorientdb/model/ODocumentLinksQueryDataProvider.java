@@ -6,8 +6,13 @@ import org.apache.wicket.model.IModel;
 import com.orientechnologies.orient.core.metadata.schema.OProperty;
 import com.orientechnologies.orient.core.record.impl.ODocument;
 
+/**
+ * Provider of links for a document which use SQL.
+ */
 public class ODocumentLinksQueryDataProvider extends OQueryDataProvider<ODocument> {
 	
+	private static final long serialVersionUID = 1L;
+
 	public ODocumentLinksQueryDataProvider(IModel<ODocument> docModel, IModel<OProperty> propertyModel) {
 		this(docModel, propertyModel.getObject());
 	}

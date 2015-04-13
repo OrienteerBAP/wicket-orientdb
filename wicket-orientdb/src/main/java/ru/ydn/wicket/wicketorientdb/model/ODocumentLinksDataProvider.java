@@ -6,8 +6,13 @@ import org.apache.wicket.model.IModel;
 import com.orientechnologies.orient.core.metadata.schema.OProperty;
 import com.orientechnologies.orient.core.record.impl.ODocument;
 
+/**
+ * Smart {@link ForwardingDataProvider} which provides links for a property of a document.
+ * It uses {@link ODocumentLinksQueryDataProvider} if document exists and {@link ODocumentLinksJavaSortableDataProvider} if not
+ */
 public class ODocumentLinksDataProvider extends ForwardingDataProvider<ODocument, String> {
 
+	private static final long serialVersionUID = 1L;
 	private IModel<ODocument> docModel;
 	private IModel<OProperty> propertyModel;
 	

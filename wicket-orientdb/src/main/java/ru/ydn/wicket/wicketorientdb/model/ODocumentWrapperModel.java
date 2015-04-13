@@ -1,9 +1,15 @@
 package ru.ydn.wicket.wicketorientdb.model;
 
+import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 
 import com.orientechnologies.orient.core.type.ODocumentWrapper;
 
+/**
+ * {@link IModel} for a {@link ODocumentWrapper}s
+ *
+ * @param <T> {@link ODocumentWrapper} type
+ */
 public class ODocumentWrapperModel<T extends ODocumentWrapper> extends Model<T>
 {
 	private static final long serialVersionUID = 1L;

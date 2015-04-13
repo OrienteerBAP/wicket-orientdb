@@ -5,6 +5,9 @@ import org.apache.wicket.markup.html.form.IChoiceRenderer;
 import com.orientechnologies.orient.core.metadata.schema.OProperty;
 import com.orientechnologies.orient.core.record.impl.ODocument;
 
+/**
+ * {@link IChoiceRenderer} for a {@link ODocument}s
+ */
 public class OChoiceRenderer implements IChoiceRenderer<ODocument>
 {
 	private static final long serialVersionUID = 1L;

@@ -11,6 +11,9 @@ import com.orientechnologies.orient.core.index.OIndex;
 import com.orientechnologies.orient.core.metadata.schema.OClass;
 import com.orientechnologies.orient.core.metadata.schema.OProperty;
 
+/**
+ * {@link IModel} to list all {@link OIndex}es for a given {@link OClass}
+ */
 public class ListOIndexiesModel extends AbstractListModel<OIndex<?>>
 {
 	private IModel<OClass> oClassModel;

@@ -8,6 +8,12 @@ import org.apache.wicket.WicketRuntimeException;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 
+/**
+ * Adapter model to transform various {@link Collection}s to a IModel&lt;List&gt;
+ *
+ * @param <T> type of the inner collection objects
+ * @param <M> type of a collection themself
+ */
 public class CollectionAdapterModel<T, M extends Collection<T>> extends LoadableDetachableModel<List<T>>
 {
 	private IModel<M> model;

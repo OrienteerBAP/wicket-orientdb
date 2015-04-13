@@ -19,6 +19,9 @@ import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 
+/**
+ * {@link CookieManager} which use "per user" approach
+ */
 public class PersonalCookieManager extends CookieHandler
 {
 	private Cache<String, CookieManager> cache = CacheBuilder.newBuilder()

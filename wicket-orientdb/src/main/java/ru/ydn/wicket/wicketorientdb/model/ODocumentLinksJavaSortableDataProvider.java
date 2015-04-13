@@ -8,6 +8,12 @@ import org.apache.wicket.model.IModel;
 import com.orientechnologies.orient.core.metadata.schema.OProperty;
 import com.orientechnologies.orient.core.record.impl.ODocument;
 
+/**
+ * Provider of links for a document which use direct OrientDB access to a document.
+ * All sorting is done in a memory
+ *
+ * @param <S> sort type
+ */
 public class ODocumentLinksJavaSortableDataProvider<S> extends
 		AbstractJavaSortableDataProvider<ODocument, S> {
 

@@ -22,6 +22,9 @@ import com.google.common.reflect.AbstractInvocationHandler;
 public abstract class AbstractPrototyper<T> extends AbstractInvocationHandler implements Serializable {
 	private static final long serialVersionUID = 1L;
 
+	/**
+	 * Enum of possible types of operations over an object
+	 */
 	public static enum Operation
 	{
 		GET("get", new Class<?>[0], null, -1),

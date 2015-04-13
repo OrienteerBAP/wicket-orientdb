@@ -9,11 +9,19 @@ import org.apache.wicket.model.Model;
 import com.orientechnologies.orient.core.record.impl.ODocument;
 import com.orientechnologies.orient.core.type.ODocumentWrapper;
 
+/**
+ * Utility class for {@link IModel}s handling
+ */
 public class ModelUtils {
 	
 	private ModelUtils() {
 	}
 	
+	/**
+	 * Wrap object to a corresponding {@link IModel}
+	 * @param o object to wrap
+	 * @return {@link IModel} which contains passed object o
+	 */
 	@SuppressWarnings("unchecked")
 	public static <K> IModel<K> model(K o)
     {

@@ -39,7 +39,9 @@ import ru.ydn.wicket.wicketorientdb.IOrientDbSettings;
 import ru.ydn.wicket.wicketorientdb.OrientDbWebApplication;
 import ru.ydn.wicket.wicketorientdb.OrientDbWebSession;
 
-
+/**
+ * Bridge to OrientDB REST API
+ */
 public class OrientDBHttpAPIResource extends AbstractResource
 {
 	public static final String MOUNT_PATH = "/orientdb";

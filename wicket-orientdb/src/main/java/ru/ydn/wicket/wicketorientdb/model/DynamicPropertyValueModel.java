@@ -8,11 +8,13 @@ import com.orientechnologies.orient.core.db.record.OIdentifiable;
 import com.orientechnologies.orient.core.metadata.schema.OProperty;
 import com.orientechnologies.orient.core.record.impl.ODocument;
 
+/**
+ * {@link IModel} for dynamic getting a value of a property and document specified by models
+ *
+ * @param <T> value type
+ */
 public class DynamicPropertyValueModel<T> extends LoadableDetachableModel<T>
 {
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	protected final IModel<ODocument> docModel;
 	protected final IModel<OProperty> propertyModel;

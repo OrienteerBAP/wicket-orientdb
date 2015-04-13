@@ -12,6 +12,11 @@ import org.apache.wicket.model.LoadableDetachableModel;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 
+/**
+ * Abstract Model for more convenient work with lists
+ *
+ * @param <T> type of an inner objects
+ */
 public abstract class AbstractListModel<T> extends LoadableDetachableModel<List<T>>
 {
 

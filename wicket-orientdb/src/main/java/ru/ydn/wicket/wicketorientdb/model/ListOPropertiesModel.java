@@ -10,9 +10,13 @@ import org.apache.wicket.util.lang.Args;
 
 import ru.ydn.wicket.wicketorientdb.proto.OClassPrototyper;
 
+import com.orientechnologies.orient.core.index.OIndex;
 import com.orientechnologies.orient.core.metadata.schema.OClass;
 import com.orientechnologies.orient.core.metadata.schema.OProperty;
 
+/**
+ * {@link IModel} to list all {@link OProperty}es for a given {@link OClass}
+ */
 public class ListOPropertiesModel extends AbstractListModel<OProperty>
 {
 	private IModel<OClass> oClassModel;

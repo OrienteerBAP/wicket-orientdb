@@ -16,6 +16,10 @@ import com.orientechnologies.orient.core.metadata.schema.OClass.INDEX_TYPE;
 import com.orientechnologies.orient.core.record.impl.ODocument;
 import com.orientechnologies.orient.core.sql.query.OSQLSynchQuery;
 
+/**
+ * Utility to help create/update a schema
+ * Main requirement: code writen with {@link OSchemaHelper} should be able to be executed several times without duplications and etc.
+ */
 public class OSchemaHelper
 {
 	protected ODatabaseDocument db;

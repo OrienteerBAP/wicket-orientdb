@@ -19,6 +19,9 @@ public class OIndexPrototyper extends AbstractPrototyper<OIndex>
 {
 	private static final long serialVersionUID = 1L;
 
+	/**
+	 * Inner interface to make prototype name and type writable 
+	 */
 	public static interface IMakeNameAndTypeWritableFix
 	{
 		public void setName(String name);
