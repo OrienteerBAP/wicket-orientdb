@@ -73,4 +73,5 @@
     </module>
 	<module name="Translation"/>
 	<module name="UniqueProperties"/>
+	<module name="JavadocPackage"/>
 </module>
