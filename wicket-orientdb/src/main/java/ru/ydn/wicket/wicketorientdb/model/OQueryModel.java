@@ -161,9 +161,9 @@ public class OQueryModel<K> extends LoadableDetachableModel<List<K>>
     protected String prepareSql(Integer first, Integer count)
     {
     	StringBuilder sb = new StringBuilder(getSql());
+    	if(sortableParameter!=null) sb.append(" ORDER BY "+sortableParameter+(isAccessing?"":" desc"));
     	if(first!=null) sb.append(" SKIP "+first);
     	if(count!=null && count>0) sb.append(" LIMIT "+count);
-    	if(sortableParameter!=null) sb.append(" ORDER BY "+sortableParameter+(isAccessing?"":" desc"));
     	return sb.toString();
     }
     

@@ -9,6 +9,7 @@ import org.apache.wicket.util.string.Strings;
 
 import ru.ydn.wicket.wicketorientdb.OrientDbWebSession;
 
+import com.orientechnologies.orient.core.db.ODatabaseRecordThreadLocal;
 import com.orientechnologies.orient.core.db.document.ODatabaseDocument;
 import com.orientechnologies.orient.core.exception.OSecurityAccessException;
 import com.orientechnologies.orient.core.metadata.schema.OClass;
@@ -107,13 +108,18 @@ public class OSecurityHelper
 		return new RequiredOrientResource[]{new RequiredOrientResourceImpl(resource.getName(), specific, permissions)};
 	}
 	
-	//Very bad hack - should be changed in OrientDB
+	//Very-very bad hack - should be changed in OrientDB
 	private static class AccessToIsAllowedInRestrictedAccessHook extends ORestrictedAccessHook
 	{
 		public final static AccessToIsAllowedInRestrictedAccessHook INSTANCE = new AccessToIsAllowedInRestrictedAccessHook();
+		
+		public AccessToIsAllowedInRestrictedAccessHook() {
+			super(ODatabaseRecordThreadLocal.INSTANCE.get());
+		}
 		@Override
 		public boolean isAllowed(ODocument iDocument,
 				String iAllowOperation, boolean iReadOriginal) {
+			database = ODatabaseRecordThreadLocal.INSTANCE.get();
 			return super.isAllowed(iDocument, iAllowOperation, iReadOriginal);
 		}
 		
