@@ -87,5 +87,5 @@ public interface IOrientDbSettings {
 	/**
 	 * @return {@link List} of {@link ORecordHook} which should be registered for every DB instance created
 	 */
-	public List<ORecordHook> getORecordHooks();
+	public List<Class<? extends ORecordHook>> getORecordHooks();
 }

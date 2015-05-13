@@ -27,7 +27,7 @@ public class OrientDbSettings implements IOrientDbSettings
 	private String orientDbRestApiUrl;
 	private OPartitionedDatabasePoolFactory poolFactory = new OPartitionedDatabasePoolFactory();
 	
-	private List<ORecordHook> oRecordHooks = new ArrayList<ORecordHook>();
+	private List<Class<? extends ORecordHook>> oRecordHooks = new ArrayList<Class<? extends ORecordHook>>();
 	
 	@Override
 	public String getDBUrl() {
@@ -108,7 +108,7 @@ public class OrientDbSettings implements IOrientDbSettings
 
 
 	@Override
-	public List<ORecordHook> getORecordHooks() {
+	public List<Class<? extends ORecordHook>> getORecordHooks() {
 		return oRecordHooks;
 	}
 

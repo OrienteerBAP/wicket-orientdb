@@ -60,6 +60,12 @@ public class TestDataInstallator extends AbstractDataInstallator
 		fun2.field("idempotent", false);
 		fun2.field("code", "return \"fun2\";");
 		fun2.save();
+		
+		OClass classTestHooks = schema.createClass("TestHooks");
+		classTestHooks.createProperty("name", OType.STRING);
+		ODocument testHook = new ODocument(classTestHooks);
+		testHook.field("name", "SAVED");
+		testHook.save();
 	}
 
 }

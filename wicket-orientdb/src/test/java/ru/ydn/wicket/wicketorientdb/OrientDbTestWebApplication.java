@@ -46,6 +46,7 @@ public class OrientDbTestWebApplication extends OrientDbWebApplication
 		getOrientDbSettings().setDBUserPassword("admin");
 		getOrientDbSettings().setDBInstallatorUserName("admin");
 		getOrientDbSettings().setDBInstallatorUserPassword("admin");
+		getOrientDbSettings().getORecordHooks().add(TestHook.class);
 		getApplicationListeners().add(new TestDataInstallator());
 		mountOrientDbRestApi();
 	}

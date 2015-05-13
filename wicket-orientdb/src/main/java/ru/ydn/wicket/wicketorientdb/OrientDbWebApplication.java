@@ -1,5 +1,10 @@
 package ru.ydn.wicket.wicketorientdb;
 
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+
 import org.apache.wicket.Application;
 import org.apache.wicket.ConverterLocator;
 import org.apache.wicket.IApplicationListener;
@@ -12,10 +17,12 @@ import ru.ydn.wicket.wicketorientdb.converter.OIdentifiableConverter;
 import ru.ydn.wicket.wicketorientdb.rest.OrientDBHttpAPIResource;
 import ru.ydn.wicket.wicketorientdb.security.WicketOrientDbAuthorizationStrategy;
 
+import com.google.common.collect.Collections2;
 import com.orientechnologies.orient.core.Orient;
 import com.orientechnologies.orient.core.db.ODatabase;
 import com.orientechnologies.orient.core.db.ODatabaseInternal;
 import com.orientechnologies.orient.core.db.ODatabaseLifecycleListener;
+import com.orientechnologies.orient.core.db.document.ODatabaseDocument;
 import com.orientechnologies.orient.core.db.record.OIdentifiable;
 import com.orientechnologies.orient.core.hook.ORecordHook;
 import com.orientechnologies.orient.core.metadata.schema.OClass;
@@ -84,28 +91,41 @@ public abstract class OrientDbWebApplication extends AuthenticatedWebApplication
 		Orient.instance().registerThreadDatabaseFactory(new DefaultODatabaseThreadLocalFactory(this));
 		Orient.instance().addDbLifecycleListener(new ODatabaseLifecycleListener() {
 			
+			private ORecordHook createHook(Class<? extends ORecordHook> clazz, ODatabaseInternal iDatabase) {
+				if(!(iDatabase instanceof ODatabaseDocument)) return null;
+				try {
+					return (ORecordHook) clazz.getConstructor(ODatabaseDocument.class).newInstance(iDatabase);
+				} catch (Exception e) {
+					throw new IllegalStateException("Can't initialize hook "+clazz.getName(), e);
+				}
+			}
 			@Override
 			public void onOpen(ODatabaseInternal iDatabase) {
-				for (ORecordHook oRecordHook : getOrientDbSettings().getORecordHooks())
-				{
-					iDatabase.registerHook(oRecordHook);
-				}
+				registerHooks(iDatabase);
 			}
 			
 			@Override
 			public void onCreate(ODatabaseInternal iDatabase) {
-				for (ORecordHook oRecordHook : getOrientDbSettings().getORecordHooks())
+				registerHooks(iDatabase);
+			}
+			
+			public void registerHooks(ODatabaseInternal iDatabase) {
+				Set<ORecordHook> hooks = iDatabase.getHooks().keySet();
+				List<Class<? extends ORecordHook>> hooksToRegister = new ArrayList<Class<? extends ORecordHook>>(getOrientDbSettings().getORecordHooks());
+				for(ORecordHook hook : hooks)
 				{
-					iDatabase.registerHook(oRecordHook);
+					if(hooksToRegister.contains(hook.getClass())) hooksToRegister.remove(hook.getClass());
+				}
+				for (Class<? extends ORecordHook> oRecordHookClass : hooksToRegister)
+				{
+					ORecordHook hook = createHook(oRecordHookClass, iDatabase);
+					if(hook!=null) iDatabase.registerHook(hook);
 				}
 			}
 			
 			@Override
 			public void onClose(ODatabaseInternal iDatabase) {
-				for (ORecordHook oRecordHook : getOrientDbSettings().getORecordHooks())
-				{
-					iDatabase.unregisterHook(oRecordHook);
-				}
+				//NOP
 			}
 			
 			public PRIORITY getPriority() {
