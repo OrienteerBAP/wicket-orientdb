@@ -1,5 +1,8 @@
 package ru.ydn.wicket.wicketorientdb.orientdb;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Collection;
@@ -27,6 +30,7 @@ import com.orientechnologies.orient.core.metadata.schema.OProperty;
 import com.orientechnologies.orient.core.metadata.schema.OSchema;
 import com.orientechnologies.orient.core.metadata.schema.OType;
 import com.orientechnologies.orient.core.record.impl.ODocument;
+import com.orientechnologies.orient.core.sql.query.OSQLSynchQuery;
 
 public class TestInAppOrientDBCompatibility
 {
@@ -123,6 +127,110 @@ public class TestInAppOrientDBCompatibility
 		classA = schema.getClass("TestPropertyRenaming");
 		assertNull(classA.getProperty("propertyOld"));
 		assertEquals(property, classA.getProperty("propertyNew"));
+	}
+	
+	@Test
+	@Ignore
+	public void testSerialization() throws Exception
+	{
+		ODatabaseDocument db = wicket.getTester().getDatabase();
+		OSchema schema = db.getMetadata().getSchema();
+		OClass classA = schema.createClass("SerA");
+		OClass classB = schema.createClass("SerB");
+		
+		classA.createProperty("name", OType.STRING);
+		classB.createProperty("name", OType.STRING);
+		classA.createProperty("child", OType.LINKLIST, classB);
+		classB.createProperty("parent", OType.LINK, classA);
+		
+		ODocument docA = new ODocument(classA);
+		docA.field("name", "Doc A");
+		doSerialization(docA);
+		assertEquals(0, db.countClass(docA.getClassName()));
+		ODocument docB = new ODocument(classB);
+		docB.field("name", "Doc B");
+		doSerialization(docB);
+		assertEquals(0, db.countClass(docB.getClassName()));
+		docA.field("child", Arrays.asList(docB));
+		doSerialization(docA);
+		assertEquals(0, db.countClass(docA.getClassName()));
+		assertEquals(0, db.countClass(docB.getClassName()));
+		doSerialization(docB);
+		assertEquals(0, db.countClass(docA.getClassName()));
+		assertEquals(0, db.countClass(docB.getClassName()));
+		docB.field("parent", Arrays.asList(docA));
+		doSerialization(docA);
+		assertEquals(0, db.countClass(docA.getClassName()));
+		assertEquals(0, db.countClass(docB.getClassName()));
+		doSerialization(docB);
+		assertEquals(0, db.countClass(docA.getClassName()));
+		assertEquals(0, db.countClass(docB.getClassName()));
+	}
+	
+	private void doSerialization(ODocument doc) throws IOException {
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		ObjectOutputStream oos = new ObjectOutputStream(baos);
+		oos.writeObject(doc);
+		oos.flush();
+		oos.close();
+	}
+	
+	@Test
+	@Ignore
+	public void testInHook() throws Exception {
+		ODatabaseDocument db = wicket.getTester().getDatabase();
+		OSchema schema = db.getMetadata().getSchema();
+		OClass oClass = schema.createClass("TestInHook");
+		oClass.createProperty("a", OType.INTEGER);
+		oClass.createProperty("b", OType.INTEGER);
+		oClass.createProperty("c", OType.INTEGER);
+		ODocument doc = new ODocument(oClass);
+		doc.field("a", 2);
+		doc.field("b", 2);
+		doc.save();
+		doc.reload();
+		assertEquals(2, doc.field("a"));
+		assertEquals(2, doc.field("b"));
+		assertNull(doc.field("c"));
+		db.registerHook(new ODocumentHookAbstract(db) {
+			
+			{
+				setIncludeClasses("TestInHook");
+			}
+			
+			@Override
+			public void onRecordAfterCreate(ODocument iDocument) {
+				onRecordAfterRead(iDocument);
+			}
+			
+			@Override
+			public void onRecordAfterRead(ODocument iDocument) {
+				String script = "select sum(a, b) as value from "+iDocument.getIdentity();
+				List<ODocument> calculated = database.query(new OSQLSynchQuery<Object>(script));
+				if(calculated!=null && !calculated.isEmpty())
+				{
+					iDocument.field("c", calculated.get(0).field("value"));
+				}
+			}
+			
+			@Override
+			public DISTRIBUTED_EXECUTION_MODE getDistributedExecutionMode() {
+				return DISTRIBUTED_EXECUTION_MODE.SOURCE_NODE;
+			}
+		});
+		doc.reload();
+		assertEquals(2, doc.field("a"));
+		assertEquals(2, doc.field("b"));
+		assertEquals(4, doc.field("c"));
+		
+		doc = new ODocument(oClass);
+		doc.field("a", 3);
+		doc.field("b", 3);
+		doc.save();
+		
+		assertEquals(3, doc.field("a"));
+		assertEquals(3, doc.field("b"));
+		assertEquals(6, doc.field("c"));
 	}
 	
 	private static final Random RANDOM = new Random();
