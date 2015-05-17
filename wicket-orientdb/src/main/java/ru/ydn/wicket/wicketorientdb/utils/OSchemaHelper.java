@@ -124,6 +124,27 @@ public class OSchemaHelper
 	}
 	
 	/**
+	 * Mark last property not null flag
+	 * @return this helper
+	 */
+	public OSchemaHelper notNull()
+	{
+		return notNull(true);
+	}
+	
+	/**
+	 * Mark last property not null flag
+	 * @param value value of not null flag
+	 * @return this helper
+	 */
+	public OSchemaHelper notNull(boolean value)
+	{
+		checkOProperty();
+		lastProperty.setNotNull(value);
+		return this;
+	}
+	
+	/**
 	 * Create {@link OIndex} if required on a current property
 	 * @param type type of an {@link OIndex}
 	 * @return this helper
