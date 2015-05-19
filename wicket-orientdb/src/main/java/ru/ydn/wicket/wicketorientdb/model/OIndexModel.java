@@ -1,6 +1,8 @@
 package ru.ydn.wicket.wicketorientdb.model;
 
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.IObjectClassAwareModel;
+
 import ru.ydn.wicket.wicketorientdb.OrientDbWebSession;
 
 import com.orientechnologies.orient.core.index.OIndex;
@@ -56,7 +58,10 @@ public class OIndexModel extends PrototypeLoadableDetachableModel<OIndex<?>>
 		super.detach();
 		if(classModel!=null) classModel.detach();
 	}
-	
-	
-	
+
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@Override
+	public Class<OIndex<?>> getObjectClass() {
+		return (Class)OIndex.class;
+	}
 }

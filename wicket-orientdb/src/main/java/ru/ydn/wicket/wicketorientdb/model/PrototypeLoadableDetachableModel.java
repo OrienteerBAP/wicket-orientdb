@@ -1,5 +1,6 @@
 package ru.ydn.wicket.wicketorientdb.model;
 
+import org.apache.wicket.model.IObjectClassAwareModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 
 import ru.ydn.wicket.wicketorientdb.proto.IPrototype;
@@ -9,7 +10,7 @@ import ru.ydn.wicket.wicketorientdb.proto.IPrototype;
  * @param <T>
  */
 public abstract class PrototypeLoadableDetachableModel<T> extends
-		LoadableDetachableModel<T> {
+		LoadableDetachableModel<T> implements IObjectClassAwareModel<T>{
 
 	private static final long serialVersionUID = 1L;
 	private IPrototype<T> prototype;

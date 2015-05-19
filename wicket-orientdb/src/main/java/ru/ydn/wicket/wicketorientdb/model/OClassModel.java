@@ -1,6 +1,7 @@
 package ru.ydn.wicket.wicketorientdb.model;
 
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.IObjectClassAwareModel;
 import org.apache.wicket.model.Model;
 
 import ru.ydn.wicket.wicketorientdb.OrientDbWebSession;
@@ -12,7 +13,7 @@ import com.orientechnologies.orient.core.metadata.schema.OSchema;
 /**
  * Model for storing {@link OClass} instance
  */
-public class OClassModel extends PrototypeLoadableDetachableModel<OClass> {
+public class OClassModel extends PrototypeLoadableDetachableModel<OClass>{
 
 	private static final long serialVersionUID = 1L;
 	private IModel<String> classNameModel;
@@ -70,6 +71,11 @@ public class OClassModel extends PrototypeLoadableDetachableModel<OClass> {
 	public ODatabaseDocument getDatabase()
 	{
 		return OrientDbWebSession.get().getDatabase();
+	}
+
+	@Override
+	public Class<OClass> getObjectClass() {
+		return OClass.class;
 	}
 
 }
