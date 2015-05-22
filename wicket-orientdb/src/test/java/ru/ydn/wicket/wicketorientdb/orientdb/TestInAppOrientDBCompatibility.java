@@ -176,7 +176,80 @@ public class TestInAppOrientDBCompatibility
 	}
 	
 	@Test
+	public void testTransactions() throws Exception {
+		ODatabaseDocument db = wicket.getTester().getDatabase();
+		try {
+			assertFalse(db.getTransaction().isActive());
+			OSchema schema = db.getMetadata().getSchema();
+			OClass classA = schema.createClass("TransA");
+			classA.createProperty("name", OType.STRING);
+			ODocument doc = new ODocument(classA);
+			doc.field("name", "test1");
+			doc.save();
+			ORID orid = doc.getIdentity();
+			db.begin();
+			assertTrue(db.getTransaction().isActive());
+			doc = orid.getRecord();
+			assertEquals("test1", doc.field("name"));
+			doc.field("name", "test2");
+			doc = orid.getRecord();
+			assertEquals("test2", doc.field("name"));
+			//There is NO SAVE!
+			db.commit();
+			db.getLocalCache().clear();
+			/* COMMENT START */
+			//db.close();
+			//db = wicket.getTester().getDatabase();
+			/* COMMENT STOP */
+			doc = orid.getRecord();
+			assertEquals("test1", doc.field("name"));
+			
+		} finally {
+			db.commit();
+		}
+	}
+	
+	
+	@Test
 	@Ignore
+	public void testTransactions2() throws Exception {
+		ODatabaseDocument db = wicket.getTester().getDatabase();
+		try {
+			assertFalse(db.getTransaction().isActive());
+			OSchema schema = db.getMetadata().getSchema();
+			OClass classA = schema.createClass("TransB");
+			classA.createProperty("name", OType.STRING);
+			ODocument doc = new ODocument(classA);
+			doc.field("name", "test1");
+			doc.save();
+			ORID orid = doc.getIdentity();
+			
+			db.begin();
+			assertTrue(db.getTransaction().isActive());
+			doc = orid.getRecord();
+			assertEquals("test1", doc.field("name"));
+			doc.field("name", "test2");
+			doc.save();
+			doc = orid.getRecord();
+			assertEquals("test2", doc.field("name"));
+			doc.field("name", "test3");
+			assertEquals("test3", doc.field("name"));
+			//There is NO SAVE!
+			db.commit();
+			db.getLocalCache().clear();
+			/* COMMENT START */
+			//db.close();
+			//db = wicket.getTester().getDatabase();
+			/* COMMENT STOP */
+			doc = orid.getRecord();
+			assertEquals("test2", doc.field("name"));
+			
+		} finally {
+			db.commit();
+		}
+	}
+	
+	@Test
 	public void testInHook() throws Exception {
 		ODatabaseDocument db = wicket.getTester().getDatabase();
 		OSchema schema = db.getMetadata().getSchema();

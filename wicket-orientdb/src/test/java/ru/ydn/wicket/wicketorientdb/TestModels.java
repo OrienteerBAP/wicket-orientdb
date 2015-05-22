@@ -14,6 +14,8 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
+import com.orientechnologies.orient.core.db.ODatabase;
+import com.orientechnologies.orient.core.db.document.ODatabaseDocument;
 import com.orientechnologies.orient.core.id.ORecordId;
 import com.orientechnologies.orient.core.index.OIndex;
 import com.orientechnologies.orient.core.metadata.schema.OClass;
@@ -273,6 +275,7 @@ public class TestModels
 	@Test
 	public void testODocumentModel()
 	{
+		ODatabaseDocument db = wicket.getTester().getDatabase();
 		ORecordId recordId = new ORecordId("#5:0");
 		ODocumentModel model = new ODocumentModel(recordId);
 		assertModelObjectEquals(recordId.getRecord(), model);
@@ -283,6 +286,45 @@ public class TestModels
 		
 		model.setObject(null);
 		assertModelObjectEquals(null, model);
+		
+		//Test persistence between calls
+		db.begin();
+		ODocument doc = new ODocument("ClassA");
+		doc.field("name", "test1");
+		model = new ODocumentModel(doc);
+		assertEquals("test1", model.getObject().field("name"));
+		interupt(db, model);
+		assertEquals("test1", model.getObject().field("name"));
+		model.getObject().save();
+		interupt(db, model);
+		//Test that document actually reloaded from DB after closing transaction
+		assertEquals("test1", model.getObject().field("name"));
+		model.getObject().field("name", "test2");
+		assertEquals("test2", model.getObject().field("name"));
+		interupt(db, model);
+		assertEquals("test1", model.getObject().field("name"));
+		//Test autoSave feature
+		model.getObject().field("name", "test3");
+		model.setAutoSave(true);
+		interupt(db, model);
+		assertEquals("test3", model.getObject().field("name"));
+		//Test that draft documents actually saved as serialized object
+		model.getObject().field("name", "test4");
+		model.setAutoSave(false);
+		model.setPreserveDraft(true);
+		interupt(db, model);
+		assertEquals("test4", model.getObject().field("name"));
+		//Should return to previous state once reloaded from DB
+		model.setPreserveDraft(false);
+		interupt(db, model);
+		assertEquals("test3", model.getObject().field("name"));
+	}
+	
+	private void interupt(ODatabaseDocument db, IModel<?> model) {
+		model.detach();
+		db.commit();
+		db.getLocalCache().clear();
+		db.begin();
 	}
 	
 	@Test

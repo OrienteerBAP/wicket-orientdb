@@ -19,6 +19,13 @@ public class ODocumentModel extends LoadableDetachableModel<ODocument> implement
 	private ORID orid;
 	private ODocument savedDocument;
 	
+	private boolean autoSave=false;
+	private boolean preserveDraft=false;
+	
+	public ODocumentModel() {
+		this((ODocument)null);
+	}
+	
 	public ODocumentModel(ODocument iDocument) {
 		super(iDocument);
 		if(iDocument!=null) orid=iDocument.getIdentity();
@@ -33,7 +40,31 @@ public class ODocumentModel extends LoadableDetachableModel<ODocument> implement
 		return ODocument.class;
 	}
 	
+	/**
+	 * Get {@link ORID} of a stored {@link ODocument}
+	 * @return identifactor {@link ORID}
+	 */
+	public ORID getIdentity() {
+		if(orid!=null) return orid;
+		ODocument doc = getObject();
+		return doc!=null?doc.getIdentity():null;
+	}
 	
+	public boolean isAutoSave() {
+		return autoSave;
+	}
+	
+	public void setAutoSave(boolean autoSave) {
+		this.autoSave = autoSave;
+	}
+	
+	public boolean isPreserveDraft() {
+		return preserveDraft;
+	}
+	
+	public void setPreserveDraft(boolean preserveDraft) {
+		this.preserveDraft = preserveDraft;
+	}
 
 	@Override
 	protected ODocument load() {
@@ -60,8 +91,9 @@ public class ODocumentModel extends LoadableDetachableModel<ODocument> implement
 			ODocument doc = getObject();
 			if(doc!=null)
 			{
+				if(autoSave) doc.save();
 		        this.orid = doc.getIdentity();
-		        if(orid!=null && orid.isValid())
+		        if(orid!=null && orid.isValid() && (!preserveDraft || !doc.isDirty()))
 		        {
 		        	savedDocument=null;
 		        }
@@ -84,9 +116,5 @@ public class ODocumentModel extends LoadableDetachableModel<ODocument> implement
 	public String toString() {
 		return "ODocumentModel [orid=" + orid + "]";
 	}
-	
-	
-	
-	
 
 }
