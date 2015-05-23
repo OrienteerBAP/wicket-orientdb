@@ -54,16 +54,18 @@ public class ODocumentModel extends LoadableDetachableModel<ODocument> implement
 		return autoSave;
 	}
 	
-	public void setAutoSave(boolean autoSave) {
+	public ODocumentModel setAutoSave(boolean autoSave) {
 		this.autoSave = autoSave;
+		return this;
 	}
 	
 	public boolean isPreserveDraft() {
 		return preserveDraft;
 	}
 	
-	public void setPreserveDraft(boolean preserveDraft) {
+	public ODocumentModel setPreserveDraft(boolean preserveDraft) {
 		this.preserveDraft = preserveDraft;
+		return this;
 	}
 
 	@Override
