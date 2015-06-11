@@ -20,7 +20,6 @@ public class ODocumentModel extends LoadableDetachableModel<ODocument> implement
 	private ODocument savedDocument;
 	
 	private boolean autoSave=false;
-	private boolean preserveDraft=false;
 	
 	public ODocumentModel() {
 		this((ODocument)null);
@@ -59,15 +58,6 @@ public class ODocumentModel extends LoadableDetachableModel<ODocument> implement
 		return this;
 	}
 	
-	public boolean isPreserveDraft() {
-		return preserveDraft;
-	}
-	
-	public ODocumentModel setPreserveDraft(boolean preserveDraft) {
-		this.preserveDraft = preserveDraft;
-		return this;
-	}
-
 	@Override
 	protected ODocument load() {
 		if(orid!=null && orid.isValid())
@@ -95,7 +85,7 @@ public class ODocumentModel extends LoadableDetachableModel<ODocument> implement
 			{
 				if(autoSave) doc.save();
 		        this.orid = doc.getIdentity();
-		        if(orid!=null && orid.isValid() && (!preserveDraft || !doc.isDirty()))
+		        if(orid!=null && orid.isValid())
 		        {
 		        	savedDocument=null;
 		        }

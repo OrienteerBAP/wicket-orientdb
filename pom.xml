@@ -52,14 +52,14 @@
 		<!-- allowed values: R7, 1.0, 1.5, 2.0 or none -->
 		<wtp.version>none</wtp.version>
 	</properties>
-	<!--<repositories>
+	<repositories>
 	    <repository>
 		<id>snapshots-repo</id>
 		<url>https://oss.sonatype.org/content/repositories/snapshots</url>
 		<releases><enabled>false</enabled></releases>
 		<snapshots><enabled>true</enabled></snapshots>
 	    </repository>
-	</repositories>-->
+	</repositories>
 	<modules>
 		<module>wicket-orientdb</module>
 		<module>wicket-orientdb-demo</module>

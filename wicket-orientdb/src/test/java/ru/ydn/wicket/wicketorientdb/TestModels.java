@@ -308,16 +308,6 @@ public class TestModels
 		model.setAutoSave(true);
 		interupt(db, model);
 		assertEquals("test3", model.getObject().field("name"));
-		//Test that draft documents actually saved as serialized object
-		model.getObject().field("name", "test4");
-		model.setAutoSave(false);
-		model.setPreserveDraft(true);
-		interupt(db, model);
-		assertEquals("test4", model.getObject().field("name"));
-		//Should return to previous state once reloaded from DB
-		model.setPreserveDraft(false);
-		interupt(db, model);
-		assertEquals("test3", model.getObject().field("name"));
 	}
 	
 	private void interupt(ODatabaseDocument db, IModel<?> model) {
