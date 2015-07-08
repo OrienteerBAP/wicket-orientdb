@@ -128,6 +128,11 @@ public abstract class OrientDbWebApplication extends AuthenticatedWebApplication
 				//NOP
 			}
 			
+			@Override
+			public void onDrop(ODatabaseInternal iDatabase) {
+				// NOP
+			}
+			
 			public PRIORITY getPriority() {
 				return PRIORITY.REGULAR;
 			}
