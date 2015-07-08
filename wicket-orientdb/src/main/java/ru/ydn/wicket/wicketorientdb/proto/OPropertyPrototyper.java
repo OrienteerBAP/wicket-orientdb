@@ -26,7 +26,9 @@ public class OPropertyPrototyper extends AbstractPrototyper<OProperty> {
 	public static final String MAX = "max";
 	public static final String REGEXP = "regexp";
 	public static final String COLLATE = "collate";
-	public static final List<String> OPROPERTY_ATTRS = Arrays.asList(NAME, TYPE, LINKED_TYPE, LINKED_CLASS, MANDATORY, READONLY, NOT_NULL, MIN, MAX, REGEXP, COLLATE);
+	public static final String DEFAULT_VALUE = "defaultValue";
+	public static final List<String> OPROPERTY_ATTRS = Arrays.asList(NAME, TYPE, LINKED_TYPE, LINKED_CLASS, MANDATORY, READONLY,
+			NOT_NULL, MIN, MAX, REGEXP, COLLATE, DEFAULT_VALUE);
 
 	private final String className;
 	
