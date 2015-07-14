@@ -39,7 +39,7 @@ public class OClassesDataProvider extends AbstractJavaSortableDataProvider<OClas
 
 	@Override
 	protected String getSortPropertyExpression(String param) {
-		if(OClassPrototyper.SUPER_CLASS.equals(param)) return param+".name";
+		if(OClassPrototyper.SUPER_CLASSES.equals(param)) return "superClass.name"; //Sort just by first super class
 		else return super.getSortPropertyExpression(param);
 	}
 	
