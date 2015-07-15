@@ -21,6 +21,7 @@ import static org.junit.Assert.*;
 import com.orientechnologies.orient.core.db.ODatabase;
 import com.orientechnologies.orient.core.db.document.ODatabaseDocument;
 import com.orientechnologies.orient.core.hook.ODocumentHookAbstract;
+import com.orientechnologies.orient.core.hook.ORecordHook;
 import com.orientechnologies.orient.core.hook.ORecordHook.DISTRIBUTED_EXECUTION_MODE;
 import com.orientechnologies.orient.core.hook.ORecordHook.RESULT;
 import com.orientechnologies.orient.core.id.ORID;
@@ -29,6 +30,7 @@ import com.orientechnologies.orient.core.metadata.schema.OClass;
 import com.orientechnologies.orient.core.metadata.schema.OProperty;
 import com.orientechnologies.orient.core.metadata.schema.OSchema;
 import com.orientechnologies.orient.core.metadata.schema.OType;
+import com.orientechnologies.orient.core.record.ORecord;
 import com.orientechnologies.orient.core.record.impl.ODocument;
 import com.orientechnologies.orient.core.sql.query.OSQLSynchQuery;
 
@@ -486,6 +488,111 @@ public class TestInAppOrientDBCompatibility
 //		doc = db.reload(doc, null, true);
 		assertEquals(doc.field("a"), doc.field("b"));
 		db.commit();
+	}
+	
+	@Test
+	public void testDocumentTrackingSimple()
+	{
+		final String className = "TestDocumentTrackingSimple";
+		ODatabaseDocument db = wicket.getTester().getDatabase();
+		OSchema schema = db.getMetadata().getSchema();
+		final OClass classA = schema.createClass(className);
+		classA.createProperty("a", OType.STRING);
+		db.registerHook(new ORecordHook() {
+
+			@Override
+			public void onUnregister() {
+				// NOP
+			}
+
+			@Override
+			public RESULT onTrigger(TYPE iType, ORecord iRecord) {
+				if(iRecord instanceof ODocument) {
+					ODocument doc = (ODocument) iRecord;
+					if(classA.isSuperClassOf(doc.getSchemaClass())) {
+//						System.out.println("During "+iType+" document should track changes: "+doc.isTrackingChanges());
+						assertTrue("During "+iType+" document should track changes", doc.isTrackingChanges());
+					}
+				}
+				return RESULT.RECORD_NOT_CHANGED;
+			}
+
+			@Override
+			public DISTRIBUTED_EXECUTION_MODE getDistributedExecutionMode() {
+				return DISTRIBUTED_EXECUTION_MODE.SOURCE_NODE;
+			}
+						
+		});
+		db.commit();
+		ODocument doc = new ODocument(classA);
+		doc.field("a", "test");
+		doc.save();
+		doc.reload();
+		doc.field("a", "test2");
+		doc.save();
+		doc.reload();
+		doc.delete();
+	}
+	
+	@Test
+	@Ignore
+	public void testDocumentTrackingComplex()
+	{
+		final String className = "TestDocumentTrackingComplex";
+		ODatabaseDocument db = wicket.getTester().getDatabase();
+		OSchema schema = db.getMetadata().getSchema();
+		final OClass classA = schema.createClass(className);
+		classA.createProperty("a", OType.STRING);
+		classA.createProperty("b", OType.STRING);
+		db.registerHook(new ODocumentHookAbstract() {
+			
+			{
+				setIncludeClasses(className);
+			}
+			
+			@Override
+			public DISTRIBUTED_EXECUTION_MODE getDistributedExecutionMode() {
+				return DISTRIBUTED_EXECUTION_MODE.SOURCE_NODE;
+			}
+			
+			@Override
+			public void onRecordAfterCreate(ODocument iDocument) {
+				System.out.println("onRecordAfterCreate");
+				iDocument.field("a", "onRecordAfterCreate");
+			}
+			
+			@Override
+			public void onRecordAfterUpdate(ODocument iDocument) {
+				System.out.println("onRecordAfterUpdate");
+				iDocument.field("a", "onRecordAfterUpdate");
+			}
+			
+			@Override
+			public RESULT onRecordBeforeUpdate(ODocument iDocument) {
+				System.out.println("onRecordAfterUpdate before undo: "+iDocument.field("a"));
+				iDocument.undo("a");
+				System.out.println("onRecordAfterUpdate after  undo: "+iDocument.field("a"));
+				return RESULT.RECORD_CHANGED;
+			}
+			
+			@Override
+			public void onRecordAfterRead(ODocument iDocument) {
+				assertEquals("original", iDocument.field("a"));
+			}
+		});
+		db.commit();
+		ODocument doc = new ODocument(classA);
+		doc.field("a", "original");
+		doc.save();
+		doc.field("b", "other change");
+		doc.save();
+		doc.reload();
+		doc.field("a", "updated");
+		doc.save();
+		doc.field("b", "other change");
+		doc.save();
+		doc.reload();
+		doc.delete();
 	}
 	
 	@Test
