@@ -58,14 +58,20 @@ public class OSchemaHelper
 	/**
 	 * Create if required {@link OClass}
 	 * @param className name of a class to create
+	 * @param superClasses list of superclasses
 	 * @return this helper
 	 */
-	public OSchemaHelper oClass(String className)
+	public OSchemaHelper oClass(String className, String... superClasses)
 	{
 		lastClass = schema.getClass(className);
 		if(lastClass==null)
 		{
-			lastClass = schema.createClass(className);
+			OClass[] superClassesArray = new OClass[superClasses.length];
+			for (int i = 0; i < superClasses.length; i++) {
+				String superClassName = superClasses[i];
+				superClassesArray[i] = schema.getClass(superClassName);
+			}
+			lastClass = schema.createClass(className, superClassesArray);
 		}
 		lastProperty = null;
 		lastIndex = null;
@@ -119,6 +125,21 @@ public class OSchemaHelper
 		if(!Objects.equal(linkedToClass, lastProperty.getLinkedClass()))
 		{
 			lastProperty.setLinkedClass(linkedToClass);
+		}
+		return this;
+	}
+	
+	/**
+	 * Set linked type to a current property
+	 * @param linkedType {@link OType} to set as a linked type
+	 * @return this helper
+	 */
+	public OSchemaHelper linkedType(OType linkedType)
+	{
+		checkOProperty();
+		if(!Objects.equal(linkedType, lastProperty.getLinkedType()))
+		{
+			lastProperty.setLinkedType(linkedType);
 		}
 		return this;
 	}
