@@ -101,7 +101,7 @@ public abstract class AbstractNamingModel<T> extends AbstractReadOnlyModel<Strin
 		{
 			char pCh = i>0?chars[i-1]:0;
 			char ch = chars[i];
-			if(ch=='_')
+			if(ch=='_' || ch=='-' || Character.isWhitespace(ch))
 			{
 				sb.append(chars, lastApplied, i-lastApplied);
 				lastApplied=i+1;
@@ -111,14 +111,16 @@ public abstract class AbstractNamingModel<T> extends AbstractReadOnlyModel<Strin
 				sb.append(Character.toUpperCase(ch));
 				lastApplied=i+1;
 			}
-			else if(i>0 && Character.isUpperCase(ch) && !(Character.isWhitespace(pCh) || pCh=='_')&& !Character.isUpperCase(pCh))
+			else if(i>0 && Character.isUpperCase(ch) && !(Character.isWhitespace(pCh) || pCh=='_' || pCh=='-')&& !Character.isUpperCase(pCh))
 			{
 				sb.append(chars, lastApplied, i-lastApplied).append(' ').append(ch);
 				lastApplied=i+1;
 			}
-			else if(i>0 && Character.isLowerCase(ch) && (Character.isWhitespace(pCh) || pCh=='_'))
+			else if(i>0 && Character.isLowerCase(ch) && (Character.isWhitespace(pCh) || pCh=='_' || pCh=='-'))
 			{
-				sb.append(chars, lastApplied, i-lastApplied).append(Character.toUpperCase(ch));
+				sb.append(chars, lastApplied, i-lastApplied);
+				if(sb.length()>0) sb.append(' ');
+				sb.append(Character.toUpperCase(ch));
 				lastApplied=i+1;
 			}
 		}

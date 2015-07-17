@@ -40,6 +40,10 @@ public class MainUtilsTest
 		assertEquals("My Test", buitify("myTest"));
 		assertEquals("My Test", buitify("my test"));
 		assertEquals("M Test", buitify("mTest"));
+		assertEquals("My Test", buitify("my_test"));
+		assertEquals("My Test", buitify("my-test"));
+		assertEquals("My Test", buitify("my__test"));
+		assertEquals("My Test", buitify("my--test"));
 		assertEquals("Allow", buitify("_allow"));
 		assertEquals("Allow", buitify("__allow"));
 		assertEquals("Allow Read", buitify("_allowRead"));
