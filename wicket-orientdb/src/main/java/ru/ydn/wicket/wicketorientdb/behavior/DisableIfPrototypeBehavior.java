@@ -15,7 +15,7 @@ public class DisableIfPrototypeBehavior extends Behavior {
 	@Override
 	public void onConfigure(Component component) {
 		Object object = component.getDefaultModelObject();
-		component.setEnabled(component.isEnabled() && !(object instanceof IPrototype));
+		component.setEnabled(!(object instanceof IPrototype));
 	}
 
 }
