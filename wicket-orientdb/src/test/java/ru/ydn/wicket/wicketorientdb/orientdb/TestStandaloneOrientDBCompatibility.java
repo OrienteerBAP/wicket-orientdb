@@ -1,75 +1,23 @@
 package ru.ydn.wicket.wicketorientdb.orientdb;
 
+import static org.junit.Assert.assertNotNull;
+
 import org.junit.Ignore;
 import org.junit.Test;
 
 import ru.ydn.wicket.wicketorientdb.OrientDbTestWebApplication;
-import static org.junit.Assert.*;
 
 import com.orientechnologies.orient.core.Orient;
-import com.orientechnologies.orient.core.db.ODatabaseDocumentInternal;
 import com.orientechnologies.orient.core.db.ODatabaseRecordThreadLocal;
-import com.orientechnologies.orient.core.db.ODatabaseThreadLocalFactory;
 import com.orientechnologies.orient.core.db.OPartitionedDatabasePoolFactory;
 import com.orientechnologies.orient.core.db.document.ODatabaseDocument;
-import com.orientechnologies.orient.core.db.document.ODatabaseDocumentPool;
 import com.orientechnologies.orient.core.db.document.ODatabaseDocumentTx;
 import com.orientechnologies.orient.core.exception.OStorageException;
-import com.orientechnologies.orient.core.hook.ODocumentHookAbstract;
-import com.orientechnologies.orient.core.hook.OHookThreadLocal;
-import com.orientechnologies.orient.core.hook.ORecordHook;
-import com.orientechnologies.orient.core.hook.ORecordHook.DISTRIBUTED_EXECUTION_MODE;
 import com.orientechnologies.orient.server.OServer;
 import com.orientechnologies.orient.server.OServerMain;
 
 public class TestStandaloneOrientDBCompatibility
 {
-	
-	@Test
-	public void testSubSequentMemoryDBOpen() throws Exception
-	{
-		OServer server = startServer();
-		
-		
-		final String DB_NAME = "memory:testDBOpen";
-		
-		ODatabaseDocument db = new ODatabaseDocumentTx(DB_NAME);
-		db.create();
-		db.close();
-		
-		Orient.instance().registerThreadDatabaseFactory(new ODatabaseThreadLocalFactory() {
-			private ODatabaseDocumentPool pool = ODatabaseDocumentPool.global();
-			
-			@Override
-			public ODatabaseDocumentInternal getThreadDatabase() {
-				return pool.acquire(DB_NAME, "admin", "admin");
-			}
-		});
-		db = ODatabaseRecordThreadLocal.INSTANCE.get();
-		assertFalse(db.isClosed());
-		assertNotNull(db.getMetadata());
-		db.close();
-		assertTrue(db.isClosed());
-		ODatabaseRecordThreadLocal.INSTANCE.remove();
-		server.shutdown();
-		Orient.instance().shutdown();
-		
-		server = startServer();
-		Orient.instance().startup();
-		
-		db = new ODatabaseDocumentTx(DB_NAME);
-		db.create();
-		db.close();
-		
-		db = ODatabaseRecordThreadLocal.INSTANCE.get();
-		assertFalse(db.isClosed());
-		assertNotNull(db.getMetadata());
-		db.close();
-		assertTrue(db.isClosed());
-		server.shutdown();
-		Orient.instance().shutdown();
-	}
-	
 	
 	private OServer startServer() throws Exception
 	{
@@ -129,7 +77,6 @@ public class TestStandaloneOrientDBCompatibility
 	{
 		Orient.instance().startup();
 		assertNotNull(ODatabaseRecordThreadLocal.INSTANCE);
-		assertNotNull(OHookThreadLocal.INSTANCE);
 		Orient.instance().removeShutdownHook();
 		OServer server = OServerMain.create();
 		server.startup(OrientDbTestWebApplication.class.getResource("db.config.xml").openStream());
@@ -141,11 +88,9 @@ public class TestStandaloneOrientDBCompatibility
 			dbToCreate.close();
 		}
 		assertNotNull(ODatabaseRecordThreadLocal.INSTANCE);
-		assertNotNull(OHookThreadLocal.INSTANCE);
 		ODatabaseDocument db = new OPartitionedDatabasePoolFactory().get(dbURL, "admin", "admin").acquire();
 		db.close();
 		assertNotNull(ODatabaseRecordThreadLocal.INSTANCE);
-		assertNotNull(OHookThreadLocal.INSTANCE);
 		if(dropDb)
 		{
 			ODatabaseDocument dbToDrop = new ODatabaseDocumentTx(dbURL);

@@ -38,7 +38,9 @@ public class OClassPrototyper extends AbstractPrototyper<OClass> {
 	@Override
 	protected OClass createInstance(OClass proxy) {
 		OSchema schema = OrientDbWebSession.get().getDatabase().getMetadata().getSchema();
-		return schema.createClass(proxy.getName());
+		OClass oClass = schema.createClass(proxy.getName());
+		values.remove("name");
+		return oClass;
 	}
 
 	@Override
