@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.wicket.Component;
+import org.apache.wicket.authorization.Action;
 import org.apache.wicket.util.string.Strings;
 
 import ru.ydn.wicket.wicketorientdb.OrientDbWebSession;
@@ -47,11 +48,13 @@ public class OSecurityHelper
 		private final String value;
 		private final String specific;
 		private final OrientPermission[] permissions;
+		private final String action;
 		
-		public RequiredOrientResourceImpl(String value, String specific, OrientPermission[] permissions)
+		public RequiredOrientResourceImpl(String value, String specific, Action action, OrientPermission[] permissions)
 		{
 			this.value = value;
 			this.specific = specific;
+			this.action = action!=null?action.getName():Action.RENDER;
 			this.permissions = permissions;
 		}
 		
@@ -73,6 +76,11 @@ public class OSecurityHelper
 		@Override
 		public OrientPermission[] permissions() {
 			return permissions;
+		}
+		
+		@Override
+		public String action() {
+			return action;
 		}
 		
 	}
@@ -103,9 +111,45 @@ public class OSecurityHelper
 	 * @param permissions
 	 * @return
 	 */
-	public static RequiredOrientResource[] requireResource(final ORule.ResourceGeneric resource, final String specific, final OrientPermission... permissions)
+	public static RequiredOrientResource[] requireResource(final ORule.ResourceGeneric resource, final String specific, 
+																final OrientPermission... permissions)
 	{
-		return new RequiredOrientResource[]{new RequiredOrientResourceImpl(resource.getName(), specific, permissions)};
+		return requireResource(resource, specific, null, permissions);
+	}
+	
+	/**
+	 * @param oClass subject {@link OClass} for security check
+	 * @param action action to be secured for
+	 * @param permissions required permissions for access {@link OClass}
+	 * @return
+	 */
+	public static RequiredOrientResource[] requireOClass(final OClass oClass, final Action action, 
+															final OrientPermission... permissions)
+	{
+		return requireOClass(oClass.getName(), action, permissions);
+	}
+	/**
+	 * @param oClassName name of the subject {@link OClass} for security check
+	 * @param action action to be secured for
+	 * @param permissions required permissions for access {@link OClass}
+	 * @return
+	 */
+	public static RequiredOrientResource[] requireOClass(final String oClassName, final Action action, 
+															final OrientPermission... permissions)
+	{
+		return requireResource(ORule.ResourceGeneric.CLASS, oClassName, action, permissions);
+	}
+	/**
+	 * @param resource generic resource
+	 * @param specific specific resrouce to secure
+	 * @param action action to be secured for
+	 * @param permissions
+	 * @return
+	 */
+	public static RequiredOrientResource[] requireResource(final ORule.ResourceGeneric resource, final String specific, 
+															final Action action, final OrientPermission... permissions)
+	{
+		return new RequiredOrientResource[]{new RequiredOrientResourceImpl(resource.getName(), specific, action, permissions)};
 	}
 	
 	//Very-very bad hack - should be changed in OrientDB
@@ -191,7 +235,9 @@ public class OSecurityHelper
 		{
 			String resource = requiredOrientResource.value();
 			String specific = requiredOrientResource.specific();
+			String action = requiredOrientResource.action();
 			if(!Strings.isEmpty(specific)) resource = resource+"."+specific;
+			if(!Strings.isEmpty(action)) resource = resource+":"+action;
 			secureMap.put(resource, requiredOrientResource.permissions());
 		}
 		return secureMap;

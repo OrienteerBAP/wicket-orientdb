@@ -32,7 +32,7 @@ public class OrientResourceAuthorizationStrategy  implements IAuthorizationStrat
 		if(Page.class.isAssignableFrom(componentClass))
 		{
 			RequiredOrientResource[] resources = getRequiredOrientResources(componentClass);
-			return resources!=null?checkResources(resources):true;
+			return resources!=null?checkResources(resources, Component.RENDER):true;
 		}
 		else
 		{
@@ -42,44 +42,38 @@ public class OrientResourceAuthorizationStrategy  implements IAuthorizationStrat
 
 	@Override
 	public boolean isActionAuthorized(Component component, Action action) {
-		if(action.equals(Component.RENDER))
+		RequiredOrientResource[] resources = getRequiredOrientResources(component.getClass());
+		if(resources!=null)
 		{
-			RequiredOrientResource[] resources = getRequiredOrientResources(component.getClass());
+			if(!checkResources(resources, action)) return false;
+		}
+		Map<String, OrientPermission[]> dynamicResources = component.getMetaData(OrientPermission.REQUIRED_ORIENT_RESOURCES_KEY);
+		if(dynamicResources!=null)
+		{
+			if(!checkResources(dynamicResources, action)) return false;
+		}
+		if(component instanceof ISecuredComponent)
+		{
+			resources = ((ISecuredComponent)component).getRequiredResources();
 			if(resources!=null)
 			{
-				if(!checkResources(resources)) return false;
+				if(!checkResources(resources, action)) return false;
 			}
-			Map<String, OrientPermission[]> dynamicResources = component.getMetaData(OrientPermission.REQUIRED_ORIENT_RESOURCES_KEY);
-			if(dynamicResources!=null)
-			{
-				if(!checkResources(dynamicResources)) return false;
-			}
-			if(component instanceof ISecuredComponent)
-			{
-				resources = ((ISecuredComponent)component).getRequiredResources();
-				if(resources!=null)
-				{
-					if(!checkResources(resources)) return false;
-				}
-			}
-			return true;
 		}
-		else
-		{
-			return true;
-		}
+		return true;
 	}
 	
 	/**
 	 * Check that current user has access to all mentioned resources
 	 * @param resources {@link RequiredOrientResource}s to check
+	 * @param action {@link Action} to check for
 	 * @return true if access is allowed
 	 */
-	public boolean checkResources(RequiredOrientResource[] resources)
+	public boolean checkResources(RequiredOrientResource[] resources, Action action)
 	{
 		for (int i = 0; i < resources.length; i++) {
 			RequiredOrientResource requiredOrientResource = resources[i];
-			if(!checkResource(requiredOrientResource)) return false;
+			if(!checkResource(requiredOrientResource, action)) return false;
 		}
 		return true;
 	}
@@ -87,10 +81,12 @@ public class OrientResourceAuthorizationStrategy  implements IAuthorizationStrat
 	/**
 	 * Check that current user has access to mentioned resource
 	 * @param resource {@link RequiredOrientResource} to check
+	 * @param action {@link Action} to check for
 	 * @return true if access is allowed
 	 */
-	public boolean checkResource(RequiredOrientResource resource)
+	public boolean checkResource(RequiredOrientResource resource, Action action)
 	{
+		if(!resource.action().equals(action.getName())) return true;
 		OUser user = OrientDbWebSession.get().getUser();
 		if(user==null) return false;
 		int iOperation = OrientPermission.combinedPermission(resource.permissions());
@@ -108,12 +104,13 @@ public class OrientResourceAuthorizationStrategy  implements IAuthorizationStrat
 	/**
 	 * Check that current user has access to all mentioned resources
 	 * @param resources map with {@link OrientPermission}s to check
+	 * @param action {@link Action} to check for
 	 * @return true if access is allowed
 	 */
-	public boolean checkResources(Map<String, OrientPermission[]> resources)
+	public boolean checkResources(Map<String, OrientPermission[]> resources, Action action)
 	{
 		for (Map.Entry<String, OrientPermission[]> entry : resources.entrySet()) {
-			if(!checkResource(entry.getKey(), entry.getValue())) return false;
+			if(!checkResource(entry.getKey(), action, entry.getValue())) return false;
 		}
 		return true;
 	}
@@ -121,11 +118,18 @@ public class OrientResourceAuthorizationStrategy  implements IAuthorizationStrat
 	/**
 	 * Check that current user has access to mentioned resource
 	 * @param resource resource check
+	 * @param action {@link Action} to check for
 	 * @param permissions {@link OrientPermission}s to check
 	 * @return true if access is allowed
 	 */
-	public boolean checkResource(String resource, OrientPermission[] permissions)
+	public boolean checkResource(String resource, Action action, OrientPermission[] permissions)
 	{
+		String actionName = action.getName();
+		if(resource.indexOf(':')>0) {
+			if(!(resource.endsWith(actionName) && resource.length()>actionName.length() 
+					&& resource.charAt(resource.length()-actionName.length()-1) == ':')) return true;
+		} else if(!Component.RENDER.equals(action)) return true; //Default suffix is for render: so other should be skipped
+		
 		OUser user = OrientDbWebSession.get().getUser();
 		if(user==null) return false;
 		ORule.ResourceGeneric generic = OSecurityHelper.getResourceGeneric(resource);
