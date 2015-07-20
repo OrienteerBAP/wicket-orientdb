@@ -1,6 +1,7 @@
 package ru.ydn.wicket.wicketorientdb.proto;
 
 import java.io.Serializable;
+import java.net.NetPermission;
 import java.util.Arrays;
 import java.util.Collection;
 
@@ -106,6 +107,7 @@ public class TestPrototypers
 	public void testOPropertyPrototyper() throws Exception
 	{
 		OClass newClass = wicket.getTester().getSchema().createClass("NewClass");
+		OProperty toCompare = newClass.createProperty("toCompare", OType.STRING);
 		try
 		{
 			OProperty newProperty = OPropertyPrototyper.newPrototype("NewClass");
@@ -113,10 +115,13 @@ public class TestPrototypers
 			newProperty.setName("newProperty");
 			assertEquals("newProperty", newProperty.getName());
 			assertNull(newClass.getProperty("newProperty"));
+			assertEquals("NewClass.newProperty", newProperty.getFullName());
 			newProperty.setType(OType.STRING);
 			assertEquals(OType.STRING, newProperty.getType());
 			newProperty.setCustom("myCustom", "myCustomValue");
 			assertEquals("myCustomValue", newProperty.getCustom("myCustom"));
+			assertTrue(newProperty.compareTo(toCompare)<0);
+			
 			//Realization
 			assertTrue(newProperty instanceof IPrototype);
 			OProperty realizedNewProperty = ((IPrototype<OProperty>)newProperty).realizePrototype();

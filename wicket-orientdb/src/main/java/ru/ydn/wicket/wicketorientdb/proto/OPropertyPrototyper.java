@@ -1,9 +1,12 @@
 package ru.ydn.wicket.wicketorientdb.proto;
 
+import java.lang.reflect.Method;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import ru.ydn.wicket.wicketorientdb.OrientDbWebSession;
+
 import com.orientechnologies.orient.core.metadata.schema.OClass;
 import com.orientechnologies.orient.core.metadata.schema.OProperty;
 import com.orientechnologies.orient.core.metadata.schema.OSchema;
@@ -51,7 +54,26 @@ public class OPropertyPrototyper extends AbstractPrototyper<OProperty> {
 			OSchema schema = OrientDbWebSession.get().getDatabase().getMetadata().getSchema();
 			return schema.getClass(className);
 		}
+		else if("fullName".equals(propName))
+		{
+			return className + "." + values.get(NAME);
+		}
 		else return super.handleGet(propName, returnType);
+	}
+	
+	@Override
+	protected Object handleCustom(Object proxy, Method method, Object[] args) {
+		String methodName = method.getName();
+		if("compareTo".equals(methodName))
+		{
+			OProperty otherProperty = (OProperty) args[0];
+			String thisName = (String)values.get(NAME);
+			return thisName!=null?thisName.compareTo(otherProperty.getName()):1;
+		}
+		else
+		{
+			return super.handleCustom(proxy, method, args);
+		}
 	}
 
 	@Override
