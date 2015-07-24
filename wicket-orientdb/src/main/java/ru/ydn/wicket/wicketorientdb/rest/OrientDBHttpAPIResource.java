@@ -118,7 +118,11 @@ public class OrientDBHttpAPIResource extends AbstractResource
 						{
 							response.setError(con.getResponseCode(), con.getResponseMessage());
 							InputStream errorStream = con.getErrorStream();
-							if(errorStream!=null) IOUtils.copy(errorStream, out, "UTF-8");
+							if(errorStream!=null) {
+								IOUtils.copy(errorStream, out, "UTF-8");
+								String errorBody = sw.toString();
+								attributes.getResponse().write(errorBody);
+							}
 						} catch (IOException e1)
 						{
 							LOG.error("Can't response by error", e1);
