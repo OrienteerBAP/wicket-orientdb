@@ -30,6 +30,11 @@ public class OIndexiesDataProvider extends
 		super(new ListOIndexiesModel(oClassModel, allIndexiesModel));
 	}
 
+	public OIndexiesDataProvider(AbstractListModel<OIndex<?>> indexesModel)
+	{
+		super(indexesModel);
+	}
+
 	public OIndexiesDataProvider(IModel<Collection<OIndex<?>>> dataModel) {
 		super(dataModel);
 	}
