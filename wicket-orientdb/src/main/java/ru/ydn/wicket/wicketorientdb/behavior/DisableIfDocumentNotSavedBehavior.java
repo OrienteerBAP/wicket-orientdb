@@ -3,10 +3,11 @@ package ru.ydn.wicket.wicketorientdb.behavior;
 import org.apache.wicket.Component;
 import org.apache.wicket.behavior.Behavior;
 
-import com.orientechnologies.orient.core.record.impl.ODocument;
+import com.orientechnologies.orient.core.db.record.OIdentifiable;
+import com.orientechnologies.orient.core.record.impl.OIdentifiable;
 
 /**
- * {@link Behavior} to disable component if {@link ODocument} was not saved in DB
+ * {@link Behavior} to disable component if {@link OIdentifiable} was not saved in DB
  */
 public class DisableIfDocumentNotSavedBehavior extends Behavior {
 	
@@ -16,8 +17,8 @@ public class DisableIfDocumentNotSavedBehavior extends Behavior {
 	public void onConfigure(Component component) {
 		super.onConfigure(component);
 		Object object = component.getDefaultModelObject();
-		if(object!=null && object instanceof ODocument) {
-			component.setEnabled(((ODocument)object).getIdentity().isPersistent());
+		if(object!=null && object instanceof OIdentifiable) {
+			component.setEnabled(((OIdentifiable)object).getIdentity().isPersistent());
 		}
 	}
 }
