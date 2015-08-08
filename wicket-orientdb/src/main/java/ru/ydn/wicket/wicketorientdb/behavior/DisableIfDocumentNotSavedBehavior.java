@@ -4,7 +4,6 @@ import org.apache.wicket.Component;
 import org.apache.wicket.behavior.Behavior;
 
 import com.orientechnologies.orient.core.db.record.OIdentifiable;
-import com.orientechnologies.orient.core.record.impl.OIdentifiable;
 
 /**
  * {@link Behavior} to disable component if {@link OIdentifiable} was not saved in DB
