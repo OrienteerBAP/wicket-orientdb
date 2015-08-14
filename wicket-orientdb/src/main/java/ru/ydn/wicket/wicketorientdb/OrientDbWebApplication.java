@@ -96,7 +96,11 @@ public abstract class OrientDbWebApplication extends AuthenticatedWebApplication
 				try {
 					return (ORecordHook) clazz.getConstructor(ODatabaseDocument.class).newInstance(iDatabase);
 				} catch (Exception e) {
-					throw new IllegalStateException("Can't initialize hook "+clazz.getName(), e);
+					try {
+						return (ORecordHook) clazz.newInstance();
+					} catch (Exception e1) {
+						throw new IllegalStateException("Can't initialize hook "+clazz.getName(), e);
+					}
 				}
 			}
 			@Override
@@ -124,28 +128,21 @@ public abstract class OrientDbWebApplication extends AuthenticatedWebApplication
 			}
 			
 			@Override
-			public void onClose(ODatabaseInternal iDatabase) {
-				//NOP
-			}
+			public void onClose(ODatabaseInternal iDatabase) {/*NOP*/}
 			
 			@Override
-			public void onDrop(ODatabaseInternal iDatabase) {
-				// NOP
-			}
+			public void onDrop(ODatabaseInternal iDatabase) {/*NOP*/}
+			
 			
 			public PRIORITY getPriority() {
 				return PRIORITY.REGULAR;
 			}
 
 			@Override
-			public void onCreateClass(ODatabaseInternal iDatabase, OClass iClass) {
-				
-			}
+			public void onCreateClass(ODatabaseInternal iDatabase, OClass iClass) {/*NOP*/}
 
 			@Override
-			public void onDropClass(ODatabaseInternal iDatabase, OClass iClass) {
-				
-			}
+			public void onDropClass(ODatabaseInternal iDatabase, OClass iClass) {/*NOP*/}
 		});
 		getRequestCycleListeners().add(newTransactionRequestCycleListener());
 		getRequestCycleListeners().add(new OrientDefaultExceptionsHandlingListener());
