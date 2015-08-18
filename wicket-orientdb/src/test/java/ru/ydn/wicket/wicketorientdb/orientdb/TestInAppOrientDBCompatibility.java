@@ -30,6 +30,8 @@ import com.orientechnologies.orient.core.metadata.schema.OClass;
 import com.orientechnologies.orient.core.metadata.schema.OProperty;
 import com.orientechnologies.orient.core.metadata.schema.OSchema;
 import com.orientechnologies.orient.core.metadata.schema.OType;
+import com.orientechnologies.orient.core.metadata.schema.clusterselection.OClusterSelectionStrategy;
+import com.orientechnologies.orient.core.metadata.security.OSecurityShared;
 import com.orientechnologies.orient.core.record.ORecord;
 import com.orientechnologies.orient.core.record.impl.ODocument;
 import com.orientechnologies.orient.core.sql.query.OSQLSynchQuery;
@@ -647,6 +649,36 @@ public class TestInAppOrientDBCompatibility
 		main = recordId.getRecord();
 		assertEmbeddedIsCorrect(main);
 		db.commit();
+	}
+	
+	@Test
+	@Ignore
+	public void testDeletionOfDependentClass()
+	{
+		ODatabaseDocument db = wicket.getTester().getDatabase();
+		OSchema schema = db.getMetadata().getSchema();
+		OClass oRestricted = schema.getClass(OSecurityShared.RESTRICTED_CLASSNAME);
+		OClass classA = schema.createClass("TestDeletionOfDependentClass", oRestricted);
+		schema.dropClass(classA.getName());
+	}
+	
+	@Test
+	public void testDeletionOfDependentClass2()
+	{
+		ODatabaseDocument db = wicket.getTester().getDatabase();
+		OSchema schema = db.getMetadata().getSchema();
+		OClass classAbs = schema.createAbstractClass("TestDeletionAbst");
+		OClass classA = schema.createClass("TestDeletionA", classAbs);
+		ODocument doc = new ODocument(classA);
+		doc.save();
+		assertEquals(1, classA.count());
+		OClass classB = schema.createClass("TestDeletionB", classA);
+		doc = new ODocument(classB);
+		doc.save();
+		assertEquals(1, classB.count());
+		assertEquals(2, classA.count());
+		schema.dropClass(classB.getName());
+		assertEquals(1, classA.count());
 	}
 	
 	private void assertEmbeddedIsCorrect(ODocument doc) throws Exception

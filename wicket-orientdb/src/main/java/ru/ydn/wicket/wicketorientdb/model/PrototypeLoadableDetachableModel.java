@@ -1,5 +1,8 @@
 package ru.ydn.wicket.wicketorientdb.model;
 
+import java.util.Objects;
+
+import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.IObjectClassAwareModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 
@@ -71,5 +74,24 @@ public abstract class PrototypeLoadableDetachableModel<T> extends
 	 * @param object
 	 */
 	protected abstract void handleObject(T object);
+
+	@Override
+	public int hashCode() {
+		T object = getObject();
+		return object!=null?object.hashCode():0;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (!(obj instanceof IModel))
+			return false;
+		return Objects.equals(getObject(), ((IModel<?>)obj).getObject());
+	}
+	
+	
 
 }

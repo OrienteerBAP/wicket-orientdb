@@ -1,5 +1,7 @@
 package ru.ydn.wicket.wicketorientdb.model;
 
+import java.util.Objects;
+
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.IObjectClassAwareModel;
 import org.apache.wicket.model.Model;
@@ -77,5 +79,33 @@ public class OClassModel extends PrototypeLoadableDetachableModel<OClass>{
 	public Class<OClass> getObjectClass() {
 		return OClass.class;
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result
+				+ ((classNameModel == null || classNameModel.getObject()==null) ? 0 : classNameModel.getObject().hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		OClassModel other = (OClassModel) obj;
+		if (classNameModel == null) {
+			if (other.classNameModel != null)
+				return false;
+		} else 
+			return Objects.equals(classNameModel.getObject(), other.classNameModel.getObject());
+		return true;
+	}
+	
+	
 
 }

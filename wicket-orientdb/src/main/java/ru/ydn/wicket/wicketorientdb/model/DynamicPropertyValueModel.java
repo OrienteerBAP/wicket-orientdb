@@ -57,6 +57,38 @@ public class DynamicPropertyValueModel<T> extends LoadableDetachableModel<T>
 		}
 		super.setObject(object);
 	}
-	
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result
+				+ ((docModel == null) ? 0 : docModel.hashCode());
+		result = prime * result
+				+ ((propertyModel == null) ? 0 : propertyModel.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		DynamicPropertyValueModel other = (DynamicPropertyValueModel) obj;
+		if (docModel == null) {
+			if (other.docModel != null)
+				return false;
+		} else if (!docModel.equals(other.docModel))
+			return false;
+		if (propertyModel == null) {
+			if (other.propertyModel != null)
+				return false;
+		} else if (!propertyModel.equals(other.propertyModel))
+			return false;
+		return true;
+	}
 	
 }

@@ -103,6 +103,43 @@ public class ODocumentModel extends LoadableDetachableModel<ODocument> implement
 		}
 		super.detach();
     }
+	
+	
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + (autoSave ? 1231 : 1237);
+		result = prime * result + ((orid == null) ? 0 : orid.hashCode());
+		result = prime * result
+				+ ((savedDocument == null) ? 0 : savedDocument.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		ODocumentModel other = (ODocumentModel) obj;
+		if (autoSave != other.autoSave)
+			return false;
+		if (orid == null) {
+			if (other.orid != null)
+				return false;
+		} else if (!orid.equals(other.orid))
+			return false;
+		if (savedDocument == null) {
+			if (other.savedDocument != null)
+				return false;
+		} else if (!savedDocument.equals(other.savedDocument))
+			return false;
+		return true;
+	}
 
 	@Override
 	public String toString() {

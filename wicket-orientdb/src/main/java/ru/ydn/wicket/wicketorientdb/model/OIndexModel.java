@@ -64,4 +64,38 @@ public class OIndexModel extends PrototypeLoadableDetachableModel<OIndex<?>>
 	public Class<OIndex<?>> getObjectClass() {
 		return (Class)OIndex.class;
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result
+				+ ((classModel == null) ? 0 : classModel.hashCode());
+		result = prime * result
+				+ ((indexName == null) ? 0 : indexName.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		OIndexModel other = (OIndexModel) obj;
+		if (classModel == null) {
+			if (other.classModel != null)
+				return false;
+		} else if (!classModel.equals(other.classModel))
+			return false;
+		if (indexName == null) {
+			if (other.indexName != null)
+				return false;
+		} else if (!indexName.equals(other.indexName))
+			return false;
+		return true;
+	}
+	
 }
