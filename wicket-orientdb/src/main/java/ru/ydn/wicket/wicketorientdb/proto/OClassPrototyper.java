@@ -1,16 +1,13 @@
 package ru.ydn.wicket.wicketorientdb.proto;
 
-import java.lang.reflect.Method;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
-import ru.ydn.wicket.wicketorientdb.OrientDbWebSession;
-
 import com.orientechnologies.orient.core.metadata.schema.OClass;
 import com.orientechnologies.orient.core.metadata.schema.OSchema;
 import com.orientechnologies.orient.core.metadata.schema.clusterselection.OClusterSelectionFactory;
 import com.orientechnologies.orient.core.metadata.schema.clusterselection.OClusterSelectionStrategy;
+import ru.ydn.wicket.wicketorientdb.OrientDbWebSession;
+
+import java.lang.reflect.Method;
+import java.util.*;
 
 /**
  * Prototyper for {@link OClass}
@@ -39,6 +36,7 @@ public class OClassPrototyper extends AbstractPrototyper<OClass> {
 	protected OClass createInstance(OClass proxy) {
 		OSchema schema = OrientDbWebSession.get().getDatabase().getMetadata().getSchema();
 		OClass oClass = schema.createClass(proxy.getName());
+		oClass.setSuperClasses((List<? extends OClass>) values.get(SUPER_CLASSES));
 		values.remove("name");
 		return oClass;
 	}
@@ -78,6 +76,18 @@ public class OClassPrototyper extends AbstractPrototyper<OClass> {
 		if("properties".equals(methodName) || "declaredProperties".equals(methodName))
 		{
 			return Collections.EMPTY_SET;
+		}
+		else if("addSuperClass".equals(methodName))
+		{
+			Object superClasses = values.get(SUPER_CLASSES);
+			if (superClasses == null)
+			{
+				superClasses = new ArrayList<OClass>();
+				values.put(SUPER_CLASSES, superClasses);
+			}
+
+			((List<OClass>) superClasses).add((OClass) args[0]);
+			return proxy;
 		}
 		else
 		{
