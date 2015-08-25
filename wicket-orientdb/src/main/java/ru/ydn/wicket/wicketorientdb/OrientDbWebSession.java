@@ -68,6 +68,7 @@ public class OrientDbWebSession extends AuthenticatedWebSession {
 		try
 		{
 			ODatabaseDocument currentDB = getDatabase();
+			boolean inTransaction = currentDB.getTransaction().isActive();
 			IOrientDbSettings settings = OrientDbWebApplication.get().getOrientDbSettings();
 			ODatabaseDocument newDB = settings.getDatabasePoolFactory().get(settings.getDBUrl(), username, password).acquire();
 			if(newDB!=currentDB)
@@ -75,12 +76,12 @@ public class OrientDbWebSession extends AuthenticatedWebSession {
 				currentDB.activateOnCurrentThread();
 				currentDB.commit();
 				currentDB.close();
+				newDB.activateOnCurrentThread();
 			}
-			newDB.activateOnCurrentThread();
 			setUser(username, password);
 			user = newDB.getMetadata().getSecurity().getUser(username);
 			newDB.setUser(user);
-			newDB.begin();
+			if(inTransaction && !newDB.getTransaction().isActive()) newDB.begin();
 			return true;
 		} catch (OSecurityAccessException e)
 		{

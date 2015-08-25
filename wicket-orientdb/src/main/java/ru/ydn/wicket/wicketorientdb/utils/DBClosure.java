@@ -45,10 +45,11 @@ public abstract class DBClosure<V> implements Serializable
 	{
 		ODatabaseDocument db = null;
 		ODatabaseDocument oldDb = ODatabaseRecordThreadLocal.INSTANCE.getIfDefined();
+		if(oldDb!=null) ODatabaseRecordThreadLocal.INSTANCE.remove(); //Required to avoid stack of transactions
 		try
 		{
 			db = getSettings().getDatabasePoolFactory().get(getDBUrl(), getUsername(), getPassword()).acquire();
-			ODatabaseRecordThreadLocal.INSTANCE.set((ODatabaseDocumentInternal)db);
+			db.activateOnCurrentThread();
 			return execute(db);
 		} 
 		finally
