@@ -658,8 +658,32 @@ public class TestInAppOrientDBCompatibility
 		ODatabaseDocument db = wicket.getTester().getDatabase();
 		OSchema schema = db.getMetadata().getSchema();
 		OClass oRestricted = schema.getClass(OSecurityShared.RESTRICTED_CLASSNAME);
-		OClass classA = schema.createClass("TestDeletionOfDependentClass", oRestricted);
-		schema.dropClass(classA.getName());
+		OClass classA = schema.createClass("TestDeletionOfDependentClassA", oRestricted);
+		OClass classB = schema.createClass("TestDeletionOfDependentClassB", classA);
+		schema.dropClass(classB.getName());
+	}
+	
+	@Test
+	@Ignore
+	public void testClassChange()
+	{
+		ODatabaseDocument db = wicket.getTester().getDatabase();
+		OSchema schema = db.getMetadata().getSchema();
+		OClass classA = schema.createClass("TestClassChangeA");
+		OClass classB = schema.createClass("TestClassChangeB");
+		ODocument doc = new ODocument(classA);
+		doc.save();
+		doc = doc.getIdentity().getRecord();
+		doc.setClassName(classB.getName());
+		assertEquals(classB.getName(), doc.getClassName());
+		doc = doc.getIdentity().getRecord();
+		assertEquals(classB.getName(), doc.getClassName());
+		ORID id = doc.getIdentity();
+		db.commit(true);
+		db.close();
+		db = wicket.getTester().getDatabase();
+		doc = id.getRecord();
+		assertEquals(classB.getName(), doc.getClassName());
 	}
 	
 	@Test
