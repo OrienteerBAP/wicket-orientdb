@@ -1,9 +1,12 @@
 package ru.ydn.wicket.wicketorientdb.proto;
 
+import com.google.common.collect.Collections2;
+import com.google.common.collect.Lists;
 import com.orientechnologies.orient.core.metadata.schema.OClass;
 import com.orientechnologies.orient.core.metadata.schema.OSchema;
 import com.orientechnologies.orient.core.metadata.schema.clusterselection.OClusterSelectionFactory;
 import com.orientechnologies.orient.core.metadata.schema.clusterselection.OClusterSelectionStrategy;
+
 import ru.ydn.wicket.wicketorientdb.OrientDbWebSession;
 
 import java.lang.reflect.Method;
@@ -36,12 +39,15 @@ public class OClassPrototyper extends AbstractPrototyper<OClass> {
 	protected OClass createInstance(OClass proxy) {
 		OSchema schema = OrientDbWebSession.get().getDatabase().getMetadata().getSchema();
 		OClass oClass = schema.createClass(proxy.getName());
-		Object superClasses = values.get(SUPER_CLASSES);
-		if (superClasses != null) {
-			oClass.setSuperClasses((List<? extends OClass>) superClasses);
+		oClass.setSuperClasses(proxy.getSuperClasses());
+		String clusterSelection = (String) values.get(CLUSTER_SELECTION);
+		if(clusterSelection!=null) {
+			oClass.setClusterSelection(clusterSelection);
 		}
 
-		values.remove("name");
+		values.remove(NAME);
+		values.remove(SUPER_CLASSES);
+		values.remove(CLUSTER_SELECTION);
 		return oClass;
 	}
 
@@ -57,21 +63,50 @@ public class OClassPrototyper extends AbstractPrototyper<OClass> {
 	
 	@Override
 	protected Object handleSet(String propName, Object value) {
-		if("clusterSelection".equals(propName))
+		if(CLUSTER_SELECTION.equals(propName))
 		{
-			if(value instanceof CharSequence)
-			{
-				value = new OClusterSelectionFactory().newInstance(value.toString());
-			}
 			if(value instanceof OClusterSelectionStrategy)
+			{
+				value = ((OClusterSelectionStrategy)value).getName();
+			}
+			if(value instanceof CharSequence)
 			{
 				return super.handleSet(propName, value);
 			}
 			else return null;
 			
+		} else if (SUPER_CLASSES.equals(propName)) {
+			if(value==null) return super.handleSet(propName, null);
+			List<OClass> superClasses = (List<OClass>) value;
+			List<String> superClassesNames = new ArrayList<String>(superClasses.size());
+			for (OClass oClass : superClasses) {
+				superClassesNames.add(oClass.getName());
+			}
+			return super.handleSet(propName, superClassesNames);
 		}
 		//Default
 		return super.handleSet(propName, value);
+	}
+	
+	@Override
+	protected Object handleGet(String propName, Class<?> returnType) {
+		if(CLUSTER_SELECTION.equals(propName)) {
+			String clusterSelection = (String) values.get(CLUSTER_SELECTION);
+			return clusterSelection==null?null:new OClusterSelectionFactory().newInstance(clusterSelection);
+		} else if (SUPER_CLASSES.equals(propName)){
+			List<OClass> ret = new ArrayList<OClass>();
+			List<String> superClassesNames = (List<String>) values.get(SUPER_CLASSES);
+			if(superClassesNames!=null && !superClassesNames.isEmpty()) {
+				OSchema schema = OrientDbWebSession.get().getDatabase().getMetadata().getSchema();
+				for (String superClassName : superClassesNames) {
+					OClass superClass = schema.getClass(superClassName);
+					if(superClass!=null) ret.add(superClass);
+				}
+			}
+			return ret;
+		} else {
+			return super.handleGet(propName, returnType);
+		}
 	}
 
 	@Override
@@ -86,11 +121,11 @@ public class OClassPrototyper extends AbstractPrototyper<OClass> {
 			Object superClasses = values.get(SUPER_CLASSES);
 			if (superClasses == null)
 			{
-				superClasses = new ArrayList<OClass>();
+				superClasses = new ArrayList<String>();
 				values.put(SUPER_CLASSES, superClasses);
 			}
 
-			((List<OClass>) superClasses).add((OClass) args[0]);
+			((List<String>) superClasses).add(((OClass) args[0]).getName());
 			return proxy;
 		}
 		else
