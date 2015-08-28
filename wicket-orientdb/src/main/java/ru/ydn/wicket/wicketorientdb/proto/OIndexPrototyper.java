@@ -49,6 +49,9 @@ public class OIndexPrototyper extends AbstractPrototyper<OIndex>
 		Args.notEmpty(fields, "fields");
 		values.put(DEF_CLASS_NAME, className);
 		values.put(DEF_FIELDS, fields);
+		if(fields!=null && fields.size()==1) {
+			values.put(NAME, className+"."+fields.get(0));
+		}
 	}
 	
 	@Override
