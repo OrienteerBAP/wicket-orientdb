@@ -26,6 +26,9 @@ import com.orientechnologies.orient.core.db.document.ODatabaseDocument;
 import com.orientechnologies.orient.core.db.record.OIdentifiable;
 import com.orientechnologies.orient.core.hook.ORecordHook;
 import com.orientechnologies.orient.core.metadata.schema.OClass;
+import com.orientechnologies.orient.core.metadata.security.ORole;
+import com.orientechnologies.orient.core.metadata.security.ORule.ResourceGeneric;
+import com.orientechnologies.orient.core.metadata.security.OSecurity;
 import com.orientechnologies.orient.core.record.impl.ODocument;
 import com.orientechnologies.orient.server.OServer;
 
@@ -111,6 +114,21 @@ public abstract class OrientDbWebApplication extends AuthenticatedWebApplication
 			@Override
 			public void onCreate(ODatabaseInternal iDatabase) {
 				registerHooks(iDatabase);
+				//Fix for "feature" appeared in OrientDB 2.1.1
+				//Issue: https://github.com/orientechnologies/orientdb/issues/4906
+				OSecurity security = iDatabase.getMetadata().getSecurity();
+				ORole readerRole = security.getRole("reader");
+				readerRole.grant(ResourceGeneric.CLUSTER, "orole", ORole.PERMISSION_READ);
+				readerRole.grant(ResourceGeneric.CLUSTER, "ouser", ORole.PERMISSION_READ);
+				readerRole.grant(ResourceGeneric.CLASS, "orole", ORole.PERMISSION_READ);
+				readerRole.grant(ResourceGeneric.CLASS, "ouser", ORole.PERMISSION_READ);
+				readerRole.save();
+				ORole writerRole = security.getRole("writer");
+				writerRole.grant(ResourceGeneric.CLUSTER, "orole", ORole.PERMISSION_READ);
+				writerRole.grant(ResourceGeneric.CLUSTER, "ouser", ORole.PERMISSION_READ);
+				writerRole.grant(ResourceGeneric.CLASS, "orole", ORole.PERMISSION_READ);
+				writerRole.grant(ResourceGeneric.CLASS, "ouser", ORole.PERMISSION_READ);
+				writerRole.save();
 			}
 			
 			public void registerHooks(ODatabaseInternal iDatabase) {
