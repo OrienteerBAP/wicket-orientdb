@@ -109,6 +109,11 @@
 				<version>${orientdb.version}</version>
 				<type>bundle</type>
 			</dependency>
+			<dependency>
+			    <groupId>com.google.guava</groupId>
+			    <artifactId>guava</artifactId>
+			    <version>18.0</version>
+			</dependency>
 			<!-- END REMOTE ENGINE DEPENDENCY -->
 			<dependency>
 				<groupId>org.slf4j</groupId>

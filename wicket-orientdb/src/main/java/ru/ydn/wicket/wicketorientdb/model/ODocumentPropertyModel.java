@@ -3,6 +3,7 @@ package ru.ydn.wicket.wicketorientdb.model;
 import org.apache.wicket.model.PropertyModel;
 
 import com.orientechnologies.orient.core.record.impl.ODocument;
+import com.orientechnologies.orient.core.type.ODocumentWrapper;
 
 /**
  * Model for obtaining and setting value of a {@link ODocument} property
@@ -36,7 +37,7 @@ public class ODocumentPropertyModel<T> extends PropertyModel<T> {
 	{
 		Object target = getInnermostModelOrObject();
 		if(target instanceof ODocument) return (ODocument)target;
-		else if(target instanceof ODocumentMapWrapper) return ((ODocumentMapWrapper)target).getDocument();
+		else if(target instanceof ODocumentWrapper) return ((ODocumentWrapper)target).getDocument();
 		else return null;
 	}
 
