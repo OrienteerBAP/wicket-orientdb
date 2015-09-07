@@ -66,6 +66,7 @@ public class OQueryModel<K> extends LoadableDetachableModel<List<K>>
     private Map<String, IModel<Object>> params = new HashMap<String, IModel<Object>>();
     private String sortableParameter=null;
     private boolean isAccessing=true;
+    private boolean containExpand=true;
     
     private transient Long size;
     
@@ -100,7 +101,8 @@ public class OQueryModel<K> extends LoadableDetachableModel<List<K>>
         {
         	projection = matcher.group(1).trim();
         	Matcher expandMatcher = EXPAND_PATTERN.matcher(projection);
-        	if(expandMatcher.find())
+        	containExpand = expandMatcher.find();
+        	if(containExpand)
         	{
         		countSql = matcher.replaceFirst("select sum("+expandMatcher.group(1)+".size()) as count from");
         	}
@@ -160,8 +162,13 @@ public class OQueryModel<K> extends LoadableDetachableModel<List<K>>
     
     protected String prepareSql(Integer first, Integer count)
     {
-    	StringBuilder sb = new StringBuilder(getSql());
+    	boolean wrapForSkip = containExpand && first!=null;
+    	String sql = getSql();
+    	StringBuilder sb = new StringBuilder(2*sql.length());
+    	if(wrapForSkip) sb.append("select from (");
+    	sb.append(sql);
     	if(sortableParameter!=null) sb.append(" ORDER BY "+sortableParameter+(isAccessing?"":" desc"));
+    	if(wrapForSkip) sb.append(") ");
     	if(first!=null) sb.append(" SKIP "+first);
     	if(count!=null && count>0) sb.append(" LIMIT "+count);
     	return sb.toString();
