@@ -46,7 +46,7 @@
 	</licenses>
 	<properties>
 		<wicket.version>6.20.0</wicket.version>
-		<orientdb.version>2.1.1</orientdb.version>
+		<orientdb.version>2.1.2</orientdb.version>
 		<jetty.version>7.6.13.v20130916</jetty.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<!-- allowed values: R7, 1.0, 1.5, 2.0 or none -->
