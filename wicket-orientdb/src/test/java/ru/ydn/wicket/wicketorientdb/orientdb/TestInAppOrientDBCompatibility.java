@@ -705,6 +705,55 @@ public class TestInAppOrientDBCompatibility
 		assertEquals(1, classA.count());
 	}
 	
+	@Test
+	public void testCreationInHook()
+	{
+		ODatabaseDocument db = wicket.getTester().getDatabase();
+		OSchema schema = db.getMetadata().getSchema();
+		final OClass classA = schema.createClass("TestCreationInHookMain");
+		final OClass classB = schema.createClass("TestCreationInHookReflect");
+		classA.createProperty("name", OType.STRING);
+		classA.createProperty("mirror", OType.LINK).setLinkedClass(classB);
+		classB.createProperty("name", OType.STRING);
+		db.registerHook(new ODocumentHookAbstract() {
+			
+			{
+				setIncludeClasses(classA.getName());
+			}
+			
+			@Override
+			public RESULT onRecordBeforeCreate(ODocument iDocument) {
+				ODocument mirror = new ODocument(classB);
+				mirror.field("name", iDocument.field("name"));
+				iDocument.field("mirror", mirror);
+				return RESULT.RECORD_CHANGED;
+			}
+			
+			@Override
+			public DISTRIBUTED_EXECUTION_MODE getDistributedExecutionMode() {
+				return DISTRIBUTED_EXECUTION_MODE.SOURCE_NODE;
+			}
+		});
+		
+		for(int i=0;i<10;i++) {
+			String name = "name-"+RANDOM.nextLong();
+			ODocument doc = new ODocument(classA);
+			doc.field("name", name);
+			doc.save();
+		}
+		db.commit();
+		db.close();
+		db = wicket.getTester().getDatabase();
+		
+		for(ODocument doc : db.browseClass(classA.getName())) {
+			String name = doc.field("name");
+			assertNotNull(name);
+			ODocument mirror = doc.field("mirror");
+			assertNotNull(mirror);
+			assertEquals(name, mirror.field("name"));
+		}
+	}
+	
 	private void assertEmbeddedIsCorrect(ODocument doc) throws Exception
 	{
 		assertEquals("main", doc.field("name"));
