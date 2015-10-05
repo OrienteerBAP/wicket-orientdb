@@ -53,8 +53,8 @@ public class TransactionRequestCycleListener extends
 
 	@Override
 	public IRequestHandler onException(RequestCycle cycle, Exception ex) {
-		OrientDbWebSession session = OrientDbWebSession.get();
-		session.getDatabase().rollback();
+		ODatabaseDocument db = ODatabaseRecordThreadLocal.INSTANCE.get();
+		if(!db.isClosed()) db.rollback();
 		return null;
 	}
 	

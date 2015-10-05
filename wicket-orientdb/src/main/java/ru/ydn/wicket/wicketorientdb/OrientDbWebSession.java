@@ -65,9 +65,9 @@ public class OrientDbWebSession extends AuthenticatedWebSession {
 
 	@Override
 	public boolean authenticate(String username, String password) {
+		ODatabaseDocument currentDB = getDatabase();
 		try
 		{
-			ODatabaseDocument currentDB = getDatabase();
 			boolean inTransaction = currentDB.getTransaction().isActive();
 			IOrientDbSettings settings = OrientDbWebApplication.get().getOrientDbSettings();
 			ODatabaseDocument newDB = settings.getDatabasePoolFactory().get(settings.getDBUrl(), username, password).acquire();
@@ -85,6 +85,7 @@ public class OrientDbWebSession extends AuthenticatedWebSession {
 			return true;
 		} catch (OSecurityAccessException e)
 		{
+			currentDB.activateOnCurrentThread();
 			return false;
 		}
 	}
