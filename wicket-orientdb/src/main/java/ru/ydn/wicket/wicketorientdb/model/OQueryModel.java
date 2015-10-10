@@ -1,9 +1,11 @@
 package ru.ydn.wicket.wicketorientdb.model;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -16,12 +18,14 @@ import ru.ydn.wicket.wicketorientdb.OrientDbWebSession;
 import ru.ydn.wicket.wicketorientdb.utils.ConvertToODocumentFunction;
 import ru.ydn.wicket.wicketorientdb.utils.DocumentWrapperTransformer;
 import ru.ydn.wicket.wicketorientdb.utils.GetObjectFunction;
+import ru.ydn.wicket.wicketorientdb.utils.OSchemaUtils;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Iterators;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.orientechnologies.orient.core.db.document.ODatabaseDocument;
+import com.orientechnologies.orient.core.metadata.schema.OClass;
 import com.orientechnologies.orient.core.record.ORecord;
 import com.orientechnologies.orient.core.record.impl.ODocument;
 import com.orientechnologies.orient.core.sql.query.OSQLSynchQuery;
@@ -154,10 +158,34 @@ public class OQueryModel<K> extends LoadableDetachableModel<List<K>>
     @SuppressWarnings("unchecked")
 	public Iterator<K> iterator(long first, long count)
     {
+    	return iterator(first, count, (Function<Object, K>)transformer);
+    }
+    
+    /**
+	 * Get result as {@link Iterator}&lt;K&gt;. Suitable for pagination
+	 * @param <T> type of objects to return
+	 * @param first first element to start from
+	 * @param count maximum size of a result set
+	 * @param transformer transformer to use for results
+	 * @return {@link Iterator} over results
+	 */
+    @SuppressWarnings("unchecked")
+	public <T> Iterator<T> iterator(long first, long count, Function<Object, T> transformer)
+    {
     	ODatabaseDocument db = OrientDbWebSession.get().getDatabase();
     	OSQLSynchQuery<K> query = new OSQLSynchQuery<K>(prepareSql((int)first, (int)count));
     	Iterator<?> iterator = db.query(query, prepareParams()).iterator();
-    	return transformer==null?(Iterator<K>)iterator:Iterators.transform(iterator, (Function<Object, K>)transformer);
+    	return transformer==null?(Iterator<T>)iterator:Iterators.transform(iterator, transformer);
+    }
+    
+    /**
+     * Probe the dataset and returns upper OClass for sample
+     * @param probeLimit size of a probe
+     * @return OClass or null if there is no common parent for {@link ODocument}'s in a sample
+     */
+    public OClass probeOClass(int probeLimit) {
+    	Iterator<ODocument> it = iterator(0, probeLimit, null);
+    	return OSchemaUtils.probeOClass(it, probeLimit);
     }
     
     protected String prepareSql(Integer first, Integer count)

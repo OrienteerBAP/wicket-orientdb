@@ -10,6 +10,7 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 
 import com.google.common.base.Function;
+import com.orientechnologies.orient.core.metadata.schema.OClass;
 import com.orientechnologies.orient.core.record.impl.ODocument;
 import com.orientechnologies.orient.core.type.ODocumentWrapper;
 
@@ -68,6 +69,10 @@ public class OQueryDataProvider <K> extends SortableDataProvider<K, String>
             model.setAccessing(sort.isAscending());
         }
         return (Iterator<K>)model.iterator(first, count);        
+    }
+    
+    public OClass probeOClass(int probeLimit) {
+    	return model.probeOClass(probeLimit);
     }
 
     @SuppressWarnings("unchecked")
