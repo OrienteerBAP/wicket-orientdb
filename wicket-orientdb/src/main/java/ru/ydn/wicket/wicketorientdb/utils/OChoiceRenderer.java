@@ -1,6 +1,9 @@
 package ru.ydn.wicket.wicketorientdb.utils;
 
+import java.util.List;
+
 import org.apache.wicket.markup.html.form.IChoiceRenderer;
+import org.apache.wicket.model.IModel;
 
 import com.orientechnologies.orient.core.metadata.schema.OProperty;
 import com.orientechnologies.orient.core.record.impl.ODocument;
@@ -90,5 +93,21 @@ public class OChoiceRenderer implements IChoiceRenderer<ODocument>
 		}
 
 		return returnValue.toString();
+	}
+
+	@Override
+	public ODocument getObject(String id,
+			IModel<? extends List<? extends ODocument>> choicesModel) {
+		List<? extends ODocument> choices = choicesModel.getObject();
+		for (int index = 0; index < choices.size(); index++)
+		{
+			// Get next choice
+			final ODocument choice = choices.get(index);
+			if (getIdValue(choice, index).equals(id))
+			{
+				return choice;
+			}
+		}
+		return null;
 	}
 }

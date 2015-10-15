@@ -59,7 +59,8 @@
 		<!--  JETTY DEPENDENCIES FOR TESTING  -->
 		<dependency>
 			<groupId>org.eclipse.jetty.aggregate</groupId>
-			<artifactId>jetty-all-server</artifactId>
+			<artifactId>jetty-all</artifactId>
+			<type>pom</type>
 			<version>${jetty.version}</version>
 			<scope>provided</scope>
 		</dependency>
@@ -103,10 +104,10 @@
 				</configuration>
 		    </plugin>
 			<plugin>
-				<groupId>org.mortbay.jetty</groupId>
+				<groupId>org.eclipse.jetty</groupId>
 				<artifactId>jetty-maven-plugin</artifactId>
 				<version>${jetty.version}</version>
-				<configuration>
+				<!--<configuration>
 					<connectors>
 						<connector implementation="org.eclipse.jetty.server.nio.SelectChannelConnector">
 							<port>8081</port>
@@ -120,7 +121,7 @@
 							<keyPassword>wicket</keyPassword>
 						</connector>
 					</connectors>
-				</configuration>
+				</configuration>-->
 			</plugin>
 		</plugins>
 	</build>

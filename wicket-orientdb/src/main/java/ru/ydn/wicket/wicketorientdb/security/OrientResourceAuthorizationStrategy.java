@@ -7,6 +7,8 @@ import org.apache.wicket.Page;
 import org.apache.wicket.authorization.Action;
 import org.apache.wicket.authorization.IAuthorizationStrategy;
 import org.apache.wicket.request.component.IRequestableComponent;
+import org.apache.wicket.request.mapper.parameter.PageParameters;
+import org.apache.wicket.request.resource.IResource;
 import org.apache.wicket.util.string.Strings;
 
 import com.orientechnologies.orient.core.metadata.security.ODatabaseSecurityResources;
@@ -160,6 +162,25 @@ public class OrientResourceAuthorizationStrategy  implements IAuthorizationStrat
 			return ret;
 		}
 		return null;
+	}
+
+	@Override
+	public boolean isResourceAuthorized(IResource resource,
+			PageParameters parameters) {
+		RequiredOrientResource[] resources = getRequiredOrientResources(resource.getClass());
+		if(resources!=null)
+		{
+			if(!checkResources(resources, Component.RENDER)) return false;
+		}
+		if(resource instanceof ISecuredComponent)
+		{
+			resources = ((ISecuredComponent)resource).getRequiredResources();
+			if(resources!=null)
+			{
+				if(!checkResources(resources, Component.RENDER)) return false;
+			}
+		}
+		return true;
 	}
 
 }
