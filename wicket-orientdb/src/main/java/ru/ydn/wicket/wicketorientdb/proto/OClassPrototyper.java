@@ -58,7 +58,12 @@ public class OClassPrototyper extends AbstractPrototyper<OClass> {
 	
 	public static OClass newPrototype()
 	{
-		return newPrototype(new OClassPrototyper());
+		return newPrototypeInternal(new OClassPrototyper());
+	}
+	
+	public static OClass newPrototype(IPrototypeListener<OClass> listener)
+	{
+		return newPrototypeInternal(new OClassPrototyper(), listener);
 	}
 	
 	@Override

@@ -83,7 +83,12 @@ public class OPropertyPrototyper extends AbstractPrototyper<OProperty> {
 	
 	public static OProperty newPrototype(String className)
 	{
-		return newPrototype(new OPropertyPrototyper(className));
+		return newPrototype(className, null);
+	}
+	
+	public static OProperty newPrototype(String className, IPrototypeListener<OProperty> listener)
+	{
+		return newPrototypeInternal(new OPropertyPrototyper(className), listener);
 	}
 
 }

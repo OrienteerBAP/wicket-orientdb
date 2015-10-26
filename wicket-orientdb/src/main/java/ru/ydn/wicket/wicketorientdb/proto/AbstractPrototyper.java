@@ -84,6 +84,8 @@ public abstract class AbstractPrototyper<T> extends AbstractInvocationHandler im
 	
 	protected T thisProxy;
 	
+	protected IPrototypeListener<T> listener;
+	
 	private transient T realized;
 	
 	AbstractPrototyper() {
@@ -215,6 +217,7 @@ public abstract class AbstractPrototyper<T> extends AbstractInvocationHandler im
 			}
 		}
 		realized = ret;
+		if(listener!=null) listener.onRealizePrototype((IPrototype<T>)proxy);
 		return ret;
 	}
 	
@@ -308,7 +311,11 @@ public abstract class AbstractPrototyper<T> extends AbstractInvocationHandler im
 		return classM.cast(ret);
 	}
 	
-	static <T> T newPrototype(AbstractPrototyper<T> prototype)
+	protected static <T> T newPrototypeInternal(AbstractPrototyper<T> prototype) {
+		return newPrototypeInternal(prototype, null);
+	}
+	
+	protected static <T> T newPrototypeInternal(AbstractPrototyper<T> prototype, IPrototypeListener<T> listener)
 	{
 		ClassLoader loader = prototype.getClass().getClassLoader();
 		Class<T> mainInterface = prototype.getMainInterface();
@@ -323,6 +330,7 @@ public abstract class AbstractPrototyper<T> extends AbstractInvocationHandler im
 		}
 		Object ret = Proxy.newProxyInstance(loader, interfaces, prototype);
 		prototype.thisProxy = mainInterface.cast(ret);
+		prototype.listener = listener;
 		return prototype.thisProxy;
 	}
 	

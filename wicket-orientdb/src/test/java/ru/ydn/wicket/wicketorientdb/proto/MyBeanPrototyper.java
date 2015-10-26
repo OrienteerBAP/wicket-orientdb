@@ -22,7 +22,12 @@ public class MyBeanPrototyper extends AbstractPrototyper<IMyBean>
 	
 	public static IMyBean newPrototype()
 	{
-		return newPrototype(new MyBeanPrototyper());
+		return newPrototype(null);
+	}
+	
+	public static IMyBean newPrototype(IPrototypeListener<IMyBean> listener)
+	{
+		return newPrototypeInternal(new MyBeanPrototyper(), listener);
 	}
 
 	@Override

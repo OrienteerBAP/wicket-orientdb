@@ -10,6 +10,8 @@ public class MyBean implements IMyBean
 	private Integer integer;
 	private Map<String, Object> customMap = new HashMap<String, Object>();
 	private Map<String, String> customStringMap = new HashMap<String, String>();
+	private boolean handledByListener = false;
+	
 	
 	public String getName() {
 		return name;
@@ -50,6 +52,14 @@ public class MyBean implements IMyBean
 	public IMyBean setCustomString(String param, String value) {
 		customStringMap.put(param, value);
 		return this;
+	}
+	@Override
+	public boolean isHandledByListener() {
+		return handledByListener;
+	}
+	@Override
+	public void setHandledByListener(boolean handledByLister) {
+		this.handledByListener = handledByLister;
 	}
 	
 }
