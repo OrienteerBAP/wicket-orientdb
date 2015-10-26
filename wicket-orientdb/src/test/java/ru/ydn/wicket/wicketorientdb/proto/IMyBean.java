@@ -13,4 +13,7 @@ public interface IMyBean
 	public void setCustom(String param, Object value);
 	public Object getCustomString(String param);
 	public IMyBean setCustomString(String param, String value);
+	
+	public boolean isHandledByListener();
+	public void setHandledByListener(boolean handledByListener);
 }

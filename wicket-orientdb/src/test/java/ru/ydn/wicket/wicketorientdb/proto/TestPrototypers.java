@@ -27,7 +27,13 @@ public class TestPrototypers
 	@Test
 	public void testMyBeanPrototyper() throws Exception
 	{
-		IMyBean bean = MyBeanPrototyper.newPrototype();
+		IMyBean bean = MyBeanPrototyper.newPrototype(new IPrototypeListener<IMyBean>() {
+			
+			@Override
+			public void onRealizePrototype(IPrototype<IMyBean> prototype) {
+				prototype.obtainRealizedObject().setHandledByListener(true); 
+			}
+		});
 		assertTrue(bean instanceof IPrototype<?>);
 		assertTrue(bean instanceof Serializable);
 		bean.setName("name");
@@ -47,6 +53,7 @@ public class TestPrototypers
 		assertEquals("REAL", bean.getSignature());
 		assertTrue(proto.isPrototypeRealized());
 		assertEquals("REAL", ((IMyBean)proto).getSignature());
+		assertTrue(bean.isHandledByListener());
 	}
 	
 	@Test

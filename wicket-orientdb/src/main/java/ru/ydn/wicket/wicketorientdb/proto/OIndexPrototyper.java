@@ -82,10 +82,15 @@ public class OIndexPrototyper extends AbstractPrototyper<OIndex>
 	protected Class<OIndex> getMainInterface() {
 		return OIndex.class;
 	}
-
+	
 	public static OIndex<?> newPrototype(String className, List<String> fields)
 	{
-		return newPrototype(new OIndexPrototyper(className, fields));
+		return newPrototype(className, fields, null);
+	}
+
+	public static OIndex<?> newPrototype(String className, List<String> fields, IPrototypeListener<OIndex> listener)
+	{
+		return newPrototypeInternal(new OIndexPrototyper(className, fields), listener);
 	}
 
 	@Override
