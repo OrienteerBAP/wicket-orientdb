@@ -85,7 +85,10 @@ public class OrientDBHttpAPIResource extends AbstractResource
 				}
 				if(sb.charAt(sb.length()-1)=='/')sb.setLength(sb.length()-1);
 				String queryString = request.getUrl().getQueryString();
-				if(!Strings.isEmpty(queryString)) sb.append(queryString);
+				if(!Strings.isEmpty(queryString)) {
+					if(sb.charAt(sb.length()-1)!='?') sb.append('?');
+					sb.append(queryString);
+				}
 				
 				final String url = sb.toString();
 				final StringWriter sw = new StringWriter();
