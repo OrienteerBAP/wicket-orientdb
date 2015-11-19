@@ -124,6 +124,7 @@ public class OrientDBHttpAPIResource extends AbstractResource
 							if(errorStream!=null) {
 								IOUtils.copy(errorStream, out, "UTF-8");
 								String errorBody = sw.toString();
+								LOG.error(errorBody);
 								attributes.getResponse().write(errorBody);
 							}
 						} catch (IOException e1)
