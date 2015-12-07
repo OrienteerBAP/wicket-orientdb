@@ -158,16 +158,30 @@ public class OrientDBHttpAPIResource extends AbstractResource
 		mountOrientDbRestApi(new OrientDBHttpAPIResource(), app);
 	}
 	
+	public static void mountOrientDbRestApi(WebApplication app, String... mountPaths) {
+		mountOrientDbRestApi(new OrientDBHttpAPIResource(), app, mountPaths);
+	}
+	
 	/**
 	 * Mounts OrientDB REST API Bridge to an app
 	 * @param resource {@link OrientDBHttpAPIResource} to mount
 	 * @param app {@link WebApplication} to mount to
 	 */
 	@SuppressWarnings("restriction")
-	public static void mountOrientDbRestApi(OrientDBHttpAPIResource resource, WebApplication app)
+	public static void mountOrientDbRestApi(OrientDBHttpAPIResource resource, WebApplication app) {
+		mountOrientDbRestApi(resource, app, MOUNT_PATH);
+	}
+	
+	/**
+	 * Mounts OrientDB REST API Bridge to an app
+	 * @param resource {@link OrientDBHttpAPIResource} to mount
+	 * @param app {@link WebApplication} to mount to
+	 * @param mountPaths array of paths to mount to
+	 */
+	@SuppressWarnings("restriction")
+	public static void mountOrientDbRestApi(OrientDBHttpAPIResource resource, WebApplication app, String... mountPaths)
 	{
 		app.getSharedResources().add(ORIENT_DB_KEY, resource);
-		app.mountResource(MOUNT_PATH, new SharedResourceReference(ORIENT_DB_KEY));
 		Authenticator.setDefault(new Authenticator() {
 			@Override
 			protected PasswordAuthentication getPasswordAuthentication() {
@@ -191,6 +205,9 @@ public class OrientDBHttpAPIResource extends AbstractResource
 		});
 		 CookieHandler.setDefault(new PersonalCookieManager());
 		 sun.net.www.protocol.http.AuthCacheValue.setAuthCache(new MultiUserCache());
+		 for (String mountPath : mountPaths) {
+			 app.mountResource(mountPath, new SharedResourceReference(ORIENT_DB_KEY));
+		}
 	}
 
 }
