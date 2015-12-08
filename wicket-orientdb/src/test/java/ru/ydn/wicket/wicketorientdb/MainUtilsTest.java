@@ -115,4 +115,12 @@ public class MainUtilsTest
 		assertEquals("#5:0", converter.convertToString(adminDocument, Locale.getDefault()));
 	}
 	
+	@Test
+	public void testOrientDBVersion() throws Exception
+	{
+		String version = wicket.getTester().getApplication().getOrientDBVersion();
+		System.out.println("OrientDb Version: "+version);
+		assertNotNull(version);
+	}
+	
 }

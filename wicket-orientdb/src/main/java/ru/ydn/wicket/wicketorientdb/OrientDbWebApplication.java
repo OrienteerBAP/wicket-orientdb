@@ -207,4 +207,9 @@ public abstract class OrientDbWebApplication extends AuthenticatedWebApplication
 		OrientDBHttpAPIResource.mountOrientDbRestApi(this);
 	}
 	
+	public String getOrientDBVersion() 
+	{
+		return Orient.class.getPackage().getImplementationVersion();
+	}
+	
 }
