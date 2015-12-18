@@ -1,6 +1,10 @@
 package ru.ydn.wicket.wicketorientdb.model;
 
+import org.apache.wicket.Component;
+import org.apache.wicket.model.IComponentInheritedModel;
+import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.IObjectClassAwareModel;
+import org.apache.wicket.model.IWrapModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 
 import ru.ydn.wicket.wicketorientdb.OrientDbWebSession;
@@ -13,7 +17,7 @@ import com.orientechnologies.orient.core.record.impl.ODocument;
 /**
  * Model for storing of {@link ODocument}
  */
-public class ODocumentModel extends LoadableDetachableModel<ODocument> implements IObjectClassAwareModel<ODocument>
+public class ODocumentModel extends LoadableDetachableModel<ODocument> implements IObjectClassAwareModel<ODocument>, IComponentInheritedModel<ODocument>
 {
 	private static final long serialVersionUID = 1L;
 	private ORID orid;
@@ -144,6 +148,34 @@ public class ODocumentModel extends LoadableDetachableModel<ODocument> implement
 	@Override
 	public String toString() {
 		return "ODocumentModel [orid=" + orid + "]";
+	}
+
+	@Override
+	public <W> IWrapModel<W> wrapOnInheritance(final Component component) {
+		return new IWrapModel<W>() {
+
+			@Override
+			public W getObject() {
+				ODocument doc = ODocumentModel.this.getObject();
+				return doc!=null?(W)doc.field(component.getId()):null;
+			}
+
+			@Override
+			public void setObject(W object) {
+				ODocument doc = ODocumentModel.this.getObject();
+				if(doc!=null) doc.field(component.getId(), object);
+			}
+
+			@Override
+			public void detach() {
+				ODocumentModel.this.detach();
+			}
+
+			@Override
+			public IModel<?> getWrappedModel() {
+				return ODocumentModel.this;
+			}
+		};
 	}
 
 }
