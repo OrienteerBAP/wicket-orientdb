@@ -145,6 +145,44 @@ public class OSchemaHelper
 	}
 	
 	/**
+	 * Set default value to a current property
+	 * @param defaultValue default value to set
+	 * @return this helper
+	 */
+	public OSchemaHelper defaultValue(String defaultValue)
+	{
+		checkOProperty();
+		lastProperty.setDefaultValue(defaultValue);
+		return this;
+	}
+	
+	/**
+	 * Set min value to a current property
+	 * @param min minimal value
+	 * @return this helper
+	 */
+	public OSchemaHelper min(String min)
+	{
+		checkOProperty();
+		lastProperty.setMin(min);
+		return this;
+	}
+	
+	/**
+	 * Set max value to a current property
+	 * @param max maximum value
+	 * @return this helper
+	 */
+	public OSchemaHelper max(String max)
+	{
+		checkOProperty();
+		lastProperty.setMax(max);
+		return this;
+	}
+	
+	
+	
+	/**
 	 * Mark last property not null flag
 	 * @return this helper
 	 */
