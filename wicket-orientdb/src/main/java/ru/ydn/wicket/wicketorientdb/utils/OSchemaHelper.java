@@ -204,6 +204,32 @@ public class OSchemaHelper
 	}
 	
 	/**
+	 * Set attr value for {@link OClass}
+	 * @param attr attribute to set
+	 * @param value value to set
+	 * @return this helper
+	 */
+	public OSchemaHelper set(OClass.ATTRIBUTES attr, Object value) 
+	{
+		checkOClass();
+		lastClass.set(attr, value);
+		return this;
+	}
+	
+	/**
+	 * Set attr value for {@link OProperty}
+	 * @param attr attribute to set
+	 * @param value value to set
+	 * @return this helper
+	 */
+	public OSchemaHelper set(OProperty.ATTRIBUTES attr, Object value) 
+	{
+		checkOProperty();
+		lastProperty.set(attr, value);
+		return this;
+	}
+	
+	/**
 	 * Create {@link OIndex} if required on a current property
 	 * @param type type of an {@link OIndex}
 	 * @return this helper
