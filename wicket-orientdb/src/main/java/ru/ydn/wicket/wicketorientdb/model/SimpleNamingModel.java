@@ -26,6 +26,11 @@ public class SimpleNamingModel<T> extends AbstractNamingModel<T>
 		super(objectModel);
 		this.prefix = prefix;
 	}
+	
+	public SimpleNamingModel(String prefix, T object) {
+		super(object);
+		this.prefix = prefix;
+	}
 
 	@Override
 	public String getResourceKey(T object) {
