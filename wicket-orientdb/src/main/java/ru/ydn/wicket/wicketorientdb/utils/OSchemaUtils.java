@@ -79,7 +79,7 @@ public class OSchemaUtils {
     		}
     	}
     	
-    	if(ret==null && !candidates.isEmpty()) {
+    	if(ret==null && candidates!=null && !candidates.isEmpty()) {
     		ret = getDeepestOClass(candidates);
     	}
     	

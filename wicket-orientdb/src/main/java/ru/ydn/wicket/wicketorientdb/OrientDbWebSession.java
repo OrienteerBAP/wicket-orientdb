@@ -12,6 +12,7 @@ import com.orientechnologies.orient.core.db.ODatabaseDocumentInternal;
 import com.orientechnologies.orient.core.db.ODatabaseRecordThreadLocal;
 import com.orientechnologies.orient.core.db.document.ODatabaseDocument;
 import com.orientechnologies.orient.core.exception.OSecurityAccessException;
+import com.orientechnologies.orient.core.metadata.schema.OSchema;
 import com.orientechnologies.orient.core.metadata.security.ORole;
 import com.orientechnologies.orient.core.metadata.security.OSecurityUser;
 import com.orientechnologies.orient.core.metadata.security.OUser;
@@ -61,6 +62,13 @@ public class OrientDbWebSession extends AuthenticatedWebSession {
 	public ODatabaseDocument getDatabase()
 	{
 		return DefaultODatabaseThreadLocalFactory.castToODatabaseDocument(ODatabaseRecordThreadLocal.INSTANCE.get().getDatabaseOwner());
+	}
+	
+	/**
+	 * @return {@link OSchema} for current request
+	 */
+	public OSchema getSchema() {
+		return getDatabase().getMetadata().getSchema();
 	}
 
 	@Override
