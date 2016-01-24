@@ -5,6 +5,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
+import ru.ydn.wicket.wicketorientdb.proto.IPrototype;
+
 import com.google.common.collect.Iterators;
 import com.orientechnologies.orient.core.metadata.schema.OClass;
 import com.orientechnologies.orient.core.record.impl.ODocument;
@@ -101,5 +103,14 @@ public class OSchemaUtils {
 			}
 		}
 		return ret;
+	}
+	
+	/**
+	 * Check whether object is not null or {@link IPrototype}. Useful if you want to be sure that you are working with real object
+	 * @param value object to check
+	 * @return true if object is not null and not a prototype
+	 */
+	public static boolean isNotNullOrPrototype(Object value) {
+		return !(value==null  || value instanceof IPrototype);
 	}
 }
