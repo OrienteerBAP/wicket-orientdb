@@ -73,10 +73,10 @@ public class OPropertyValueValidator<T> extends Behavior implements
 					for (Object item : ((List<?>) fieldValue)) validateLink(validatable, p, item);
 				break;
 			case LINKSET:
-				if (!(fieldValue instanceof Set))
+				if (!(fieldValue instanceof Collection))
 					validatable.error(newValidationError("wrongtype"));
 				else if (p.getLinkedClass() != null)
-					for (Object item : ((Set<?>) fieldValue)) validateLink(validatable, p, item);
+					for (Object item : ((Collection<?>) fieldValue)) validateLink(validatable, p, item);
 				break;
 			case LINKMAP:
 				if (!(fieldValue instanceof Map))
