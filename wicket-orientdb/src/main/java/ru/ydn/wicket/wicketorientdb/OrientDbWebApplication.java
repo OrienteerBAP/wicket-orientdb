@@ -10,6 +10,8 @@ import org.apache.wicket.ConverterLocator;
 import org.apache.wicket.IApplicationListener;
 import org.apache.wicket.IConverterLocator;
 import org.apache.wicket.authroles.authentication.AuthenticatedWebApplication;
+import org.apache.wicket.markup.html.IPackageResourceGuard;
+import org.apache.wicket.markup.html.SecurePackageResourceGuard;
 import org.apache.wicket.protocol.http.WebApplication;
 
 import ru.ydn.wicket.wicketorientdb.converter.ODocumentConverter;
@@ -165,6 +167,11 @@ public abstract class OrientDbWebApplication extends AuthenticatedWebApplication
 		getRequestCycleListeners().add(newTransactionRequestCycleListener());
 		getRequestCycleListeners().add(new OrientDefaultExceptionsHandlingListener());
 		getSecuritySettings().setAuthorizationStrategy(new WicketOrientDbAuthorizationStrategy(this));
+		IPackageResourceGuard resourceGuard = getResourceSettings().getPackageResourceGuard();
+		if(resourceGuard instanceof SecurePackageResourceGuard) {
+			SecurePackageResourceGuard guard = (SecurePackageResourceGuard)resourceGuard;
+			guard.addPattern("+*.map");
+		}
 		getApplicationListeners().add(new IApplicationListener() {
 			
 			
