@@ -106,8 +106,14 @@ public class OrientDBHttpAPIResource extends AbstractResource
 					con.setUseCaches(false);
 					if("post".equalsIgnoreCase(method) || "put".equalsIgnoreCase(method))
 					{
+						int contentLength = httpRequest.getContentLength();
 						con.setDoOutput(true);
-						IOUtils.copy(httpRequest.getInputStream(), con.getOutputStream());
+						String initialContentType = httpRequest.getContentType();
+						if(initialContentType!=null) con.setRequestProperty("Content-Type", initialContentType);
+						int copied = IOUtils.copy(httpRequest.getInputStream(), con.getOutputStream());
+						if(contentLength>0 && copied==0) {
+							IOUtils.copy(InterceptContentFilter.getContentAsInputStream(httpRequest), con.getOutputStream());
+						}
 					}
 					IOUtils.copy(con.getInputStream(), out, "UTF-8");
 					response.setStatusCode(con.getResponseCode());
