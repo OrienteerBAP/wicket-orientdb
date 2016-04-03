@@ -14,16 +14,16 @@ import com.orientechnologies.orient.core.metadata.schema.OProperty;
 /**
  * {@link IModel} to list all {@link OIndex}es for a given {@link OClass}
  */
-public class ListOIndexiesModel extends AbstractListModel<OIndex<?>>
+public class ListOIndexesModel extends AbstractListModel<OIndex<?>>
 {
 	private IModel<OClass> oClassModel;
-	private IModel<Boolean> allIndexiesModel;
+	private IModel<Boolean> allIndexesModel;
 	
-	public ListOIndexiesModel(final IModel<OClass> oClassModel, final IModel<Boolean> allIndexiesModel)
+	public ListOIndexesModel(final IModel<OClass> oClassModel, final IModel<Boolean> allIndexesModel)
 	{
 		Args.notNull(oClassModel, "oClassModel");
 		this.oClassModel = oClassModel;
-		this.allIndexiesModel = allIndexiesModel;
+		this.allIndexesModel = allIndexesModel;
 	}
 
 	@Override
@@ -33,7 +33,7 @@ public class ListOIndexiesModel extends AbstractListModel<OIndex<?>>
 		{
 			return null;
 		}
-		else if(allIndexiesModel==null||Boolean.TRUE.equals(allIndexiesModel.getObject()))
+		else if(allIndexesModel==null||Boolean.TRUE.equals(allIndexesModel.getObject()))
 		{
 			return oClass.getIndexes();
 		}
@@ -46,7 +46,7 @@ public class ListOIndexiesModel extends AbstractListModel<OIndex<?>>
 	@Override
 	public void detach() {
 		super.detach();
-		if(allIndexiesModel!=null) allIndexiesModel.detach();
+		if(allIndexesModel!=null) allIndexesModel.detach();
 		oClassModel.detach();
 	}
 

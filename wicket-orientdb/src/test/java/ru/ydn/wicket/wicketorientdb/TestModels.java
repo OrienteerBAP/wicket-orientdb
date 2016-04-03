@@ -26,7 +26,7 @@ import com.orientechnologies.orient.core.metadata.security.OUser;
 import com.orientechnologies.orient.core.record.impl.ODocument;
 
 import ru.ydn.wicket.wicketorientdb.junit.WicketOrientDbTesterScope;
-import ru.ydn.wicket.wicketorientdb.model.ListOIndexiesModel;
+import ru.ydn.wicket.wicketorientdb.model.ListOIndexesModel;
 import ru.ydn.wicket.wicketorientdb.model.ListOPropertiesModel;
 import ru.ydn.wicket.wicketorientdb.model.OClassModel;
 import ru.ydn.wicket.wicketorientdb.model.OClassNamingModel;
@@ -35,7 +35,7 @@ import ru.ydn.wicket.wicketorientdb.model.ODocumentLinksDataProvider;
 import ru.ydn.wicket.wicketorientdb.model.ODocumentMapWrapper;
 import ru.ydn.wicket.wicketorientdb.model.ODocumentModel;
 import ru.ydn.wicket.wicketorientdb.model.ODocumentPropertyModel;
-import ru.ydn.wicket.wicketorientdb.model.OIndexiesDataProvider;
+import ru.ydn.wicket.wicketorientdb.model.OIndexesDataProvider;
 import ru.ydn.wicket.wicketorientdb.model.OPropertiesDataProvider;
 import ru.ydn.wicket.wicketorientdb.model.OPropertyModel;
 import ru.ydn.wicket.wicketorientdb.model.OPropertyNamingModel;
@@ -89,16 +89,16 @@ public class TestModels
 	{
 		OSchema schema = wicket.getTester().getSchema();
 		OClass oClass = schema.getClass("OUser");
-		OIndexiesDataProvider provider = new OIndexiesDataProvider(oClass, true);
+		OIndexesDataProvider provider = new OIndexesDataProvider(oClass, true);
 		provider.setSort("name", SortOrder.ASCENDING);
 		Iterator<? extends OIndex<?>> it = provider.iterator(0, -1);
-		List<OIndex<?>> allIndexies = new ArrayList<OIndex<?>>(oClass.getIndexes());
+		List<OIndex<?>> allIndexes = new ArrayList<OIndex<?>>(oClass.getIndexes());
 		while(it.hasNext())
 		{
 			OIndex<?> oIndex = it.next();
-			assertTrue(allIndexies.remove(provider.model(oIndex).getObject()));
+			assertTrue(allIndexes.remove(provider.model(oIndex).getObject()));
 		}
-		assertTrue(allIndexies.size()==0);
+		assertTrue(allIndexes.size()==0);
 		provider.detach();
 	}
 	
@@ -108,24 +108,24 @@ public class TestModels
 		IModel<String> classNameModel = Model.of();
 		IModel<OClass> classModel = new OClassModel(classNameModel);
 		IModel<List<OProperty>> propertiesModel = new ListOPropertiesModel(classModel, null);
-		IModel<List<OIndex<?>>> indexiesModel = new ListOIndexiesModel(classModel, null);
+		IModel<List<OIndex<?>>> indexesModel = new ListOIndexesModel(classModel, null);
 		List<OProperty> properties = propertiesModel.getObject();
-		List<OIndex<?>> indexies = indexiesModel.getObject();
+		List<OIndex<?>> indexes = indexesModel.getObject();
 		assertNotNull(properties);
-		assertNotNull(indexies);
+		assertNotNull(indexes);
 		assertTrue(properties.isEmpty());
-		assertTrue(indexies.isEmpty());
+		assertTrue(indexes.isEmpty());
 		classModel.detach();
 		propertiesModel.detach();
-		indexiesModel.detach();
+		indexesModel.detach();
 		
 		classNameModel.setObject("OUser");
 		properties = propertiesModel.getObject();
-		indexies = indexiesModel.getObject();
+		indexes = indexesModel.getObject();
 		assertNotNull(properties);
-		assertNotNull(indexies);
+		assertNotNull(indexes);
 		assertFalse(properties.isEmpty());
-		assertFalse(indexies.isEmpty());
+		assertFalse(indexes.isEmpty());
 	}
 	
 	@Test

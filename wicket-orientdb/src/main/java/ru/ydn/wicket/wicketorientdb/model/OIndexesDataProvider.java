@@ -13,29 +13,29 @@ import com.orientechnologies.orient.core.metadata.schema.OClass;
 /**
  * {@link SortableDataProvider} for listing of {@link OIndex}es
  */
-public class OIndexiesDataProvider extends
+public class OIndexesDataProvider extends
 		AbstractJavaSortableDataProvider<OIndex<?>, String>
 {
 
 	private static final long serialVersionUID = 1L;
 
-	public OIndexiesDataProvider(OClass oClass, boolean allIndexes)
+	public OIndexesDataProvider(OClass oClass, boolean allIndexes)
 	{
 		this(new OClassModel(oClass), Model.<Boolean> of(allIndexes));
 	}
 
-	public OIndexiesDataProvider(final IModel<OClass> oClassModel,
-			final IModel<Boolean> allIndexiesModel)
+	public OIndexesDataProvider(final IModel<OClass> oClassModel,
+			final IModel<Boolean> allIndexesModel)
 	{
-		super(new ListOIndexiesModel(oClassModel, allIndexiesModel));
+		super(new ListOIndexesModel(oClassModel, allIndexesModel));
 	}
 
-	public OIndexiesDataProvider(AbstractListModel<OIndex<?>> indexesModel)
+	public OIndexesDataProvider(AbstractListModel<OIndex<?>> indexesModel)
 	{
 		super(indexesModel);
 	}
 
-	public OIndexiesDataProvider(IModel<Collection<OIndex<?>>> dataModel) {
+	public OIndexesDataProvider(IModel<Collection<OIndex<?>>> dataModel) {
 		super(dataModel);
 	}
 
