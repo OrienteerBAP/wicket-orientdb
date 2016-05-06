@@ -45,7 +45,7 @@
 		</license>
 	</licenses>
 	<properties>
-		<wicket.version>7.2.0</wicket.version>
+		<wicket.version>7.3.0</wicket.version>
 		<orientdb.version>2.1.16</orientdb.version>
 		<jetty.version>9.2.11.v20150529</jetty.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -138,14 +138,14 @@
 			<plugin>
 				<groupId>org.apache.felix</groupId>
 				<artifactId>maven-bundle-plugin</artifactId>
-				<version>2.3.6</version>
+				<version>3.0.1</version>
 				<extensions>true</extensions>
 			</plugin>
 			<plugin>
 				<inherited>true</inherited>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>2.5.1</version>
+				<version>3.5.1</version>
 				<configuration>
 					<source>1.7</source>
 					<target>1.7</target>
@@ -157,7 +157,7 @@
 		    <plugin>
 			<groupId>org.apache.maven.plugins</groupId>
 			<artifactId>maven-release-plugin</artifactId>
-			<version>2.5</version>
+			<version>2.5.3</version>
 			<configuration>
 			    <autoVersionSubmodules>true</autoVersionSubmodules>
 			    <useReleaseProfile>false</useReleaseProfile>
@@ -169,7 +169,7 @@
 		    <plugin>
 			    <groupId>org.apache.maven.plugins</groupId>
 			    <artifactId>maven-eclipse-plugin</artifactId>
-			    <version>2.9</version>
+			    <version>2.10</version>
 			    <configuration>
 				    <downloadSources>true</downloadSources>
 				    <wtpversion>${wtp.version}</wtpversion>
@@ -178,7 +178,7 @@
 		    <plugin>
 			<groupId>org.eluder.coveralls</groupId>
 			<artifactId>coveralls-maven-plugin</artifactId>
-			<version>2.2.0</version>
+			<version>4.1.0</version>
 			<configuration>
 			    <sourceEncoding>UTF8</sourceEncoding>
 			</configuration>
@@ -186,7 +186,7 @@
 		    <plugin>
 			<groupId>org.codehaus.mojo</groupId>
 			<artifactId>cobertura-maven-plugin</artifactId>
-			<version>2.6</version>
+			<version>2.7</version>
 			<configuration>
 			    <formats>
 				<format>html</format>
@@ -200,7 +200,7 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-checkstyle-plugin</artifactId>
-                        <version>2.15</version>
+                        <version>2.17</version>
                         <dependencies>
 							<dependency>
 								<groupId>com.puppycrawl.tools</groupId>
@@ -268,7 +268,7 @@
 		    <plugin>
 		      <groupId>org.sonatype.plugins</groupId>
 		      <artifactId>nexus-staging-maven-plugin</artifactId>
-		      <version>1.6.2</version>
+		      <version>1.6.7</version>
 		      <extensions>true</extensions>
 		      <configuration>
 		        <serverId>ossrh</serverId>
@@ -279,7 +279,7 @@
 		    <plugin>
 		      <groupId>org.apache.maven.plugins</groupId>
 		      <artifactId>maven-source-plugin</artifactId>
-		      <version>2.2.1</version>
+		      <version>3.0.0</version>
 		      <executions>
 		        <execution>
 		          <id>attach-sources</id>
@@ -292,7 +292,7 @@
 		    <plugin>
 		      <groupId>org.apache.maven.plugins</groupId>
 		      <artifactId>maven-javadoc-plugin</artifactId>
-		      <version>2.9.1</version>
+		      <version>2.10.3</version>
 		      <executions>
 		        <execution>
 		          <id>attach-javadocs</id>
@@ -305,7 +305,7 @@
 		    <plugin>
 		      <groupId>org.apache.maven.plugins</groupId>
 		      <artifactId>maven-gpg-plugin</artifactId>
-		      <version>1.5</version>
+		      <version>1.6</version>
 		      <executions>
 		        <execution>
 		          <id>sign-artifacts</id>
