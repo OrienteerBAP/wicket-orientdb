@@ -91,7 +91,7 @@ public class OSecurityHelper
 	/**
 	 * @param oClass subject {@link OClass} for security check
 	 * @param permissions required permissions for access {@link OClass}
-	 * @return
+	 * @return array of {@link RequiredOrientResource} for rights setup emulation
 	 */
 	public static RequiredOrientResource[] requireOClass(final OClass oClass, final OrientPermission... permissions)
 	{
@@ -100,16 +100,17 @@ public class OSecurityHelper
 	/**
 	 * @param oClassName name of the subject {@link OClass} for security check
 	 * @param permissions required permissions for access {@link OClass}
-	 * @return
+	 * @return array of {@link RequiredOrientResource} for rights setup emulation
 	 */
 	public static RequiredOrientResource[] requireOClass(final String oClassName, final OrientPermission... permissions)
 	{
 		return requireResource(ORule.ResourceGeneric.CLASS, oClassName, permissions);
 	}
 	/**
-	 * @param resource
-	 * @param permissions
-	 * @return
+	 * @param resource required {@link ResourceGeneric}
+	 * @param specific specific resource
+	 * @param permissions required permissions
+	 * @return array of {@link RequiredOrientResource} for rights setup emulation
 	 */
 	public static RequiredOrientResource[] requireResource(final ORule.ResourceGeneric resource, final String specific, 
 																final OrientPermission... permissions)
@@ -121,7 +122,7 @@ public class OSecurityHelper
 	 * @param oClass subject {@link OClass} for security check
 	 * @param action action to be secured for
 	 * @param permissions required permissions for access {@link OClass}
-	 * @return
+	 * @return array of {@link RequiredOrientResource} for rights setup emulation
 	 */
 	public static RequiredOrientResource[] requireOClass(final OClass oClass, final Action action, 
 															final OrientPermission... permissions)
@@ -132,7 +133,7 @@ public class OSecurityHelper
 	 * @param oClassName name of the subject {@link OClass} for security check
 	 * @param action action to be secured for
 	 * @param permissions required permissions for access {@link OClass}
-	 * @return
+	 * @return array of {@link RequiredOrientResource} for rights setup emulation
 	 */
 	public static RequiredOrientResource[] requireOClass(final String oClassName, final Action action, 
 															final OrientPermission... permissions)
@@ -141,10 +142,10 @@ public class OSecurityHelper
 	}
 	/**
 	 * @param resource generic resource
-	 * @param specific specific resrouce to secure
+	 * @param specific specific resource to secure
 	 * @param action action to be secured for
-	 * @param permissions
-	 * @return
+	 * @param permissions required permissions for access {@link OClass}
+	 * @return array of {@link RequiredOrientResource} for rights setup emulation
 	 */
 	public static RequiredOrientResource[] requireResource(final ORule.ResourceGeneric resource, final String specific, 
 															final Action action, final OrientPermission... permissions)
@@ -200,10 +201,10 @@ public class OSecurityHelper
 	
 	/**
 	 * Check that all required permissions present for specified resource and specific
-	 * @param resource
-	 * @param specific
-	 * @param permissions
-	 * @return
+	 * @param resource specific resource to secure
+	 * @param specific specific resource to secure
+	 * @param permissions {@link OrientPermission}s to check
+	 * @return true of require resource if allowed for current user
 	 */
 	public static boolean isAllowed(ORule.ResourceGeneric resource, String specific, OrientPermission... permissions)
 	{

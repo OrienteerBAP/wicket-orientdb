@@ -51,7 +51,7 @@ public class OQueryDataProvider <K> extends SortableDataProvider<K, String>
      * Set value for named parameter
      * @param paramName name of the parameter to set
      * @param value {@link IModel} for the parameter value
-     * @return
+     * @return this {@link OQueryDataProvider}
      */
     public OQueryDataProvider<K> setParameter(String paramName, IModel<?> value)
     {

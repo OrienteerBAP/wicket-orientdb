@@ -47,41 +47,42 @@ public interface IOrientDbSettings {
 	public String getOrientDBRestApiUrl();
 	/**
 	 * Set URL for the OrientDB
-	 * @param url
+	 * @param url URL of OrientDB database
 	 */
 	public void setDBUrl(String url);
 	/**
 	 * Set username for default user
-	 * @param userName
+	 * @param userName default username for login
 	 */
 	public void setDBUserName(String userName);
 	/**
 	 * Set password for default user
-	 * @param password
+	 * @param password password for default user
 	 */
 	public void setDBUserPassword(String password);
 	/**
 	 * Set username for user which will be used for admin stuff
-	 * @param userName
+	 * @param userName username of a user with super rights for DB installation
 	 */
 	public void setDBInstallatorUserName(String userName);
 	/**
 	 * Set password for user which will be used for admin stuff
-	 * @param password
+	 * @param password password of a user with super rights
 	 */
 	public void setDBInstallatorUserPassword(String password);
 	/**
 	 * Set {@link ODatabasePoolBase} which should be used for DB connections pooling
-	 * @param pool
+	 * @param poolFactory setup a poolFactory
 	 */
 	public void setDatabasePoolFactory(OPartitionedDatabasePoolFactory poolFactory);
 	/**
 	 * Set {@link ODatabaseThreadLocalFactory} which should be used for obtaining {@link ODatabaseRecord}
-	 * @param factory
+	 * @param factory factory of a {@link ThreadLocal} db
 	 */
 	public void setDatabaseThreadLocalFactory(ODatabaseThreadLocalFactory factory);
 	/**
 	 * Set OrientDB Rest API URL
+	 * @param orientDbRestApiUrl URL of orientDB REST API
 	 */
 	public void setOrientDBRestApiUrl(String orientDbRestApiUrl);
 	/**

@@ -58,7 +58,7 @@ public abstract class OrientDbWebApplication extends AuthenticatedWebApplication
 	
 	/**
 	 * Explicit set of settings for the application. Doesn't recommended to use this method. Consider to use getOrientDBSettings().setXXX()
-	 * @param orientDbSettings
+	 * @param orientDbSettings whole {@link IOrientDbSettings} to be set
 	 */
 	public void setOrientDbSettings(IOrientDbSettings orientDbSettings)
 	{

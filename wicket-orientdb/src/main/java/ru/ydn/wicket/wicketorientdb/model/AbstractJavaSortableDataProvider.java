@@ -1,6 +1,7 @@
 package ru.ydn.wicket.wicketorientdb.model;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import org.apache.wicket.core.util.lang.PropertyResolver;
 import org.apache.wicket.extensions.markup.html.repeater.util.SortParam;
@@ -31,7 +32,7 @@ public abstract class AbstractJavaSortableDataProvider<T, S> extends SortableDat
 	@Override
 	public Iterator<? extends T> iterator(long first, long count) {
 		Collection<T> data =dataModel.getObject();
-		if(data==null || data.size()==0) return Iterators.emptyIterator();
+		if(data==null || data.size()==0) return Collections.emptyIterator();
 		Iterator<T> it;
 		final SortParam<S> sortParam = getSort();
 		if(sortParam!=null && sortParam.getProperty()!=null)
