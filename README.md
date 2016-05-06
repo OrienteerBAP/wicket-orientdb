@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/OrienteerDW/wicket-orientdb.svg?branch=master)](https://travis-ci.org/OrienteerDW/wicket-orientdb) [![Coverage Status](https://img.shields.io/coveralls/OrienteerDW/wicket-orientdb.svg)](https://coveralls.io/r/OrienteerDW/wicket-orientdb)
+[![Build Status](https://travis-ci.org/OrienteerDW/wicket-orientdb.svg?branch=master)](https://travis-ci.org/OrienteerDW/wicket-orientdb) [![Coverage Status](https://img.shields.io/coveralls/OrienteerDW/wicket-orientdb.svg)](https://coveralls.io/r/OrienteerDW/wicket-orientdb) [![Dependency Status](https://www.versioneye.com/user/projects/572bd8dea0ca35004cf77259/badge.svg?style=flat)](https://www.versioneye.com/user/projects/572bd8dea0ca35004cf77259)
 
 wicket-orientdb
 ===============
@@ -6,7 +6,7 @@ wicket-orientdb
 Everything you need to work with Apache Wicket and OrientDB.
 Library contains several functional part which can be used separatly or all together.
 
-Looking for examples? [Orienteer - Modern Data Warehouse System](https://github.com/OrienteerDW/Orienteer)
+Looking for examples? [Orienteer - Business Application Platform](https://github.com/OrienteerDW/Orienteer)
 
 Initial setup of application
 -----------------------
