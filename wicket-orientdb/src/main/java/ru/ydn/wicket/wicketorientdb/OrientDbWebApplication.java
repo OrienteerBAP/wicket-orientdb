@@ -167,11 +167,6 @@ public abstract class OrientDbWebApplication extends AuthenticatedWebApplication
 		getRequestCycleListeners().add(newTransactionRequestCycleListener());
 		getRequestCycleListeners().add(new OrientDefaultExceptionsHandlingListener());
 		getSecuritySettings().setAuthorizationStrategy(new WicketOrientDbAuthorizationStrategy(this));
-		IPackageResourceGuard resourceGuard = getResourceSettings().getPackageResourceGuard();
-		if(resourceGuard instanceof SecurePackageResourceGuard) {
-			SecurePackageResourceGuard guard = (SecurePackageResourceGuard)resourceGuard;
-			guard.addPattern("+*.map");
-		}
 		getApplicationListeners().add(new IApplicationListener() {
 			
 			

@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.Iterator;
 
 import org.apache.wicket.WicketRuntimeException;
+import org.apache.wicket.extensions.markup.html.repeater.data.sort.SortOrder;
 import org.apache.wicket.extensions.markup.html.repeater.util.SortParam;
 import org.apache.wicket.extensions.markup.html.repeater.util.SortableDataProvider;
 import org.apache.wicket.model.IModel;
@@ -79,6 +80,21 @@ public class OQueryDataProvider <K> extends SortableDataProvider<K, String>
 	public IModel<K> model(K o)
     {
     	return ModelUtils.model(o);
+    }
+    
+    /**
+     * Set sort
+     * @param property property to sort on
+     * @param order order to apply: true is for ascending, false is for descending
+     */
+    public void setSort(String property, Boolean order) {
+    	SortOrder sortOrder = order==null?SortOrder.ASCENDING:(order?SortOrder.ASCENDING:SortOrder.DESCENDING);
+    	if(property==null) {
+    		if(order==null) setSort(null);
+    		else setSort("@rid", sortOrder);
+    	} else {
+    		super.setSort(property, sortOrder);
+    	}
     }
 
     @Override
