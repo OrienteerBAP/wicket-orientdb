@@ -16,6 +16,7 @@ import com.orientechnologies.orient.core.exception.OSecurityAccessException;
 import com.orientechnologies.orient.core.metadata.schema.OClass;
 import com.orientechnologies.orient.core.metadata.security.ODatabaseSecurityResources;
 import com.orientechnologies.orient.core.metadata.security.ORestrictedAccessHook;
+import com.orientechnologies.orient.core.metadata.security.ORestrictedOperation;
 import com.orientechnologies.orient.core.metadata.security.ORule;
 import com.orientechnologies.orient.core.metadata.security.OSecurityShared;
 import com.orientechnologies.orient.core.metadata.security.OUser;
@@ -35,12 +36,12 @@ public class OSecurityHelper
 	public static final String COMMAND = "COMMAND";
 	public static final String RECORD_HOOK = "RECORD_HOOK";
 	
-	private static final Map<OrientPermission, String> MAPPING_FOR_HACK = new HashMap<OrientPermission, String>();
+	private static final Map<OrientPermission, ORestrictedOperation> MAPPING_FOR_HACK = new HashMap<OrientPermission, ORestrictedOperation>();
 	static
 	{
-		MAPPING_FOR_HACK.put(OrientPermission.READ, OSecurityShared.ALLOW_READ_FIELD);
-		MAPPING_FOR_HACK.put(OrientPermission.UPDATE, OSecurityShared.ALLOW_UPDATE_FIELD);
-		MAPPING_FOR_HACK.put(OrientPermission.DELETE, OSecurityShared.ALLOW_DELETE_FIELD);
+		MAPPING_FOR_HACK.put(OrientPermission.READ, ORestrictedOperation.ALLOW_READ);
+		MAPPING_FOR_HACK.put(OrientPermission.UPDATE, ORestrictedOperation.ALLOW_UPDATE);
+		MAPPING_FOR_HACK.put(OrientPermission.DELETE, ORestrictedOperation.ALLOW_DELETE);
 	}
 	
 	private static class RequiredOrientResourceImpl implements RequiredOrientResource
@@ -163,7 +164,7 @@ public class OSecurityHelper
 		}
 		@Override
 		public boolean isAllowed(ODocument iDocument,
-				String iAllowOperation, boolean iReadOriginal) {
+				ORestrictedOperation iAllowOperation, boolean iReadOriginal) {
 			database = ODatabaseRecordThreadLocal.INSTANCE.get();
 			return super.isAllowed(iDocument, iAllowOperation, iReadOriginal);
 		}
@@ -180,7 +181,7 @@ public class OSecurityHelper
 	{
 		if(!isAllowed(doc.getSchemaClass(), permissions)) return false;
 		for (OrientPermission orientPermission : permissions) {
-			String allowOperation = MAPPING_FOR_HACK.get(orientPermission);
+			ORestrictedOperation allowOperation = MAPPING_FOR_HACK.get(orientPermission);
 			if(allowOperation!=null)
 			{
 				if(!AccessToIsAllowedInRestrictedAccessHook.INSTANCE.isAllowed(doc, allowOperation, false)) return false;

@@ -59,9 +59,9 @@ public class OrientDbWebSession extends AuthenticatedWebSession {
 	/**
 	 * @return {@link ODatabaseRecord} for current request
 	 */
-	public ODatabaseDocument getDatabase()
+	public ODatabaseDocumentInternal getDatabase()
 	{
-		return DefaultODatabaseThreadLocalFactory.castToODatabaseDocument(ODatabaseRecordThreadLocal.INSTANCE.get().getDatabaseOwner());
+		return ODatabaseRecordThreadLocal.INSTANCE.get();
 	}
 	
 	/**
@@ -73,12 +73,12 @@ public class OrientDbWebSession extends AuthenticatedWebSession {
 
 	@Override
 	public boolean authenticate(String username, String password) {
-		ODatabaseDocument currentDB = getDatabase();
+		ODatabaseDocumentInternal currentDB = getDatabase();
 		try
 		{
 			boolean inTransaction = currentDB.getTransaction().isActive();
 			IOrientDbSettings settings = OrientDbWebApplication.get().getOrientDbSettings();
-			ODatabaseDocument newDB = settings.getDatabasePoolFactory().get(settings.getDBUrl(), username, password).acquire();
+			ODatabaseDocumentInternal newDB = settings.getDatabasePoolFactory().get(settings.getDBUrl(), username, password).acquire();
 			if(newDB!=currentDB)
 			{
 				currentDB.activateOnCurrentThread();

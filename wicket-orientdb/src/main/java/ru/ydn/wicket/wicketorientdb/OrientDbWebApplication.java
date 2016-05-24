@@ -163,6 +163,11 @@ public abstract class OrientDbWebApplication extends AuthenticatedWebApplication
 
 			@Override
 			public void onDropClass(ODatabaseInternal iDatabase, OClass iClass) {/*NOP*/}
+			
+			@Override
+			public void onLocalNodeConfigurationRequest(ODocument arg0) {/*NOP*/}
+			
+			
 		});
 		getRequestCycleListeners().add(newTransactionRequestCycleListener());
 		getRequestCycleListeners().add(new OrientDefaultExceptionsHandlingListener());
