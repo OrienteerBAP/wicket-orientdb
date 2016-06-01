@@ -77,7 +77,7 @@ public abstract class OrientDbWebApplication extends AuthenticatedWebApplication
 	
 	protected static <T extends OrientDbWebApplication> T lookupApplication(Class<T> appClass)
 	{
-		Application app = Application.get();
+		Application app = Application.exists()?Application.get():null;
 		if(app!=null && appClass.isInstance(app)) return (T)app;
 		else
 		{
