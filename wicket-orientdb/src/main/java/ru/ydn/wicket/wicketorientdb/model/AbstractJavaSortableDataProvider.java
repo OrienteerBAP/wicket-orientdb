@@ -10,6 +10,9 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.util.lang.Args;
 
 import com.google.common.base.Function;
+import com.google.common.base.Predicate;
+import com.google.common.collect.Collections2;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Iterators;
 import com.google.common.collect.Ordering;
 
@@ -21,18 +24,26 @@ import com.google.common.collect.Ordering;
 public abstract class AbstractJavaSortableDataProvider<T, S> extends SortableDataProvider<T, S>
 {
 	private static final long serialVersionUID = 1L;
-	private IModel<? extends Collection<T>> dataModel;
+	private final IModel<? extends Collection<T>> dataModel;
+	private final Predicate<? super T> filterPredicate;
 	
 	public AbstractJavaSortableDataProvider(IModel<? extends Collection<T>> dataModel)
 	{
+		this(dataModel, null);
+	}
+	
+	public AbstractJavaSortableDataProvider(IModel<? extends Collection<T>> dataModel, Predicate<? super T> filterPredicate)
+	{
 		Args.notNull(dataModel, "dataModel");
 		this.dataModel = dataModel;
+		this.filterPredicate = filterPredicate;
 	}
 
 	@Override
 	public Iterator<? extends T> iterator(long first, long count) {
 		Collection<T> data =dataModel.getObject();
 		if(data==null || data.size()==0) return Collections.emptyIterator();
+		if(filterPredicate!=null) data = Collections2.filter(data, filterPredicate); 
 		Iterator<T> it;
 		final SortParam<S> sortParam = getSort();
 		if(sortParam!=null && sortParam.getProperty()!=null)
@@ -51,6 +62,7 @@ public abstract class AbstractJavaSortableDataProvider<T, S> extends SortableDat
 		{
 			it=data.iterator();
 		}
+		if(filterPredicate!=null) it = Iterators.filter(it, filterPredicate);
 		if(first>0) Iterators.advance(it, (int)first);
 		return count>=0?Iterators.limit(it, (int)count):it;
 	}
@@ -71,6 +83,7 @@ public abstract class AbstractJavaSortableDataProvider<T, S> extends SortableDat
 	@Override
 	public long size() {
 		Collection<T> data =dataModel.getObject();
+		if(filterPredicate!=null) data= Collections2.filter(data, filterPredicate);
 		return data!=null?data.size():0;
 	}
 

@@ -9,6 +9,7 @@ import org.apache.wicket.model.LoadableDetachableModel;
 import ru.ydn.wicket.wicketorientdb.OrientDbWebSession;
 import ru.ydn.wicket.wicketorientdb.proto.OClassPrototyper;
 
+import com.google.common.base.Predicate;
 import com.orientechnologies.orient.core.metadata.schema.OClass;
 import com.orientechnologies.orient.core.metadata.schema.OSchema;
 
@@ -23,8 +24,22 @@ public class OClassesDataProvider extends AbstractJavaSortableDataProvider<OClas
 		super(new ListOClassesModel());
 	}
 	
+	public OClassesDataProvider(final Predicate<OClass> filterPredicate) {
+		super(new ListOClassesModel() {
+			@Override
+			protected Predicate<? super OClass> getFilterPredicate() {
+				return filterPredicate;
+			}
+		});
+	}
+	
 	public OClassesDataProvider(IModel<Collection<OClass>> dataModel) {
 		super(dataModel);
+	}
+	
+
+	public OClassesDataProvider(IModel<? extends Collection<OClass>> dataModel, Predicate<OClass> filterPredicate) {
+		super(dataModel, filterPredicate);
 	}
 
 	@Override
