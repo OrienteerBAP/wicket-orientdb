@@ -9,11 +9,13 @@ import org.apache.wicket.core.util.lang.PropertyResolver;
 import org.junit.ClassRule;
 import org.junit.Test;
 
+import com.orientechnologies.orient.core.index.ODefaultIndexFactory;
 import com.orientechnologies.orient.core.index.OIndex;
 import com.orientechnologies.orient.core.metadata.schema.OClass;
 import com.orientechnologies.orient.core.metadata.schema.OProperty;
 import com.orientechnologies.orient.core.metadata.schema.OType;
 import com.orientechnologies.orient.core.metadata.schema.clusterselection.ORoundRobinClusterSelectionStrategy;
+import com.orientechnologies.orient.core.record.impl.ODocument;
 
 import ru.ydn.wicket.wicketorientdb.junit.WicketOrientDbTesterScope;
 import static org.junit.Assert.*;
@@ -153,8 +155,22 @@ public class TestPrototypers
 		assertNotNull(newIndex.getDefinition());
 		assertTrue(newIndex.getDefinition().getFields().contains("name"));
 		assertTrue(newIndex instanceof IPrototype);
-		OIndex<?> realizedNewIndes = ((IPrototype<OIndex<?>>)newIndex).realizePrototype();
-		assertTrue(property.getAllIndexes().size()==1);
+		OIndex<?> realizedNewIndex = ((IPrototype<OIndex<?>>)newIndex).realizePrototype();
+		assertEquals(1, property.getAllIndexes().size());
+		assertEquals(1, newClass.getIndexes().size());
+		
+		property = newClass.createProperty("description", OType.STRING);
+		newIndex = OIndexPrototyper.newPrototype("NewClass", Arrays.asList("description"));
+		PropertyResolver.setValue("type", newIndex, "notunique", null);
+		assertEquals(0, property.getAllIndexes().size());
+		PropertyResolver.setValue("algorithm", newIndex, ODefaultIndexFactory.SBTREE_ALGORITHM, null);
+		ODocument metadata = new ODocument();
+		metadata.field("test", "test123", OType.STRING);
+		PropertyResolver.setValue("metadata", newIndex, metadata, null);
+		realizedNewIndex = ((IPrototype<OIndex<?>>)newIndex).realizePrototype();
+		assertEquals(1, property.getAllIndexes().size());
+		assertEquals(2, newClass.getIndexes().size());
+		assertEquals("test123", realizedNewIndex.getMetadata().field("test"));
 		
 		wicket.getTester().getSchema().dropClass(newClass.getName());
 	}
