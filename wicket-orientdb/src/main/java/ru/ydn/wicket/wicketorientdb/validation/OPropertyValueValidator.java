@@ -12,6 +12,7 @@ import org.apache.wicket.Component;
 import org.apache.wicket.behavior.Behavior;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.util.lang.Args;
+import org.apache.wicket.util.string.Strings;
 import org.apache.wicket.validation.INullAcceptingValidator;
 import org.apache.wicket.validation.IValidatable;
 import org.apache.wicket.validation.IValidator;
@@ -39,17 +40,31 @@ public class OPropertyValueValidator<T> extends Behavior implements
 	private static final long serialVersionUID = 1L;
 	private Component component;
 	private IModel<OProperty> propertyModel;
+	private IModel<ODocument> documentModel;
 	
 	public OPropertyValueValidator(OProperty property) {
-		this(new OPropertyModel(property));
+		this(property, null);
+	}
+	
+	public OPropertyValueValidator(OProperty property, IModel<ODocument> documentModel) {
+		this(new OPropertyModel(property), documentModel);
+	}
+	
+	public OPropertyValueValidator(IModel<OProperty> propertyModel) {
+		this(propertyModel, null);
 	}
 
-	public OPropertyValueValidator(IModel<OProperty> propertyModel) {
+	public OPropertyValueValidator(IModel<OProperty> propertyModel, IModel<ODocument> documentModel) {
 		this.propertyModel = propertyModel;
+		this.documentModel = documentModel;
 	}
 
 	public OProperty getProperty() {
 		return propertyModel.getObject();
+	}
+	
+	public ODocument getDocument() {
+		return documentModel!=null?documentModel.getObject():null;
 	}
 
 	@Override
@@ -59,6 +74,12 @@ public class OPropertyValueValidator<T> extends Behavior implements
 		if (fieldValue == null) {
 			if (p.isNotNull()) {
 				validatable.error(newValidationError("required"));
+			} else if (p.isMandatory() && Strings.isEmpty(p.getDefaultValue())) {
+				ODocument doc = getDocument();
+				//If doc is not defined: lets assume that mandatory fields must be not null
+				if(doc == null || !doc.containsField(p.getName())) {
+					validatable.error(newValidationError("mandatory"));
+				}
 			}
 		} else {
 			OType type = p.getType();
@@ -297,6 +318,7 @@ public class OPropertyValueValidator<T> extends Behavior implements
 	public void detach(Component component) {
 		super.detach(component);
 		propertyModel.detach();
+		if(documentModel!=null) documentModel.detach();
 	}
 
 	@Override
