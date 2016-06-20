@@ -63,6 +63,29 @@ public class OSchemaHelper
 	 */
 	public OSchemaHelper oClass(String className, String... superClasses)
 	{
+		return oClass(className, false, superClasses);
+	}
+	
+	/**
+	 * Create if required abstract {@link OClass}
+	 * @param className name of a class to create
+	 * @param superClasses list of superclasses
+	 * @return this helper
+	 */
+	public OSchemaHelper oAbstractClass(String className, String... superClasses)
+	{
+		return oClass(className, true, superClasses);
+	}
+	
+	/**
+	 * Create if required {@link OClass}
+	 * @param className name of a class to create
+	 * @param abstractClass is this class abstract
+	 * @param superClasses list of superclasses
+	 * @return this helper
+	 */
+	private OSchemaHelper oClass(String className, boolean abstractClass, String... superClasses)
+	{
 		lastClass = schema.getClass(className);
 		if(lastClass==null)
 		{
@@ -71,7 +94,11 @@ public class OSchemaHelper
 				String superClassName = superClasses[i];
 				superClassesArray[i] = schema.getClass(superClassName);
 			}
-			lastClass = schema.createClass(className, superClassesArray);
+			lastClass = abstractClass ? schema.createAbstractClass(className, superClassesArray) 
+									  : schema.createClass(className, superClassesArray);
+		} else {
+			boolean currentlyAbstract = lastClass.isAbstract();
+			if(currentlyAbstract!=abstractClass) lastClass.setAbstract(abstractClass);
 		}
 		lastProperty = null;
 		lastIndex = null;
@@ -358,6 +385,13 @@ public class OSchemaHelper
 	 */
 	public ODocument getODocument() {
 		return lastDocument;
+	}
+	
+	/**
+	 * @return binded database
+	 */
+	public ODatabaseDocument getDatabase() {
+		return db;
 	}
 	
 	protected void checkOClass()
