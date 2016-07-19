@@ -2,6 +2,7 @@ package ru.ydn.wicket.wicketorientdb;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -321,8 +322,12 @@ public class TestModels
 	public void testODocumentPropertyModel()
 	{
 		ORecordId recordId = new ORecordId("#5:0");
-		ODocumentPropertyModel<String> model = new ODocumentPropertyModel<String>(new ODocumentModel(recordId), "name");
+		ODocumentModel docModel = new ODocumentModel(recordId);
+		ODocumentPropertyModel<String> model = new ODocumentPropertyModel<String>(docModel, "name");
 		assertModelObjectEquals("admin", model);
+		ODocumentPropertyModel<Collection<String>> rolesNames = new ODocumentPropertyModel<Collection<String>>(docModel, "roles.name");
+		System.out.println(rolesNames.getObject());
+		assertTrue(rolesNames.getObject().contains("admin"));
 	}
 	
 	@Test
