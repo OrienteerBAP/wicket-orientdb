@@ -26,7 +26,9 @@ import com.orientechnologies.orient.core.db.ODatabaseInternal;
 import com.orientechnologies.orient.core.db.ODatabaseLifecycleListener;
 import com.orientechnologies.orient.core.db.document.ODatabaseDocument;
 import com.orientechnologies.orient.core.db.record.OIdentifiable;
+import com.orientechnologies.orient.core.hook.ODocumentHookAbstract;
 import com.orientechnologies.orient.core.hook.ORecordHook;
+import com.orientechnologies.orient.core.hook.ORecordHook.HOOK_POSITION;
 import com.orientechnologies.orient.core.metadata.schema.OClass;
 import com.orientechnologies.orient.core.metadata.security.ORole;
 import com.orientechnologies.orient.core.metadata.security.ORule.ResourceGeneric;
@@ -145,6 +147,28 @@ public abstract class OrientDbWebApplication extends AuthenticatedWebApplication
 					ORecordHook hook = createHook(oRecordHookClass, iDatabase);
 					if(hook!=null) iDatabase.registerHook(hook);
 				}
+				//strange workaround to support changing system users passwords in web interface
+				iDatabase.registerHook(new ODocumentHookAbstract(){
+					@Override
+					public RESULT onRecordBeforeUpdate(final ODocument iDocument) {
+						String name = iDocument.field("name");
+						String password = iDocument.field("password");
+						if (	orientDbSettings.getDBInstallatorUserName()!=null && 
+								orientDbSettings.getDBInstallatorUserName().equals(name)){
+							orientDbSettings.setDBInstallatorUserPassword(password);
+						}
+						if (orientDbSettings.getDBUserName()!=null && 
+								orientDbSettings.getDBUserName().equals(name)){
+							orientDbSettings.setDBUserPassword(password);
+						}
+						return RESULT.RECORD_NOT_CHANGED;
+					}
+					
+					@Override
+					public DISTRIBUTED_EXECUTION_MODE getDistributedExecutionMode() {
+						return DISTRIBUTED_EXECUTION_MODE.BOTH;
+					}
+				}.setIncludeClasses("OUser"),HOOK_POSITION.FIRST);
 			}
 			
 			@Override
