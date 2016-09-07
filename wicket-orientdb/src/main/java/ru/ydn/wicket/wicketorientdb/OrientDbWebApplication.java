@@ -151,8 +151,7 @@ public abstract class OrientDbWebApplication extends AuthenticatedWebApplication
 							iDatabase.registerHook(hook);		
 						}
 					}
-				}
-			}
+				}			}
 			
 			@Override
 			public void onClose(ODatabaseInternal iDatabase) {/*NOP*/}
