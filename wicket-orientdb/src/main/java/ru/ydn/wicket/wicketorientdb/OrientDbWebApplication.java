@@ -12,6 +12,7 @@ import org.apache.wicket.IConverterLocator;
 import org.apache.wicket.authroles.authentication.AuthenticatedWebApplication;
 import org.apache.wicket.markup.html.IPackageResourceGuard;
 import org.apache.wicket.markup.html.SecurePackageResourceGuard;
+import org.apache.wicket.protocol.http.AjaxEnclosureListener;
 import org.apache.wicket.protocol.http.WebApplication;
 
 import ru.ydn.wicket.wicketorientdb.components.IHookPosition;
@@ -19,6 +20,7 @@ import ru.ydn.wicket.wicketorientdb.converter.ODocumentConverter;
 import ru.ydn.wicket.wicketorientdb.converter.OIdentifiableConverter;
 import ru.ydn.wicket.wicketorientdb.rest.OrientDBHttpAPIResource;
 import ru.ydn.wicket.wicketorientdb.security.WicketOrientDbAuthorizationStrategy;
+import ru.ydn.wicket.wicketorientdb.utils.FixFormEncTypeListener;
 
 import com.google.common.collect.Collections2;
 import com.orientechnologies.orient.core.Orient;
@@ -187,7 +189,7 @@ public abstract class OrientDbWebApplication extends AuthenticatedWebApplication
 				Orient.instance().shutdown();
 			}
 		});
-		
+		getAjaxRequestTargetListeners().add(new FixFormEncTypeListener());
 		//strange workaround to support changing system users passwords in web interface
 		getOrientDbSettings().getORecordHooks().add(OUserCatchPasswordHook.class);
 	}

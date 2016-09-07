@@ -77,7 +77,7 @@ public abstract class DBClosure<V> implements Serializable
 	
 	protected IOrientDbSettings getSettings()
 	{
-		return OrientDbWebApplication.get().getOrientDbSettings();
+		return OrientDbWebApplication.lookupApplication().getOrientDbSettings();
 	}
 	
 	/**
