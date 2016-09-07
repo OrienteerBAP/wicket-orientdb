@@ -14,6 +14,7 @@ import org.apache.wicket.markup.html.IPackageResourceGuard;
 import org.apache.wicket.markup.html.SecurePackageResourceGuard;
 import org.apache.wicket.protocol.http.WebApplication;
 
+import ru.ydn.wicket.wicketorientdb.components.IHookPosition;
 import ru.ydn.wicket.wicketorientdb.converter.ODocumentConverter;
 import ru.ydn.wicket.wicketorientdb.converter.OIdentifiableConverter;
 import ru.ydn.wicket.wicketorientdb.rest.OrientDBHttpAPIResource;
@@ -143,7 +144,13 @@ public abstract class OrientDbWebApplication extends AuthenticatedWebApplication
 				for (Class<? extends ORecordHook> oRecordHookClass : hooksToRegister)
 				{
 					ORecordHook hook = createHook(oRecordHookClass, iDatabase);
-					if(hook!=null) iDatabase.registerHook(hook);
+					if(hook!=null){
+						if (hook instanceof IHookPosition){
+							iDatabase.registerHook(hook,((IHookPosition) hook).getPosition());		
+						}else{
+							iDatabase.registerHook(hook);		
+						}
+					}
 				}
 			}
 			
@@ -180,6 +187,9 @@ public abstract class OrientDbWebApplication extends AuthenticatedWebApplication
 				Orient.instance().shutdown();
 			}
 		});
+		
+		//strange workaround to support changing system users passwords in web interface
+		getOrientDbSettings().getORecordHooks().add(OUserCatchPasswordHook.class);
 	}
 	
 	protected TransactionRequestCycleListener newTransactionRequestCycleListener()
