@@ -139,7 +139,7 @@ public class OClassPrototyper extends AbstractPrototyper<OClass> {
 			if(superClasses==null || superClasses.isEmpty() || args.length!=1 || args[0]==null) return false;
 			Object sup = args[0];
 			String superClassName = sup instanceof OClass? ((OClass)sup).getName() : sup.toString();
-			return superClasses.contains(sup);
+			return superClasses.contains(superClassName);
 		}
 		else
 		{
