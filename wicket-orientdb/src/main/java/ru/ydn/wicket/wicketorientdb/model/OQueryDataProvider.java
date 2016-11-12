@@ -29,7 +29,7 @@ public class OQueryDataProvider <K> extends SortableDataProvider<K, String>
 	 */
 	public OQueryDataProvider(String sql)
 	{
-		model = new OQueryModel<K>(sql);
+		this(new OQueryModel<K>(sql));
 	}
 	/**
 	 * @param sql SQL to be executed to obtain data
@@ -37,7 +37,7 @@ public class OQueryDataProvider <K> extends SortableDataProvider<K, String>
 	 */
 	public OQueryDataProvider(String sql, Function<?, K> transformer)
 	{
-		model = new OQueryModel<K>(sql, transformer);
+		this(new OQueryModel<K>(sql, transformer));
 	}
 	/**
 	 * @param sql SQL to be executed to obtain data
@@ -45,7 +45,16 @@ public class OQueryDataProvider <K> extends SortableDataProvider<K, String>
 	 */
     public OQueryDataProvider(String sql, Class<? extends K> wrapperClass)
     {
-        model = new OQueryModel<K>(sql, wrapperClass);
+        this(new OQueryModel<K>(sql, wrapperClass));
+    }
+    
+    /**
+     * Low level constructor to initialize by direct {@link OQueryModel}
+     * @param oQueryModel {@link OQueryModel} to use in provider
+     */
+    public OQueryDataProvider(OQueryModel<K> model)
+    {
+    	this.model = model;
     }
 
     /**
