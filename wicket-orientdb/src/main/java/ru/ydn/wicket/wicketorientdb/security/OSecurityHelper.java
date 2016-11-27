@@ -8,18 +8,15 @@ import org.apache.wicket.Component;
 import org.apache.wicket.authorization.Action;
 import org.apache.wicket.util.string.Strings;
 
-import ru.ydn.wicket.wicketorientdb.OrientDbWebSession;
-
 import com.orientechnologies.orient.core.db.ODatabaseRecordThreadLocal;
-import com.orientechnologies.orient.core.db.document.ODatabaseDocument;
-import com.orientechnologies.orient.core.exception.OSecurityAccessException;
 import com.orientechnologies.orient.core.metadata.schema.OClass;
-import com.orientechnologies.orient.core.metadata.security.ODatabaseSecurityResources;
 import com.orientechnologies.orient.core.metadata.security.ORestrictedAccessHook;
 import com.orientechnologies.orient.core.metadata.security.ORule;
+import com.orientechnologies.orient.core.metadata.security.ORule.ResourceGeneric;
 import com.orientechnologies.orient.core.metadata.security.OSecurityShared;
-import com.orientechnologies.orient.core.metadata.security.OUser;
 import com.orientechnologies.orient.core.record.impl.ODocument;
+
+import ru.ydn.wicket.wicketorientdb.OrientDbWebSession;
 
 /**
  * Helper class for security functionality
@@ -127,7 +124,7 @@ public class OSecurityHelper
 	public static RequiredOrientResource[] requireOClass(final OClass oClass, final Action action, 
 															final OrientPermission... permissions)
 	{
-		return requireOClass(oClass.getName(), action, permissions);
+		return oClass!=null?requireOClass(oClass.getName(), action, permissions):new RequiredOrientResource[0];
 	}
 	/**
 	 * @param oClassName name of the subject {@link OClass} for security check
@@ -138,7 +135,7 @@ public class OSecurityHelper
 	public static RequiredOrientResource[] requireOClass(final String oClassName, final Action action, 
 															final OrientPermission... permissions)
 	{
-		return requireResource(ORule.ResourceGeneric.CLASS, oClassName, action, permissions);
+		return oClassName!=null?requireResource(ORule.ResourceGeneric.CLASS, oClassName, action, permissions):new RequiredOrientResource[0];
 	}
 	/**
 	 * @param resource generic resource
