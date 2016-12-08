@@ -147,20 +147,56 @@ public class TestModels
 	}
 	
 	@Test
+	public void testOQueryProviderContextVariables()
+	{
+		OQueryDataProvider<OUser> provider = new OQueryDataProvider<OUser>("select from OUser where name = $name", OUser.class);
+		provider.setSort("name", SortOrder.ASCENDING);
+		provider.setContextVariable("name", Model.of("admin"));
+		Iterator<OUser> it = provider.iterator(0, -1);
+		assertEquals(1, provider.size());
+		assertEquals("admin", it.next().getName());
+	}
+	
+	@Test
 	public void testOQueryModelSimple()
 	{
 		IModel<String> nameModel = Model.of();
 		OQueryModel<ODocument> queryModel = new OQueryModel<ODocument>("select from ClassA where name = :name");
 		queryModel.setParameter("name", nameModel);
 		nameModel.setObject("doc1");
+		assertEquals(1, queryModel.size());
 		assertEquals("doc1", queryModel.getObject().get(0).field("name"));
 		queryModel.detach();
 		
 		nameModel.setObject("doc2");
+		assertEquals(1, queryModel.size());
 		assertEquals("doc2", queryModel.getObject().get(0).field("name"));
 		queryModel.detach();
 		
 		nameModel.setObject("doc3");
+		assertEquals(1, queryModel.size());
+		assertEquals("doc3", queryModel.getObject().get(0).field("name"));
+		queryModel.detach();
+	}
+	
+	@Test
+	public void testOQueryModelContextVariables()
+	{
+		IModel<String> nameModel = Model.of();
+		OQueryModel<ODocument> queryModel = new OQueryModel<ODocument>("select from ClassA where name = $name");
+		queryModel.setContextVariable("name", nameModel);
+		nameModel.setObject("doc1");
+		assertEquals(1, queryModel.size());
+		assertEquals("doc1", queryModel.getObject().get(0).field("name"));
+		queryModel.detach();
+		
+		nameModel.setObject("doc2");
+		assertEquals(1, queryModel.size());
+		assertEquals("doc2", queryModel.getObject().get(0).field("name"));
+		queryModel.detach();
+		
+		nameModel.setObject("doc3");
+		assertEquals(1, queryModel.size());
 		assertEquals("doc3", queryModel.getObject().get(0).field("name"));
 		queryModel.detach();
 	}

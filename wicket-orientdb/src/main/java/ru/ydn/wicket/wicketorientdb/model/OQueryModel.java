@@ -24,6 +24,7 @@ import com.google.common.base.Function;
 import com.google.common.collect.Iterators;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.orientechnologies.orient.core.command.OCommandContext;
 import com.orientechnologies.orient.core.db.document.ODatabaseDocument;
 import com.orientechnologies.orient.core.metadata.schema.OClass;
 import com.orientechnologies.orient.core.record.ORecord;
@@ -68,6 +69,7 @@ public class OQueryModel<K> extends LoadableDetachableModel<List<K>>
     private String projection;
     private String countSql;
     private Map<String, IModel<Object>> params = new HashMap<String, IModel<Object>>();
+    private Map<String, IModel<Object>> variables = new HashMap<String, IModel<Object>>();
     private String sortableParameter=null;
     private boolean isAccessing=true;
     private boolean containExpand=true;
@@ -138,13 +140,34 @@ public class OQueryModel<K> extends LoadableDetachableModel<List<K>>
         super.detach();
         return this;
     }
+    
+    /**
+     * Set value for context variable
+     * @param varName name of the variable to set
+     * @param value {@link IModel} for the variable value
+     * @return this {@link OQueryModel}
+     */
+    @SuppressWarnings("unchecked")
+	public OQueryModel<K> setContextVariable(String varName, IModel<?> value)
+    {
+        variables.put(varName, (IModel<Object>)value);
+        super.detach();
+        return this;
+    }
+    
+    protected <T> OSQLSynchQuery<T> enhanceContextByVariables(OSQLSynchQuery<T> query) {
+    	for(Map.Entry<String, IModel<Object>> var: variables.entrySet()) {
+    		query.getContext().setVariable(var.getKey(), var.getValue().getObject());
+    	}
+    	return query;
+    }
 
 	@SuppressWarnings("unchecked")
 	protected List<K> load()
     {
     	ODatabaseDocument db = OrientDbWebSession.get().getDatabase();
     	OSQLSynchQuery<K> query = new OSQLSynchQuery<K>(prepareSql(null, null));
-    	List<?> ret = db.query(query, prepareParams());
+    	List<?> ret = db.query(enhanceContextByVariables(query), prepareParams());
     	
     	return transformer==null?(List<K>)ret:Lists.transform(ret, (Function<Object, K>)transformer);
     }
@@ -174,7 +197,7 @@ public class OQueryModel<K> extends LoadableDetachableModel<List<K>>
     {
     	ODatabaseDocument db = OrientDbWebSession.get().getDatabase();
     	OSQLSynchQuery<K> query = new OSQLSynchQuery<K>(prepareSql((int)first, (int)count));
-    	Iterator<?> iterator = db.query(query, prepareParams()).iterator();
+    	Iterator<?> iterator = db.query(enhanceContextByVariables(query), prepareParams()).iterator();
     	return transformer==null?(Iterator<T>)iterator:Iterators.transform(iterator, transformer);
     }
     
@@ -223,7 +246,7 @@ public class OQueryModel<K> extends LoadableDetachableModel<List<K>>
     	{
 	    	ODatabaseDocument db = OrientDbWebSession.get().getDatabase();
 	    	OSQLSynchQuery<ODocument> query = new OSQLSynchQuery<ODocument>(getCountSql());
-	    	List<ODocument> ret = db.query(query, prepareParams());
+	    	List<ODocument> ret = db.query(enhanceContextByVariables(query), prepareParams());
 	    	if(ret!=null && ret.size()>0)
 	    	{
 	    		Number sizeNumber = ret.get(0).field("count");

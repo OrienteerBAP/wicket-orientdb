@@ -68,6 +68,19 @@ public class OQueryDataProvider <K> extends SortableDataProvider<K, String>
         model.setParameter(paramName, value);
         return this;
     }
+    
+    /**
+     * Set value for context variable
+     * @param varName name of the variable to set
+     * @param value {@link IModel} for the variable value
+     * @return this {@link OQueryDataProvider}
+     */
+	public OQueryDataProvider<K> setContextVariable(String varName, IModel<?> value)
+    {
+    	model.setContextVariable(varName, value);
+        super.detach();
+        return this;
+    }
 
     @Override
     public Iterator<K> iterator(long first, long count)
