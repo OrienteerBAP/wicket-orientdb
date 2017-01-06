@@ -9,7 +9,7 @@ import ru.ydn.wicket.wicketorientdb.components.IHookPosition;
 
 
 /**
-*	Strange workaround to support changing system users passwords in web interface
+*	Support of changing system users passwords in web interface
 */
 public class OUserCatchPasswordHook extends ODocumentHookAbstract implements IHookPosition {
 
@@ -29,17 +29,19 @@ public class OUserCatchPasswordHook extends ODocumentHookAbstract implements IHo
 		}
 		
 		IOrientDbSettings settings = OrientDbWebApplication.get().getOrientDbSettings();
-		if (	settings.getDBInstallatorUserName()!=null && 
-				settings.getDBInstallatorUserName().equals(name)){
-			settings.setDBInstallatorUserPassword(password);
+		if (	settings.getAdminUserName()!=null && 
+				settings.getAdminUserName().equals(name)){
+			settings.setAdminPassword(password);
 		}
-		if (settings.getDBUserName()!=null && 
-				settings.getDBUserName().equals(name)){
-			settings.setDBUserPassword(password);
+		if (settings.getGuestUserName()!=null && 
+				settings.getGuestUserName().equals(name)){
+			settings.setGuestPassword(password);
 		}
-		OrientDbWebSession session = OrientDbWebSession.get();
-		if (session.getUsername()!=null && session.getUsername().equals(name)){
-			session.setUser(name, password);
+		if(OrientDbWebSession.exists()) {
+			OrientDbWebSession session = OrientDbWebSession.get();
+			if (session.getUsername()!=null && session.getUsername().equals(name)){
+				session.setUser(name, password);
+			}
 		}
 		return RESULT.RECORD_NOT_CHANGED;
 	}

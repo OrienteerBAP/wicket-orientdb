@@ -19,19 +19,19 @@ public interface IOrientDbSettings {
 	/**
 	 * @return Default DB username
 	 */
-	public String getDBUserName();
+	public String getGuestUserName();
 	/**
 	 * @return Password for default user
 	 */
-	public String getDBUserPassword();
+	public String getGuestPassword();
 	/**
 	 * @return Username for user which should be used for administrative tasks
 	 */
-	public String getDBInstallatorUserName();
+	public String getAdminUserName();
 	/**
 	 * @return Password for the user which should be used for administrative tasks
 	 */
-	public String getDBInstallatorUserPassword();
+	public String getAdminPassword();
 	/**
 	 * @return {@link OPartitionedDatabasePoolFactory} for DB pool for the application
 	 */
@@ -54,22 +54,22 @@ public interface IOrientDbSettings {
 	 * Set username for default user
 	 * @param userName default username for login
 	 */
-	public void setDBUserName(String userName);
+	public void setGuestUserName(String userName);
 	/**
 	 * Set password for default user
 	 * @param password password for default user
 	 */
-	public void setDBUserPassword(String password);
+	public void setGuestPassword(String password);
 	/**
 	 * Set username for user which will be used for admin stuff
 	 * @param userName username of a user with super rights for DB installation
 	 */
-	public void setDBInstallatorUserName(String userName);
+	public void setAdminUserName(String userName);
 	/**
 	 * Set password for user which will be used for admin stuff
 	 * @param password password of a user with super rights
 	 */
-	public void setDBInstallatorUserPassword(String password);
+	public void setAdminPassword(String password);
 	/**
 	 * Set {@link ODatabasePoolBase} which should be used for DB connections pooling
 	 * @param poolFactory setup a poolFactory

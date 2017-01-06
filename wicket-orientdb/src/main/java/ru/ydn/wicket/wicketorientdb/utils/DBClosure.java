@@ -67,12 +67,12 @@ public abstract class DBClosure<V> implements Serializable
 	
 	protected String getUsername()
 	{
-		return username!=null?username:getSettings().getDBInstallatorUserName();
+		return username!=null?username:getSettings().getAdminUserName();
 	}
 	
 	protected String getPassword()
 	{
-		return password!=null?password:getSettings().getDBInstallatorUserPassword();
+		return password!=null?password:getSettings().getAdminPassword();
 	}
 	
 	protected IOrientDbSettings getSettings()

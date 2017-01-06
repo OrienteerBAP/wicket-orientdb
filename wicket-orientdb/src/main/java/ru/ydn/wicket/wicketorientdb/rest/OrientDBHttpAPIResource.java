@@ -202,8 +202,8 @@ public class OrientDBHttpAPIResource extends AbstractResource
 				else
 				{
 					IOrientDbSettings settings = OrientDbWebApplication.get().getOrientDbSettings();
-					username = settings.getDBUserName();
-					password = settings.getDBUserPassword();
+					username = settings.getGuestUserName();
+					password = settings.getGuestPassword();
 				}
 				return new PasswordAuthentication (username, password.toCharArray());
 			}

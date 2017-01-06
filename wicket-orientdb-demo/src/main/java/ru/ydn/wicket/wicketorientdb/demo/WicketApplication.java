@@ -44,15 +44,15 @@ public class WicketApplication extends OrientDbWebApplication
 				IOrientDbSettings settings = app.getOrientDbSettings();
 				ODatabaseDocumentTx db = new ODatabaseDocumentTx(settings.getDBUrl());
 				if(!db.exists()) db = db.create();
-				if(db.isClosed()) db.open(settings.getDBInstallatorUserName(), settings.getDBInstallatorUserPassword());
+				if(db.isClosed()) db.open(settings.getAdminUserName(), settings.getAdminPassword());
 				db.getMetadata().load();
 				db.close();
 			}
 			
 		});
 		getOrientDbSettings().setDBUrl("memory:"+DB_NAME);
-		getOrientDbSettings().setDBUserName("admin");
-		getOrientDbSettings().setDBUserPassword("admin");
+		getOrientDbSettings().setGuestUserName("admin");
+		getOrientDbSettings().setGuestPassword("admin");
 	}
 
 	@Override

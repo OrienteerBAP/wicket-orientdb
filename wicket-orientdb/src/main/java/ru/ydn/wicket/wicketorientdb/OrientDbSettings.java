@@ -16,11 +16,16 @@ import com.orientechnologies.orient.server.network.protocol.http.ONetworkProtoco
  */
 public class OrientDbSettings implements IOrientDbSettings
 {
+	public static final String ADMIN_DEFAULT_USERNAME = "admin";
+	public static final String ADMIN_DEFAULT_PASSWORD = "admin";
+	public static final String READER_DEFAULT_USERNAME = "reader";
+	public static final String READER_DEFAULT_PASSWORD = "reader";
+	
 	private String dbUrl;
-	private String dbUserName;
-	private String dbUserPassword;
-	private String dbInstallatorUserName;
-	private String dbInstallatorUserPassword;
+	private String guestUserName="reader";
+	private String guestPassword="reader";
+	private String adminUserName="admin";
+	private String adminPassword="admin";
 	private String orientDbRestApiUrl;
 	private OPartitionedDatabasePoolFactory poolFactory = new OPartitionedDatabasePoolFactory();
 	
@@ -54,46 +59,46 @@ public class OrientDbSettings implements IOrientDbSettings
 	
 
 	@Override
-	public String getDBUserName() {
-		return dbUserName;
+	public String getGuestUserName() {
+		return guestUserName;
 	}
 
 	@Override
-	public String getDBUserPassword() {
-		return dbUserPassword;
+	public String getGuestPassword() {
+		return guestPassword;
 	}
 
 	@Override
-	public void setDBUserName(String userName) {
-		this.dbUserName = userName;
+	public void setGuestUserName(String userName) {
+		this.guestUserName = userName;
 	}
 
 	@Override
-	public void setDBUserPassword(String password) {
-		this.dbUserPassword = password;
+	public void setGuestPassword(String password) {
+		this.guestPassword = password;
 	}
 	
 	@Override
-	public String getDBInstallatorUserName() {
-		return dbInstallatorUserName;
+	public String getAdminUserName() {
+		return adminUserName;
 	}
 
 
 	@Override
-	public String getDBInstallatorUserPassword() {
-		return dbInstallatorUserPassword;
+	public String getAdminPassword() {
+		return adminPassword;
 	}
 
 
 	@Override
-	public void setDBInstallatorUserName(String userName) {
-		this.dbInstallatorUserName = userName;
+	public void setAdminUserName(String userName) {
+		this.adminUserName = userName;
 	}
 
 
 	@Override
-	public void setDBInstallatorUserPassword(String password) {
-		this.dbInstallatorUserPassword = password;
+	public void setAdminPassword(String password) {
+		this.adminPassword = password;
 	}
 
 
