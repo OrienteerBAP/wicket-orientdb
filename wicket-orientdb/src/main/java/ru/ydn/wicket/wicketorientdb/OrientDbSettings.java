@@ -22,10 +22,10 @@ public class OrientDbSettings implements IOrientDbSettings
 	public static final String READER_DEFAULT_PASSWORD = "reader";
 	
 	private String dbUrl;
-	private String guestUserName="reader";
-	private String guestPassword="reader";
-	private String adminUserName="admin";
-	private String adminPassword="admin";
+	private String guestUserName=READER_DEFAULT_USERNAME;
+	private String guestPassword=READER_DEFAULT_PASSWORD;
+	private String adminUserName=ADMIN_DEFAULT_USERNAME;
+	private String adminPassword=ADMIN_DEFAULT_PASSWORD;
 	private String orientDbRestApiUrl;
 	private OPartitionedDatabasePoolFactory poolFactory = new OPartitionedDatabasePoolFactory();
 	
