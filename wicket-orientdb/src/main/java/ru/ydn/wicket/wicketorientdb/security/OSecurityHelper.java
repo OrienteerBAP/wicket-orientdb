@@ -30,7 +30,9 @@ public class OSecurityHelper
 	public static final String DATABASE = "DATABASE";
 	public static final String SCHEMA = "SCHEMA";
 	public static final String COMMAND = "COMMAND";
+	public static final String COMMAND_GREMLIN = "COMMAND_GREMLIN";
 	public static final String RECORD_HOOK = "RECORD_HOOK";
+	public static final String SYSTEM_CLUSTERS = "SYSTEM_CLUSTERS";
 	
 	private static final Map<OrientPermission, String> MAPPING_FOR_HACK = new HashMap<OrientPermission, String>();
 	static
@@ -242,15 +244,29 @@ public class OSecurityHelper
 	}
 	
 	/**
-	 * Tranform name to {@link ORule.ResourceGeneric}
+	 * Transform name to {@link ORule.ResourceGeneric}
 	 * @param name name to transform
 	 * @return {@link ORule.ResourceGeneric} or null
 	 */
 	public static ORule.ResourceGeneric getResourceGeneric(String name)
 	{
-		ORule.ResourceGeneric value = ORule.ResourceGeneric.valueOf(name);
+		String shortName = Strings.beforeFirst(name, '.');
+		if(Strings.isEmpty(shortName)) shortName = name;
+		ORule.ResourceGeneric value = ORule.ResourceGeneric.valueOf(shortName);
 		if(value==null) value = ORule.mapLegacyResourceToGenericResource(name);
 		return value;
+	}
+	
+	/**
+	 * Extract specific from resource string
+	 * @param name name to transform
+	 * @return specific resource or null
+	 */
+	public static String getResourceSpecific(String name)
+	{
+		ORule.ResourceGeneric generic = getResourceGeneric(name);
+		String specific = generic!=null?Strings.afterFirst(name, '.'):name;
+		return Strings.isEmpty(specific)?null:specific;
 	}
 	
 }

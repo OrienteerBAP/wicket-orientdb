@@ -1,5 +1,6 @@
 package ru.ydn.wicket.wicketorientdb;
 
+import org.apache.wicket.Component;
 import org.apache.wicket.Page;
 import org.apache.wicket.WicketRuntimeException;
 import org.apache.wicket.authorization.UnauthorizedActionException;
@@ -24,6 +25,24 @@ import com.orientechnologies.orient.core.exception.OValidationException;
 public class OrientDefaultExceptionsHandlingListener extends
 		AbstractRequestCycleListener {
 	
+	private static class UnauthorizedInstantiationHandler implements IRequestHandler {
+		
+		private Component component;
+		
+		public UnauthorizedInstantiationHandler(Component component) {
+			this.component = component;
+		}
+
+		@Override
+		public void respond(IRequestCycle requestCycle) {
+			OrientDbWebApplication.get().onUnauthorizedInstantiation(component);
+		}
+
+		@Override
+		public void detach(IRequestCycle requestCycle) {/*NOP*/}
+		
+	}
+	
 	@Override
 	public IRequestHandler onException(RequestCycle cycle, Exception ex) {
 		Throwable th = null;
@@ -32,8 +51,12 @@ public class OrientDefaultExceptionsHandlingListener extends
 				|| (th=Exceptions.findCause(ex, OSchemaException.class))!=null
 				|| (th=Exceptions.findCause(ex, IllegalStateException.class))!=null && Exceptions.findCause(ex, WicketRuntimeException.class)==null)
 		{
-			Page page = extractCurrentPage();
-			if(page==null) return null;
+			Page page = extractCurrentPage(false);
+			if(page==null) {
+				return th instanceof OSecurityException ?
+							new UnauthorizedInstantiationHandler(extractCurrentPage(true))
+							:null; 
+			}
 			OrientDbWebSession.get().error(th.getMessage());
 			return new RenderPageRequestHandler(new PageProvider(page),
 			RenderPageRequestHandler.RedirectPolicy.ALWAYS_REDIRECT);
@@ -41,17 +64,7 @@ public class OrientDefaultExceptionsHandlingListener extends
 		else if((th=Exceptions.findCause(ex, UnauthorizedActionException.class))!=null)
 		{
 			final UnauthorizedActionException unauthorizedActionException = (UnauthorizedActionException)th;
-			return new IRequestHandler()
-				{
-					@Override
-					public void respond(IRequestCycle requestCycle) {
-						OrientDbWebApplication.get().onUnauthorizedInstantiation(unauthorizedActionException.getComponent());
-					}
-	
-					@Override
-					public void detach(IRequestCycle requestCycle) {
-					}
-				};
+			return new UnauthorizedInstantiationHandler(unauthorizedActionException.getComponent());
 		}
 		else
 		{
@@ -59,7 +72,7 @@ public class OrientDefaultExceptionsHandlingListener extends
 		}
 	}
 	
-	private Page extractCurrentPage()
+	private Page extractCurrentPage(boolean fullSearch)
 	{
 		final RequestCycle requestCycle = RequestCycle.get();
 
@@ -68,6 +81,10 @@ public class OrientDefaultExceptionsHandlingListener extends
 		if (handler == null)
 		{
 			handler = requestCycle.getRequestHandlerScheduledAfterCurrent();
+			
+			if(handler==null && fullSearch) {
+				handler = OrientDbWebApplication.get().getRootRequestMapper().mapRequest(requestCycle.getRequest());
+			}
 		}
 
 		if (handler instanceof IPageRequestHandler)
