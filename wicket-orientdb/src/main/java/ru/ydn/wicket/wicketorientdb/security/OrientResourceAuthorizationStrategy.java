@@ -21,8 +21,8 @@ import ru.ydn.wicket.wicketorientdb.OrientDbWebSession;
  * OrientDB specific {@link IAuthorizationStrategy}. It supports 3 types for components securing
  * <ul>
  * <li>Statically by {@link RequiredOrientResource} and {@link RequiredOrientResources} annotations</li>
- * <li>Dynamically by {@link ISecuredComponent}
- * <li>Dynamically by {@link Map}&lt;{@link String}, {@link OrientPermission}[]> object assigned to meta data key {@link OrientPermission}.REQUIRED_ORIENT_RESOURCES_KEY </li>
+ * <li>Dynamically by {@link ISecuredComponent}</li>
+ * <li>Dynamically by {@link Map}&lt;{@link String}, {@link OrientPermission}[]&gt; object assigned to meta data key {@link OrientPermission}.REQUIRED_ORIENT_RESOURCES_KEY </li>
  * </ul> 
  */
 public class OrientResourceAuthorizationStrategy  implements IAuthorizationStrategy

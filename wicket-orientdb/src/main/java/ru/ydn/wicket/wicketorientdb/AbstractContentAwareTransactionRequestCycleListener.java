@@ -3,10 +3,11 @@ package ru.ydn.wicket.wicketorientdb;
 import org.apache.wicket.MetaDataKey;
 import org.apache.wicket.request.IRequestHandler;
 import org.apache.wicket.request.cycle.AbstractRequestCycleListener;
+import org.apache.wicket.request.cycle.IRequestCycleListener;
 import org.apache.wicket.request.cycle.RequestCycle;
 
 /**
- * {@link org.apache.wicket.request.cycle.IRequestListener} for wrapping interesting content by methods start() and end().
+ * {@link IRequestCycleListener} for wrapping interesting content by methods start() and end().
  * Usefull for transactions
  */
 public abstract class AbstractContentAwareTransactionRequestCycleListener extends AbstractRequestCycleListener

@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 /**
  * Interface for manipulations on prototype
- * @param <T>
+ * @param <T> interface for prototyping
  */
 public interface IPrototype<T> extends Serializable
 {

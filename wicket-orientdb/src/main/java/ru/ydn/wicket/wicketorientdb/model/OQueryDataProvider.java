@@ -17,7 +17,7 @@ import com.orientechnologies.orient.core.type.ODocumentWrapper;
 
 /**
  * Provider of data by quering of OrientDB
- * @param <K>
+ * @param <K> The provider object type
  */
 public class OQueryDataProvider <K> extends SortableDataProvider<K, String>
 {
@@ -50,7 +50,7 @@ public class OQueryDataProvider <K> extends SortableDataProvider<K, String>
     
     /**
      * Low level constructor to initialize by direct {@link OQueryModel}
-     * @param oQueryModel {@link OQueryModel} to use in provider
+     * @param model {@link OQueryModel} to use in provider
      */
     public OQueryDataProvider(OQueryModel<K> model)
     {

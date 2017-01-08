@@ -6,6 +6,7 @@ import java.util.Iterator;
 import org.apache.wicket.core.util.lang.PropertyResolver;
 import org.apache.wicket.extensions.markup.html.repeater.util.SortParam;
 import org.apache.wicket.extensions.markup.html.repeater.util.SortableDataProvider;
+import org.apache.wicket.markup.repeater.data.IDataProvider;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.util.lang.Args;
 
@@ -18,7 +19,7 @@ import com.google.common.collect.Ordering;
 
 /**
  * Realization of {@link SortableDataProvider} which use properties values and in memory sorting
- * @param <T> 
+ * @param <T> type of entities provided by this {@link IDataProvider}
  * @param <S> the type of the sorting parameter
  */
 public abstract class AbstractJavaSortableDataProvider<T, S> extends SortableDataProvider<T, S>

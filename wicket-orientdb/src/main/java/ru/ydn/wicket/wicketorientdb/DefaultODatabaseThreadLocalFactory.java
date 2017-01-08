@@ -7,7 +7,7 @@ import com.orientechnologies.orient.core.db.ODatabaseThreadLocalFactory;
 import com.orientechnologies.orient.core.db.document.ODatabaseDocument;
 
 /**
- * Implemenetation of {@link ODatabaseThreadLocalFactory} for obtaining {@link ODatabaseRecord} according to {@link IOrientDbSettings}
+ * Implementation of {@link ODatabaseThreadLocalFactory} for obtaining {@link ODatabaseDocument} according to {@link IOrientDbSettings}
  */
 public class DefaultODatabaseThreadLocalFactory implements ODatabaseThreadLocalFactory
 {

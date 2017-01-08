@@ -33,7 +33,7 @@ import com.orientechnologies.orient.core.record.impl.ODocument;
 
 /**
  * {@link IValidator} for validating of value agains constraints specified on {@link OProperty}
- * @param <T>
+ * @param <T> type of validatable
  */
 public class OPropertyValueValidator<T> extends Behavior implements
 		IValidator<T>, INullAcceptingValidator<T> {

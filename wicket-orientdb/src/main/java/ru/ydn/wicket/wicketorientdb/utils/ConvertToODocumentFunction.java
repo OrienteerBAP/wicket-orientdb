@@ -15,7 +15,7 @@ import com.orientechnologies.orient.core.record.impl.ODocument;
  * <li>{@link ORID}</li>
  * <li>{@link CharSequence}</li>
  * </ul>
- * @param <F>
+ * @param <F> from type to be converted to {@link ODocument}
  */
 public class ConvertToODocumentFunction<F> implements Function<F, ODocument>, Serializable
 {

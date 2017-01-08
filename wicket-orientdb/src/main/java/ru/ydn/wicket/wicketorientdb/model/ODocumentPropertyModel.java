@@ -7,7 +7,7 @@ import com.orientechnologies.orient.core.type.ODocumentWrapper;
 
 /**
  * Model for obtaining and setting value of a {@link ODocument} property
- * @param <T>
+ * @param <T> The Model object type
  */
 public class ODocumentPropertyModel<T> extends PropertyModel<T> {
 

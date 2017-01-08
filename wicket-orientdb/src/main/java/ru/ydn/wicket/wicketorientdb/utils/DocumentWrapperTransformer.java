@@ -10,7 +10,7 @@ import com.orientechnologies.orient.core.record.impl.ODocument;
 
 /**
  * Transformer for wrapping of {@link ODocument}
- * @param <T>
+ * @param <T> type to wrap to
  */
 public class DocumentWrapperTransformer<T> implements Function<ODocument, T>, Serializable
 {

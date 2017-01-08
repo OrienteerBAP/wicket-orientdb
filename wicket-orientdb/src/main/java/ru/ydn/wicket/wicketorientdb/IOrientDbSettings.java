@@ -6,6 +6,7 @@ import com.orientechnologies.orient.core.db.ODatabase;
 import com.orientechnologies.orient.core.db.ODatabasePoolBase;
 import com.orientechnologies.orient.core.db.ODatabaseThreadLocalFactory;
 import com.orientechnologies.orient.core.db.OPartitionedDatabasePoolFactory;
+import com.orientechnologies.orient.core.db.document.ODatabaseDocument;
 import com.orientechnologies.orient.core.hook.ORecordHook;
 
 /**
@@ -37,7 +38,7 @@ public interface IOrientDbSettings {
 	 */
 	public OPartitionedDatabasePoolFactory getDatabasePoolFactory();
 	/**
-	 * @return factory for {@link ODatabaseRecord}
+	 * @return factory for {@link ODatabaseDocument}
 	 */
 	public ODatabaseThreadLocalFactory getDatabaseThreadLocalFactory();
 	
@@ -76,7 +77,7 @@ public interface IOrientDbSettings {
 	 */
 	public void setDatabasePoolFactory(OPartitionedDatabasePoolFactory poolFactory);
 	/**
-	 * Set {@link ODatabaseThreadLocalFactory} which should be used for obtaining {@link ODatabaseRecord}
+	 * Set {@link ODatabaseThreadLocalFactory} which should be used for obtaining {@link ODatabaseDocument}
 	 * @param factory factory of a {@link ThreadLocal} db
 	 */
 	public void setDatabaseThreadLocalFactory(ODatabaseThreadLocalFactory factory);

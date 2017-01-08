@@ -12,9 +12,6 @@ import com.orientechnologies.orient.core.db.document.ODatabaseDocumentTx;
 
 /**
  * Application object for your web application.
- * If you want to run this application without deploying, run the Start class.
- * 
- * @see ru.ydn.wicket.wicketorientdb.demo.Start#main(String[])
  */
 public class WicketApplication extends OrientDbWebApplication
 {

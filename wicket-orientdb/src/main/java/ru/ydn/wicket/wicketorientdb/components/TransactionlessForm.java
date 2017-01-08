@@ -9,7 +9,7 @@ import ru.ydn.wicket.wicketorientdb.OrientDbWebSession;
 
 /**
  * Form component which stops transaction for models updates
- * @param <T>
+ * @param <T> The model object type
  */
 public class TransactionlessForm<T> extends Form<T>
 {

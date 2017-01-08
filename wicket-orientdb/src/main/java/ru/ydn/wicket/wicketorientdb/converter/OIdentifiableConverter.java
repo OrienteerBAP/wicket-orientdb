@@ -12,7 +12,7 @@ import com.orientechnologies.orient.core.id.ORecordId;
 /**
  * Converter for {@link OIdentifiable} &lt;-&gt; {@link String}
  * Can be overridden for subclasses of {@link OIdentifiable}
- * @param <T>
+ * @param <T> particular type of {@link OIdentifiable}
  */
 public class OIdentifiableConverter<T extends OIdentifiable> extends AbstractConverter<T>
 {

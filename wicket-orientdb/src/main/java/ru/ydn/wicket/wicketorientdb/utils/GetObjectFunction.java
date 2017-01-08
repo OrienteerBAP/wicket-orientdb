@@ -8,7 +8,7 @@ import com.google.common.base.Function;
 
 /**
  * Utility {@link Function} for obtaining object from specified {@link IModel}
- * @param <T>
+ * @param <T> type of model
  */
 public class GetObjectFunction<T> implements Function<IModel<T>, T>, Serializable
 {

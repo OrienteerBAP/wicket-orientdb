@@ -33,7 +33,7 @@ import com.orientechnologies.orient.core.sql.query.OSQLSynchQuery;
 
 /**
  * Model to obtain data from OrientDB by query
- * @param <K>
+ * @param <K> The Model Object type
  */
 public class OQueryModel<K> extends LoadableDetachableModel<List<K>>
 {
@@ -340,7 +340,7 @@ public class OQueryModel<K> extends LoadableDetachableModel<List<K>>
     }
     
     /**
-     * @return Current {@link ODatabaseRecord}
+     * @return Current {@link ODatabaseDocument}
      */
     public ODatabaseDocument getDatabase()
 	{

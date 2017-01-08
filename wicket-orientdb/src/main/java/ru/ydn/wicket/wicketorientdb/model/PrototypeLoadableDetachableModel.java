@@ -10,7 +10,7 @@ import ru.ydn.wicket.wicketorientdb.proto.IPrototype;
 
 /**
  * Abstract class for storing {@link IPrototype} and transparent switching to realized object
- * @param <T>
+ * @param <T> type of a prototype
  */
 public abstract class PrototypeLoadableDetachableModel<T> extends
 		LoadableDetachableModel<T> implements IObjectClassAwareModel<T>{
@@ -71,7 +71,7 @@ public abstract class PrototypeLoadableDetachableModel<T> extends
 	
 	/**
 	 * Method for obtaining PK parameters from the object 
-	 * @param object
+	 * @param object object to be handled
 	 */
 	protected abstract void handleObject(T object);
 

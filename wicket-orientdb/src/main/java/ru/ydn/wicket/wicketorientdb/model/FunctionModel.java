@@ -9,8 +9,8 @@ import com.google.common.base.Function;
 
 /**
  * Model for lazy apply of function on object from underling model
- * @param <F>
- * @param <T>
+ * @param <F> convert from type
+ * @param <T> convert to type
  */
 public class FunctionModel<F, T> extends AbstractConverterModel<F, T>
 {
