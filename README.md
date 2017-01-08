@@ -20,8 +20,8 @@ public class WicketApplication extends OrientDbWebApplication
 Specify connection properties
 ```java
 		getOrientDbSettings().setDBUrl("local:localhost/"+DB_NAME);
-		getOrientDbSettings().setDefaultUserName("admin");
-		getOrientDbSettings().setDefaultUserPassword("admin");
+		getOrientDbSettings().setAdminUserName("admin");
+		getOrientDbSettings().setAdminUserPassword("admin");
 ```
 
 Embedded OrientDB Server
@@ -49,8 +49,8 @@ public class WicketApplication extends OrientDbWebApplication
 			
 		});
 		getOrientDbSettings().setDBUrl("local:localhost/"+DB_NAME);
-		getOrientDbSettings().setDefaultUserName("admin");
-		getOrientDbSettings().setDefaultUserPassword("admin");
+		getOrientDbSettings().setAdminUserName("admin");
+		getOrientDbSettings().setAdminUserPassword("admin");
 	}
 }
 ```
@@ -76,8 +76,8 @@ public class MyPage extends WebPage {
 ```
 ```java
 @RequiredOrientResources({
-	@RequiredOrientResource(value = ORule.ResourceGeneric.SCHEMA, permissions=OrientPermission.READ),
-	@RequiredOrientResource(value = ORule.ResourceGeneric.CLASS, permissions=OrientPermission.READ),
+	@RequiredOrientResource(value = OSecurityHelper.SCHEMA, permissions=OrientPermission.READ),
+	@RequiredOrientResource(value = OSecurityHelper.CLASS, permissions=OrientPermission.READ),
 })
 public class MyPanel extends Panel {
 ...
@@ -92,7 +92,7 @@ public class SaveSchemaCommand<T> extends SavePrototypeCommand<T> implements ISe
 	public RequiredOrientResource[] getRequiredResources() {
 		T object = objectModel.getObject();
 		OrientPermission permission = (object instanceof IPrototype<?>)?OrientPermission.CREATE:OrientPermission.UPDATE;
-		return OSecurityHelper.requireResource(ORule.ResourceGeneric.SCHEMA, null, permission);
+		return OSecurityHelper.requireResource(OSecurityHelper.SCHEMA, null, permission);
 	}
 
 ```
