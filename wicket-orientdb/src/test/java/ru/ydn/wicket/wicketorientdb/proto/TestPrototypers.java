@@ -102,6 +102,16 @@ public class TestPrototypers
 		properties = newClass.declaredProperties();
 		assertNotNull(properties);
 		assertTrue(properties.size()==0);
+		assertFalse(newClass.hasSuperClasses());
+		OClass oRoleClass = wicket.getTester().getSchema().getClass("ORole");
+		newClass.addSuperClass(oRoleClass);
+		assertTrue(newClass.hasSuperClasses());
+		assertTrue(newClass.getSuperClassesNames().contains("ORole"));
+		assertTrue(newClass.getSuperClasses().contains(oRoleClass));
+		assertTrue(newClass.isSubClassOf(oRoleClass));
+		newClass.removeSuperClass(oRoleClass);
+		assertFalse(newClass.hasSuperClasses());
+		assertFalse(newClass.isSubClassOf(oRoleClass));
 		//Realization
 		assertTrue(newClass instanceof IPrototype); 
 		OClass realizedNewClass = ((IPrototype<OClass>)newClass).realizePrototype();
