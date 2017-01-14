@@ -19,7 +19,10 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Utility filter to catch content prior wicket
+ * 
+ * @deprecated Should be fixed in Wicket 7.6.0
  */
+@Deprecated
 public class InterceptContentFilter implements Filter{
 	
 	public static final String HTTP_REQUEST_ATTR_CONTENT = "intercepted-content";

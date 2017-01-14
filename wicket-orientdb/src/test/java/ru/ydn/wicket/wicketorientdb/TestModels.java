@@ -9,6 +9,7 @@ import java.util.Map;
 import org.apache.wicket.extensions.markup.html.repeater.data.sort.SortOrder;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
+import org.apache.wicket.model.PropertyModel;
 import org.junit.ClassRule;
 import org.junit.Test;
 
@@ -358,6 +359,14 @@ public class TestModels
 	{
 		ORecordId recordId = new ORecordId("#5:0");
 		ODocumentPropertyModel<String> model = new ODocumentPropertyModel<String>(new ODocumentModel(recordId), "name");
+		assertModelObjectEquals("admin", model);
+	}
+	
+	@Test
+	public void testODocumentPropertyLocator()
+	{
+		ORecordId recordId = new ORecordId("#5:0");
+		PropertyModel<String> model = new PropertyModel<>(new ODocumentModel(recordId), "name");
 		assertModelObjectEquals("admin", model);
 	}
 	
