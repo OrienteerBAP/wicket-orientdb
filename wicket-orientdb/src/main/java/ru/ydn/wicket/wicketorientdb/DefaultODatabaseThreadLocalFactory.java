@@ -21,11 +21,11 @@ public class DefaultODatabaseThreadLocalFactory implements ODatabaseThreadLocalF
 	@Override
 	public ODatabaseDocumentInternal getThreadDatabase() {
 		IOrientDbSettings settings = app.getOrientDbSettings();
-		OrientDbWebSession session = OrientDbWebSession.get();
+		OrientDbWebSession session = OrientDbWebSession.exists()?OrientDbWebSession.get():null;
 		ODatabaseDocumentInternal db;
 		String username;
 		String password;
-		if(session.isSignedIn())
+		if(session!=null && session.isSignedIn())
 		{
 			username = session.getUsername();
 			password = session.getPassword();
