@@ -112,7 +112,7 @@ public class OrientDBHttpAPIResource extends AbstractResource
 						if(initialContentType!=null) con.setRequestProperty("Content-Type", initialContentType);
 						int copied = IOUtils.copy(httpRequest.getInputStream(), con.getOutputStream());
 						if(contentLength>0 && copied==0) {
-							IOUtils.copy(InterceptContentFilter.getContentAsInputStream(httpRequest), con.getOutputStream());
+							IOUtils.copy(httpRequest.getInputStream(), con.getOutputStream());
 						}
 					}
 					IOUtils.copy(con.getInputStream(), out, "UTF-8");
