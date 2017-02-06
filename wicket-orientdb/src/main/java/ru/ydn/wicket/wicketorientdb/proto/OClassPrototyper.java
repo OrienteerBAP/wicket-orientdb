@@ -21,6 +21,7 @@ public class OClassPrototyper extends AbstractPrototyper<OClass> {
 	public static final String NAME = "name";
 	public static final String SHORT_NAME = "shortName";
 	public static final String SUPER_CLASSES = "superClasses";
+	public static final String SUPER_CLASSES_NAMES = "superClassesNames";
 	public static final String OVER_SIZE = "overSize";
 	public static final String STRICT_MODE = "strictMode";
 	public static final String ABSTRACT = "abstract";
@@ -47,6 +48,7 @@ public class OClassPrototyper extends AbstractPrototyper<OClass> {
 
 		values.remove(NAME);
 		values.remove(SUPER_CLASSES);
+		values.remove(SUPER_CLASSES_NAMES);
 		values.remove(CLUSTER_SELECTION);
 		return oClass;
 	}
@@ -87,7 +89,7 @@ public class OClassPrototyper extends AbstractPrototyper<OClass> {
 			for (OClass oClass : superClasses) {
 				superClassesNames.add(oClass.getName());
 			}
-			return super.handleSet(propName, superClassesNames);
+			return super.handleSet(SUPER_CLASSES_NAMES, superClassesNames);
 		}
 		//Default
 		return super.handleSet(propName, value);
@@ -100,7 +102,7 @@ public class OClassPrototyper extends AbstractPrototyper<OClass> {
 			return clusterSelection==null?null:new OClusterSelectionFactory().newInstance(clusterSelection);
 		} else if (SUPER_CLASSES.equals(propName)){
 			List<OClass> ret = new ArrayList<OClass>();
-			List<String> superClassesNames = (List<String>) values.get(SUPER_CLASSES);
+			List<String> superClassesNames = (List<String>) values.get(SUPER_CLASSES_NAMES);
 			if(superClassesNames!=null && !superClassesNames.isEmpty()) {
 				OSchema schema = OrientDbWebSession.get().getDatabase().getMetadata().getSchema();
 				for (String superClassName : superClassesNames) {
@@ -123,15 +125,40 @@ public class OClassPrototyper extends AbstractPrototyper<OClass> {
 		}
 		else if("addSuperClass".equals(methodName))
 		{
-			Object superClasses = values.get(SUPER_CLASSES);
+			Object superClasses = values.get(SUPER_CLASSES_NAMES);
 			if (superClasses == null)
 			{
 				superClasses = new ArrayList<String>();
-				values.put(SUPER_CLASSES, superClasses);
+				values.put(SUPER_CLASSES_NAMES, superClasses);
 			}
 
 			((List<String>) superClasses).add(((OClass) args[0]).getName());
 			return proxy;
+		}
+		else if("removeSuperClass".equals(methodName))
+		{
+			Object superClasses = values.get(SUPER_CLASSES_NAMES);
+			if (superClasses == null)
+			{
+				superClasses = new ArrayList<String>();
+				values.put(SUPER_CLASSES_NAMES, superClasses);
+			}
+
+			((List<String>) superClasses).remove(((OClass) args[0]).getName());
+			return proxy;
+		}
+		else if("isSubClassOf".equals(methodName))
+		{
+			List<String> superClasses = (List<String>) values.get(SUPER_CLASSES_NAMES);
+			if(superClasses==null || superClasses.isEmpty() || args.length!=1 || args[0]==null) return false;
+			Object sup = args[0];
+			String superClassName = sup instanceof OClass? ((OClass)sup).getName() : sup.toString();
+			return superClasses.contains(superClassName);
+		}
+		else if("hasSuperClasses".equals(methodName))
+		{
+			List<String> superClasses = (List<String>) values.get(SUPER_CLASSES_NAMES);
+			return !(superClasses ==null || superClasses.isEmpty());
 		}
 		else
 		{

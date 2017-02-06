@@ -47,7 +47,7 @@ public class TestSecurity
 		assertFalse(tester.getSession().isSignedIn());
 		assertNull(tester.getSession().getUser());
 		assertNull(tester.getSession().getUsername());
-		assertEquals(settings.getDBUserName(), tester.getDatabase().getUser().getName());
+		assertEquals(settings.getGuestUserName(), tester.getDatabase().getUser().getName());
 		
 		//Signin and check signed in state
 		assertTrue(tester.signIn(user, password));
@@ -62,7 +62,7 @@ public class TestSecurity
 		assertFalse(tester.getSession().isSignedIn());
 		assertNull(tester.getSession().getUser());
 		assertNull(tester.getSession().getUsername());
-		assertEquals(settings.getDBUserName(), tester.getDatabase().getUser().getName());
+		assertEquals(settings.getGuestUserName(), tester.getDatabase().getUser().getName());
 	}
 	
 	
@@ -71,7 +71,7 @@ public class TestSecurity
 	public void testTestHomePage() throws Exception
 	{
 		WicketOrientDbTester tester = wicket.getTester();
-		assertEquals(tester.getApplication().getOrientDbSettings().getDBUserName(), tester.getDatabase().getUser().getName());
+		assertEquals(tester.getApplication().getOrientDbSettings().getGuestUserName(), tester.getDatabase().getUser().getName());
 		tester.startPage(OrientDbTestPage.class);
 		tester.assertRenderedPage(OrientDbTestPage.class);
 	}
@@ -80,7 +80,7 @@ public class TestSecurity
 	public void testStaticPageForUnsigned() throws Exception
 	{
 		WicketOrientDbTester tester = wicket.getTester();
-		assertEquals(tester.getApplication().getOrientDbSettings().getDBUserName(), tester.getDatabase().getUser().getName());
+		assertEquals(tester.getApplication().getOrientDbSettings().getGuestUserName(), tester.getDatabase().getUser().getName());
 		tester.startPage(StaticSecuredPage.class);
 		tester.assertRenderedPage(SignInPage.class);
 	}
@@ -89,7 +89,7 @@ public class TestSecurity
 	public void testStaticPageForSigned()
 	{
 		WicketOrientDbTester tester = wicket.getTester();
-		assertEquals(tester.getApplication().getOrientDbSettings().getDBUserName(), tester.getDatabase().getUser().getName());
+		assertEquals(tester.getApplication().getOrientDbSettings().getGuestUserName(), tester.getDatabase().getUser().getName());
 		assertTrue(tester.signIn("reader", "reader"));
 		tester.startPage(StaticSecuredPage.class);
 		tester.signOut();
@@ -99,7 +99,7 @@ public class TestSecurity
 	public void testStaticPageForAdmin()
 	{
 		WicketOrientDbTester tester = wicket.getTester();
-		assertEquals(tester.getApplication().getOrientDbSettings().getDBUserName(), tester.getDatabase().getUser().getName());
+		assertEquals(tester.getApplication().getOrientDbSettings().getGuestUserName(), tester.getDatabase().getUser().getName());
 		assertTrue(tester.signIn("admin", "admin"));
 		tester.startPage(StaticSecuredPage.class);
 		tester.assertRenderedPage(StaticSecuredPage.class);
@@ -109,7 +109,7 @@ public class TestSecurity
 	public void testDynamicPageForUnsigned() throws Exception
 	{
 		WicketOrientDbTester tester = wicket.getTester();
-		assertEquals(tester.getApplication().getOrientDbSettings().getDBUserName(), tester.getDatabase().getUser().getName());
+		assertEquals(tester.getApplication().getOrientDbSettings().getGuestUserName(), tester.getDatabase().getUser().getName());
 		tester.startPage(DynamicSecuredPage.class);
 		tester.assertRenderedPage(SignInPage.class);
 	}
@@ -118,7 +118,7 @@ public class TestSecurity
 	public void testDynamicPageForSigned()
 	{
 		WicketOrientDbTester tester = wicket.getTester();
-		assertEquals(tester.getApplication().getOrientDbSettings().getDBUserName(), tester.getDatabase().getUser().getName());
+		assertEquals(tester.getApplication().getOrientDbSettings().getGuestUserName(), tester.getDatabase().getUser().getName());
 		assertTrue(tester.signIn("reader", "reader"));
 		tester.startPage(DynamicSecuredPage.class);
 		tester.signOut();
@@ -128,7 +128,7 @@ public class TestSecurity
 	public void testDynamicPageForAdmin()
 	{
 		WicketOrientDbTester tester = wicket.getTester();
-		assertEquals(tester.getApplication().getOrientDbSettings().getDBUserName(), tester.getDatabase().getUser().getName());
+		assertEquals(tester.getApplication().getOrientDbSettings().getGuestUserName(), tester.getDatabase().getUser().getName());
 		assertTrue(tester.signIn("admin", "admin"));
 		tester.startPage(DynamicSecuredPage.class);
 		tester.assertRenderedPage(DynamicSecuredPage.class);

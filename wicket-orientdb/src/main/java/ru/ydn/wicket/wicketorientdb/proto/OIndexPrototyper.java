@@ -10,6 +10,7 @@ import com.orientechnologies.orient.core.index.OIndex;
 import com.orientechnologies.orient.core.index.OIndexDefinition;
 import com.orientechnologies.orient.core.metadata.schema.OClass;
 import com.orientechnologies.orient.core.metadata.schema.OSchema;
+import com.orientechnologies.orient.core.record.impl.ODocument;
 
 /**
  * Prototyper for {@link OIndex}
@@ -22,10 +23,12 @@ public class OIndexPrototyper extends AbstractPrototyper<OIndex>
 	/**
 	 * Inner interface to make prototype name and type writable 
 	 */
-	public static interface IMakeNameAndTypeWritableFix
+	public static interface IMakeSomeFieldsWritableFix
 	{
 		public void setName(String name);
 		public void setType(String type);
+		public void setMetadata(ODocument doc);
+		public void setAlgorithm(String algorithm);
 	}
 	public static final String NAME = "name";
 	public static final String TYPE = "type";
@@ -37,11 +40,13 @@ public class OIndexPrototyper extends AbstractPrototyper<OIndex>
 	public static final String DEF_NULLS_IGNORED = "definition.nullValuesIgnored";
 	public static final String SIZE = "size";
 	public static final String KEY_SIZE = "keySize";
+	public static final String ALGORITHM = "algorithm";
+	public static final String METADATA = "metadata";
 
-	public static final List<String> OINDEX_ATTRS = Arrays.asList(NAME, TYPE, DEF_CLASS_NAME, DEF_FIELDS, DEF_COLLATE, DEF_NULLS_IGNORED, SIZE, KEY_SIZE);
+	public static final List<String> OINDEX_ATTRS = Arrays.asList(NAME, TYPE, ALGORITHM, DEF_CLASS_NAME, DEF_FIELDS, DEF_COLLATE, DEF_NULLS_IGNORED, METADATA, SIZE, KEY_SIZE);
 	public static final List<String> RW_ATTRS = Arrays.asList(DEF_COLLATE, DEF_NULLS_IGNORED);
 
-	private static final Class<?>[] FIX_INTERFACES = new Class<?>[]{IMakeNameAndTypeWritableFix.class}; 
+	private static final Class<?>[] FIX_INTERFACES = new Class<?>[]{IMakeSomeFieldsWritableFix.class}; 
 	
 	
 	public OIndexPrototyper(String className, List<String> fields)
@@ -49,6 +54,7 @@ public class OIndexPrototyper extends AbstractPrototyper<OIndex>
 		Args.notEmpty(fields, "fields");
 		values.put(DEF_CLASS_NAME, className);
 		values.put(DEF_FIELDS, fields);
+		values.put(DEF_NULLS_IGNORED, true);
 		if(fields!=null && fields.size()==1) {
 			values.put(NAME, className+"."+fields.get(0));
 		}
@@ -62,8 +68,10 @@ public class OIndexPrototyper extends AbstractPrototyper<OIndex>
 		List<String> fields = proxy.getDefinition().getFields();
 		String type = proxy.getType();
 		if(name==null) name=oClass.getName()+"."+fields.get(0);
+		ODocument metadata = proxy.getMetadata();
+		String algorithm = proxy.getAlgorithm();
 		values.keySet().retainAll(RW_ATTRS);
-		return oClass.createIndex(name, type, fields.toArray(new String[0]));
+		return oClass.createIndex(name, type, null, metadata, algorithm, fields.toArray(new String[0]));
 	}
 	
 	@Override

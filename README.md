@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/OrienteerDW/wicket-orientdb.svg?branch=master)](https://travis-ci.org/OrienteerDW/wicket-orientdb) [![Coverage Status](https://img.shields.io/coveralls/OrienteerDW/wicket-orientdb.svg)](https://coveralls.io/r/OrienteerDW/wicket-orientdb) [![Dependency Status](https://www.versioneye.com/user/projects/572bd8dea0ca35004cf77259/badge.svg?style=flat)](https://www.versioneye.com/user/projects/572bd8dea0ca35004cf77259)
+[![Build Status](https://travis-ci.org/OrienteerBAP/wicket-orientdb.svg?branch=master)](https://travis-ci.org/OrienteerBAP/wicket-orientdb) [![Coverage Status](https://img.shields.io/coveralls/OrienteerBAP/wicket-orientdb.svg)](https://coveralls.io/r/OrienteerBAP/wicket-orientdb) [![Dependency Status](https://www.versioneye.com/user/projects/5871d31340543803e80abb74/badge.svg?style=flat-square)](https://www.versioneye.com/user/projects/5871d31340543803e80abb74)
 
 wicket-orientdb
 ===============
@@ -6,7 +6,7 @@ wicket-orientdb
 Everything you need to work with Apache Wicket and OrientDB.
 Library contains several functional part which can be used separatly or all together.
 
-Looking for examples? [Orienteer - Business Application Platform](https://github.com/OrienteerDW/Orienteer)
+Looking for examples? [Orienteer - Business Application Platform](https://github.com/OrienteerBAP/Orienteer)
 
 Initial setup of application
 -----------------------
@@ -20,8 +20,8 @@ public class WicketApplication extends OrientDbWebApplication
 Specify connection properties
 ```java
 		getOrientDbSettings().setDBUrl("local:localhost/"+DB_NAME);
-		getOrientDbSettings().setDefaultUserName("admin");
-		getOrientDbSettings().setDefaultUserPassword("admin");
+		getOrientDbSettings().setAdminUserName("admin");
+		getOrientDbSettings().setAdminUserPassword("admin");
 ```
 
 Embedded OrientDB Server
@@ -49,8 +49,8 @@ public class WicketApplication extends OrientDbWebApplication
 			
 		});
 		getOrientDbSettings().setDBUrl("local:localhost/"+DB_NAME);
-		getOrientDbSettings().setDefaultUserName("admin");
-		getOrientDbSettings().setDefaultUserPassword("admin");
+		getOrientDbSettings().setAdminUserName("admin");
+		getOrientDbSettings().setAdminUserPassword("admin");
 	}
 }
 ```
@@ -76,8 +76,8 @@ public class MyPage extends WebPage {
 ```
 ```java
 @RequiredOrientResources({
-	@RequiredOrientResource(value = ORule.ResourceGeneric.SCHEMA, permissions=OrientPermission.READ),
-	@RequiredOrientResource(value = ORule.ResourceGeneric.CLASS, permissions=OrientPermission.READ),
+	@RequiredOrientResource(value = OSecurityHelper.SCHEMA, permissions=OrientPermission.READ),
+	@RequiredOrientResource(value = OSecurityHelper.CLASS, permissions=OrientPermission.READ),
 })
 public class MyPanel extends Panel {
 ...
@@ -92,7 +92,7 @@ public class SaveSchemaCommand<T> extends SavePrototypeCommand<T> implements ISe
 	public RequiredOrientResource[] getRequiredResources() {
 		T object = objectModel.getObject();
 		OrientPermission permission = (object instanceof IPrototype<?>)?OrientPermission.CREATE:OrientPermission.UPDATE;
-		return OSecurityHelper.requireResource(ORule.ResourceGeneric.SCHEMA, null, permission);
+		return OSecurityHelper.requireResource(OSecurityHelper.SCHEMA, null, permission);
 	}
 
 ```

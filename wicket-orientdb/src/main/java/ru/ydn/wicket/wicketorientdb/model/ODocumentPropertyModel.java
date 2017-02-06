@@ -7,8 +7,11 @@ import com.orientechnologies.orient.core.type.ODocumentWrapper;
 
 /**
  * Model for obtaining and setting value of a {@link ODocument} property
- * @param <T>
+ * @param <T> The Model object type
+ * 
+ * @deprecated - starting Wicket 7.6.0 it's possible to use common PropertyModel
  */
+@Deprecated
 public class ODocumentPropertyModel<T> extends PropertyModel<T> {
 
 	private static final long serialVersionUID = 1L;

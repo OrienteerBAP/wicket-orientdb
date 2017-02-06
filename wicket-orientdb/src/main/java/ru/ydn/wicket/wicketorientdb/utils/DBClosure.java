@@ -13,7 +13,7 @@ import com.orientechnologies.orient.core.db.document.ODatabaseDocument;
 
 /**
  * Closure for execution of portion queries/command on database for different user (commonly, under admin)
- * @param <V>
+ * @param <V> return type
  */
 public abstract class DBClosure<V> implements Serializable
 {
@@ -67,17 +67,17 @@ public abstract class DBClosure<V> implements Serializable
 	
 	protected String getUsername()
 	{
-		return username!=null?username:getSettings().getDBInstallatorUserName();
+		return username!=null?username:getSettings().getAdminUserName();
 	}
 	
 	protected String getPassword()
 	{
-		return password!=null?password:getSettings().getDBInstallatorUserPassword();
+		return password!=null?password:getSettings().getAdminPassword();
 	}
 	
 	protected IOrientDbSettings getSettings()
 	{
-		return OrientDbWebApplication.get().getOrientDbSettings();
+		return OrientDbWebApplication.lookupApplication().getOrientDbSettings();
 	}
 	
 	/**

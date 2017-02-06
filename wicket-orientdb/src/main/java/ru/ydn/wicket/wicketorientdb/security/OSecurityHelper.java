@@ -8,19 +8,16 @@ import org.apache.wicket.Component;
 import org.apache.wicket.authorization.Action;
 import org.apache.wicket.util.string.Strings;
 
-import ru.ydn.wicket.wicketorientdb.OrientDbWebSession;
-
 import com.orientechnologies.orient.core.db.ODatabaseRecordThreadLocal;
-import com.orientechnologies.orient.core.db.document.ODatabaseDocument;
-import com.orientechnologies.orient.core.exception.OSecurityAccessException;
 import com.orientechnologies.orient.core.metadata.schema.OClass;
-import com.orientechnologies.orient.core.metadata.security.ODatabaseSecurityResources;
 import com.orientechnologies.orient.core.metadata.security.ORestrictedAccessHook;
 import com.orientechnologies.orient.core.metadata.security.ORestrictedOperation;
 import com.orientechnologies.orient.core.metadata.security.ORule;
+import com.orientechnologies.orient.core.metadata.security.ORule.ResourceGeneric;
 import com.orientechnologies.orient.core.metadata.security.OSecurityShared;
-import com.orientechnologies.orient.core.metadata.security.OUser;
 import com.orientechnologies.orient.core.record.impl.ODocument;
+
+import ru.ydn.wicket.wicketorientdb.OrientDbWebSession;
 
 /**
  * Helper class for security functionality
@@ -34,7 +31,9 @@ public class OSecurityHelper
 	public static final String DATABASE = "DATABASE";
 	public static final String SCHEMA = "SCHEMA";
 	public static final String COMMAND = "COMMAND";
+	public static final String COMMAND_GREMLIN = "COMMAND_GREMLIN";
 	public static final String RECORD_HOOK = "RECORD_HOOK";
+	public static final String SYSTEM_CLUSTERS = "SYSTEM_CLUSTERS";
 	
 	private static final Map<OrientPermission, ORestrictedOperation> MAPPING_FOR_HACK = new HashMap<OrientPermission, ORestrictedOperation>();
 	static
@@ -128,7 +127,7 @@ public class OSecurityHelper
 	public static RequiredOrientResource[] requireOClass(final OClass oClass, final Action action, 
 															final OrientPermission... permissions)
 	{
-		return requireOClass(oClass.getName(), action, permissions);
+		return oClass!=null?requireOClass(oClass.getName(), action, permissions):new RequiredOrientResource[0];
 	}
 	/**
 	 * @param oClassName name of the subject {@link OClass} for security check
@@ -139,7 +138,7 @@ public class OSecurityHelper
 	public static RequiredOrientResource[] requireOClass(final String oClassName, final Action action, 
 															final OrientPermission... permissions)
 	{
-		return requireResource(ORule.ResourceGeneric.CLASS, oClassName, action, permissions);
+		return oClassName!=null?requireResource(ORule.ResourceGeneric.CLASS, oClassName, action, permissions):new RequiredOrientResource[0];
 	}
 	/**
 	 * @param resource generic resource
@@ -246,15 +245,29 @@ public class OSecurityHelper
 	}
 	
 	/**
-	 * Tranform name to {@link ORule.ResourceGeneric}
+	 * Transform name to {@link ORule.ResourceGeneric}
 	 * @param name name to transform
 	 * @return {@link ORule.ResourceGeneric} or null
 	 */
 	public static ORule.ResourceGeneric getResourceGeneric(String name)
 	{
-		ORule.ResourceGeneric value = ORule.ResourceGeneric.valueOf(name);
+		String shortName = Strings.beforeFirst(name, '.');
+		if(Strings.isEmpty(shortName)) shortName = name;
+		ORule.ResourceGeneric value = ORule.ResourceGeneric.valueOf(shortName);
 		if(value==null) value = ORule.mapLegacyResourceToGenericResource(name);
 		return value;
+	}
+	
+	/**
+	 * Extract specific from resource string
+	 * @param name name to transform
+	 * @return specific resource or null
+	 */
+	public static String getResourceSpecific(String name)
+	{
+		ORule.ResourceGeneric generic = getResourceGeneric(name);
+		String specific = generic!=null?Strings.afterFirst(name, '.'):name;
+		return Strings.isEmpty(specific)?null:specific;
 	}
 	
 }

@@ -17,7 +17,7 @@ import com.orientechnologies.orient.core.type.ODocumentWrapper;
 
 /**
  * Provider of data by quering of OrientDB
- * @param <K>
+ * @param <K> The provider object type
  */
 public class OQueryDataProvider <K> extends SortableDataProvider<K, String>
 {
@@ -29,7 +29,7 @@ public class OQueryDataProvider <K> extends SortableDataProvider<K, String>
 	 */
 	public OQueryDataProvider(String sql)
 	{
-		model = new OQueryModel<K>(sql);
+		this(new OQueryModel<K>(sql));
 	}
 	/**
 	 * @param sql SQL to be executed to obtain data
@@ -37,7 +37,7 @@ public class OQueryDataProvider <K> extends SortableDataProvider<K, String>
 	 */
 	public OQueryDataProvider(String sql, Function<?, K> transformer)
 	{
-		model = new OQueryModel<K>(sql, transformer);
+		this(new OQueryModel<K>(sql, transformer));
 	}
 	/**
 	 * @param sql SQL to be executed to obtain data
@@ -45,7 +45,16 @@ public class OQueryDataProvider <K> extends SortableDataProvider<K, String>
 	 */
     public OQueryDataProvider(String sql, Class<? extends K> wrapperClass)
     {
-        model = new OQueryModel<K>(sql, wrapperClass);
+        this(new OQueryModel<K>(sql, wrapperClass));
+    }
+    
+    /**
+     * Low level constructor to initialize by direct {@link OQueryModel}
+     * @param model {@link OQueryModel} to use in provider
+     */
+    public OQueryDataProvider(OQueryModel<K> model)
+    {
+    	this.model = model;
     }
 
     /**
@@ -57,6 +66,19 @@ public class OQueryDataProvider <K> extends SortableDataProvider<K, String>
     public OQueryDataProvider<K> setParameter(String paramName, IModel<?> value)
     {
         model.setParameter(paramName, value);
+        return this;
+    }
+    
+    /**
+     * Set value for context variable
+     * @param varName name of the variable to set
+     * @param value {@link IModel} for the variable value
+     * @return this {@link OQueryDataProvider}
+     */
+	public OQueryDataProvider<K> setContextVariable(String varName, IModel<?> value)
+    {
+    	model.setContextVariable(varName, value);
+        super.detach();
         return this;
     }
 

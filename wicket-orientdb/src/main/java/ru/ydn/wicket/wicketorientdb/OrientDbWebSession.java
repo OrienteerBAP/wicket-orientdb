@@ -57,7 +57,7 @@ public class OrientDbWebSession extends AuthenticatedWebSession {
 	}
 
 	/**
-	 * @return {@link ODatabaseRecord} for current request
+	 * @return {@link ODatabaseDocument} for current request
 	 */
 	public ODatabaseDocumentInternal getDatabase()
 	{

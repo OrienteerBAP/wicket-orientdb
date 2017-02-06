@@ -21,8 +21,8 @@ import ru.ydn.wicket.wicketorientdb.OrientDbWebSession;
  * OrientDB specific {@link IAuthorizationStrategy}. It supports 3 types for components securing
  * <ul>
  * <li>Statically by {@link RequiredOrientResource} and {@link RequiredOrientResources} annotations</li>
- * <li>Dynamically by {@link ISecuredComponent}
- * <li>Dynamically by {@link Map}&lt;{@link String}, {@link OrientPermission}[]> object assigned to meta data key {@link OrientPermission}.REQUIRED_ORIENT_RESOURCES_KEY </li>
+ * <li>Dynamically by {@link ISecuredComponent}</li>
+ * <li>Dynamically by {@link Map}&lt;{@link String}, {@link OrientPermission}[]&gt; object assigned to meta data key {@link OrientPermission}.REQUIRED_ORIENT_RESOURCES_KEY </li>
  * </ul> 
  */
 public class OrientResourceAuthorizationStrategy  implements IAuthorizationStrategy
@@ -127,16 +127,17 @@ public class OrientResourceAuthorizationStrategy  implements IAuthorizationStrat
 	public boolean checkResource(String resource, Action action, OrientPermission[] permissions)
 	{
 		String actionName = action.getName();
-		if(resource.indexOf(':')>0) {
+		int actionIndx = resource.indexOf(':');
+		if(actionIndx>0) {
 			if(!(resource.endsWith(actionName) && resource.length()>actionName.length() 
 					&& resource.charAt(resource.length()-actionName.length()-1) == ':')) return true;
+			else resource = resource.substring(0, actionIndx);//Should cut off action
 		} else if(!Component.RENDER.equals(action)) return true; //Default suffix is for render: so other should be skipped
 		
 		OUser user = OrientDbWebSession.get().getUser();
 		if(user==null) return false;
 		ORule.ResourceGeneric generic = OSecurityHelper.getResourceGeneric(resource);
-		if(generic==null) generic = ORule.mapLegacyResourceToGenericResource(resource);
-		String specific = ORule.mapLegacyResourceToSpecificResource(resource);
+		String specific = OSecurityHelper.getResourceSpecific(resource);
 		
 		return user!=null
 				?user.checkIfAllowed(generic, specific, OrientPermission.combinedPermission(permissions))!=null

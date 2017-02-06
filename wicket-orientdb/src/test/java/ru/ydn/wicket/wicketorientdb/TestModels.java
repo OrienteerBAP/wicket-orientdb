@@ -10,6 +10,7 @@ import java.util.Map;
 import org.apache.wicket.extensions.markup.html.repeater.data.sort.SortOrder;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
+import org.apache.wicket.model.PropertyModel;
 import org.junit.ClassRule;
 import org.junit.Test;
 
@@ -148,20 +149,56 @@ public class TestModels
 	}
 	
 	@Test
+	public void testOQueryProviderContextVariables()
+	{
+		OQueryDataProvider<OUser> provider = new OQueryDataProvider<OUser>("select from OUser where name = $name", OUser.class);
+		provider.setSort("name", SortOrder.ASCENDING);
+		provider.setContextVariable("name", Model.of("admin"));
+		Iterator<OUser> it = provider.iterator(0, -1);
+		assertEquals(1, provider.size());
+		assertEquals("admin", it.next().getName());
+	}
+	
+	@Test
 	public void testOQueryModelSimple()
 	{
 		IModel<String> nameModel = Model.of();
 		OQueryModel<ODocument> queryModel = new OQueryModel<ODocument>("select from ClassA where name = :name");
 		queryModel.setParameter("name", nameModel);
 		nameModel.setObject("doc1");
+		assertEquals(1, queryModel.size());
 		assertEquals("doc1", queryModel.getObject().get(0).field("name"));
 		queryModel.detach();
 		
 		nameModel.setObject("doc2");
+		assertEquals(1, queryModel.size());
 		assertEquals("doc2", queryModel.getObject().get(0).field("name"));
 		queryModel.detach();
 		
 		nameModel.setObject("doc3");
+		assertEquals(1, queryModel.size());
+		assertEquals("doc3", queryModel.getObject().get(0).field("name"));
+		queryModel.detach();
+	}
+	
+	@Test
+	public void testOQueryModelContextVariables()
+	{
+		IModel<String> nameModel = Model.of();
+		OQueryModel<ODocument> queryModel = new OQueryModel<ODocument>("select from ClassA where name = $name");
+		queryModel.setContextVariable("name", nameModel);
+		nameModel.setObject("doc1");
+		assertEquals(1, queryModel.size());
+		assertEquals("doc1", queryModel.getObject().get(0).field("name"));
+		queryModel.detach();
+		
+		nameModel.setObject("doc2");
+		assertEquals(1, queryModel.size());
+		assertEquals("doc2", queryModel.getObject().get(0).field("name"));
+		queryModel.detach();
+		
+		nameModel.setObject("doc3");
+		assertEquals(1, queryModel.size());
 		assertEquals("doc3", queryModel.getObject().get(0).field("name"));
 		queryModel.detach();
 	}
@@ -328,6 +365,14 @@ public class TestModels
 		ODocumentPropertyModel<Collection<String>> rolesNames = new ODocumentPropertyModel<Collection<String>>(docModel, "roles.name");
 		System.out.println(rolesNames.getObject());
 		assertTrue(rolesNames.getObject().contains("admin"));
+	}
+	
+	@Test
+	public void testODocumentPropertyLocator()
+	{
+		ORecordId recordId = new ORecordId("#5:0");
+		PropertyModel<String> model = new PropertyModel<>(new ODocumentModel(recordId), "name");
+		assertModelObjectEquals("admin", model);
 	}
 	
 	@Test

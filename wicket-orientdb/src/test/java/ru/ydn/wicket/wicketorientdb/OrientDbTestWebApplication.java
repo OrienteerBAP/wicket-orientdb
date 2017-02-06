@@ -27,25 +27,18 @@ public class OrientDbTestWebApplication extends OrientDbWebApplication
 				IOrientDbSettings settings = app.getOrientDbSettings();
 				ODatabaseDocumentTx db = new ODatabaseDocumentTx(DB_MEMORY_URL);
 				if(!db.exists()) db = db.create();
-				if(db.isClosed()) db.open(settings.getDBInstallatorUserName(), settings.getDBInstallatorUserPassword());
+				if(db.isClosed()) db.open(settings.getAdminUserName(), settings.getAdminPassword());
 				db.getMetadata().load();
 				db.close();
 			}
 
-			/*@Override
-			public void onBeforeDestroyed(Application application) {
-				super.onBeforeDestroyed(application);
-				//TODO: remove this after fixing bug orientdb Bug#3387
-				try{Thread.sleep(100);} catch (InterruptedException e){}
-			}*/
-			
 		});
 		getRequestCycleListeners().add(new LazyAuthorizationRequestCycleListener());
 		getOrientDbSettings().setDBUrl(DB_MEMORY_URL);
-		getOrientDbSettings().setDBUserName("admin");
-		getOrientDbSettings().setDBUserPassword("admin");
-		getOrientDbSettings().setDBInstallatorUserName("admin");
-		getOrientDbSettings().setDBInstallatorUserPassword("admin");
+		getOrientDbSettings().setGuestUserName("admin");
+		getOrientDbSettings().setGuestPassword("admin");
+		getOrientDbSettings().setAdminUserName("admin");
+		getOrientDbSettings().setAdminPassword("admin");
 		getOrientDbSettings().getORecordHooks().add(TestHook.class);
 		getApplicationListeners().add(new TestDataInstallator());
 		mountOrientDbRestApi();

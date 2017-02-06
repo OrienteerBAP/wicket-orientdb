@@ -3,6 +3,10 @@ package ru.ydn.wicket.wicketorientdb.model;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.IObjectClassAwareModel;
 
+import com.orientechnologies.orient.core.db.document.ODatabaseDocument;
+
+import ru.ydn.wicket.wicketorientdb.OrientDbWebSession;
+
 /**
  * Utility model to customly get and set value to a specified object and parameter
  *
@@ -26,7 +30,14 @@ public abstract class AbstractCustomValueModel<T, C, V> implements IModel<V>, IO
 
 	@Override
 	public void setObject(V object) {
-		setValue(objectModel.getObject(), parameterModel.getObject(), object);
+		ODatabaseDocument db = OrientDbWebSession.get().getDatabase(); 
+		boolean isActiveTransaction = db.getTransaction().isActive();
+		if(isActiveTransaction) db.commit(); // Schema changes should be done outside of transaction
+		try {
+			setValue(objectModel.getObject(), parameterModel.getObject(), object);
+		} finally {
+			if(isActiveTransaction) db.begin();
+		}
 	}
 	
 	public IModel<T> getObjectModel() {

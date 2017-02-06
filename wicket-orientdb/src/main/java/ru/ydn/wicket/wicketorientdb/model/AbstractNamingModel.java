@@ -12,7 +12,7 @@ import org.apache.wicket.util.string.Strings;
 /**
  * {@link IModel}&lt;{@link String}&gt; for obtaining name for particular objects. 
  * Model calculate resource key for passed object and then return either key value from resources or buitified version of resource key.
- * @param <T>
+ * @param <T> type to be named
  */
 public abstract class AbstractNamingModel<T> extends AbstractReadOnlyModel<String> implements IComponentAssignedModel<String>
 {

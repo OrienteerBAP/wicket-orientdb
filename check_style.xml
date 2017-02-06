@@ -46,7 +46,9 @@
 		<module name="EmptyStatement"/>
 		<module name="EqualsHashCode"/>
 		<module name="HideUtilityClassConstructor"/>
-		<module name="MethodLength"/>
+		<module name="MethodLength">
+		    <property name="max" value="200"/>
+		</module>
 		<module name="LineLength">
 		    <property name="max" value="180"/>
 		</module>

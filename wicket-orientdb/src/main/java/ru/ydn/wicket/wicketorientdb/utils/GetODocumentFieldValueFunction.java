@@ -8,7 +8,7 @@ import com.orientechnologies.orient.core.record.impl.ODocument;
 /**
  * {@link Function} to get field value from ODocument
  *
- * @param <V>
+ * @param <V> field value type
  */
 public class GetODocumentFieldValueFunction<V> implements Function<ODocument, V>, Serializable {
 

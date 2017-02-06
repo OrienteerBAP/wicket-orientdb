@@ -7,7 +7,7 @@ import com.orientechnologies.orient.core.db.ODatabaseThreadLocalFactory;
 import com.orientechnologies.orient.core.db.document.ODatabaseDocument;
 
 /**
- * Implemenetation of {@link ODatabaseThreadLocalFactory} for obtaining {@link ODatabaseRecord} according to {@link IOrientDbSettings}
+ * Implementation of {@link ODatabaseThreadLocalFactory} for obtaining {@link ODatabaseDocument} according to {@link IOrientDbSettings}
  */
 public class DefaultODatabaseThreadLocalFactory implements ODatabaseThreadLocalFactory
 {
@@ -21,19 +21,19 @@ public class DefaultODatabaseThreadLocalFactory implements ODatabaseThreadLocalF
 	@Override
 	public ODatabaseDocumentInternal getThreadDatabase() {
 		IOrientDbSettings settings = app.getOrientDbSettings();
-		OrientDbWebSession session = OrientDbWebSession.get();
+		OrientDbWebSession session = OrientDbWebSession.exists()?OrientDbWebSession.get():null;
 		ODatabaseDocumentInternal db;
 		String username;
 		String password;
-		if(session.isSignedIn())
+		if(session!=null && session.isSignedIn())
 		{
 			username = session.getUsername();
 			password = session.getPassword();
 		}
 		else
 		{
-			username = settings.getDBUserName();
-			password = settings.getDBUserPassword();
+			username = settings.getGuestUserName();
+			password = settings.getGuestPassword();
 		}
 		db = settings.getDatabasePoolFactory().get(settings.getDBUrl(), username, password).acquire();
 		return db;

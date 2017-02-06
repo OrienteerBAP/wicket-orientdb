@@ -17,7 +17,7 @@ import com.google.common.reflect.AbstractInvocationHandler;
 /**
  * Base class for creation of Prototypers. Creation of new {@link IPrototype} should look like MyPrototyper.newPrototype(...)
  * 
- * @param <T>
+ * @param <T> interface for prototyping
  */
 public abstract class AbstractPrototyper<T> extends AbstractInvocationHandler implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -152,7 +152,7 @@ public abstract class AbstractPrototyper<T> extends AbstractInvocationHandler im
 
 	/**
 	 * Creation of actual instance from {@link IPrototype}
-	 * @param proxy
+	 * @param proxy prototype instance to be realized
 	 * @return realized instance
 	 */
 	protected T handleRealize(T proxy)
@@ -228,7 +228,7 @@ public abstract class AbstractPrototyper<T> extends AbstractInvocationHandler im
 	
 	/**
 	 * Creation of instance from proxy. In realizaion of this method only creation is required: properties will be copied automatically.
-	 * @param proxy
+	 * @param proxy prototype instance to be realized
 	 * @return instantiated instance
 	 */
 	protected abstract T createInstance(T proxy);
@@ -257,8 +257,9 @@ public abstract class AbstractPrototyper<T> extends AbstractInvocationHandler im
 		return ret;
 	}
 	/**
-	 * @param propName
-	 * @param returnType
+	 * Method for obtaining default value of required property
+	 * @param propName name of a property
+	 * @param returnType type of a property
 	 * @return default value for particular property
 	 */
 	protected Object getDefaultValue(String propName, Class<?> returnType)

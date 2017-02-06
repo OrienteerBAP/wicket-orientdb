@@ -4,7 +4,7 @@ import org.apache.wicket.model.IModel;
 
 /**
  * Simple naming model which use {@link Object}.toString() for obtaining resource key. 
- * @param <T>
+ * @param <T> type to be named
  */
 public class SimpleNamingModel<T> extends AbstractNamingModel<T>
 {

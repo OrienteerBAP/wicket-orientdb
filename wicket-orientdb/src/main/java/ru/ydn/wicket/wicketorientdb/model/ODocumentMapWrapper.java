@@ -52,8 +52,7 @@ public class ODocumentMapWrapper extends ODocumentWrapper implements Map<String,
 
 	@Override
 	public boolean containsValue(Object value) {
-		// TODO Auto-generated method stub
-		return false;
+		return document.toMap().containsValue(value);
 	}
 
 	@Override

@@ -5,7 +5,7 @@ import org.apache.wicket.util.lang.Classes;
 
 /**
  * {@link AbstractNamingModel} for {@link Enum}s
- * @param <T>
+ * @param <T> particular enum type to be named
  */
 public class EnumNamingModel<T extends Enum<T>> extends AbstractNamingModel<T>
 {

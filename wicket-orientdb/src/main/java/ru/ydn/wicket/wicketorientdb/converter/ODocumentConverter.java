@@ -3,6 +3,8 @@ package ru.ydn.wicket.wicketorientdb.converter;
 import java.util.Locale;
 
 import org.apache.wicket.util.convert.ConversionException;
+
+import com.orientechnologies.orient.core.exception.OSerializationException;
 import com.orientechnologies.orient.core.record.impl.ODocument;
 
 /**
@@ -15,7 +17,22 @@ public class ODocumentConverter extends OIdentifiableConverter<ODocument>
 	@Override
 	public ODocument convertToObject(String value, Locale locale)
 			throws ConversionException {
-		return convertToOIdentifiable(value, locale).getRecord();
+		value = value.trim();
+		if(value.startsWith("{")) {
+			try {
+				ODocument doc = new ODocument();
+				return doc.fromJSON(value, true);
+			} catch (OSerializationException e) {
+				throw newConversionException("Cannot convert '" + value + "' to "+getTargetType().getSimpleName()+": "+e.getMessage(),
+													value, locale);
+			}
+		}
+		else return convertToOIdentifiable(value, locale).getRecord();
+	}
+	
+	@Override
+	public String convertToString(ODocument value, Locale locale) {
+		return value.getIdentity().isPersistent() ? super.convertToString(value, locale):value.toJSON(); 
 	}
 
 	@Override

@@ -4,8 +4,8 @@ import org.apache.wicket.Application;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 
 /**
- * 
- * @param <T>
+ * {@link ChoiceRenderer} for resource specified lists
+ * @param <T> type  of resource
  */
 public class ResourceChoiceRenderer<T> extends ChoiceRenderer<T> {
 	
