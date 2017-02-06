@@ -26,9 +26,8 @@ public class OClassPrototyper extends AbstractPrototyper<OClass> {
 	public static final String STRICT_MODE = "strictMode";
 	public static final String ABSTRACT = "abstract";
 	public static final String CLUSTER_SELECTION = "clusterSelection";
-	public static final String JAVA_CLASS = "javaClass";
 	
-	public static final List<String> OCLASS_ATTRS = Arrays.asList(NAME, SHORT_NAME, SUPER_CLASSES, OVER_SIZE, STRICT_MODE, ABSTRACT, JAVA_CLASS, CLUSTER_SELECTION);
+	public static final List<String> OCLASS_ATTRS = Arrays.asList(NAME, SHORT_NAME, SUPER_CLASSES, OVER_SIZE, STRICT_MODE, ABSTRACT, CLUSTER_SELECTION);
 	
 
 	private OClassPrototyper()
