@@ -7,7 +7,7 @@ import org.apache.wicket.MetaDataKey;
  * Wrapper enum over OrientDB permissions flat(int)
  */
 public enum OrientPermission {
-	CREATE(1), READ(2), UPDATE(4), DELETE(8);
+	CREATE(1), READ(2), UPDATE(4), DELETE(8), EXECUTE(16);
 	
 	private final int permissionFlag;
 	
