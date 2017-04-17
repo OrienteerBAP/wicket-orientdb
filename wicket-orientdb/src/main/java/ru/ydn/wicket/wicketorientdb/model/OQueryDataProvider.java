@@ -4,11 +4,9 @@ import com.google.common.base.Function;
 import com.orientechnologies.orient.core.metadata.schema.OClass;
 import com.orientechnologies.orient.core.record.impl.ODocument;
 import org.apache.wicket.extensions.markup.html.repeater.data.sort.SortOrder;
-import org.apache.wicket.extensions.markup.html.repeater.data.table.filter.IFilterStateLocator;
 import org.apache.wicket.extensions.markup.html.repeater.util.SortParam;
-import org.apache.wicket.extensions.markup.html.repeater.util.SortableDataProvider;
 import org.apache.wicket.model.IModel;
-import org.apache.wicket.util.lang.Args;
+import ru.ydn.wicket.wicketorientdb.filter.AbstractFilteredDataProvider;
 import ru.ydn.wicket.wicketorientdb.filter.IODataFilter;
 
 import java.util.Iterator;
@@ -17,12 +15,10 @@ import java.util.Iterator;
  * Provider of data by quering of OrientDB
  * @param <K> The provider object type
  */
-public class OQueryDataProvider <K> extends SortableDataProvider<K, String>
-        implements IFilterStateLocator<IODataFilter<K, String>>
+public class OQueryDataProvider <K> extends AbstractFilteredDataProvider<K>
 {
 	private static final long serialVersionUID = 1L;
 	private OQueryModel<K> model;
-	private IODataFilter<K, String> dataFilter;
 
 	/**
 	 * @param sql SQL to be executed to obtain data
@@ -86,6 +82,7 @@ public class OQueryDataProvider <K> extends SortableDataProvider<K, String>
     public Iterator<K> iterator(long first, long count)
     {
         SortParam<String> sort = getSort();
+        IODataFilter<K, String> dataFilter = getFilterState();
         if (dataFilter != null) {
             model = dataFilter.createQueryModel();
         }
@@ -125,6 +122,7 @@ public class OQueryDataProvider <K> extends SortableDataProvider<K, String>
     @Override
     public long size()
     {
+        IODataFilter<K, String> dataFilter = getFilterState();
         if (dataFilter != null) {
             model = dataFilter.createQueryModel();
         }
@@ -139,18 +137,7 @@ public class OQueryDataProvider <K> extends SortableDataProvider<K, String>
     }
 
     @Override
-    public IODataFilter<K, String> getFilterState() {
-        return dataFilter;
-    }
-
-    /**
-     * Set data filter for gets filtered values from OrientDB
-     * @param dataFilter {@link IODataFilter} for filter data
-     */
-    @Override
-    public void setFilterState(IODataFilter<K, String> dataFilter) {
-        Args.notNull(dataFilter, "dataFilter");
-        this.dataFilter = dataFilter;
-        this.dataFilter.setQueryModel(model);
+    protected void configureDataFilter(IODataFilter<K, String> dataFilter) {
+        dataFilter.setQueryModel(model);
     }
 }
