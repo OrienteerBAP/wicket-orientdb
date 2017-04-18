@@ -2,6 +2,7 @@ package ru.ydn.wicket.wicketorientdb;
 
 import java.util.Set;
 
+import com.tinkerpop.blueprints.impls.orient.OrientGraphFactory;
 import org.apache.wicket.Session;
 import org.apache.wicket.authroles.authentication.AuthenticatedWebSession;
 import org.apache.wicket.authroles.authorization.strategies.role.Roles;
@@ -22,11 +23,13 @@ import com.orientechnologies.orient.core.metadata.security.OUser;
  */
 public class OrientDbWebSession extends AuthenticatedWebSession {
 
-	private static final long serialVersionUID = 2L;
+	private static final long serialVersionUID = 3L;
 	private String username;
 	private String password;
 	private OUser user;
 	private boolean userReloaded=false;
+
+	private OrientGraphFactory graphFactory;
 	
 	public OrientDbWebSession(Request request) {
 		super(request);
@@ -71,6 +74,13 @@ public class OrientDbWebSession extends AuthenticatedWebSession {
 		return getDatabase().getMetadata().getSchema();
 	}
 
+	/**
+	 * @return {@link OrientGraphFactory} to create graph transaction
+	 */
+	public OrientGraphFactory getGraphFactory() {
+		return graphFactory;
+	}
+
 	@Override
 	public boolean authenticate(String username, String password) {
 		ODatabaseDocument currentDB = getDatabase();
@@ -86,6 +96,8 @@ public class OrientDbWebSession extends AuthenticatedWebSession {
 				currentDB.close();
 				newDB.activateOnCurrentThread();
 			}
+
+			graphFactory = new OrientGraphFactory(settings.getDBUrl(), username, password);
 			setUser(username, password);
 			user = newDB.getMetadata().getSecurity().getUser(username);
 			newDB.setUser(user);
@@ -155,6 +167,7 @@ public class OrientDbWebSession extends AuthenticatedWebSession {
 		this.password=null;
 		this.user=null;
 		ODatabaseRecordThreadLocal.INSTANCE.remove();
+		graphFactory.close();
 	}
 
 }
