@@ -10,6 +10,8 @@ import java.util.Map;
 import org.apache.wicket.WicketRuntimeException;
 import org.apache.wicket.core.util.lang.PropertyResolver;
 import org.apache.wicket.core.util.lang.PropertyResolverConverter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.common.primitives.Primitives;
 import com.google.common.reflect.AbstractInvocationHandler;
@@ -21,11 +23,13 @@ import com.google.common.reflect.AbstractInvocationHandler;
  */
 public abstract class AbstractPrototyper<T> extends AbstractInvocationHandler implements Serializable {
 	private static final long serialVersionUID = 1L;
+	
+	private static final Logger LOG = LoggerFactory.getLogger(AbstractPrototyper.class);
 
 	/**
 	 * Enum of possible types of operations over an object
 	 */
-	public static enum Operation
+	public enum Operation
 	{
 		GET("get", new Class<?>[0], null, -1),
 		IS("is", new Class<?>[0], null, -1),
@@ -170,9 +174,7 @@ public abstract class AbstractPrototyper<T> extends AbstractInvocationHandler im
 					PropertyResolver.setValue(propertyName, ret, value, prc);
 				} catch (WicketRuntimeException e)
 				{
-//					LOG.error("Can't set property "+propertyName, e);
-					e.printStackTrace();
-					// NOP
+					LOG.error("Can't set property"+propertyName, e);
 				}
 			}
 			else
@@ -208,9 +210,7 @@ public abstract class AbstractPrototyper<T> extends AbstractInvocationHandler im
 						}
 					} catch (Exception e)
 					{
-//						LOG.error("Can't set property "+propertyName, e);
-//						e.printStackTrace();
-						// NOP
+						LOG.error("Can't set property "+propertyName, e);
 					} 
 					
 				}

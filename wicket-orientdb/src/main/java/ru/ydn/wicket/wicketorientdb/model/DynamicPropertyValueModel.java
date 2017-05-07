@@ -5,7 +5,9 @@ import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.util.lang.Args;
 
 import com.orientechnologies.orient.core.db.record.OIdentifiable;
+import com.orientechnologies.orient.core.id.ORID;
 import com.orientechnologies.orient.core.metadata.schema.OProperty;
+import com.orientechnologies.orient.core.record.ORecord;
 import com.orientechnologies.orient.core.record.impl.ODocument;
 
 /**
@@ -18,12 +20,19 @@ public class DynamicPropertyValueModel<T> extends LoadableDetachableModel<T>
 	private static final long serialVersionUID = 1L;
 	protected final IModel<ODocument> docModel;
 	protected final IModel<OProperty> propertyModel;
+	protected final Class<? extends T> valueType;
 	
 	public DynamicPropertyValueModel(IModel<ODocument> docModel, IModel<OProperty> propertyModel)
+	{
+		this(docModel, propertyModel, null);
+	}
+	
+	public DynamicPropertyValueModel(IModel<ODocument> docModel, IModel<OProperty> propertyModel, Class<? extends T> valueType)
 	{
 		Args.notNull(docModel, "documentModel");
 		this.docModel = docModel;
 		this.propertyModel = propertyModel;
+		this.valueType = valueType;
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -33,7 +42,16 @@ public class DynamicPropertyValueModel<T> extends LoadableDetachableModel<T>
 		OProperty prop = propertyModel!=null?propertyModel.getObject():null;
 		if(doc==null) return null;
 		if(prop==null) return (T) doc;
-		return (T) doc.field(prop.getName());
+		if(valueType==null) {
+			return (T) doc.field(prop.getName());
+		} else
+		{
+			Object ret = doc.field(prop.getName(), valueType);
+			if(ORecord.class.isAssignableFrom(valueType) && ret instanceof ORID) {
+				ret = ((ORID)ret).getRecord();
+			}
+			return (T) ret;
+		}
 	}
 
 	@Override

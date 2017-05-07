@@ -1,6 +1,7 @@
 package ru.ydn.wicket.wicketorientdb.proto;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.wicket.util.lang.Args;
@@ -43,8 +44,11 @@ public class OIndexPrototyper extends AbstractPrototyper<OIndex>
 	public static final String ALGORITHM = "algorithm";
 	public static final String METADATA = "metadata";
 
-	public static final List<String> OINDEX_ATTRS = Arrays.asList(NAME, TYPE, ALGORITHM, DEF_CLASS_NAME, DEF_FIELDS, DEF_COLLATE, DEF_NULLS_IGNORED, METADATA, SIZE, KEY_SIZE);
-	public static final List<String> RW_ATTRS = Arrays.asList(DEF_COLLATE, DEF_NULLS_IGNORED);
+	public static final List<String> OINDEX_ATTRS = 
+				Collections.unmodifiableList(Arrays.asList(NAME, TYPE, ALGORITHM, DEF_CLASS_NAME, 
+									DEF_FIELDS, DEF_COLLATE, DEF_NULLS_IGNORED, METADATA, SIZE, KEY_SIZE));
+	public static final List<String> RW_ATTRS = 
+				Collections.unmodifiableList(Arrays.asList(DEF_COLLATE, DEF_NULLS_IGNORED));
 
 	private static final Class<?>[] FIX_INTERFACES = new Class<?>[]{IMakeSomeFieldsWritableFix.class}; 
 	

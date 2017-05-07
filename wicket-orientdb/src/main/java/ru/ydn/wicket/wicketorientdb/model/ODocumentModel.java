@@ -10,6 +10,7 @@ import org.apache.wicket.model.LoadableDetachableModel;
 import ru.ydn.wicket.wicketorientdb.OrientDbWebSession;
 
 import com.orientechnologies.orient.core.db.document.ODatabaseDocument;
+import com.orientechnologies.orient.core.db.record.OIdentifiable;
 import com.orientechnologies.orient.core.exception.ORecordNotFoundException;
 import com.orientechnologies.orient.core.id.ORID;
 import com.orientechnologies.orient.core.record.impl.ODocument;
@@ -29,13 +30,9 @@ public class ODocumentModel extends LoadableDetachableModel<ODocument> implement
 		this((ODocument)null);
 	}
 	
-	public ODocumentModel(ODocument iDocument) {
-		super(iDocument);
-		if(iDocument!=null) orid=iDocument.getIdentity();
-	}
-
-	public ODocumentModel(ORID iRID) {
-		this.orid = iRID;
+	public ODocumentModel(OIdentifiable identifiable) {
+		super(identifiable!=null?(ODocument)identifiable.getRecord():null);
+		if(identifiable!=null) this.orid = identifiable.getIdentity();
 	}
 
 	@Override
