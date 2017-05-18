@@ -250,7 +250,7 @@ public class OQueryModel<K> extends LoadableDetachableModel<List<K>>
 	    	if(ret!=null && ret.size()>0)
 	    	{
 	    		Number sizeNumber = ret.get(0).field("count");
-	    		size = sizeNumber.longValue();
+	    		size = sizeNumber!=null?sizeNumber.longValue():0;
 	    	}
 	    	else
 	    	{
