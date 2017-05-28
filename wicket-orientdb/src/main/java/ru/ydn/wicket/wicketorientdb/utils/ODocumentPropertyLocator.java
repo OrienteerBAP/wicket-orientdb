@@ -27,7 +27,9 @@ public class ODocumentPropertyLocator implements IPropertyLocator {
 
 	@Override
 	public IGetAndSet get(Class<?> clz, String exp) {
-		if(OIdentifiable.class.isAssignableFrom(clz)) return new ODocumentGetAndSet(exp);
+		if(exp == null || exp.isEmpty()) return locator.get(clz, exp);
+		else if(exp.charAt(0)=='@') return locator.get(clz, exp.substring(1)); // Way to by pass getting property as field
+		else if(OIdentifiable.class.isAssignableFrom(clz)) return new ODocumentGetAndSet(exp);
 		else if(ODocumentWrapper.class.isAssignableFrom(clz)) {
 			//If there is no default locator: lets address to ODocument
 			IGetAndSet ret = null;
@@ -57,7 +59,11 @@ public class ODocumentPropertyLocator implements IPropertyLocator {
 
 		@Override
 		public Object getValue(Object object) {
-			return toODocument(object).field(exp);
+			ODocument doc = toODocument(object);
+			if(doc==null) return null;
+			else {
+				return doc.field(exp);
+			}
 		}
 
 		@Override

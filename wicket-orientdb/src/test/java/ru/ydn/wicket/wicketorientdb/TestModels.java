@@ -371,8 +371,8 @@ public class TestModels
 	public void testODocumentPropertyLocator()
 	{
 		ORecordId recordId = new ORecordId("#5:0");
-		PropertyModel<String> model = new PropertyModel<>(new ODocumentModel(recordId), "name");
-		assertModelObjectEquals("admin", model);
+		assertModelObjectEquals("admin", new PropertyModel<>(new ODocumentModel(recordId), "name"));
+		assertModelObjectEquals("OUser", new PropertyModel<>(new ODocumentModel(recordId), "@schemaClass.name"));
 	}
 	
 	@Test
