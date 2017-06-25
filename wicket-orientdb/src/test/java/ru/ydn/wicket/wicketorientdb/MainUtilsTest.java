@@ -16,14 +16,15 @@ import com.orientechnologies.orient.core.metadata.security.OSecurityUser;
 import com.orientechnologies.orient.core.metadata.security.OUser;
 import com.orientechnologies.orient.core.record.impl.ODocument;
 
+import ru.ydn.wicket.wicketorientdb.converter.OClassClassNameConverter;
 import ru.ydn.wicket.wicketorientdb.converter.ODocumentConverter;
+import ru.ydn.wicket.wicketorientdb.converter.ODocumentORIDConverter;
+import ru.ydn.wicket.wicketorientdb.converter.OIndexNameConverter;
+import ru.ydn.wicket.wicketorientdb.converter.OPropertyFullNameConverter;
 import ru.ydn.wicket.wicketorientdb.junit.WicketOrientDbTesterScope;
 import ru.ydn.wicket.wicketorientdb.utils.DBClosure;
 import ru.ydn.wicket.wicketorientdb.utils.DocumentWrapperTransformer;
-import ru.ydn.wicket.wicketorientdb.utils.OClassClassNameConverter;
-import ru.ydn.wicket.wicketorientdb.utils.ODocumentORIDConverter;
-import ru.ydn.wicket.wicketorientdb.utils.OIndexNameConverter;
-import ru.ydn.wicket.wicketorientdb.utils.OPropertyFullNameConverter;
+
 import static org.junit.Assert.*;
 import static ru.ydn.wicket.wicketorientdb.model.AbstractNamingModel.buitify;
 

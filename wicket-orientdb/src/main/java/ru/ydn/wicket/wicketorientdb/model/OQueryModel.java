@@ -19,6 +19,8 @@ import ru.ydn.wicket.wicketorientdb.utils.ConvertToODocumentFunction;
 import ru.ydn.wicket.wicketorientdb.utils.DocumentWrapperTransformer;
 import ru.ydn.wicket.wicketorientdb.utils.GetObjectFunction;
 import ru.ydn.wicket.wicketorientdb.utils.OSchemaUtils;
+import ru.ydn.wicket.wicketorientdb.utils.query.IQueryManager;
+import ru.ydn.wicket.wicketorientdb.utils.query.StringQueryManager;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Iterators;
@@ -60,14 +62,9 @@ public class OQueryModel<K> extends LoadableDetachableModel<List<K>>
 		}
 	}
 	private static final long serialVersionUID = 1L;
-	private static final Pattern PROJECTION_PATTERN = Pattern.compile("select\\b(.+?)\\bfrom\\b", Pattern.CASE_INSENSITIVE);
-	private static final Pattern EXPAND_PATTERN = Pattern.compile("expand\\((.+)\\)", Pattern.CASE_INSENSITIVE);
-    private static final Pattern ORDER_CHECK_PATTERN = Pattern.compile("order\\s+by", Pattern.CASE_INSENSITIVE);
 
-    private String sql;
+	private IQueryManager queryManager;
     private Function<?, K> transformer;
-    private String projection;
-    private String countSql;
     private Map<String, IModel<Object>> params = new HashMap<String, IModel<Object>>();
     private Map<String, IModel<Object>> variables = new HashMap<String, IModel<Object>>();
     private String sortableParameter=null;
@@ -100,28 +97,9 @@ public class OQueryModel<K> extends LoadableDetachableModel<List<K>>
     @SuppressWarnings("unchecked")
 	public OQueryModel(String sql, Function<?, K> transformer)
     {
-        this.sql=sql;
+    	this.queryManager = new StringQueryManager(sql);
         this.transformer = transformer!=null?transformer:(Function<?, K>)ConvertToODocumentFunction.INSTANCE;
-        Matcher matcher = PROJECTION_PATTERN.matcher(sql);
-        if(matcher.find())
-        {
-        	projection = matcher.group(1).trim();
-        	Matcher expandMatcher = EXPAND_PATTERN.matcher(projection);
-        	containExpand = expandMatcher.find();
-        	if(containExpand)
-        	{
-        		countSql = matcher.replaceFirst("select sum("+expandMatcher.group(1)+".size()) as count from");
-        	}
-        	else
-        	{
-        		countSql = matcher.replaceFirst("select count(*) from"); 
-        	}
-        }
-        else
-        {
-            throw new WicketRuntimeException("Can't find 'object(<.>)' part in your request: "+sql);
-        }
-        if(ORDER_CHECK_PATTERN.matcher(sql).find())
+        if(queryManager.hasOrderBy())
         {
             throw new WicketRuntimeException(OQueryModel.class.getSimpleName()+" doesn't support 'order by' in supplied sql");
         }
@@ -213,29 +191,9 @@ public class OQueryModel<K> extends LoadableDetachableModel<List<K>>
     
     protected String prepareSql(Integer first, Integer count)
     {
-    	boolean wrapForSkip = containExpand && first!=null;
-    	String sql = getSql();
-    	StringBuilder sb = new StringBuilder(2*sql.length());
-    	if(wrapForSkip) sb.append("select from (");
-    	sb.append(sql);
-    	if(sortableParameter!=null) sb.append(" ORDER BY "+sortableParameter+(isAccessing?"":" desc"));
-    	if(wrapForSkip) sb.append(") ");
-    	if(first!=null) sb.append(" SKIP "+first);
-    	if(count!=null && count>0) sb.append(" LIMIT "+count);
-    	return sb.toString();
+    	return queryManager.prepareSql(first, count, sortableParameter, isAccessing);
     }
     
-    protected String getSql()
-    {
-    	return sql;
-    }
-
-    protected String getCountSql()
-    {
-        return countSql;
-    }
-
-
     /**
      * Get the size of the data
      * @return results size
@@ -245,7 +203,7 @@ public class OQueryModel<K> extends LoadableDetachableModel<List<K>>
     	if(size==null)
     	{
 	    	ODatabaseDocument db = OrientDbWebSession.get().getDatabase();
-	    	OSQLSynchQuery<ODocument> query = new OSQLSynchQuery<ODocument>(getCountSql());
+	    	OSQLSynchQuery<ODocument> query = new OSQLSynchQuery<ODocument>(queryManager.getCountSql());
 	    	List<ODocument> ret = db.query(enhanceContextByVariables(query), prepareParams());
 	    	if(ret!=null && ret.size()>0)
 	    	{
@@ -321,13 +279,6 @@ public class OQueryModel<K> extends LoadableDetachableModel<List<K>>
     	return this;
     }
     
-    /**
-     * @return projection of the query
-     */
-    public String getProjection() {
-		return projection;
-	}
-
     @Override
 	public void detach()
     {

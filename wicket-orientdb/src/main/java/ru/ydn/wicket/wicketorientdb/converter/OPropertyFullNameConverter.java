@@ -1,4 +1,4 @@
-package ru.ydn.wicket.wicketorientdb.utils;
+package ru.ydn.wicket.wicketorientdb.converter;
 
 import java.io.Serializable;
 
