@@ -5,7 +5,6 @@ import org.apache.wicket.util.io.IClusterable;
 import ru.ydn.wicket.wicketorientdb.model.OQueryModel;
 
 /**
- * @author Vitaliy Gonchar
  * Interface for getting filtered documents from OrientDB
  * @param <K> type of provide object
  * @param <F> type of filtered properties String or OProperty
