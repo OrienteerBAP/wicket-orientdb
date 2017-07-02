@@ -1,5 +1,8 @@
 package ru.ydn.wicket.wicketorientdb.utils.query.filter;
 
+/**
+ * Abstract class for IFilterCriteria
+ */
 public abstract class AbstractFilterCriteria implements IFilterCriteria {
 
     private final String fieldName;

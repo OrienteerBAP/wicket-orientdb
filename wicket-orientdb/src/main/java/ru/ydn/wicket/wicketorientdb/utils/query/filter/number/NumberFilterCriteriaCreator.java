@@ -4,6 +4,9 @@ import ru.ydn.wicket.wicketorientdb.utils.query.filter.IFilterCriteria;
 
 import java.util.List;
 
+/**
+ * Creator for filters for number fields.
+ */
 public class NumberFilterCriteriaCreator {
 
     private NumberFilterCriteria filterCriteria;

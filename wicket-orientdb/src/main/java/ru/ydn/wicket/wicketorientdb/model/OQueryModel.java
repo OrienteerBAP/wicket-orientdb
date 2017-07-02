@@ -116,9 +116,9 @@ public class OQueryModel<K> extends LoadableDetachableModel<List<K>>
     }
 
     /**
-     *
-     * @param filterCriteria
-     * @return
+     * Set {@link IFilterCriteria} for whis {@link OQueryModel<K>}
+     * @param filterCriteria {@link IFilterCriteria} for filtering
+     * @return this {@link OQueryModel<K>}
      */
     public OQueryModel<K> setFilterCriteria(IFilterCriteria filterCriteria) {
         queryManager.setFilterCriteria(filterCriteria);
