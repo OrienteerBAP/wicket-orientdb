@@ -5,6 +5,7 @@ import java.util.regex.Pattern;
 
 import org.apache.wicket.WicketRuntimeException;
 import org.apache.wicket.util.io.IClusterable;
+import ru.ydn.wicket.wicketorientdb.utils.query.filter.IFilterCriteria;
 
 /**
  * String based query manager 
@@ -20,6 +21,7 @@ public class StringQueryManager implements IQueryManager, IClusterable {
     private boolean hasOrderBy;
     private String sql;
     private String countSql;
+    private IFilterCriteria filterCriteria;
     
     public StringQueryManager(String sql) {
     	this.sql = sql;
@@ -66,18 +68,28 @@ public class StringQueryManager implements IQueryManager, IClusterable {
 	}
 
 	@Override
-	public String prepareSql(Integer first, Integer count, String sortBy, boolean isAccessing) {
-		boolean wrapForSkip = containExpand && first!=null;
-    	String sql = getSql();
-    	StringBuilder sb = new StringBuilder(2*sql.length());
-    	if(wrapForSkip) sb.append("select from (");
-    	sb.append(sql);
-    	if(sortBy!=null) sb.append(" ORDER BY "+sortBy+(isAccessing?"":" desc"));
-    	if(wrapForSkip) sb.append(") ");
-    	if(first!=null) sb.append(" SKIP "+first);
-    	if(count!=null && count>0) sb.append(" LIMIT "+count);
-    	return sb.toString();
+	public String prepareSql(Integer first, Integer count, String sortBy, boolean isAscending) {
+		String sql = getSql();
+		String resultSql;
+    	if (filterCriteria != null) {
+			resultSql = filterCriteria.apply(sql);
+		} else {
+			boolean wrapForSkip = containExpand && first != null;
+			StringBuilder sb = new StringBuilder(2 * sql.length());
+			if (wrapForSkip) sb.append("select from (");
+			sb.append(sql);
+			if (sortBy != null) sb.append(" ORDER BY " + sortBy + (isAscending ? "" : " desc"));
+			if (wrapForSkip) sb.append(") ");
+			if (first != null) sb.append(" SKIP " + first);
+			if (count != null && count > 0) sb.append(" LIMIT " + count);
+			resultSql = sb.toString();
+		}
+		return resultSql;
 	}
-	
-    
+
+	@Override
+	public void setFilterCriteria(IFilterCriteria filterCriteria) {
+		this.filterCriteria = filterCriteria;
+	}
+
 }
