@@ -57,9 +57,10 @@ public class TestFilters {
         NumberFilterCriteriaCreator creator = new NumberFilterCriteriaCreator();
         queryModel.setFilterCriteria(creator.createRangeFilterCriteria(NUMBER_FIELD, NUM_VALUE_1, NUM_VALUE_3, true));
         assertTrue(queryModel.getObject().size() == DOCUMENTS_NUM - 1);
-        assertTrue((Integer) queryModel.getObject().get(0).field(NUMBER_FIELD) == NUM_VALUE_1);
-        assertTrue((Integer) queryModel.getObject().get(1).field(NUMBER_FIELD) == NUM_VALUE_2);
-        assertTrue((Integer) queryModel.getObject().get(2).field(NUMBER_FIELD) == NUM_VALUE_3);
+        for (ODocument document : queryModel.getObject()) {
+            Integer number = document.field(NUMBER_FIELD);
+            assertTrue("Error in range filtering", number == NUM_VALUE_1 || number == NUM_VALUE_2 || number == NUM_VALUE_3);
+        }
         queryModel.detach();
 
         queryModel.setFilterCriteria(creator.createRangeFilterCriteria(NUMBER_FIELD, NUM_VALUE_1, NUM_VALUE_3, false));
@@ -73,13 +74,21 @@ public class TestFilters {
         queryModel.setFilterCriteria(creator.createValuesFilterCriteria(NUMBER_FIELD,
                 Arrays.asList(NUM_VALUE_1, NUM_VALUE_4), true));
         assertTrue(queryModel.getObject().size() == 2);
-        assertTrue((Integer) queryModel.getObject().get(0).field(NUMBER_FIELD) == NUM_VALUE_1);
-        assertTrue((Integer) queryModel.getObject().get(1).field(NUMBER_FIELD) == NUM_VALUE_4);
+        for (ODocument document : queryModel.getObject()) {
+            Integer number = document.field(NUMBER_FIELD);
+            assertTrue("Error in values join filtering",
+                    number == NUM_VALUE_1 || number == NUM_VALUE_4);
+        }
         queryModel.detach();
 
         queryModel.setFilterCriteria(creator.createValuesFilterCriteria(NUMBER_FIELD,
                 Arrays.asList(NUM_VALUE_1, NUM_VALUE_4), false));
         assertTrue(queryModel.getObject().size() == 2);
+        for (ODocument document : queryModel.getObject()) {
+            Integer number = document.field(NUMBER_FIELD);
+            assertTrue("Error in values no join filtering",
+                    number == NUM_VALUE_2 || number == NUM_VALUE_3);
+        }
         assertTrue((Integer) queryModel.getObject().get(0).field(NUMBER_FIELD) == NUM_VALUE_2);
         assertTrue((Integer) queryModel.getObject().get(1).field(NUMBER_FIELD) == NUM_VALUE_3);
     }
