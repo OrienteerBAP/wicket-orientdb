@@ -1,5 +1,6 @@
 package ru.ydn.wicket.wicketorientdb.filter;
 
+import com.google.common.collect.Maps;
 import com.orientechnologies.orient.core.record.impl.ODocument;
 import org.junit.After;
 import org.junit.Before;
@@ -10,6 +11,7 @@ import ru.ydn.wicket.wicketorientdb.utils.query.filter.IFilterCriteria;
 import ru.ydn.wicket.wicketorientdb.utils.query.filter.date.EqualsDateFilter;
 import ru.ydn.wicket.wicketorientdb.utils.query.filter.date.RangeOfDateFilter;
 import ru.ydn.wicket.wicketorientdb.utils.query.filter.date.ValuesOfDateFilter;
+import ru.ydn.wicket.wicketorientdb.utils.query.filter.link.EqualsLinkFilter;
 import ru.ydn.wicket.wicketorientdb.utils.query.filter.number.EqualsNumberFilter;
 import ru.ydn.wicket.wicketorientdb.utils.query.filter.number.RangeOfNumberFilter;
 import ru.ydn.wicket.wicketorientdb.utils.query.filter.number.ValuesOfNumberFilter;
@@ -21,6 +23,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.Map;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -314,6 +317,26 @@ public class TestFilters {
             String dateString = df.format(date);
             assertTrue(dateString.equals(DATETIME_VALUE_2)
                     || dateString.equals(DATETIME_VALUE_4));
+        }
+    }
+
+    @Test
+    public void testEqualsLinkFilter() {
+        Map<String, String> fieldValue = Maps.newHashMap();
+        fieldValue.put(NUMBER_FIELD, Integer.toString(NUM_VALUE_1));
+        fieldValue.put(STRING_FIELD, STR_VALUE_1);
+
+        filterCriteria.setFilter(new EqualsLinkFilter(LINK_FIELD, fieldValue, true));
+        assertTrue(queryModel.getObject().size() == 1);
+        assertTrue(queryModel.getObject().get(0).field(STRING_FIELD).equals(STR_VALUE_1));
+        queryModel.detach();
+
+        filterCriteria.setFilter(new EqualsLinkFilter(LINK_FIELD, fieldValue, false));
+        assertTrue(queryModel.getObject().size() == DOCUMENTS_NUM - 1);
+        for (ODocument document : queryModel.getObject()) {
+            String stringField = document.field(STRING_FIELD);
+            assertTrue(stringField.equals(STR_VALUE_2) || stringField.equals(STR_VALUE_3)
+                    || stringField.equals(STR_VALUE_4));
         }
     }
 }
