@@ -1,5 +1,8 @@
 package ru.ydn.wicket.wicketorientdb.utils.query.filter;
 
+/**
+ * Class that contains general actions for filters.
+ */
 public abstract class AbstractFilter implements IFilter {
 
     private final String field;
