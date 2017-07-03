@@ -12,9 +12,9 @@ interface ITesterFilterConstants {
     public static final String NUMBER_FIELD = "number";
 
     public static final String STR_VALUE_1 = "string value 1";
-    public static final String STR_VALUE_2 = "string value 2";
-    public static final String STR_VALUE_3 = "string value 3";
-    public static final String STR_VALUE_4 = "string value 4";
+    public static final String STR_VALUE_2 = "summer value 2";
+    public static final String STR_VALUE_3 = "winter value 3";
+    public static final String STR_VALUE_4 = "spring value 4";
 
     public static final int NUM_VALUE_1 = 1;
     public static final int NUM_VALUE_2 = 2;
