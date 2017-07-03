@@ -7,13 +7,13 @@ import ru.ydn.wicket.wicketorientdb.utils.query.filter.AbstractFilter;
  * second - end of range
  * SELECT FROM class WHERE num BETWEEN first AND second
  */
-public class RangeNumberFilter extends AbstractFilter {
+public class RangeOfNumberFilter extends AbstractFilter {
 
     private final Integer first;
     private final Integer second;
 
 
-    public RangeNumberFilter(String field, Integer first, Integer second, boolean join) {
+    public RangeOfNumberFilter(String field, Integer first, Integer second, boolean join) {
         super(field, join);
         this.first = first;
         this.second = second;
