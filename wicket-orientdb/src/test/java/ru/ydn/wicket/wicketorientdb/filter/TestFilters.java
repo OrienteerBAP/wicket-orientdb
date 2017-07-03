@@ -6,7 +6,10 @@ import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
 import ru.ydn.wicket.wicketorientdb.model.OQueryModel;
-import ru.ydn.wicket.wicketorientdb.utils.query.filter.number.NumberFilterCriteriaCreator;
+import ru.ydn.wicket.wicketorientdb.utils.query.filter.IFilterCriteria;
+import ru.ydn.wicket.wicketorientdb.utils.query.filter.number.EqualsNumberFilter;
+import ru.ydn.wicket.wicketorientdb.utils.query.filter.number.RangeNumberFilter;
+import ru.ydn.wicket.wicketorientdb.utils.query.filter.number.ValuesNumberFilter;
 
 import java.util.Arrays;
 
@@ -33,19 +36,19 @@ public class TestFilters {
 
     @Test
     public void testNumberEqualsFilter() {
-        NumberFilterCriteriaCreator creator = new NumberFilterCriteriaCreator();
-        queryModel.setFilterCriteria(creator.createEqualsFilterCriteria(NUMBER_FIELD, NUM_VALUE_1, true));
+        IFilterCriteria filterCriteria = queryModel.getFilterCriteria();
+        filterCriteria.setFilter(new EqualsNumberFilter(NUMBER_FIELD, NUM_VALUE_1, true));
         assertTrue(queryModel.getObject().size() == 1);
         assertTrue(NUM_VALUE_1 == (Integer) queryModel.getObject().get(0).field(NUMBER_FIELD));
         queryModel.detach();
 
-        queryModel.setFilterCriteria(creator.createEqualsFilterCriteria(NUMBER_FIELD, NUM_VALUE_2, true));
+        filterCriteria.setFilter(new EqualsNumberFilter(NUMBER_FIELD, NUM_VALUE_2, true));
         assertTrue(queryModel.getObject().size() == 1);
         assertTrue("expected: " + NUM_VALUE_2 + " get: " + queryModel.getObject().get(0).field(NUMBER_FIELD),
                 NUM_VALUE_2 == (Integer) queryModel.getObject().get(0).field(NUMBER_FIELD));
         queryModel.detach();
 
-        queryModel.setFilterCriteria(creator.createEqualsFilterCriteria(NUMBER_FIELD, NUM_VALUE_3, false));
+        filterCriteria.setFilter(new EqualsNumberFilter(NUMBER_FIELD, NUM_VALUE_3, false));
         assertTrue(queryModel.getObject().size() == DOCUMENTS_NUM - 1);
         for (ODocument document : queryModel.getObject()) {
             assertTrue((Integer) document.field(NUMBER_FIELD) != NUM_VALUE_3);
@@ -54,8 +57,8 @@ public class TestFilters {
 
     @Test
     public void testNumberRangeFilter() {
-        NumberFilterCriteriaCreator creator = new NumberFilterCriteriaCreator();
-        queryModel.setFilterCriteria(creator.createRangeFilterCriteria(NUMBER_FIELD, NUM_VALUE_1, NUM_VALUE_3, true));
+        IFilterCriteria filterCriteria = queryModel.getFilterCriteria();
+        filterCriteria.setFilter(new RangeNumberFilter(NUMBER_FIELD, NUM_VALUE_1, NUM_VALUE_3, true));
         assertTrue(queryModel.getObject().size() == DOCUMENTS_NUM - 1);
         for (ODocument document : queryModel.getObject()) {
             Integer number = document.field(NUMBER_FIELD);
@@ -63,15 +66,15 @@ public class TestFilters {
         }
         queryModel.detach();
 
-        queryModel.setFilterCriteria(creator.createRangeFilterCriteria(NUMBER_FIELD, NUM_VALUE_1, NUM_VALUE_3, false));
+        filterCriteria.setFilter(new RangeNumberFilter(NUMBER_FIELD, NUM_VALUE_1, NUM_VALUE_3, false));
         assertTrue(queryModel.getObject().size() == 1);
         assertTrue((Integer) queryModel.getObject().get(0).field(NUMBER_FIELD) == NUM_VALUE_4);
     }
 
     @Test
     public void testNumberValuesFilter() {
-        NumberFilterCriteriaCreator creator = new NumberFilterCriteriaCreator();
-        queryModel.setFilterCriteria(creator.createValuesFilterCriteria(NUMBER_FIELD,
+        IFilterCriteria filterCriteria = queryModel.getFilterCriteria();
+        filterCriteria.setFilter(new ValuesNumberFilter(NUMBER_FIELD,
                 Arrays.asList(NUM_VALUE_1, NUM_VALUE_4), true));
         assertTrue(queryModel.getObject().size() == 2);
         for (ODocument document : queryModel.getObject()) {
@@ -81,8 +84,7 @@ public class TestFilters {
         }
         queryModel.detach();
 
-        queryModel.setFilterCriteria(creator.createValuesFilterCriteria(NUMBER_FIELD,
-                Arrays.asList(NUM_VALUE_1, NUM_VALUE_4), false));
+        filterCriteria.setFilter(new ValuesNumberFilter(NUMBER_FIELD, Arrays.asList(NUM_VALUE_1, NUM_VALUE_4), false));
         assertTrue(queryModel.getObject().size() == 2);
         for (ODocument document : queryModel.getObject()) {
             Integer number = document.field(NUMBER_FIELD);

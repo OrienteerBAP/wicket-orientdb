@@ -126,6 +126,13 @@ public class OQueryModel<K> extends LoadableDetachableModel<List<K>>
     }
 
     /**
+     * @return current {@link IFilterCriteria}
+     */
+    public IFilterCriteria getFilterCriteria() {
+        return queryManager.getFilterCriteria();
+    }
+
+    /**
      * Set value for context variable
      * @param varName name of the variable to set
      * @param value {@link IModel} for the variable value

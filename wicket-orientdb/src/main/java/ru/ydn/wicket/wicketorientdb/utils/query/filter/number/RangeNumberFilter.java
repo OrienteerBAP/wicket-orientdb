@@ -1,26 +1,28 @@
 package ru.ydn.wicket.wicketorientdb.utils.query.filter.number;
 
-import java.util.List;
+import ru.ydn.wicket.wicketorientdb.utils.query.filter.IFilter;
 
 /**
  * first - start of range
  * second - end of range
  * SELECT FROM class WHERE num BETWEEN first AND second
  */
-class RangeFilter implements INumberFilter {
+public class RangeNumberFilter implements IFilter {
 
+    private final String field;
     private final Integer first;
     private final Integer second;
     private boolean join;
 
-    public RangeFilter(Integer first, Integer second, boolean join) {
+    public RangeNumberFilter(String field, Integer first, Integer second, boolean join) {
+        this.field = field;
         this.first = first;
         this.second = second;
         this.join = join;
     }
 
     @Override
-    public String apply(String field) {
+    public String apply() {
         StringBuilder sb = new StringBuilder();
         if (!join) {
             sb.append(" NOT(");
@@ -35,14 +37,10 @@ class RangeFilter implements INumberFilter {
         return sb.toString();
     }
 
-    @Override
-    public void setJoin(boolean join) {
-        this.join = join;
-    }
 
     @Override
     public String toString() {
-        return "RangeFilter{" +
+        return "RangeNumberFilter{" +
                 "first=" + first +
                 ", second=" + second +
                 ", join=" + join +

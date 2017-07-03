@@ -3,33 +3,37 @@ package ru.ydn.wicket.wicketorientdb.utils.query.filter;
 /**
  * Abstract class for IFilterCriteria
  */
-public abstract class AbstractFilterCriteria implements IFilterCriteria {
+public class FieldFilterCriteria implements IFilterCriteria {
 
-    private final String fieldName;
+    private IFilter filter;
 
-    protected AbstractFilterCriteria(String fieldName) {
-        this.fieldName = fieldName;
+    public FieldFilterCriteria(IFilter filter) {
+        this.filter = filter;
     }
+
+    public FieldFilterCriteria() {}
 
     @Override
     public String apply(String sql) {
+        if (filter == null)
+            return sql;
         StringBuilder sb = new StringBuilder(sql.length() * 2);
         sb.append(sql);
         if (sql.toUpperCase().contains("WHERE")) {
             sb.append(" AND ( ");
-            sb.append(apply());
+            sb.append(filter.apply());
             sb.append(" )");
         } else {
             sb.append(" WHERE ");
-            sb.append(apply());
+            sb.append(filter.apply());
         }
         return sb.toString();
     }
 
-    protected abstract String apply();
-
     @Override
-    public String getFieldName() {
-        return fieldName;
+    public IFilterCriteria setFilter(IFilter filter) {
+        this.filter = filter;
+        return this;
     }
+
 }

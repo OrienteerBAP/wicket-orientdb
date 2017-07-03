@@ -5,6 +5,7 @@ import java.util.regex.Pattern;
 
 import org.apache.wicket.WicketRuntimeException;
 import org.apache.wicket.util.io.IClusterable;
+import ru.ydn.wicket.wicketorientdb.utils.query.filter.FieldFilterCriteria;
 import ru.ydn.wicket.wicketorientdb.utils.query.filter.IFilterCriteria;
 
 /**
@@ -45,6 +46,7 @@ public class StringQueryManager implements IQueryManager, IClusterable {
             throw new WicketRuntimeException("Can't find 'object(<.>)' part in your request: "+sql);
         }
         hasOrderBy = ORDER_CHECK_PATTERN.matcher(sql).find();
+        filterCriteria = new FieldFilterCriteria();
     }
 
 	@Override
@@ -70,26 +72,28 @@ public class StringQueryManager implements IQueryManager, IClusterable {
 	@Override
 	public String prepareSql(Integer first, Integer count, String sortBy, boolean isAscending) {
 		String sql = getSql();
-		String resultSql;
     	if (filterCriteria != null) {
-			resultSql = filterCriteria.apply(sql);
-		} else {
-			boolean wrapForSkip = containExpand && first != null;
-			StringBuilder sb = new StringBuilder(2 * sql.length());
-			if (wrapForSkip) sb.append("select from (");
-			sb.append(sql);
-			if (sortBy != null) sb.append(" ORDER BY " + sortBy + (isAscending ? "" : " desc"));
-			if (wrapForSkip) sb.append(") ");
-			if (first != null) sb.append(" SKIP " + first);
-			if (count != null && count > 0) sb.append(" LIMIT " + count);
-			resultSql = sb.toString();
+			sql = filterCriteria.apply(sql);
 		}
-		return resultSql;
+		boolean wrapForSkip = containExpand && first != null;
+		StringBuilder sb = new StringBuilder(2 * sql.length());
+		if (wrapForSkip) sb.append("select from (");
+		sb.append(sql);
+		if (sortBy != null) sb.append(" ORDER BY " + sortBy + (isAscending ? "" : " desc"));
+		if (wrapForSkip) sb.append(") ");
+		if (first != null) sb.append(" SKIP " + first);
+		if (count != null && count > 0) sb.append(" LIMIT " + count);
+		return sb.toString();
 	}
 
 	@Override
 	public void setFilterCriteria(IFilterCriteria filterCriteria) {
 		this.filterCriteria = filterCriteria;
+	}
+
+	@Override
+	public IFilterCriteria getFilterCriteria() {
+		return filterCriteria;
 	}
 
 }

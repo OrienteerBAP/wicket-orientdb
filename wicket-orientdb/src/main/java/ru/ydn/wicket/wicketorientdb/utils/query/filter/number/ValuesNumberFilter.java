@@ -1,23 +1,27 @@
 package ru.ydn.wicket.wicketorientdb.utils.query.filter.number;
 
+import ru.ydn.wicket.wicketorientdb.utils.query.filter.IFilter;
+
 import java.util.List;
 
 /**
  * array of values
  * SELECT FROM class WHERE num IN (value1, value2, ..., valueN)
  */
-class ValuesFilter implements INumberFilter {
+public class ValuesNumberFilter implements IFilter {
 
+    private final String field;
     private final List<Integer> values;
     private boolean join;
 
-    public ValuesFilter(List<Integer> values, boolean join) {
+    public ValuesNumberFilter(String field, List<Integer> values, boolean join) {
+        this.field = field;
         this.values = values;
         this.join = join;
     }
 
     @Override
-    public String apply(String field) {
+    public String apply() {
         StringBuilder sb = new StringBuilder();
         if (!join) {
             sb.append(" NOT(");
@@ -39,10 +43,6 @@ class ValuesFilter implements INumberFilter {
         }
     }
 
-    @Override
-    public void setJoin(boolean join) {
-        this.join = join;
-    }
 
     @Override
     public String toString() {

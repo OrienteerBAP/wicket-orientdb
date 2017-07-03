@@ -1,21 +1,25 @@
 package ru.ydn.wicket.wicketorientdb.utils.query.filter.number;
 
+import ru.ydn.wicket.wicketorientdb.utils.query.filter.IFilter;
+
 /**
  * value - value for equals
  * SELECT FROM class WHERE num = value
  */
-class EqualsFilter implements INumberFilter {
+public class EqualsNumberFilter implements IFilter {
 
+    private final String field;
     private final Integer value;
     private boolean join;
 
-    public EqualsFilter(Integer value, boolean join) {
+    public EqualsNumberFilter(String field, Integer value, boolean join) {
+        this.field = field;
         this.value = value;
         this.join = join;
     }
 
     @Override
-    public String apply(String field) {
+    public String apply() {
         StringBuilder sb = new StringBuilder();
         sb.append(field);
         if (join) {
@@ -28,16 +32,5 @@ class EqualsFilter implements INumberFilter {
         return sb.toString();
     }
 
-    @Override
-    public void setJoin(boolean join) {
-        this.join = join;
-    }
 
-    @Override
-    public String toString() {
-        return "EqualsFilter{" +
-                "value=" + value +
-                ", join=" + join +
-                '}';
-    }
 }

@@ -5,5 +5,5 @@ package ru.ydn.wicket.wicketorientdb.utils.query.filter;
  */
 public interface IFilterCriteria {
     public String apply(String sql);
-    public String getFieldName();
+    public IFilterCriteria setFilter(IFilter filter);
 }

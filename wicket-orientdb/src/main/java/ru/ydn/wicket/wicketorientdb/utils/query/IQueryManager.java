@@ -12,4 +12,5 @@ public interface IQueryManager {
 	public boolean hasOrderBy();
 	public String prepareSql(Integer first, Integer count, String sortBy, boolean isAscending);
 	public void setFilterCriteria(IFilterCriteria filterCriteria);
+	public IFilterCriteria getFilterCriteria();
 }
