@@ -1,9 +1,5 @@
 package ru.ydn.wicket.wicketorientdb.filter;
 
-import com.google.common.collect.Lists;
-
-import java.util.List;
-
 interface ITesterFilterConstants {
 
     public static final String TEST_CLASS_NAME      = "FilterTestOClass";

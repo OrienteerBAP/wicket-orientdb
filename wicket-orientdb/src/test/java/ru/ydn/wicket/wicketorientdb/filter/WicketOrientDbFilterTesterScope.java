@@ -19,14 +19,12 @@ import static ru.ydn.wicket.wicketorientdb.filter.ITesterFilterConstants.*;
 
 public class WicketOrientDbFilterTesterScope extends WicketOrientDbTesterScope {
 
-    private WicketTester tester;
-
     @Override
     public Statement apply(final Statement base, Description description) {
         return new Statement() {
             @Override
             public void evaluate() throws Throwable {
-                tester = create();
+                WicketTester tester = create();
                 List<OClass> testClasses = Lists.newArrayList();
                 try {
                     testClasses = initTestClasses();
@@ -34,7 +32,6 @@ public class WicketOrientDbFilterTesterScope extends WicketOrientDbTesterScope {
                 } finally {
                     deleteClasses(testClasses);
                     tester.destroy();
-                    tester = null;
                 }
             }
         };
