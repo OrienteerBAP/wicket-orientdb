@@ -43,6 +43,8 @@ public class WicketOrientDbFilterTesterScope extends WicketOrientDbTesterScope {
                 OClass oClass = db.getMetadata().getSchema().createClass(className);
                 oClass.createProperty(STRING_FIELD, OType.STRING);
                 oClass.createProperty(NUMBER_FIELD, OType.INTEGER);
+                oClass.createProperty(DATE_FIELD, OType.DATE);
+                oClass.createProperty(DATETIME_FIELD, OType.DATETIME);
                 db.commit();
                 createDocumentsForOClass(oClass);
                 db.commit();
@@ -55,18 +57,26 @@ public class WicketOrientDbFilterTesterScope extends WicketOrientDbTesterScope {
         ODocument document = new ODocument(oClass);
         document.field(STRING_FIELD, STR_VALUE_1);
         document.field(NUMBER_FIELD, NUM_VALUE_1);
+        document.field(DATE_FIELD, DATE_VALUE_1);
+        document.field(DATETIME_FIELD, DATETIME_VALUE_1);
         document.save();
         document = new ODocument(oClass);
         document.field(STRING_FIELD, STR_VALUE_2);
         document.field(NUMBER_FIELD, NUM_VALUE_2);
+        document.field(DATE_FIELD, DATE_VALUE_2);
+        document.field(DATETIME_FIELD, DATETIME_VALUE_2);
         document.save();
         document = new ODocument(oClass);
         document.field(STRING_FIELD, STR_VALUE_3);
         document.field(NUMBER_FIELD, NUM_VALUE_3);
+        document.field(DATE_FIELD, DATE_VALUE_3);
+        document.field(DATETIME_FIELD, DATETIME_VALUE_3);
         document.save();
         document = new ODocument(oClass);
         document.field(STRING_FIELD, STR_VALUE_4);
         document.field(NUMBER_FIELD, NUM_VALUE_4);
+        document.field(DATE_FIELD, DATE_VALUE_4);
+        document.field(DATETIME_FIELD, DATETIME_VALUE_4);
         document.save();
     }
 
@@ -80,6 +90,5 @@ public class WicketOrientDbFilterTesterScope extends WicketOrientDbTesterScope {
             }
         }.execute();
     }
-
 
 }
