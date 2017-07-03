@@ -8,11 +8,11 @@ import java.util.List;
  * array of values
  * SELECT FROM class WHERE num IN (value1, value2, ..., valueN)
  */
-public class ValuesNumberFilter extends AbstractFilter {
+public class ValuesOfNumberFilter extends AbstractFilter {
 
     private final List<Integer> values;
 
-    public ValuesNumberFilter(String field, List<Integer> values, boolean join) {
+    public ValuesOfNumberFilter(String field, List<Integer> values, boolean join) {
         super(field, join);
         this.values = values;
     }
