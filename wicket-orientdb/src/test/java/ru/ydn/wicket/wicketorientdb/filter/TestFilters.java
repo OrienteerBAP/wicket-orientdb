@@ -7,17 +7,16 @@ import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
 import ru.ydn.wicket.wicketorientdb.model.OQueryModel;
-import ru.ydn.wicket.wicketorientdb.utils.query.filter.IFilterCriteria;
-import ru.ydn.wicket.wicketorientdb.utils.query.filter.date.EqualsDateFilter;
-import ru.ydn.wicket.wicketorientdb.utils.query.filter.date.RangeOfDateFilter;
-import ru.ydn.wicket.wicketorientdb.utils.query.filter.date.ValuesOfDateFilter;
-import ru.ydn.wicket.wicketorientdb.utils.query.filter.link.EqualsLinkFilter;
-import ru.ydn.wicket.wicketorientdb.utils.query.filter.number.EqualsNumberFilter;
-import ru.ydn.wicket.wicketorientdb.utils.query.filter.number.RangeOfNumberFilter;
-import ru.ydn.wicket.wicketorientdb.utils.query.filter.number.ValuesOfNumberFilter;
-import ru.ydn.wicket.wicketorientdb.utils.query.filter.string.ContainsStringFilter;
-import ru.ydn.wicket.wicketorientdb.utils.query.filter.string.EqualsStringFilter;
-import ru.ydn.wicket.wicketorientdb.utils.query.filter.string.StartOrEndStringFilter;
+import ru.ydn.wicket.wicketorientdb.utils.query.filter.date.EqualsDateFilterCriteria;
+import ru.ydn.wicket.wicketorientdb.utils.query.filter.date.RangeOfDateFilterCriteria;
+import ru.ydn.wicket.wicketorientdb.utils.query.filter.date.ValuesOfDateFilterCriteria;
+import ru.ydn.wicket.wicketorientdb.utils.query.filter.link.EqualsLinkFilterCriteria;
+import ru.ydn.wicket.wicketorientdb.utils.query.filter.number.EqualsNumberFilterCriteria;
+import ru.ydn.wicket.wicketorientdb.utils.query.filter.number.RangeOfNumberFilterCriteria;
+import ru.ydn.wicket.wicketorientdb.utils.query.filter.number.ValuesOfNumberFilterCriteria;
+import ru.ydn.wicket.wicketorientdb.utils.query.filter.string.ContainsStringFilterCriteria;
+import ru.ydn.wicket.wicketorientdb.utils.query.filter.string.EqualsStringFilterCriteria;
+import ru.ydn.wicket.wicketorientdb.utils.query.filter.string.StartOrEndStringFilterCriteria;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -35,35 +34,32 @@ public class TestFilters {
     public static WicketOrientDbFilterTesterScope wicket = new WicketOrientDbFilterTesterScope();
 
     private OQueryModel<ODocument> queryModel;
-    private IFilterCriteria filterCriteria;
 
     @Before
     public void setUpOQueryModel() {
         queryModel = new OQueryModel<>("SELECT FROM " + TEST_CLASS_NAME);
-        filterCriteria = queryModel.getFilterCriteria();
     }
 
     @After
     public void destroyOQueryModel() {
         queryModel.detach();
-        filterCriteria = null;
         queryModel = null;
     }
 
     @Test
     public void testNumberEqualsFilter() {
-        filterCriteria.setFilter(new EqualsNumberFilter(NUMBER_FIELD, NUM_VALUE_1, true));
+        queryModel.setFilterCriteria(new EqualsNumberFilterCriteria(NUMBER_FIELD, NUM_VALUE_1, true));
         assertTrue(queryModel.getObject().size() == 1);
         assertTrue(NUM_VALUE_1 == (Integer) queryModel.getObject().get(0).field(NUMBER_FIELD));
         queryModel.detach();
 
-        filterCriteria.setFilter(new EqualsNumberFilter(NUMBER_FIELD, NUM_VALUE_2, true));
+        queryModel.setFilterCriteria(new EqualsNumberFilterCriteria(NUMBER_FIELD, NUM_VALUE_2, true));
         assertTrue(queryModel.getObject().size() == 1);
         assertTrue("expected: " + NUM_VALUE_2 + " get: " + queryModel.getObject().get(0).field(NUMBER_FIELD),
                 NUM_VALUE_2 == (Integer) queryModel.getObject().get(0).field(NUMBER_FIELD));
         queryModel.detach();
 
-        filterCriteria.setFilter(new EqualsNumberFilter(NUMBER_FIELD, NUM_VALUE_3, false));
+        queryModel.setFilterCriteria(new EqualsNumberFilterCriteria(NUMBER_FIELD, NUM_VALUE_3, false));
         assertTrue(queryModel.getObject().size() == DOCUMENTS_NUM - 1);
         for (ODocument document : queryModel.getObject()) {
             assertTrue((Integer) document.field(NUMBER_FIELD) != NUM_VALUE_3);
@@ -72,7 +68,7 @@ public class TestFilters {
 
     @Test
     public void testRangeOfNumberFilter() {
-        filterCriteria.setFilter(new RangeOfNumberFilter(NUMBER_FIELD, NUM_VALUE_1, NUM_VALUE_3, true));
+        queryModel.setFilterCriteria(new RangeOfNumberFilterCriteria(NUMBER_FIELD, NUM_VALUE_1, NUM_VALUE_3, true));
         assertTrue(queryModel.getObject().size() == DOCUMENTS_NUM - 1);
         for (ODocument document : queryModel.getObject()) {
             Integer number = document.field(NUMBER_FIELD);
@@ -80,14 +76,14 @@ public class TestFilters {
         }
         queryModel.detach();
 
-        filterCriteria.setFilter(new RangeOfNumberFilter(NUMBER_FIELD, NUM_VALUE_1, NUM_VALUE_3, false));
+        queryModel.setFilterCriteria(new RangeOfNumberFilterCriteria(NUMBER_FIELD, NUM_VALUE_1, NUM_VALUE_3, false));
         assertTrue(queryModel.getObject().size() == 1);
         assertTrue((Integer) queryModel.getObject().get(0).field(NUMBER_FIELD) == NUM_VALUE_4);
     }
 
     @Test
     public void testNumberValuesFilter() {
-        filterCriteria.setFilter(new ValuesOfNumberFilter(NUMBER_FIELD,
+        queryModel.setFilterCriteria(new ValuesOfNumberFilterCriteria(NUMBER_FIELD,
                 Arrays.asList(NUM_VALUE_1, NUM_VALUE_4), true));
         assertTrue(queryModel.getObject().size() == 2);
         for (ODocument document : queryModel.getObject()) {
@@ -97,7 +93,7 @@ public class TestFilters {
         }
         queryModel.detach();
 
-        filterCriteria.setFilter(new ValuesOfNumberFilter(NUMBER_FIELD, Arrays.asList(NUM_VALUE_1, NUM_VALUE_4), false));
+        queryModel.setFilterCriteria(new ValuesOfNumberFilterCriteria(NUMBER_FIELD, Arrays.asList(NUM_VALUE_1, NUM_VALUE_4), false));
         assertTrue(queryModel.getObject().size() == 2);
         for (ODocument document : queryModel.getObject()) {
             Integer number = document.field(NUMBER_FIELD);
@@ -110,12 +106,12 @@ public class TestFilters {
 
     @Test
     public void testStringEqualsFilter() {
-        filterCriteria.setFilter(new EqualsStringFilter(STRING_FIELD, STR_VALUE_1, true));
+        queryModel.setFilterCriteria(new EqualsStringFilterCriteria(STRING_FIELD, STR_VALUE_1, true));
         assertTrue(queryModel.getObject().size() == 1);
         assertTrue(queryModel.getObject().get(0).field(STRING_FIELD).equals(STR_VALUE_1));
         queryModel.detach();
 
-        filterCriteria.setFilter(new EqualsStringFilter(STRING_FIELD, STR_VALUE_1, false));
+        queryModel.setFilterCriteria(new EqualsStringFilterCriteria(STRING_FIELD, STR_VALUE_1, false));
         assertTrue(queryModel.getObject().size() == DOCUMENTS_NUM - 1);
         for (ODocument document : queryModel.getObject()) {
             String stringField = document.field(STRING_FIELD);
@@ -126,21 +122,21 @@ public class TestFilters {
 
     @Test
     public void testStartOrEndStringFilter() {
-        filterCriteria.setFilter(new StartOrEndStringFilter(STRING_FIELD, "string", true, true));
+        queryModel.setFilterCriteria(new StartOrEndStringFilterCriteria(STRING_FIELD, "string", true, true));
         assertTrue(queryModel.getObject().size() == 1);
         assertTrue(queryModel.getObject().get(0).field(STRING_FIELD).equals(STR_VALUE_1));
         queryModel.detach();
 
-        filterCriteria.setFilter(new StartOrEndStringFilter(STRING_FIELD, "string", false, true));
+        queryModel.setFilterCriteria(new StartOrEndStringFilterCriteria(STRING_FIELD, "string", false, true));
         assertTrue(queryModel.getObject().size() == 0);
         queryModel.detach();
 
-        filterCriteria.setFilter(new StartOrEndStringFilter(STRING_FIELD, "2", false, true));
+        queryModel.setFilterCriteria(new StartOrEndStringFilterCriteria(STRING_FIELD, "2", false, true));
         assertTrue(queryModel.getObject().size() == 1);
         assertTrue(queryModel.getObject().get(0).field(STRING_FIELD).equals(STR_VALUE_2));
         queryModel.detach();
 
-        filterCriteria.setFilter(new StartOrEndStringFilter(STRING_FIELD, "string", true, false));
+        queryModel.setFilterCriteria(new StartOrEndStringFilterCriteria(STRING_FIELD, "string", true, false));
         assertTrue(queryModel.getObject().size() == DOCUMENTS_NUM - 1);
         for (ODocument document : queryModel.getObject()) {
             String stringField = document.field(STRING_FIELD);
@@ -149,7 +145,7 @@ public class TestFilters {
         }
         queryModel.detach();
 
-        filterCriteria.setFilter(new StartOrEndStringFilter(STRING_FIELD, "2", false, false));
+        queryModel.setFilterCriteria(new StartOrEndStringFilterCriteria(STRING_FIELD, "2", false, false));
         assertTrue(queryModel.getObject().size() == DOCUMENTS_NUM - 1);
         for (ODocument document : queryModel.getObject()) {
             String stringField = document.field(STRING_FIELD);
@@ -160,16 +156,16 @@ public class TestFilters {
 
     @Test
     public void testContainsStringFilter() {
-        filterCriteria.setFilter(new ContainsStringFilter(STRING_FIELD, "value", true));
+        queryModel.setFilterCriteria(new ContainsStringFilterCriteria(STRING_FIELD, "value", true));
         assertTrue(queryModel.getObject().size() == DOCUMENTS_NUM);
         queryModel.detach();
 
-        filterCriteria.setFilter(new ContainsStringFilter(STRING_FIELD, "string", true));
+        queryModel.setFilterCriteria(new ContainsStringFilterCriteria(STRING_FIELD, "string", true));
         assertTrue(queryModel.getObject().size() == 1);
         assertTrue(queryModel.getObject().get(0).field(STRING_FIELD).equals(STR_VALUE_1));
         queryModel.detach();
 
-        filterCriteria.setFilter(new ContainsStringFilter(STRING_FIELD, "string", false));
+        queryModel.setFilterCriteria(new ContainsStringFilterCriteria(STRING_FIELD, "string", false));
         assertTrue(queryModel.getObject().size() == DOCUMENTS_NUM - 1);
         for (ODocument document : queryModel.getObject()) {
             String stringField = document.field(STRING_FIELD);
@@ -183,12 +179,12 @@ public class TestFilters {
         String dateFormat = "yyyy-MM-dd";
         DateFormat df = new SimpleDateFormat(dateFormat);
 
-        filterCriteria.setFilter(new EqualsDateFilter(DATE_FIELD, df.parse(DATE_VALUE_1), dateFormat, true));
+        queryModel.setFilterCriteria(new EqualsDateFilterCriteria(DATE_FIELD, df.parse(DATE_VALUE_1), dateFormat, true));
         assertTrue(queryModel.getObject().size() == 1);
         assertTrue(df.format((Date) queryModel.getObject().get(0).field(DATE_FIELD)).equals(DATE_VALUE_1));
         queryModel.detach();
 
-        filterCriteria.setFilter(new EqualsDateFilter(DATE_FIELD, df.parse(DATE_VALUE_1), dateFormat, false));
+        queryModel.setFilterCriteria(new EqualsDateFilterCriteria(DATE_FIELD, df.parse(DATE_VALUE_1), dateFormat, false));
         assertTrue(queryModel.getObject().size() == DOCUMENTS_NUM - 1);
         for (ODocument document : queryModel.getObject()) {
             Date date = document.field(DATE_FIELD);
@@ -203,12 +199,12 @@ public class TestFilters {
         String dateTimeFormat = "yyyy-MM-dd HH:mm:ss";
         DateFormat df = new SimpleDateFormat(dateTimeFormat);
 
-        filterCriteria.setFilter(new EqualsDateFilter(DATETIME_FIELD, df.parse(DATETIME_VALUE_1), dateTimeFormat, true));
+        queryModel.setFilterCriteria(new EqualsDateFilterCriteria(DATETIME_FIELD, df.parse(DATETIME_VALUE_1), dateTimeFormat, true));
         assertTrue(queryModel.getObject().size() == 1);
         assertTrue(df.format((Date) queryModel.getObject().get(0).field(DATETIME_FIELD)).equals(DATETIME_VALUE_1));
         queryModel.detach();
 
-        filterCriteria.setFilter(new EqualsDateFilter(DATETIME_FIELD, df.parse(DATETIME_VALUE_1), dateTimeFormat, false));
+        queryModel.setFilterCriteria(new EqualsDateFilterCriteria(DATETIME_FIELD, df.parse(DATETIME_VALUE_1), dateTimeFormat, false));
         assertTrue(queryModel.getObject().size() == DOCUMENTS_NUM - 1);
         for (ODocument document : queryModel.getObject()) {
             Date date = document.field(DATETIME_FIELD);
@@ -223,7 +219,7 @@ public class TestFilters {
         String dateFormat = "yyyy-MM-dd";
         DateFormat df = new SimpleDateFormat(dateFormat);
 
-        filterCriteria.setFilter(new RangeOfDateFilter(DATE_FIELD, df.parse(DATE_VALUE_1), df.parse(DATE_VALUE_3),
+        queryModel.setFilterCriteria(new RangeOfDateFilterCriteria(DATE_FIELD, df.parse(DATE_VALUE_1), df.parse(DATE_VALUE_3),
                 dateFormat, true));
         assertTrue(queryModel.getObject().size() == DOCUMENTS_NUM - 1);
         for (ODocument document : queryModel.getObject()) {
@@ -236,7 +232,7 @@ public class TestFilters {
         }
         queryModel.detach();
 
-        filterCriteria.setFilter(new RangeOfDateFilter(DATE_FIELD, df.parse(DATE_VALUE_1), df.parse(DATE_VALUE_3),
+        queryModel.setFilterCriteria(new RangeOfDateFilterCriteria(DATE_FIELD, df.parse(DATE_VALUE_1), df.parse(DATE_VALUE_3),
                 dateFormat, false));
         assertTrue(queryModel.getObject().size() == 1);
         assertTrue(df.format((Date) queryModel.getObject().get(0).field(DATE_FIELD)).equals(DATE_VALUE_4));
@@ -247,7 +243,7 @@ public class TestFilters {
         String dateFormat = "yyyy-MM-dd HH:mm:ss";
         DateFormat df = new SimpleDateFormat(dateFormat);
 
-        filterCriteria.setFilter(new RangeOfDateFilter(DATETIME_FIELD, df.parse(DATETIME_VALUE_1), df.parse(DATETIME_VALUE_3),
+        queryModel.setFilterCriteria(new RangeOfDateFilterCriteria(DATETIME_FIELD, df.parse(DATETIME_VALUE_1), df.parse(DATETIME_VALUE_3),
                 dateFormat, true));
         assertTrue(queryModel.getObject().size() == DOCUMENTS_NUM - 1);
         for (ODocument document : queryModel.getObject()) {
@@ -260,7 +256,7 @@ public class TestFilters {
         }
         queryModel.detach();
 
-        filterCriteria.setFilter(new RangeOfDateFilter(DATETIME_FIELD, df.parse(DATETIME_VALUE_1), df.parse(DATETIME_VALUE_3),
+        queryModel.setFilterCriteria(new RangeOfDateFilterCriteria(DATETIME_FIELD, df.parse(DATETIME_VALUE_1), df.parse(DATETIME_VALUE_3),
                 dateFormat, false));
         assertTrue(queryModel.getObject().size() == 1);
         assertTrue(df.format((Date) queryModel.getObject().get(0).field(DATETIME_FIELD)).equals(DATETIME_VALUE_4));
@@ -271,7 +267,7 @@ public class TestFilters {
         String dateFormat = "yyyy-MM-dd";
         DateFormat df = new SimpleDateFormat(dateFormat);
 
-        filterCriteria.setFilter(new ValuesOfDateFilter(DATE_FIELD, Arrays.asList(df.parse(DATE_VALUE_1), df.parse(DATE_VALUE_3)),
+        queryModel.setFilterCriteria(new ValuesOfDateFilterCriteria(DATE_FIELD, Arrays.asList(df.parse(DATE_VALUE_1), df.parse(DATE_VALUE_3)),
                 dateFormat, true));
         assertTrue(queryModel.getObject().size() == 2);
         for (ODocument document : queryModel.getObject()) {
@@ -282,7 +278,7 @@ public class TestFilters {
         }
         queryModel.detach();
 
-        filterCriteria.setFilter(new ValuesOfDateFilter(DATE_FIELD, Arrays.asList(df.parse(DATE_VALUE_1), df.parse(DATE_VALUE_3)),
+        queryModel.setFilterCriteria(new ValuesOfDateFilterCriteria(DATE_FIELD, Arrays.asList(df.parse(DATE_VALUE_1), df.parse(DATE_VALUE_3)),
                 dateFormat, false));
         assertTrue(queryModel.getObject().size() == 2);
         for (ODocument document : queryModel.getObject()) {
@@ -298,7 +294,7 @@ public class TestFilters {
         String dateFormat = "yyyy-MM-dd HH:mm:ss";
         DateFormat df = new SimpleDateFormat(dateFormat);
 
-        filterCriteria.setFilter(new ValuesOfDateFilter(DATETIME_FIELD, Arrays.asList(df.parse(DATETIME_VALUE_1),
+        queryModel.setFilterCriteria(new ValuesOfDateFilterCriteria(DATETIME_FIELD, Arrays.asList(df.parse(DATETIME_VALUE_1),
                 df.parse(DATETIME_VALUE_3)), dateFormat, true));
         assertTrue(queryModel.getObject().size() == 2);
         for (ODocument document : queryModel.getObject()) {
@@ -309,7 +305,7 @@ public class TestFilters {
         }
         queryModel.detach();
 
-        filterCriteria.setFilter(new ValuesOfDateFilter(DATETIME_FIELD, Arrays.asList(df.parse(DATETIME_VALUE_1),
+        queryModel.setFilterCriteria(new ValuesOfDateFilterCriteria(DATETIME_FIELD, Arrays.asList(df.parse(DATETIME_VALUE_1),
                 df.parse(DATETIME_VALUE_3)), dateFormat, false));
         assertTrue(queryModel.getObject().size() == 2);
         for (ODocument document : queryModel.getObject()) {
@@ -326,12 +322,12 @@ public class TestFilters {
         fieldValue.put(NUMBER_FIELD, Integer.toString(NUM_VALUE_1));
         fieldValue.put(STRING_FIELD, STR_VALUE_1);
 
-        filterCriteria.setFilter(new EqualsLinkFilter(LINK_FIELD, fieldValue, true));
+        queryModel.setFilterCriteria(new EqualsLinkFilterCriteria(LINK_FIELD, fieldValue, true));
         assertTrue(queryModel.getObject().size() == 1);
         assertTrue(queryModel.getObject().get(0).field(STRING_FIELD).equals(STR_VALUE_1));
         queryModel.detach();
 
-        filterCriteria.setFilter(new EqualsLinkFilter(LINK_FIELD, fieldValue, false));
+        queryModel.setFilterCriteria(new EqualsLinkFilterCriteria(LINK_FIELD, fieldValue, false));
         assertTrue(queryModel.getObject().size() == DOCUMENTS_NUM - 1);
         for (ODocument document : queryModel.getObject()) {
             String stringField = document.field(STRING_FIELD);

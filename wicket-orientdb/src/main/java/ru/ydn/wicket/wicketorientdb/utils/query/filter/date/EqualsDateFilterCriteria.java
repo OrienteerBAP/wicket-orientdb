@@ -1,6 +1,6 @@
 package ru.ydn.wicket.wicketorientdb.utils.query.filter.date;
 
-import ru.ydn.wicket.wicketorientdb.utils.query.filter.AbstractFilter;
+import ru.ydn.wicket.wicketorientdb.utils.query.filter.AbstractFilterCriteria;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -10,22 +10,22 @@ import java.util.Date;
  * or
  * SELECT FROM class WHERE datetimeField = 'yyyy-MM-dd HH:mm:ss'
  */
-public class EqualsDateFilter extends AbstractFilter {
+public class EqualsDateFilterCriteria extends AbstractFilterCriteria {
 
     private final Date date;
     private final String dateFormat;
 
-    public EqualsDateFilter(String field, Date date, String dateFormat, boolean join) {
+    public EqualsDateFilterCriteria(String field, Date date, String dateFormat, boolean join) {
         super(field, join);
         this.date = date;
         this.dateFormat = dateFormat;
     }
 
     @Override
-    protected String apply(String field) {
+    protected String apply() {
         StringBuilder sb = new StringBuilder();
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(dateFormat);
-        sb.append(field);
+        sb.append(getField());
         sb.append(" = '");
         sb.append(simpleDateFormat.format(date));
         sb.append("'");

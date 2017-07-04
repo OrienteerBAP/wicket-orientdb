@@ -5,7 +5,8 @@ import java.util.regex.Pattern;
 
 import org.apache.wicket.WicketRuntimeException;
 import org.apache.wicket.util.io.IClusterable;
-import ru.ydn.wicket.wicketorientdb.utils.query.filter.FieldFilterCriteria;
+import ru.ydn.wicket.wicketorientdb.utils.query.filter.AbstractFilterCriteria;
+import ru.ydn.wicket.wicketorientdb.utils.query.filter.DefaultFilterCriteria;
 import ru.ydn.wicket.wicketorientdb.utils.query.filter.IFilterCriteria;
 
 /**
@@ -46,7 +47,7 @@ public class StringQueryManager implements IQueryManager, IClusterable {
             throw new WicketRuntimeException("Can't find 'object(<.>)' part in your request: "+sql);
         }
         hasOrderBy = ORDER_CHECK_PATTERN.matcher(sql).find();
-        filterCriteria = new FieldFilterCriteria();
+        filterCriteria = new DefaultFilterCriteria();
     }
 
 	@Override

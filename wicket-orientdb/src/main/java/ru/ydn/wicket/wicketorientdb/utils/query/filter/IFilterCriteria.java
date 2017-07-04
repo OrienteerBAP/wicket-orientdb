@@ -7,5 +7,5 @@ import org.apache.wicket.util.io.IClusterable;
  */
 public interface IFilterCriteria extends IClusterable {
     public String apply(String sql);
-    public IFilterCriteria setFilter(IFilter filter);
+    public String getField();
 }

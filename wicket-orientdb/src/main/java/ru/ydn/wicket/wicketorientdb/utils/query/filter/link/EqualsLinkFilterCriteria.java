@@ -1,28 +1,28 @@
 package ru.ydn.wicket.wicketorientdb.utils.query.filter.link;
 
-import ru.ydn.wicket.wicketorientdb.utils.query.filter.AbstractFilter;
+import ru.ydn.wicket.wicketorientdb.utils.query.filter.AbstractFilterCriteria;
 
 import java.util.Map;
 
 /**
  * Filter for equals link fields with input data in document.
  */
-public class EqualsLinkFilter extends AbstractFilter {
+public class EqualsLinkFilterCriteria extends AbstractFilterCriteria {
 
     private final Map<String, String> fieldAndValue;
 
-    public EqualsLinkFilter(String linkField, Map<String, String> fieldAndValue, boolean join) {
+    public EqualsLinkFilterCriteria(String linkField, Map<String, String> fieldAndValue, boolean join) {
         super(linkField, join);
         this.fieldAndValue = fieldAndValue;
     }
 
     @Override
-    protected String apply(String linkField) {
+    protected String apply() {
         StringBuilder sb = new StringBuilder();
         int counter = 0;
         for (String field : fieldAndValue.keySet()) {
             String value = fieldAndValue.get(field);
-            sb.append(linkField).append(".");
+            sb.append(getField()).append(".");
             sb.append(field);
             sb.append(" = '");
             sb.append(value).append("'");

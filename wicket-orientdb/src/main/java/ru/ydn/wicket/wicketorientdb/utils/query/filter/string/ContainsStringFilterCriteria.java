@@ -1,24 +1,24 @@
 package ru.ydn.wicket.wicketorientdb.utils.query.filter.string;
 
-import ru.ydn.wicket.wicketorientdb.utils.query.filter.AbstractFilter;
+import ru.ydn.wicket.wicketorientdb.utils.query.filter.AbstractFilterCriteria;
 
 /**
  * Class for generation SQL: "if field contains string".
  * SELECT FROM class WHERE stringField LIKE '%myString%'
  */
-public class ContainsStringFilter extends AbstractFilter {
+public class ContainsStringFilterCriteria extends AbstractFilterCriteria {
 
     private final String value;
 
-    public ContainsStringFilter(String field, String value, boolean contains) {
+    public ContainsStringFilterCriteria(String field, String value, boolean contains) {
         super(field, contains);
         this.value = value;
     }
 
     @Override
-    public String apply(String field) {
+    public String apply() {
         StringBuilder sb = new StringBuilder();
-        sb.append(field);
+        sb.append(getField());
         sb.append(" LIKE '")
                 .append("%")
                 .append(value)

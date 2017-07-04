@@ -1,27 +1,27 @@
 package ru.ydn.wicket.wicketorientdb.utils.query.filter.string;
 
-import ru.ydn.wicket.wicketorientdb.utils.query.filter.AbstractFilter;
+import ru.ydn.wicket.wicketorientdb.utils.query.filter.AbstractFilterCriteria;
 
 /**
  * SELECT FROM class WHERE stringField LIKE '%myString'
  * or
  * SELECT FROM class WHERE stringField LIKE 'myString%'
  */
-public class StartOrEndStringFilter extends AbstractFilter {
+public class StartOrEndStringFilterCriteria extends AbstractFilterCriteria {
 
     private final String value;
     private final boolean start;
 
-    public StartOrEndStringFilter(String field, String value, boolean start, boolean join) {
+    public StartOrEndStringFilterCriteria(String field, String value, boolean start, boolean join) {
         super(field, join);
         this.value = value;
         this.start = start;
     }
 
     @Override
-    public String apply(String field) {
+    public String apply() {
         StringBuilder sb = new StringBuilder();
-        sb.append(field);
+        sb.append(getField());
         sb.append(" LIKE '");
         if (start) {
             sb.append(value);

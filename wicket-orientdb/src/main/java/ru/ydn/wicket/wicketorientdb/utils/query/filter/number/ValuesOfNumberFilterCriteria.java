@@ -1,6 +1,6 @@
 package ru.ydn.wicket.wicketorientdb.utils.query.filter.number;
 
-import ru.ydn.wicket.wicketorientdb.utils.query.filter.AbstractFilter;
+import ru.ydn.wicket.wicketorientdb.utils.query.filter.AbstractFilterCriteria;
 
 import java.util.List;
 
@@ -8,20 +8,20 @@ import java.util.List;
  * array of values
  * SELECT FROM class WHERE num IN (value1, value2, ..., valueN)
  */
-public class ValuesOfNumberFilter extends AbstractFilter {
+public class ValuesOfNumberFilterCriteria extends AbstractFilterCriteria {
 
     private final List<Integer> values;
 
-    public ValuesOfNumberFilter(String field, List<Integer> values, boolean join) {
+    public ValuesOfNumberFilterCriteria(String field, List<Integer> values, boolean join) {
         super(field, join);
         this.values = values;
     }
 
     @Override
-    public String apply(String field) {
+    public String apply() {
         StringBuilder sb = new StringBuilder();
 
-        sb.append(field);
+        sb.append(getField());
         sb.append(" IN [");
         appendValues(sb);
         sb.append("]");
