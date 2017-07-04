@@ -46,11 +46,15 @@ public class WicketOrientDbFilterTesterScope extends WicketOrientDbTesterScope {
             protected List<OClass> execute(ODatabaseDocument db) {
                 OClass testClass = createOClass(db, TEST_CLASS_NAME, true);
                 OClass linkClass = createOClass(db, LINK_TEST_CLASS_NAME, false);
-                List<ODocument> documentsForTestClass = createDocumentsWithPrimaryTypesForOClass(testClass);
-                List<ODocument> documentsForLinkClass = createDocumentsWithPrimaryTypesForOClass(linkClass);
+                List<ODocument> documentsForTestClass = createDocumentsWithPrimaryTypesForOClass(testClass, true);
+                List<ODocument> documentsForLinkClass = createDocumentsWithPrimaryTypesForOClass(linkClass, true);
                 createLinksForDocuments(documentsForTestClass, documentsForLinkClass);
-                createLinkListForDocument(documentsForTestClass, createListOfLinks(documentsForLinkClass));
+                createLinkListForDocument(documentsForTestClass, createListOfDocuments(documentsForLinkClass));
                 createLinkMapForDocument(documentsForTestClass, documentsForLinkClass);
+                createEmbeddedFieldsForDocuments(documentsForTestClass,
+                        createDocumentsWithPrimaryTypesForOClass(testClass, false));
+                createEmbeddedListFieldsForDocuments(documentsForTestClass,
+                        createListOfDocuments(createDocumentsWithPrimaryTypesForOClass(testClass, false)));
                 db.commit();
                 return Arrays.asList(testClass, linkClass);
             }
@@ -68,12 +72,16 @@ public class WicketOrientDbFilterTesterScope extends WicketOrientDbTesterScope {
             oClass.createProperty(LINK_LIST_FIELD, OType.LINKLIST);
             oClass.createProperty(LINK_SET_FIELD, OType.LINKSET);
             oClass.createProperty(LINK_MAP_FIELD, OType.LINKMAP);
+            oClass.createProperty(EMBEDDED_FIELD, OType.EMBEDDED);
+            oClass.createProperty(EMBEDDED_LIST_FIELD, OType.EMBEDDEDLIST);
+            oClass.createProperty(EMBEDDED_SET_FIELD, OType.EMBEDDEDSET);
+            oClass.createProperty(EMBEDDED_MAP_FIELD, OType.EMBEDDEDMAP);
         }
         db.commit();
         return oClass;
     }
 
-    private List<ODocument> createDocumentsWithPrimaryTypesForOClass(OClass oClass) {
+    private List<ODocument> createDocumentsWithPrimaryTypesForOClass(OClass oClass, boolean save) {
         List<ODocument> documents = Lists.newArrayList();
         ODocument document = new ODocument(oClass);
 
@@ -82,7 +90,7 @@ public class WicketOrientDbFilterTesterScope extends WicketOrientDbTesterScope {
         document.field(DATE_FIELD, DATE_VALUE_1);
         document.field(DATETIME_FIELD, DATETIME_VALUE_1);
         documents.add(document);
-        document.save();
+        if (save) document.save();
 
         document = new ODocument(oClass);
         document.field(STRING_FIELD, STR_VALUE_2);
@@ -90,7 +98,7 @@ public class WicketOrientDbFilterTesterScope extends WicketOrientDbTesterScope {
         document.field(DATE_FIELD, DATE_VALUE_2);
         document.field(DATETIME_FIELD, DATETIME_VALUE_2);
         documents.add(document);
-        document.save();
+        if (save) document.save();
 
         document = new ODocument(oClass);
         document.field(STRING_FIELD, STR_VALUE_3);
@@ -98,7 +106,7 @@ public class WicketOrientDbFilterTesterScope extends WicketOrientDbTesterScope {
         document.field(DATE_FIELD, DATE_VALUE_3);
         document.field(DATETIME_FIELD, DATETIME_VALUE_3);
         documents.add(document);
-        document.save();
+        if (save) document.save();
 
         document = new ODocument(oClass);
         document.field(STRING_FIELD, STR_VALUE_4);
@@ -106,7 +114,7 @@ public class WicketOrientDbFilterTesterScope extends WicketOrientDbTesterScope {
         document.field(DATE_FIELD, DATE_VALUE_4);
         document.field(DATETIME_FIELD, DATETIME_VALUE_4);
         documents.add(document);
-        document.save();
+        if (save) document.save();
         return documents;
     }
 
@@ -115,6 +123,25 @@ public class WicketOrientDbFilterTesterScope extends WicketOrientDbTesterScope {
         for (int i = 0; i < documents.size(); i++) {
             ODocument document = documents.get(i);
             document.field(LINK_FIELD, links.get(i).getIdentity().toString(), OType.LINK);
+            document.save();
+        }
+    }
+
+    private void createEmbeddedFieldsForDocuments(List<ODocument> documents, List<ODocument> embedded) {
+        Args.isTrue(documents.size() == embedded.size(), "documents.size() == embedded.size()");
+        for (int i = 0; i < documents.size(); i++) {
+            ODocument document = documents.get(i);
+
+            document.field(EMBEDDED_FIELD, embedded.get(i), OType.EMBEDDED);
+            document.save();
+        }
+    }
+
+    private void createEmbeddedListFieldsForDocuments(List<ODocument> documents, List<List<ODocument>> embeddedList) {
+        Args.isTrue(documents.size() == embeddedList.size(), "documents.size() == embeddedList.size()");
+        for (int i = 0; i < documents.size(); i++) {
+            ODocument document = documents.get(i);
+            document.field(EMBEDDED_LIST_FIELD, embeddedList.get(i), OType.EMBEDDEDLIST);
             document.save();
         }
     }
@@ -140,20 +167,20 @@ public class WicketOrientDbFilterTesterScope extends WicketOrientDbTesterScope {
         }
     }
 
-    private List<List<ODocument>> createListOfLinks(List<ODocument> links) {
+    private List<List<ODocument>> createListOfDocuments(List<ODocument> docs) {
         List<List<ODocument>> listOfLinks = Lists.newArrayList();
-        listOfLinks.add(createListOfLinks(links, LIST_ORDER_1));
-        listOfLinks.add(createListOfLinks(links, LIST_ORDER_2));
-        listOfLinks.add(createListOfLinks(links, LIST_ORDER_3));
-        listOfLinks.add(createListOfLinks(links, LIST_ORDER_4));
+        listOfLinks.add(createListOfDocuments(docs, LIST_ORDER_1));
+        listOfLinks.add(createListOfDocuments(docs, LIST_ORDER_2));
+        listOfLinks.add(createListOfDocuments(docs, LIST_ORDER_3));
+        listOfLinks.add(createListOfDocuments(docs, LIST_ORDER_4));
         return listOfLinks;
     }
 
-    private List<ODocument> createListOfLinks(List<ODocument> links, List<Integer> order) {
-        Args.isTrue(links.size() == order.size(), "links.size() == order.size()");
+    private List<ODocument> createListOfDocuments(List<ODocument> docs, List<Integer> order) {
+        Args.isTrue(docs.size() == order.size(), "docs.size() == order.size()");
         List<ODocument> documents = Lists.newArrayList();
         for (Integer i : order) {
-            documents.add(links.get(i - 1));
+            documents.add(docs.get(i - 1));
         }
         return documents;
     }

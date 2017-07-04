@@ -8,14 +8,21 @@ interface ITesterFilterConstants {
     public static final String TEST_CLASS_NAME      = "FilterTestOClass";
     public static final String LINK_TEST_CLASS_NAME = "LinkFilterOClass";
 
-    public static final String STRING_FIELD    = "name";
-    public static final String NUMBER_FIELD    = "number";
-    public static final String DATE_FIELD      = "date";
-    public static final String DATETIME_FIELD  = "datetime";
-    public static final String LINK_FIELD      = "link";
-    public static final String LINK_LIST_FIELD = "linkList";
-    public static final String LINK_SET_FIELD  = "linkSet";
-    public static final String LINK_MAP_FIELD  = "linkMap";
+    public static final String STRING_FIELD         = "name";
+    public static final String NUMBER_FIELD         = "number";
+    public static final String DATE_FIELD           = "date";
+    public static final String DATETIME_FIELD       = "datetime";
+    public static final String LINK_FIELD           = "link";
+    public static final String LINK_LIST_FIELD      = "linkList";
+    public static final String LINK_SET_FIELD       = "linkSet";
+    public static final String LINK_MAP_FIELD       = "linkMap";
+    public static final String EMBEDDED_FIELD       = "embedded";
+    public static final String EMBEDDED_LIST_FIELD  = "embeddedList";
+    public static final String EMBEDDED_SET_FIELD   = "embeddedSet";
+    public static final String EMBEDDED_MAP_FIELD   = "embeddedMap";
+
+
+
 
     public static final int DOCUMENTS_NUM = 4;
 

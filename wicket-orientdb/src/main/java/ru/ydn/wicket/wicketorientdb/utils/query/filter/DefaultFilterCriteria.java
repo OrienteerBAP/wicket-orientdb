@@ -14,7 +14,7 @@ public class DefaultFilterCriteria extends AbstractFilterCriteria {
     }
 
     @Override
-    protected String apply() {
+    protected String apply(String field) {
         throw new UnsupportedOperationException("DefaultFilterCriteria can't create filter SQL!");
     }
 }

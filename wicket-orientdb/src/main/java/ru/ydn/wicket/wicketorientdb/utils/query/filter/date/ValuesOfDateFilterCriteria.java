@@ -22,9 +22,9 @@ public class ValuesOfDateFilterCriteria extends AbstractFilterCriteria {
     }
 
     @Override
-    protected String apply() {
+    protected String apply(String field) {
         StringBuilder sb = new StringBuilder((dateFormat.length() + 3) * values.size());
-        sb.append(getField());
+        sb.append(field);
         sb.append(" IN [");
         DateFormat df = new SimpleDateFormat(dateFormat);
         for (int i = 0; i < values.size(); i++) {

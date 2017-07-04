@@ -22,10 +22,10 @@ public class EqualsDateFilterCriteria extends AbstractFilterCriteria {
     }
 
     @Override
-    protected String apply() {
+    protected String apply(String field) {
         StringBuilder sb = new StringBuilder();
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(dateFormat);
-        sb.append(getField());
+        sb.append(field);
         sb.append(" = '");
         sb.append(simpleDateFormat.format(date));
         sb.append("'");

@@ -20,9 +20,9 @@ public class RangeOfNumberFilterCriteria extends AbstractFilterCriteria {
     }
 
     @Override
-    public String apply() {
+    public String apply(String field) {
         StringBuilder sb = new StringBuilder();
-        sb.append(getField());
+        sb.append(field);
         sb.append(" BETWEEN ");
         sb.append(first.toString());
         sb.append(" AND ");

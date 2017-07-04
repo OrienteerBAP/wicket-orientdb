@@ -8,9 +8,12 @@ import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
 import ru.ydn.wicket.wicketorientdb.model.OQueryModel;
+import ru.ydn.wicket.wicketorientdb.utils.query.filter.IFilterCriteria;
 import ru.ydn.wicket.wicketorientdb.utils.query.filter.date.EqualsDateFilterCriteria;
 import ru.ydn.wicket.wicketorientdb.utils.query.filter.date.RangeOfDateFilterCriteria;
 import ru.ydn.wicket.wicketorientdb.utils.query.filter.date.ValuesOfDateFilterCriteria;
+import ru.ydn.wicket.wicketorientdb.utils.query.filter.embedded.EqualsEmbCollectionFilterCriteria;
+import ru.ydn.wicket.wicketorientdb.utils.query.filter.embedded.EqualsEmbeddedFilterCriteria;
 import ru.ydn.wicket.wicketorientdb.utils.query.filter.link.ContainsLinkMapFilterCriteria;
 import ru.ydn.wicket.wicketorientdb.utils.query.filter.link.EqualsLinkCollectionFilterCriteria;
 import ru.ydn.wicket.wicketorientdb.utils.query.filter.link.EqualsLinkFilterCriteria;
@@ -467,5 +470,46 @@ public class TestFilters {
 
         queryModel.setFilterCriteria(new ContainsLinkMapFilterCriteria(LINK_MAP_FIELD, MAP_KEYS, null, true, true));
         assertTrue(queryModel.getObject().size() == 0);
+    }
+
+    @Test
+    public void testEqualsEmbeddedFilterCriteria() {
+        Map<String, String> fieldAndValue = Maps.newHashMap();
+        fieldAndValue.put(STRING_FIELD, STR_VALUE_1);
+        fieldAndValue.put(NUMBER_FIELD, Integer.toString(NUM_VALUE_1));
+
+        queryModel.setFilterCriteria(new EqualsEmbeddedFilterCriteria(EMBEDDED_FIELD, fieldAndValue, true));
+        assertTrue(queryModel.getObject().size() == 1);
+        assertTrue(queryModel.getObject().get(0).field(STRING_FIELD).equals(STR_VALUE_1));
+        queryModel.detach();
+
+        queryModel.setFilterCriteria(new EqualsEmbeddedFilterCriteria(EMBEDDED_FIELD, fieldAndValue, false));
+        assertTrue(queryModel.getObject().size() == DOCUMENTS_NUM - 1);
+        for (ODocument document : queryModel.getObject()) {
+            assertFalse(document.field(STRING_FIELD).equals(STR_VALUE_1));
+        }
+    }
+
+    @Test
+    public void testEqualsEmbeddedCollectionFilterCriteria() {
+        Map<Integer, IFilterCriteria> map = Maps.newHashMap();
+        List<Map<Integer, IFilterCriteria>> filter = Lists.newArrayList();
+        map.put(0, new EqualsNumberFilterCriteria(NUMBER_FIELD, NUM_VALUE_1, true));
+        filter.add(map);
+        map.clear();
+        map.put(0, new EqualsStringFilterCriteria(STRING_FIELD, STR_VALUE_1, true));
+        filter.add(map);
+
+        queryModel.setFilterCriteria(new EqualsEmbCollectionFilterCriteria(EMBEDDED_LIST_FIELD, filter, true, true));
+        assertTrue(queryModel.getObject().size() == 1);
+        assertTrue(queryModel.getObject().get(0).field(STRING_FIELD).equals(STR_VALUE_1));
+        queryModel.detach();
+
+        queryModel.setFilterCriteria(new EqualsEmbCollectionFilterCriteria(EMBEDDED_LIST_FIELD, filter, true, false));
+        assertTrue(queryModel.getObject().size() == DOCUMENTS_NUM - 1);
+        for (ODocument document : queryModel.getObject()) {
+            assertFalse(document.field(STRING_FIELD).equals(STR_VALUE_1));
+        }
+        queryModel.detach();
     }
 }

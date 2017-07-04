@@ -26,25 +26,25 @@ public class EqualsLinkFilterCriteria extends AbstractFilterCriteria {
     }
 
     @Override
-    protected String apply() {
-        return fieldAndValue != null ? filterByValues() : filterByOrid();
+    protected String apply(String field) {
+        return fieldAndValue != null ? filterByValues(field) : filterByOrid(field);
     }
 
-    private String filterByOrid() {
+    private String filterByOrid(String field) {
         StringBuilder sb = new StringBuilder();
-        sb.append(getField());
+        sb.append(field);
         sb.append(" = ");
         if (!orid.startsWith("#")) sb.append("#");
         sb.append(orid);
         return sb.toString();
     }
 
-    private String filterByValues() {
+    private String filterByValues(String filteringField) {
         StringBuilder sb = new StringBuilder();
         int counter = 0;
         for (String field : fieldAndValue.keySet()) {
             String value = fieldAndValue.get(field);
-            sb.append(getField()).append(".");
+            sb.append(filteringField).append(".");
             sb.append(field);
             sb.append(" = '");
             sb.append(value);

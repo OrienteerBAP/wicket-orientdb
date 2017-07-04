@@ -23,9 +23,9 @@ public class RangeOfDateFilterCriteria extends AbstractFilterCriteria {
     }
 
     @Override
-    protected String apply() {
+    protected String apply(String field) {
         StringBuilder sb = new StringBuilder();
-        sb.append(getField());
+        sb.append(field);
         DateFormat df = new SimpleDateFormat(dateFormat);
         sb.append(" BETWEEN '");
         sb.append(df.format(start));

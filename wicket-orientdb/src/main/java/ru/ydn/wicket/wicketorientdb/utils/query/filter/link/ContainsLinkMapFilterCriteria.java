@@ -22,10 +22,10 @@ public class ContainsLinkMapFilterCriteria extends AbstractFilterCriteria {
     }
 
     @Override
-    protected String apply() {
+    protected String apply(String field) {
         StringBuilder sb = new StringBuilder();
         if (keys != null && !keys.isEmpty()) {
-            appendList(sb, keys, "CONTAINSKEY");
+            appendList(sb, field, keys, "CONTAINSKEY");
         }
 
         if (orids != null && !orids.isEmpty()) {
@@ -33,14 +33,14 @@ public class ContainsLinkMapFilterCriteria extends AbstractFilterCriteria {
                 if (and) sb.append(" AND ");
                 else sb.append(" OR ");
             }
-            appendList(sb, orids, "CONTAINSVALUE");
+            appendList(sb, field, orids, "CONTAINSVALUE");
         }
         return sb.toString();
     }
 
-    private void appendList(StringBuilder sb, List<String> list, String statement) {
+    private void appendList(StringBuilder sb, String field, List<String> list, String statement) {
         for (int i = 0; i < list.size(); i++) {
-            sb.append(getField());
+            sb.append(field);
             sb.append(" ").append(statement).append(" ");
             sb.append("'");
             sb.append(list.get(i));

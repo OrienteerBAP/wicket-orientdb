@@ -16,9 +16,9 @@ public class ContainsStringFilterCriteria extends AbstractFilterCriteria {
     }
 
     @Override
-    public String apply() {
+    public String apply(String filter) {
         StringBuilder sb = new StringBuilder();
-        sb.append(getField());
+        sb.append(filter);
         sb.append(" LIKE '")
                 .append("%")
                 .append(value)

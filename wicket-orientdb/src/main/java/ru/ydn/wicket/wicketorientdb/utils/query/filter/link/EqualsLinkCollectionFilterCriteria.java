@@ -17,9 +17,9 @@ public class EqualsLinkCollectionFilterCriteria extends AbstractFilterCriteria {
     }
 
     @Override
-    protected String apply() {
+    protected String apply(String field) {
         StringBuilder sb = new StringBuilder();
-        sb.append(getField());
+        sb.append(field);
         sb.append(" = [");
         for (int i = 0; i < linkList.size(); i++) {
             String orid = linkList.get(i);

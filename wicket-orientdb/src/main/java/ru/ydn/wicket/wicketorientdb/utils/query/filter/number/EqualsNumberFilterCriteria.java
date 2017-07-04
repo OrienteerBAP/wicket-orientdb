@@ -17,9 +17,9 @@ public class EqualsNumberFilterCriteria extends AbstractFilterCriteria {
     }
 
     @Override
-    public String apply() {
+    public String apply(String field) {
         StringBuilder sb = new StringBuilder();
-        sb.append(getField());
+        sb.append(field);
         sb.append(" = ");
         sb.append(value.toString());
         return sb.toString();

@@ -26,13 +26,13 @@ public class ContainsLinkFilterCriteria extends AbstractFilterCriteria {
     }
 
     @Override
-    protected String apply() {
-       return fieldsAndValues != null ? filterByValues() : filterByOrid();
+    protected String apply(String field) {
+       return fieldsAndValues != null ? filterByValues(field) : filterByOrid(field);
     }
 
-    private String filterByOrid() {
+    private String filterByOrid(String filteringField) {
         StringBuilder sb = new StringBuilder();
-        sb.append(getField());
+        sb.append(filteringField);
         sb.append(" IN [");
         for (int i = 0; i < orids.size(); i++) {
             String orid = orids.get(i);
@@ -44,12 +44,12 @@ public class ContainsLinkFilterCriteria extends AbstractFilterCriteria {
         return sb.toString();
     }
 
-    private String filterByValues() {
+    private String filterByValues(String filteringField) {
         StringBuilder sb = new StringBuilder();
-        String linkField = getField();
+
         int counter = 0;
         for (String field : fieldsAndValues.keySet()) {
-            sb.append(linkField);
+            sb.append(filteringField);
             sb.append(".");
             sb.append(field);
             sb.append(" IN [");

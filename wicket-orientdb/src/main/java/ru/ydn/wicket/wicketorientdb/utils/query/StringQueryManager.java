@@ -47,7 +47,6 @@ public class StringQueryManager implements IQueryManager, IClusterable {
             throw new WicketRuntimeException("Can't find 'object(<.>)' part in your request: "+sql);
         }
         hasOrderBy = ORDER_CHECK_PATTERN.matcher(sql).find();
-        filterCriteria = new DefaultFilterCriteria();
     }
 
 	@Override
@@ -73,13 +72,18 @@ public class StringQueryManager implements IQueryManager, IClusterable {
 	@Override
 	public String prepareSql(Integer first, Integer count, String sortBy, boolean isAscending) {
 		String sql = getSql();
+		StringBuilder sb = new StringBuilder(sql.length() * 2);
     	if (filterCriteria != null) {
-			sql = filterCriteria.apply(sql);
+    		boolean containsWhere = sql.toUpperCase().contains("WHERE");
+			sb.append(sql);
+			if (containsWhere) sb.append(" AND(");
+			else sb.append(" WHERE ");
+			sb.append(filterCriteria.apply());
+			if (containsWhere) sb.append(" )");
 		}
 		boolean wrapForSkip = containExpand && first != null;
-		StringBuilder sb = new StringBuilder(2 * sql.length());
 		if (wrapForSkip) sb.append("select from (");
-		sb.append(sql);
+		if (filterCriteria == null) sb.append(sql);
 		if (sortBy != null) sb.append(" ORDER BY " + sortBy + (isAscending ? "" : " desc"));
 		if (wrapForSkip) sb.append(") ");
 		if (first != null) sb.append(" SKIP " + first);

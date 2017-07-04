@@ -5,7 +5,7 @@ package ru.ydn.wicket.wicketorientdb.utils.query.filter;
  */
 public abstract class AbstractFilterCriteria implements IFilterCriteria {
 
-    private final String field;
+    private String field;
     private final boolean join;
 
     public AbstractFilterCriteria(String field, boolean join) {
@@ -14,25 +14,24 @@ public abstract class AbstractFilterCriteria implements IFilterCriteria {
     }
 
     @Override
-    public String apply(String sql) {
-        if (getField() == null)
-            return sql;
-        boolean containsWhere = sql.toUpperCase().contains("WHERE");
-        StringBuilder sb = new StringBuilder(sql.length() * 2);
-        sb.append(sql);
-        if (containsWhere) sb.append(" AND(");
-        else sb.append(" WHERE ");
+    public String apply() {
+        StringBuilder sb = new StringBuilder();
         if (!join) sb.append("NOT(");
-        sb.append(apply());
+        sb.append(apply(getField()));
         if (!join) sb.append(")");
-        if (containsWhere) sb.append(" )");
         return sb.toString();
     }
 
-    protected abstract String apply();
+
+    protected abstract String apply(String field);
 
     @Override
     public String getField() {
         return field;
+    }
+
+    @Override
+    public void setField(String field) {
+        this.field = field;
     }
 }

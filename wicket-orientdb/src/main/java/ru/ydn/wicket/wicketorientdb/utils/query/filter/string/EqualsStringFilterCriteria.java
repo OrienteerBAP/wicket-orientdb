@@ -15,9 +15,9 @@ public class EqualsStringFilterCriteria extends AbstractFilterCriteria {
     }
 
     @Override
-    public String apply() {
+    public String apply(String field) {
         StringBuilder sb = new StringBuilder();
-        sb.append(getField());
+        sb.append(field);
         sb.append(" = '");
         sb.append(value).append("'");
         return sb.toString();
