@@ -1,5 +1,6 @@
 package ru.ydn.wicket.wicketorientdb.filter;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.orientechnologies.orient.core.record.impl.ODocument;
 import org.junit.After;
@@ -10,7 +11,10 @@ import ru.ydn.wicket.wicketorientdb.model.OQueryModel;
 import ru.ydn.wicket.wicketorientdb.utils.query.filter.date.EqualsDateFilterCriteria;
 import ru.ydn.wicket.wicketorientdb.utils.query.filter.date.RangeOfDateFilterCriteria;
 import ru.ydn.wicket.wicketorientdb.utils.query.filter.date.ValuesOfDateFilterCriteria;
+import ru.ydn.wicket.wicketorientdb.utils.query.filter.link.ContainsLinkMapFilterCriteria;
+import ru.ydn.wicket.wicketorientdb.utils.query.filter.link.EqualsLinkCollectionFilterCriteria;
 import ru.ydn.wicket.wicketorientdb.utils.query.filter.link.EqualsLinkFilterCriteria;
+import ru.ydn.wicket.wicketorientdb.utils.query.filter.link.ContainsLinkFilterCriteria;
 import ru.ydn.wicket.wicketorientdb.utils.query.filter.number.EqualsNumberFilterCriteria;
 import ru.ydn.wicket.wicketorientdb.utils.query.filter.number.RangeOfNumberFilterCriteria;
 import ru.ydn.wicket.wicketorientdb.utils.query.filter.number.ValuesOfNumberFilterCriteria;
@@ -22,6 +26,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 import static org.junit.Assert.assertFalse;
@@ -47,7 +52,7 @@ public class TestFilters {
     }
 
     @Test
-    public void testNumberEqualsFilter() {
+    public void testNumberEqualsFilterCriteria() {
         queryModel.setFilterCriteria(new EqualsNumberFilterCriteria(NUMBER_FIELD, NUM_VALUE_1, true));
         assertTrue(queryModel.getObject().size() == 1);
         assertTrue(NUM_VALUE_1 == (Integer) queryModel.getObject().get(0).field(NUMBER_FIELD));
@@ -67,7 +72,7 @@ public class TestFilters {
     }
 
     @Test
-    public void testRangeOfNumberFilter() {
+    public void testRangeOfNumberFilterCriteria() {
         queryModel.setFilterCriteria(new RangeOfNumberFilterCriteria(NUMBER_FIELD, NUM_VALUE_1, NUM_VALUE_3, true));
         assertTrue(queryModel.getObject().size() == DOCUMENTS_NUM - 1);
         for (ODocument document : queryModel.getObject()) {
@@ -82,7 +87,7 @@ public class TestFilters {
     }
 
     @Test
-    public void testNumberValuesFilter() {
+    public void testNumberValuesFilterCriteria() {
         queryModel.setFilterCriteria(new ValuesOfNumberFilterCriteria(NUMBER_FIELD,
                 Arrays.asList(NUM_VALUE_1, NUM_VALUE_4), true));
         assertTrue(queryModel.getObject().size() == 2);
@@ -105,7 +110,7 @@ public class TestFilters {
     }
 
     @Test
-    public void testStringEqualsFilter() {
+    public void testStringEqualsFilterCriteria() {
         queryModel.setFilterCriteria(new EqualsStringFilterCriteria(STRING_FIELD, STR_VALUE_1, true));
         assertTrue(queryModel.getObject().size() == 1);
         assertTrue(queryModel.getObject().get(0).field(STRING_FIELD).equals(STR_VALUE_1));
@@ -121,7 +126,7 @@ public class TestFilters {
     }
 
     @Test
-    public void testStartOrEndStringFilter() {
+    public void testStartOrEndStringFilterCriteria() {
         queryModel.setFilterCriteria(new StartOrEndStringFilterCriteria(STRING_FIELD, "string", true, true));
         assertTrue(queryModel.getObject().size() == 1);
         assertTrue(queryModel.getObject().get(0).field(STRING_FIELD).equals(STR_VALUE_1));
@@ -155,7 +160,7 @@ public class TestFilters {
     }
 
     @Test
-    public void testContainsStringFilter() {
+    public void testContainsStringFilterCriteria() {
         queryModel.setFilterCriteria(new ContainsStringFilterCriteria(STRING_FIELD, "value", true));
         assertTrue(queryModel.getObject().size() == DOCUMENTS_NUM);
         queryModel.detach();
@@ -175,7 +180,7 @@ public class TestFilters {
     }
 
     @Test
-    public void testDateEqualsFilter() throws Exception {
+    public void testDateEqualsFilterCriteria() throws Exception {
         String dateFormat = "yyyy-MM-dd";
         DateFormat df = new SimpleDateFormat(dateFormat);
 
@@ -195,7 +200,7 @@ public class TestFilters {
     }
 
     @Test
-    public void testDateTimeEqualsFilter() throws Exception {
+    public void testDateTimeEqualsFilterCriteria() throws Exception {
         String dateTimeFormat = "yyyy-MM-dd HH:mm:ss";
         DateFormat df = new SimpleDateFormat(dateTimeFormat);
 
@@ -215,7 +220,7 @@ public class TestFilters {
     }
 
     @Test
-    public void testRangeOfDateFilter() throws Exception {
+    public void testRangeOfDateFilterCriteria() throws Exception {
         String dateFormat = "yyyy-MM-dd";
         DateFormat df = new SimpleDateFormat(dateFormat);
 
@@ -239,7 +244,7 @@ public class TestFilters {
     }
 
     @Test
-    public void testRangeOfDateTimeFilter() throws Exception {
+    public void testRangeOfDateTimeFilterCriteria() throws Exception {
         String dateFormat = "yyyy-MM-dd HH:mm:ss";
         DateFormat df = new SimpleDateFormat(dateFormat);
 
@@ -263,7 +268,7 @@ public class TestFilters {
     }
 
     @Test
-    public void testValuesOfDateFilter() throws Exception {
+    public void testValuesOfDateFilterCriteria() throws Exception {
         String dateFormat = "yyyy-MM-dd";
         DateFormat df = new SimpleDateFormat(dateFormat);
 
@@ -290,7 +295,7 @@ public class TestFilters {
     }
 
     @Test
-    public void testValuesOfDateTimeFilter() throws Exception {
+    public void testValuesOfDateTimeFilterCriteria() throws Exception {
         String dateFormat = "yyyy-MM-dd HH:mm:ss";
         DateFormat df = new SimpleDateFormat(dateFormat);
 
@@ -317,7 +322,7 @@ public class TestFilters {
     }
 
     @Test
-    public void testEqualsLinkFilter() {
+    public void testEqualsLinkFilterCriteria() {
         Map<String, String> fieldValue = Maps.newHashMap();
         fieldValue.put(NUMBER_FIELD, Integer.toString(NUM_VALUE_1));
         fieldValue.put(STRING_FIELD, STR_VALUE_1);
@@ -334,5 +339,133 @@ public class TestFilters {
             assertTrue(stringField.equals(STR_VALUE_2) || stringField.equals(STR_VALUE_3)
                     || stringField.equals(STR_VALUE_4));
         }
+    }
+
+    @Test
+    public void testEqualsORIDFilterCriteria() {
+        Map<String, String> fieldValue = Maps.newHashMap();
+        fieldValue.put(NUMBER_FIELD, Integer.toString(NUM_VALUE_1));
+        fieldValue.put(STRING_FIELD, STR_VALUE_1);
+
+        queryModel.setFilterCriteria(new EqualsLinkFilterCriteria(LINK_FIELD, fieldValue, true));
+        assertTrue(queryModel.getObject().size() == 1);
+        ODocument document = queryModel.getObject().get(0).field(LINK_FIELD);
+        String orid = document.getIdentity().toString();
+        queryModel.detach();
+
+        queryModel.setFilterCriteria(new EqualsLinkFilterCriteria(LINK_FIELD, orid, true));
+        assertTrue(queryModel.getObject().size() == 1);
+        assertTrue(queryModel.getObject().get(0).field(LINK_FIELD).equals(document));
+        queryModel.detach();
+
+        queryModel.setFilterCriteria(new EqualsLinkFilterCriteria(LINK_FIELD, orid, false));
+        assertTrue(queryModel.getObject().size() == DOCUMENTS_NUM - 1);
+        for (ODocument doc : queryModel.getObject()) {
+            assertTrue(!doc.field(LINK_FIELD).equals(document));
+        }
+    }
+
+    @Test
+    public void testValuesOfLinkFilterCriteria() {
+        Map<String, List<String>> fieldsAndValues = Maps.newHashMap();
+        fieldsAndValues.put(STRING_FIELD, Arrays.asList(STR_VALUE_1, STR_VALUE_2));
+        fieldsAndValues.put(NUMBER_FIELD, Arrays.asList(Integer.toString(NUM_VALUE_1),
+                Integer.toString(NUM_VALUE_2)));
+
+        queryModel.setFilterCriteria(new ContainsLinkFilterCriteria(LINK_FIELD, fieldsAndValues, true));
+        assertTrue(queryModel.getObject().size() == 2);
+        for (ODocument document : queryModel.getObject()) {
+            String stringField = document.field(STRING_FIELD);
+            Integer numberField = document.field(NUMBER_FIELD);
+            assertTrue(stringField.equals(STR_VALUE_1) || stringField.equals(STR_VALUE_2));
+            assertTrue(numberField == NUM_VALUE_1 || numberField == NUM_VALUE_2);
+        }
+        queryModel.detach();
+
+        queryModel.setFilterCriteria(new ContainsLinkFilterCriteria(LINK_FIELD, fieldsAndValues, false));
+        assertTrue(queryModel.getObject().size() == 2);
+        for (ODocument document : queryModel.getObject()) {
+            String stringField = document.field(STRING_FIELD);
+            Integer numberField = document.field(NUMBER_FIELD);
+            assertTrue(stringField.equals(STR_VALUE_3) || stringField.equals(STR_VALUE_4));
+            assertTrue(numberField == NUM_VALUE_3 || numberField == NUM_VALUE_4);
+        }
+    }
+
+    @Test
+    public void testValuesOfOridLinkFilterCriteria() {
+        Map<String, List<String>> fieldsAndValues = Maps.newHashMap();
+        fieldsAndValues.put(STRING_FIELD, Arrays.asList(STR_VALUE_1, STR_VALUE_2));
+        fieldsAndValues.put(NUMBER_FIELD, Arrays.asList(Integer.toString(NUM_VALUE_1),
+                Integer.toString(NUM_VALUE_2)));
+
+        queryModel.setFilterCriteria(new ContainsLinkFilterCriteria(LINK_FIELD, fieldsAndValues, true));
+        assertTrue(queryModel.getObject().size() == 2);
+        List<String> orids = Lists.newArrayList();
+        List<ODocument> checkedDocs = Lists.newArrayList();
+        for (ODocument document : queryModel.getObject()) {
+            ODocument linkDocument = document.field(LINK_FIELD);
+            orids.add(linkDocument.getIdentity().toString());
+            checkedDocs.add(document);
+        }
+        queryModel.detach();
+
+        queryModel.setFilterCriteria(new ContainsLinkFilterCriteria(LINK_FIELD, orids, true));
+        assertTrue(queryModel.getObject().size() == 2);
+        for (int i = 0; i < queryModel.getObject().size(); i++) {
+            assertTrue(checkedDocs.get(i).equals(queryModel.getObject().get(i)));
+        }
+
+        queryModel.setFilterCriteria(new ContainsLinkFilterCriteria(LINK_FIELD, fieldsAndValues, true));
+        assertTrue(queryModel.getObject().size() == 2);
+        orids.clear();
+        checkedDocs.clear();
+        for (ODocument document : queryModel.getObject()) {
+            ODocument linkDocument = document.field(LINK_FIELD);
+            orids.add(linkDocument.getIdentity().toString());
+            checkedDocs.add(document);
+        }
+        queryModel.detach();
+
+        queryModel.setFilterCriteria(new ContainsLinkFilterCriteria(LINK_FIELD, orids, false));
+        assertTrue(queryModel.getObject().size() == 2);
+        for (int i = 0; i < queryModel.getObject().size(); i++) {
+            assertTrue(!checkedDocs.get(i).equals(queryModel.getObject().get(i)));
+        }
+    }
+
+    @Test
+    public void testLinkListFilterCriteria() {
+        queryModel.setFilterCriteria(new ValuesOfNumberFilterCriteria(NUMBER_FIELD,
+                Arrays.asList(NUM_VALUE_1), true));
+        assertTrue(queryModel.getObject().size() == 1);
+        ODocument document = queryModel.getObject().get(0);
+        List<String> orids = Lists.newArrayList();
+        List<ODocument> links = document.field(LINK_LIST_FIELD);
+        for (ODocument link : links) {
+            orids.add(link.getIdentity().toString());
+        }
+        queryModel.detach();
+
+        queryModel.setFilterCriteria(new EqualsLinkCollectionFilterCriteria(LINK_LIST_FIELD, orids, true));
+        assertTrue(queryModel.getObject().size() == 1);
+        assertTrue(document.equals(queryModel.getObject().get(0)));
+        queryModel.detach();
+
+        queryModel.setFilterCriteria(new EqualsLinkCollectionFilterCriteria(LINK_LIST_FIELD, orids, false));
+        assertTrue(queryModel.getObject().size() == DOCUMENTS_NUM - 1);
+        for (ODocument doc : queryModel.getObject()) {
+            assertFalse(document.equals(doc));
+        }
+    }
+
+    @Test
+    public void testContainsLinkMapFilterCriteria() {
+        queryModel.setFilterCriteria(new ContainsLinkMapFilterCriteria(LINK_MAP_FIELD, MAP_KEYS, null, false, true));
+        assertTrue(queryModel.getObject().size() == 4);
+        queryModel.detach();
+
+        queryModel.setFilterCriteria(new ContainsLinkMapFilterCriteria(LINK_MAP_FIELD, MAP_KEYS, null, true, true));
+        assertTrue(queryModel.getObject().size() == 0);
     }
 }

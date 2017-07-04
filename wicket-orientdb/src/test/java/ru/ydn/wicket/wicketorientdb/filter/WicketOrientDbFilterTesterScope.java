@@ -1,6 +1,7 @@
 package ru.ydn.wicket.wicketorientdb.filter;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.orientechnologies.orient.core.db.document.ODatabaseDocument;
 import com.orientechnologies.orient.core.metadata.schema.OClass;
 import com.orientechnologies.orient.core.metadata.schema.OType;
@@ -14,6 +15,7 @@ import ru.ydn.wicket.wicketorientdb.utils.DBClosure;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import static ru.ydn.wicket.wicketorientdb.filter.ITesterFilterConstants.*;
 
@@ -45,10 +47,10 @@ public class WicketOrientDbFilterTesterScope extends WicketOrientDbTesterScope {
                 OClass testClass = createOClass(db, TEST_CLASS_NAME, true);
                 OClass linkClass = createOClass(db, LINK_TEST_CLASS_NAME, false);
                 List<ODocument> documentsForTestClass = createDocumentsWithPrimaryTypesForOClass(testClass);
-                db.commit();
                 List<ODocument> documentsForLinkClass = createDocumentsWithPrimaryTypesForOClass(linkClass);
-                db.commit();
                 createLinksForDocuments(documentsForTestClass, documentsForLinkClass);
+                createLinkListForDocument(documentsForTestClass, createListOfLinks(documentsForLinkClass));
+                createLinkMapForDocument(documentsForTestClass, documentsForLinkClass);
                 db.commit();
                 return Arrays.asList(testClass, linkClass);
             }
@@ -63,6 +65,9 @@ public class WicketOrientDbFilterTesterScope extends WicketOrientDbTesterScope {
         oClass.createProperty(DATETIME_FIELD, OType.DATETIME);
         if (complexTypes) {
             oClass.createProperty(LINK_FIELD, OType.LINK);
+            oClass.createProperty(LINK_LIST_FIELD, OType.LINKLIST);
+            oClass.createProperty(LINK_SET_FIELD, OType.LINKSET);
+            oClass.createProperty(LINK_MAP_FIELD, OType.LINKMAP);
         }
         db.commit();
         return oClass;
@@ -105,13 +110,52 @@ public class WicketOrientDbFilterTesterScope extends WicketOrientDbTesterScope {
         return documents;
     }
 
-    private void createLinksForDocuments(List<ODocument> documents, List<ODocument> linkedDocs) {
-        Args.isTrue(documents.size() == linkedDocs.size(), "documents.size() == linkedDocs.size()");
+    private void createLinksForDocuments(List<ODocument> documents, List<ODocument> links) {
+        Args.isTrue(documents.size() == links.size(), "documents.size() == linkedDocs.size()");
         for (int i = 0; i < documents.size(); i++) {
             ODocument document = documents.get(i);
-            document.field(LINK_FIELD, linkedDocs.get(i).getIdentity().toString());
+            document.field(LINK_FIELD, links.get(i).getIdentity().toString(), OType.LINK);
             document.save();
         }
+    }
+
+    private void createLinkListForDocument(List<ODocument> documents, List<List<ODocument>> linkList) {
+        Args.isTrue(documents.size() == linkList.size(), "documents.size() == linkList.size()");
+        for (int i = 0; i < documents.size(); i++) {
+            ODocument document = documents.get(i);
+            document.field(LINK_LIST_FIELD, linkList.get(i), OType.LINKLIST);
+            document.save();
+        }
+    }
+
+    private void createLinkMapForDocument(List<ODocument> documents, List<ODocument> links) {
+        Args.isTrue(documents.size() == links.size(), "documents.size() == linkedDocs.size()");
+
+        for (int i = 0; i < documents.size(); i++) {
+            ODocument document = documents.get(i);
+            Map<String, ODocument> linkMap = Maps.newHashMap();
+            linkMap.put(MAP_KEYS.get(i), links.get(i));
+            document.field(LINK_MAP_FIELD, linkMap, OType.LINKMAP);
+            document.save();
+        }
+    }
+
+    private List<List<ODocument>> createListOfLinks(List<ODocument> links) {
+        List<List<ODocument>> listOfLinks = Lists.newArrayList();
+        listOfLinks.add(createListOfLinks(links, LIST_ORDER_1));
+        listOfLinks.add(createListOfLinks(links, LIST_ORDER_2));
+        listOfLinks.add(createListOfLinks(links, LIST_ORDER_3));
+        listOfLinks.add(createListOfLinks(links, LIST_ORDER_4));
+        return listOfLinks;
+    }
+
+    private List<ODocument> createListOfLinks(List<ODocument> links, List<Integer> order) {
+        Args.isTrue(links.size() == order.size(), "links.size() == order.size()");
+        List<ODocument> documents = Lists.newArrayList();
+        for (Integer i : order) {
+            documents.add(links.get(i - 1));
+        }
+        return documents;
     }
 
     private void deleteClasses(final List<OClass> classes) {
