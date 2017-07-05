@@ -73,17 +73,16 @@ public class StringQueryManager implements IQueryManager, IClusterable {
 	public String prepareSql(Integer first, Integer count, String sortBy, boolean isAscending) {
 		String sql = getSql();
 		StringBuilder sb = new StringBuilder(sql.length() * 2);
-    	if (filterCriteria != null) {
+		boolean wrapForSkip = containExpand && first != null;
+		if (wrapForSkip) sb.append("select from (");
+		if (filterCriteria != null) {
     		boolean containsWhere = sql.toUpperCase().contains("WHERE");
 			sb.append(sql);
 			if (containsWhere) sb.append(" AND(");
 			else sb.append(" WHERE ");
 			sb.append(filterCriteria.apply());
 			if (containsWhere) sb.append(" )");
-		}
-		boolean wrapForSkip = containExpand && first != null;
-		if (wrapForSkip) sb.append("select from (");
-		if (filterCriteria == null) sb.append(sql);
+		} else sb.append(sql);
 		if (sortBy != null) sb.append(" ORDER BY " + sortBy + (isAscending ? "" : " desc"));
 		if (wrapForSkip) sb.append(") ");
 		if (first != null) sb.append(" SKIP " + first);

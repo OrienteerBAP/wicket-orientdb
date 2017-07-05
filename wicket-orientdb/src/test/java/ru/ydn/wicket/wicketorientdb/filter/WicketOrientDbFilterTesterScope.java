@@ -6,6 +6,8 @@ import com.orientechnologies.orient.core.db.document.ODatabaseDocument;
 import com.orientechnologies.orient.core.metadata.schema.OClass;
 import com.orientechnologies.orient.core.metadata.schema.OType;
 import com.orientechnologies.orient.core.record.impl.ODocument;
+import com.orientechnologies.orient.core.sql.OCommandSQL;
+import com.orientechnologies.orient.core.sql.query.OSQLSynchQuery;
 import org.apache.wicket.util.lang.Args;
 import org.apache.wicket.util.tester.WicketTester;
 import org.junit.runner.Description;
@@ -191,6 +193,7 @@ public class WicketOrientDbFilterTesterScope extends WicketOrientDbTesterScope {
             @Override
             protected Void execute(ODatabaseDocument db) {
                 for (OClass oClass : classes) {
+                    db.command(new OCommandSQL("DELETE FROM " + oClass.getName())).execute();
                     db.getMetadata().getSchema().dropClass(oClass.getName());
                 }
                 return null;
