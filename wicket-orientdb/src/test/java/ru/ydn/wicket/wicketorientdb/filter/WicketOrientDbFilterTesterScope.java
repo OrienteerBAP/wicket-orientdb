@@ -7,7 +7,6 @@ import com.orientechnologies.orient.core.metadata.schema.OClass;
 import com.orientechnologies.orient.core.metadata.schema.OType;
 import com.orientechnologies.orient.core.record.impl.ODocument;
 import com.orientechnologies.orient.core.sql.OCommandSQL;
-import com.orientechnologies.orient.core.sql.query.OSQLSynchQuery;
 import org.apache.wicket.util.lang.Args;
 import org.apache.wicket.util.tester.WicketTester;
 import org.junit.runner.Description;
@@ -34,7 +33,7 @@ public class WicketOrientDbFilterTesterScope extends WicketOrientDbTesterScope {
                     testClasses = initTestClasses();
                     base.evaluate();
                 } finally {
-                    deleteClasses(testClasses);
+                    deleteClassesAndDocuments(testClasses);
                     tester.destroy();
                 }
             }
@@ -52,11 +51,13 @@ public class WicketOrientDbFilterTesterScope extends WicketOrientDbTesterScope {
                 List<ODocument> documentsForLinkClass = createDocumentsWithPrimaryTypesForOClass(linkClass, true);
                 createLinksForDocuments(documentsForTestClass, documentsForLinkClass);
                 createLinkListForDocument(documentsForTestClass, createListOfDocuments(documentsForLinkClass));
-                createLinkMapForDocument(documentsForTestClass, documentsForLinkClass);
+                createMapDocsForDocuments(documentsForTestClass, documentsForLinkClass, false);
                 createEmbeddedFieldsForDocuments(documentsForTestClass,
                         createDocumentsWithPrimaryTypesForOClass(testClass, false));
                 createEmbeddedListFieldsForDocuments(documentsForTestClass,
                         createListOfDocuments(createDocumentsWithPrimaryTypesForOClass(testClass, false)));
+                createMapDocsForDocuments(documentsForTestClass,
+                        createDocumentsWithPrimaryTypesForOClass(testClass, false), true);
                 db.commit();
                 return Arrays.asList(testClass, linkClass);
             }
@@ -157,14 +158,16 @@ public class WicketOrientDbFilterTesterScope extends WicketOrientDbTesterScope {
         }
     }
 
-    private void createLinkMapForDocument(List<ODocument> documents, List<ODocument> links) {
-        Args.isTrue(documents.size() == links.size(), "documents.size() == linkedDocs.size()");
+    private void createMapDocsForDocuments(List<ODocument> documents, List<ODocument> mapDocs, boolean embedded) {
+        Args.isTrue(documents.size() == mapDocs.size(), "documents.size() == mapDocs.size()");
 
         for (int i = 0; i < documents.size(); i++) {
             ODocument document = documents.get(i);
-            Map<String, ODocument> linkMap = Maps.newHashMap();
-            linkMap.put(MAP_KEYS.get(i), links.get(i));
-            document.field(LINK_MAP_FIELD, linkMap, OType.LINKMAP);
+            Map<String, ODocument> map = Maps.newHashMap();
+            map.put(MAP_KEYS.get(i), mapDocs.get(i));
+            if (embedded) {
+                document.field(EMBEDDED_MAP_FIELD, map, OType.EMBEDDEDMAP);
+            } else document.field(LINK_MAP_FIELD, map, OType.LINKMAP);
             document.save();
         }
     }
@@ -187,7 +190,7 @@ public class WicketOrientDbFilterTesterScope extends WicketOrientDbTesterScope {
         return documents;
     }
 
-    private void deleteClasses(final List<OClass> classes) {
+    private void deleteClassesAndDocuments(final List<OClass> classes) {
         new DBClosure<Void>() {
 
             @Override

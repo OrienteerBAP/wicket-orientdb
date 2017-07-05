@@ -12,8 +12,10 @@ import ru.ydn.wicket.wicketorientdb.utils.query.filter.IFilterCriteria;
 import ru.ydn.wicket.wicketorientdb.utils.query.filter.date.EqualsDateFilterCriteria;
 import ru.ydn.wicket.wicketorientdb.utils.query.filter.date.RangeOfDateFilterCriteria;
 import ru.ydn.wicket.wicketorientdb.utils.query.filter.date.ValuesOfDateFilterCriteria;
+import ru.ydn.wicket.wicketorientdb.utils.query.filter.embedded.ContainsKeyInEmbMapFilterCriteria;
 import ru.ydn.wicket.wicketorientdb.utils.query.filter.embedded.EqualsEmbCollectionFilterCriteria;
 import ru.ydn.wicket.wicketorientdb.utils.query.filter.embedded.EqualsEmbeddedFilterCriteria;
+import ru.ydn.wicket.wicketorientdb.utils.query.filter.embedded.EqualsValueInEmbMapFilterCriteria;
 import ru.ydn.wicket.wicketorientdb.utils.query.filter.link.ContainsLinkMapFilterCriteria;
 import ru.ydn.wicket.wicketorientdb.utils.query.filter.link.EqualsLinkCollectionFilterCriteria;
 import ru.ydn.wicket.wicketorientdb.utils.query.filter.link.EqualsLinkFilterCriteria;
@@ -511,5 +513,50 @@ public class TestFilters {
             assertFalse(document.field(STRING_FIELD).equals(STR_VALUE_1));
         }
         queryModel.detach();
+    }
+
+    @Test
+    public void testEqualsValueInEmbeddedMapFilterCriteria() {
+        String key = MAP_KEYS.get(0);
+        Map<String, String> fieldAndValue = Maps.newHashMap();
+        fieldAndValue.put(STRING_FIELD, STR_VALUE_1);
+        fieldAndValue.put(NUMBER_FIELD, Integer.toString(NUM_VALUE_1));
+
+        queryModel.setFilterCriteria(new EqualsValueInEmbMapFilterCriteria(EMBEDDED_MAP_FIELD, key, fieldAndValue,
+                true, true));
+        assertTrue(queryModel.getObject().size() == 1);
+        assertTrue(queryModel.getObject().get(0).field(STRING_FIELD).equals(STR_VALUE_1));
+        queryModel.detach();
+
+        queryModel.setFilterCriteria(new EqualsValueInEmbMapFilterCriteria(EMBEDDED_MAP_FIELD, key, fieldAndValue,
+                true, false));
+        assertTrue(queryModel.getObject().size() == DOCUMENTS_NUM - 1);
+        for (ODocument document : queryModel.getObject()) {
+            assertFalse(document.field(STRING_FIELD).equals(STR_VALUE_1));
+        }
+    }
+
+    @Test
+    public void testContainsKeyInEmbeddedMapFilterCriteria() {
+        List<String> keys = Arrays.asList(MAP_KEYS.get(0), MAP_KEYS.get(1));
+
+        queryModel.setFilterCriteria(new ContainsKeyInEmbMapFilterCriteria(EMBEDDED_MAP_FIELD, keys, false, true));
+        assertTrue(queryModel.getObject().size() == 2);
+        for (ODocument document : queryModel.getObject()) {
+            String field = document.field(STRING_FIELD);
+            assertTrue(field.equals(STR_VALUE_1) || field.equals(STR_VALUE_2));
+        }
+        queryModel.detach();
+
+        queryModel.setFilterCriteria(new ContainsKeyInEmbMapFilterCriteria(EMBEDDED_MAP_FIELD, keys, false, false));
+        assertTrue(queryModel.getObject().size() == 2);
+        for (ODocument document : queryModel.getObject()) {
+            String field = document.field(STRING_FIELD);
+            assertFalse(field.equals(STR_VALUE_1) || field.equals(STR_VALUE_2));
+        }
+        queryModel.detach();
+
+        queryModel.setFilterCriteria(new ContainsKeyInEmbMapFilterCriteria(EMBEDDED_MAP_FIELD, keys, true, true));
+        assertTrue(queryModel.getObject().size() == 0);
     }
 }
