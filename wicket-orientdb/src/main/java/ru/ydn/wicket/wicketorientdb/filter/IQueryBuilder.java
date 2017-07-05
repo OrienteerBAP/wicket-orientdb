@@ -8,7 +8,6 @@ import ru.ydn.wicket.wicketorientdb.model.OQueryModel;
 import java.util.Map;
 
 /**
- * @author Vitaliy Gonchar
  * Build new OQueryModel for filter data from OrientDB
  * @param <K> The query gets object type
  */

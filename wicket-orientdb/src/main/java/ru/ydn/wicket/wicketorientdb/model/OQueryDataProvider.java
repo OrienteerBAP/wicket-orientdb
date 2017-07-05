@@ -89,7 +89,7 @@ public class OQueryDataProvider <K> extends AbstractFilteredDataProvider<K>
         if(sort!=null)
         {
             model.setSortableParameter(sort.getProperty());
-            model.setAccessing(sort.isAscending());
+            model.setAscending(sort.isAscending());
         }
         return (Iterator<K>)model.iterator(first, count);        
     }

@@ -5,7 +5,6 @@ import org.apache.wicket.extensions.markup.html.repeater.util.SortableDataProvid
 import org.apache.wicket.util.lang.Args;
 
 /**
- * @author Vitaliy Gonchar
  * @param <K> The provider object type
  */
 public abstract class AbstractFilteredDataProvider<K> extends SortableDataProvider<K, String>

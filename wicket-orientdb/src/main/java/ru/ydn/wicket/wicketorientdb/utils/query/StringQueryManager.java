@@ -5,6 +5,9 @@ import java.util.regex.Pattern;
 
 import org.apache.wicket.WicketRuntimeException;
 import org.apache.wicket.util.io.IClusterable;
+import ru.ydn.wicket.wicketorientdb.utils.query.filter.AbstractFilterCriteria;
+import ru.ydn.wicket.wicketorientdb.utils.query.filter.DefaultFilterCriteria;
+import ru.ydn.wicket.wicketorientdb.utils.query.filter.IFilterCriteria;
 
 /**
  * String based query manager 
@@ -20,6 +23,7 @@ public class StringQueryManager implements IQueryManager, IClusterable {
     private boolean hasOrderBy;
     private String sql;
     private String countSql;
+    private IFilterCriteria filterCriteria;
     
     public StringQueryManager(String sql) {
     	this.sql = sql;
@@ -66,18 +70,34 @@ public class StringQueryManager implements IQueryManager, IClusterable {
 	}
 
 	@Override
-	public String prepareSql(Integer first, Integer count, String sortBy, boolean isAccessing) {
-		boolean wrapForSkip = containExpand && first!=null;
-    	String sql = getSql();
-    	StringBuilder sb = new StringBuilder(2*sql.length());
-    	if(wrapForSkip) sb.append("select from (");
-    	sb.append(sql);
-    	if(sortBy!=null) sb.append(" ORDER BY "+sortBy+(isAccessing?"":" desc"));
-    	if(wrapForSkip) sb.append(") ");
-    	if(first!=null) sb.append(" SKIP "+first);
-    	if(count!=null && count>0) sb.append(" LIMIT "+count);
-    	return sb.toString();
+	public String prepareSql(Integer first, Integer count, String sortBy, boolean isAscending) {
+		String sql = getSql();
+		StringBuilder sb = new StringBuilder(sql.length() * 2);
+		boolean wrapForSkip = containExpand && first != null;
+		if (wrapForSkip) sb.append("select from (");
+		if (filterCriteria != null) {
+    		boolean containsWhere = sql.toUpperCase().contains("WHERE");
+			sb.append(sql);
+			if (containsWhere) sb.append(" AND(");
+			else sb.append(" WHERE ");
+			sb.append(filterCriteria.apply());
+			if (containsWhere) sb.append(" )");
+		} else sb.append(sql);
+		if (sortBy != null) sb.append(" ORDER BY " + sortBy + (isAscending ? "" : " desc"));
+		if (wrapForSkip) sb.append(") ");
+		if (first != null) sb.append(" SKIP " + first);
+		if (count != null && count > 0) sb.append(" LIMIT " + count);
+		return sb.toString();
 	}
-	
-    
+
+	@Override
+	public void setFilterCriteria(IFilterCriteria filterCriteria) {
+		this.filterCriteria = filterCriteria;
+	}
+
+	@Override
+	public IFilterCriteria getFilterCriteria() {
+		return filterCriteria;
+	}
+
 }

@@ -14,7 +14,6 @@ import ru.ydn.wicket.wicketorientdb.model.OQueryModel;
 import java.util.Map;
 
 /**
- * @author Vitaliy Gonchar
  * @param <K> type of provide object
  */
 public class DefaultDataFilter<K> implements IODataFilter<K, String> {
