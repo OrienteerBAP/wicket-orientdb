@@ -559,4 +559,14 @@ public class TestFilters {
         queryModel.setFilterCriteria(new ContainsKeyInEmbMapFilterCriteria(EMBEDDED_MAP_FIELD, keys, true, true));
         assertTrue(queryModel.getObject().size() == 0);
     }
+
+    @Test
+    public void testFilterChildren() {
+        IFilterCriteria filterCriteria = new EqualsNumberFilterCriteria(NUMBER_FIELD, NUM_VALUE_1, true);
+        filterCriteria.addChild(new EqualsStringFilterCriteria(STRING_FIELD, STR_VALUE_2, false));
+        filterCriteria.addChild(new EqualsStringFilterCriteria(STRING_FIELD, STR_VALUE_1, true));
+        queryModel.setFilterCriteria(filterCriteria);
+        assertTrue(queryModel.getObject().size() == 1);
+        assertTrue(queryModel.getObject().get(0).field(STRING_FIELD).equals(STR_VALUE_1));
+    }
 }
