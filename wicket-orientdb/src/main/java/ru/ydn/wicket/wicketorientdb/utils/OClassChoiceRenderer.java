@@ -15,13 +15,20 @@ import com.orientechnologies.orient.core.metadata.schema.OClass;
  */
 public class OClassChoiceRenderer implements IChoiceRenderer<OClass> {
 	
-	public static final OClassChoiceRenderer INSTANCE = new OClassChoiceRenderer();
+	public static final OClassChoiceRenderer INSTANCE = new OClassChoiceRenderer(true);
+	public static final OClassChoiceRenderer INSTANCE_NO_LOCALIZATION = new OClassChoiceRenderer(false);
 
 	private static final long serialVersionUID = 1L;
+	
+	private boolean localize;
+	
+	public OClassChoiceRenderer(boolean localize) {
+		this.localize = localize;
+	}
 
 	@Override
 	public Object getDisplayValue(OClass object) {
-		return new OClassNamingModel(object).getObject();
+		return localize?new OClassNamingModel(object).getObject():object.getName();
 	}
 
 	@Override
