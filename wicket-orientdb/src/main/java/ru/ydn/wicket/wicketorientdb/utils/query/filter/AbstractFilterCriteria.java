@@ -1,38 +1,33 @@
 package ru.ydn.wicket.wicketorientdb.utils.query.filter;
 
-import com.google.common.collect.Lists;
-import org.apache.wicket.util.lang.Args;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import com.google.common.base.Strings;
+import org.apache.wicket.model.IModel;
 
 /**
  * Abstract class for IFilterCriteria
  */
 public abstract class AbstractFilterCriteria implements IFilterCriteria {
 
+    private final String name;
     private String field;
-    private final boolean join;
-    private List<IFilterCriteria> children;
+    private final IModel<Boolean> join;
 
-    public AbstractFilterCriteria(String field, boolean join) {
+    public AbstractFilterCriteria(String field, String name, IModel<Boolean> join) {
         this.field = field;
         this.join = join;
+        this.name = name;
     }
 
     @Override
     public String apply() {
+        String filter = apply(getField());
+        if (Strings.isNullOrEmpty(filter))
+            return null;
+
         StringBuilder sb = new StringBuilder();
-        if (!join) sb.append("NOT(");
-        sb.append(apply(getField()));
-        if (!join) sb.append(")");
-        if (children != null && !children.isEmpty()) {
-            for (IFilterCriteria child : children) {
-                sb.append(" AND ");
-                sb.append(child.apply());
-            }
-        }
+        if (!join.getObject()) sb.append("NOT(");
+        sb.append(filter);
+        if (!join.getObject()) sb.append(")");
         return sb.toString();
     }
 
@@ -40,29 +35,36 @@ public abstract class AbstractFilterCriteria implements IFilterCriteria {
     protected abstract String apply(String field);
 
     @Override
+    public IModel<Boolean> getJoinModel() {
+        return join;
+    }
+
+
+    @Override
     public String getField() {
         return field;
     }
 
     @Override
-    public void setField(String field) {
-        this.field = field;
+    public String getName() {
+        return name;
     }
 
     @Override
-    public void addChild(IFilterCriteria filterCriteria) {
-        Args.notNull(filterCriteria, "filterCriteria");
-        if (children == null) children = Lists.newArrayList();
-        children.add(filterCriteria);
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        AbstractFilterCriteria that = (AbstractFilterCriteria) o;
+
+        if (name != null ? !name.equals(that.name) : that.name != null) return false;
+        return field != null ? field.equals(that.field) : that.field == null;
     }
 
     @Override
-    public void clearChildren() {
-        if (children != null) children.clear();
-    }
-
-    @Override
-    public List<IFilterCriteria> getChildren() {
-        return children != null ? Collections.unmodifiableList(children) : new ArrayList<IFilterCriteria>();
+    public int hashCode() {
+        int result = name != null ? name.hashCode() : 0;
+        result = 31 * result + (field != null ? field.hashCode() : 0);
+        return result;
     }
 }

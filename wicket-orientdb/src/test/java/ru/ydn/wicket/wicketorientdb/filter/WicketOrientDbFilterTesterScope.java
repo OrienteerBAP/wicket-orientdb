@@ -4,14 +4,18 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.orientechnologies.orient.core.db.document.ODatabaseDocument;
 import com.orientechnologies.orient.core.metadata.schema.OClass;
+import com.orientechnologies.orient.core.metadata.schema.OProperty;
 import com.orientechnologies.orient.core.metadata.schema.OType;
 import com.orientechnologies.orient.core.record.impl.ODocument;
 import com.orientechnologies.orient.core.sql.OCommandSQL;
+import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
 import org.apache.wicket.util.lang.Args;
 import org.apache.wicket.util.tester.WicketTester;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
 import ru.ydn.wicket.wicketorientdb.junit.WicketOrientDbTesterScope;
+import ru.ydn.wicket.wicketorientdb.model.OPropertyModel;
 import ru.ydn.wicket.wicketorientdb.utils.DBClosure;
 
 import java.util.Arrays;
@@ -21,6 +25,8 @@ import java.util.Map;
 import static ru.ydn.wicket.wicketorientdb.filter.ITesterFilterConstants.*;
 
 public class WicketOrientDbFilterTesterScope extends WicketOrientDbTesterScope {
+
+    private final Map<String, IModel<OProperty>> properties = Maps.newHashMap();
 
     @Override
     public Statement apply(final Statement base, Description description) {
@@ -40,6 +46,9 @@ public class WicketOrientDbFilterTesterScope extends WicketOrientDbTesterScope {
         };
     }
 
+    public IModel<OProperty> getProperty(String name) {
+        return properties.get(name);
+    }
 
     private List<OClass> initTestClasses() {
         return new DBClosure<List<OClass>>() {
@@ -66,10 +75,10 @@ public class WicketOrientDbFilterTesterScope extends WicketOrientDbTesterScope {
 
     private OClass createOClass(ODatabaseDocument db, String className, boolean complexTypes) {
         OClass oClass = db.getMetadata().getSchema().createClass(className);
-        oClass.createProperty(STRING_FIELD, OType.STRING);
-        oClass.createProperty(NUMBER_FIELD, OType.INTEGER);
-        oClass.createProperty(DATE_FIELD, OType.DATE);
-        oClass.createProperty(DATETIME_FIELD, OType.DATETIME);
+        properties.put(STRING_FIELD, new OPropertyModel(oClass.createProperty(STRING_FIELD, OType.STRING)));
+        properties.put(NUMBER_FIELD, new OPropertyModel(oClass.createProperty(NUMBER_FIELD, OType.INTEGER)));
+        properties.put(DATE_FIELD, new OPropertyModel(oClass.createProperty(DATE_FIELD, OType.DATE)));
+        properties.put(DATETIME_FIELD, new OPropertyModel(oClass.createProperty(DATETIME_FIELD, OType.DATETIME)));
         if (complexTypes) {
             oClass.createProperty(LINK_FIELD, OType.LINK);
             oClass.createProperty(LINK_LIST_FIELD, OType.LINKLIST);

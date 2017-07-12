@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import com.orientechnologies.orient.core.metadata.schema.OProperty;
 import org.apache.wicket.WicketRuntimeException;
 import org.apache.wicket.extensions.markup.html.repeater.data.sort.SortOrder;
 import org.apache.wicket.model.IModel;
@@ -28,6 +29,7 @@ import com.orientechnologies.orient.core.record.ORecord;
 import com.orientechnologies.orient.core.record.impl.ODocument;
 import com.orientechnologies.orient.core.sql.query.OSQLSynchQuery;
 import ru.ydn.wicket.wicketorientdb.utils.query.filter.IFilterCriteria;
+import ru.ydn.wicket.wicketorientdb.utils.query.filter.IFilterCriteriaManager;
 
 /**
  * Model to obtain data from OrientDB by query
@@ -115,21 +117,23 @@ public class OQueryModel<K> extends LoadableDetachableModel<List<K>>
         return this;
     }
 
+
     /**
-     * Set {@link IFilterCriteria} for whis {@link OQueryModel<K>}
-     * @param filterCriteria {@link IFilterCriteria} for filtering
-     * @return this {@link OQueryModel<K>}
+     * Add filter for {@link OQueryModel}
+     * @param field {@link String} filtered field
+     * @param manager {@link IFilterCriteriaManager} filter manager
      */
-    public OQueryModel<K> setFilterCriteria(IFilterCriteria filterCriteria) {
-        queryManager.setFilterCriteria(filterCriteria);
-        return this;
+    public void addFilterCriteriaManager(String field, IFilterCriteriaManager manager) {
+        queryManager.addFilterCriteriaManager(field, manager);
     }
 
     /**
-     * @return current {@link IFilterCriteria}
+     * Get filter from {@link OQueryModel} by field name
+     * @param field {@link String} filtered field
+     * @return {@link IFilterCriteriaManager} or null if no filter for field
      */
-    public IFilterCriteria getFilterCriteria() {
-        return queryManager.getFilterCriteria();
+    public IFilterCriteriaManager getFilterCriteriaManager(String field) {
+        return queryManager.getFilterCriteriaManager(field);
     }
 
     /**

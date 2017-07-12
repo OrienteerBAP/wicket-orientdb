@@ -4,10 +4,12 @@ import com.google.common.base.Function;
 import com.orientechnologies.orient.core.metadata.schema.OClass;
 import com.orientechnologies.orient.core.record.impl.ODocument;
 import org.apache.wicket.extensions.markup.html.repeater.data.sort.SortOrder;
+import org.apache.wicket.extensions.markup.html.repeater.data.table.filter.IFilterStateLocator;
 import org.apache.wicket.extensions.markup.html.repeater.util.SortParam;
+import org.apache.wicket.extensions.markup.html.repeater.util.SortableDataProvider;
 import org.apache.wicket.model.IModel;
-import ru.ydn.wicket.wicketorientdb.filter.AbstractFilteredDataProvider;
-import ru.ydn.wicket.wicketorientdb.filter.IODataFilter;
+import org.apache.wicket.util.lang.Args;
+import ru.ydn.wicket.wicketorientdb.utils.query.filter.IFilterCriteria;
 
 import java.util.Iterator;
 
@@ -15,7 +17,8 @@ import java.util.Iterator;
  * Provider of data by quering of OrientDB
  * @param <K> The provider object type
  */
-public class OQueryDataProvider <K> extends AbstractFilteredDataProvider<K>
+public class OQueryDataProvider <K> extends SortableDataProvider<K, String>
+        implements IFilterStateLocator<OQueryModel<K>>
 {
 	private static final long serialVersionUID = 1L;
 	private OQueryModel<K> model;
@@ -82,10 +85,6 @@ public class OQueryDataProvider <K> extends AbstractFilteredDataProvider<K>
     public Iterator<K> iterator(long first, long count)
     {
         SortParam<String> sort = getSort();
-        IODataFilter<K, String> dataFilter = getFilterState();
-        if (dataFilter != null) {
-            model = dataFilter.createQueryModel();
-        }
         if(sort!=null)
         {
             model.setSortableParameter(sort.getProperty());
@@ -122,10 +121,6 @@ public class OQueryDataProvider <K> extends AbstractFilteredDataProvider<K>
     @Override
     public long size()
     {
-        IODataFilter<K, String> dataFilter = getFilterState();
-        if (dataFilter != null) {
-            model = dataFilter.createQueryModel();
-        }
         return model.size();
     }
 
@@ -137,7 +132,12 @@ public class OQueryDataProvider <K> extends AbstractFilteredDataProvider<K>
     }
 
     @Override
-    protected void configureDataFilter(IODataFilter<K, String> dataFilter) {
-        dataFilter.setQueryModel(model);
+    public OQueryModel<K> getFilterState() {
+        return model;
+    }
+
+    @Override
+    public void setFilterState(OQueryModel<K> queryModel) {
+        throw new UnsupportedOperationException("For change filter state, please see class OQueryModel");
     }
 }

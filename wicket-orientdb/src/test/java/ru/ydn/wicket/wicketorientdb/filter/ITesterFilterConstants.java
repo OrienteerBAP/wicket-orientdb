@@ -21,20 +21,15 @@ interface ITesterFilterConstants {
     public static final String EMBEDDED_SET_FIELD   = "embeddedSet";
     public static final String EMBEDDED_MAP_FIELD   = "embeddedMap";
 
-
-
-
-    public static final int DOCUMENTS_NUM = 4;
-
     public static final String STR_VALUE_1 = "string value 1";
     public static final String STR_VALUE_2 = "summer value 2";
     public static final String STR_VALUE_3 = "winter value 3";
     public static final String STR_VALUE_4 = "spring value 4";
 
-    public static final int NUM_VALUE_1 = 1;
-    public static final int NUM_VALUE_2 = 2;
-    public static final int NUM_VALUE_3 = 3;
-    public static final int NUM_VALUE_4 = 4;
+    public static final Integer NUM_VALUE_1 = 1;
+    public static final Integer NUM_VALUE_2 = 2;
+    public static final Integer NUM_VALUE_3 = 3;
+    public static final Integer NUM_VALUE_4 = 4;
 
     public static final String DATE_VALUE_1 = "2017-01-01";
     public static final String DATE_VALUE_2 = "2017-02-02";
