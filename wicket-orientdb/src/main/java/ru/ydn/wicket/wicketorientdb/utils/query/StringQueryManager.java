@@ -125,4 +125,9 @@ public class StringQueryManager implements IQueryManager, IClusterable {
 		return managers.get(field);
 	}
 
+	@Override
+	public void clearFilterCriteriaManagers() {
+		managers.clear();
+	}
+
 }

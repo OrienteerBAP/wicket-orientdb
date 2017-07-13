@@ -27,7 +27,7 @@ public interface IFilterCriteriaManager extends IClusterable {
     /**
      * Create equals filter
      * @param model {@link IModel} model of value for filter
-     * @param join {@link IModel<Boolean>} if true - result of filtering includes to result.
+     * @param join {@link IModel<Boolean>} if true - result of filtering includes to result of query.
      * @param <T> type of value
      * @return {@link IFilterCriteria} which represents equals filter
      */
@@ -36,7 +36,7 @@ public interface IFilterCriteriaManager extends IClusterable {
     /**
      * Create list fileter
      * @param models {@link List<IModel<T>>} list of models for filter
-     * @param join {@link IModel<Boolean>} if true - result of filtering includes to result.
+     * @param join {@link IModel<Boolean>} if true - result of filtering includes to result of query.
      * @param <T> type of value
      * @return {@link IFilterCriteria} which represents list filter
      */
@@ -45,11 +45,21 @@ public interface IFilterCriteriaManager extends IClusterable {
     /**
      * Create range filter
      * @param models {@link List<IModel<T>>} list of 2 models for filter
-     * @param join {@link IModel<Boolean>} if true - result of filtering includes to result.
+     * @param join {@link IModel<Boolean>} if true - result of filtering includes to result of query.
      * @param <T> type of value
      * @return {@link IFilterCriteria} which represents range filter
      */
     public <T> IFilterCriteria createRangeFilterCriteria(List<IModel<T>> models, IModel<Boolean> join);
+
+    /**
+     * Create filter for search string which start or end with model value
+     * @param model {@link IModel<String>} value
+     * @param start if true search strings which starts with value,
+     *              if false search strings which ends with value.
+     * @param join {@link IModel<Boolean>} if true - result of filtering includes to result of query.
+     * @return {@link IFilterCriteria} which represents start or end string filter
+     */
+    public IFilterCriteria createStartOrEndStringFilterCriteria(IModel<String> model, boolean start, IModel<Boolean> join);
 
     /**
      * Set filter for current field

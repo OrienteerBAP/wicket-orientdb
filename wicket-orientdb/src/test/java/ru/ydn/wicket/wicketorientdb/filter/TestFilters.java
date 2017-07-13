@@ -94,4 +94,26 @@ public class TestFilters {
         assertTrue(queryModel.getObject().get(2).field(NUMBER_FIELD).equals(NUM_VALUE_3));
     }
 
+
+    @Test
+    public void testStartOrEndStringFilterCriteria() {
+        IFilterCriteriaManager manager = new FilterCriteriaManager(wicket.getProperty(STRING_FIELD));
+        IFilterCriteria criteria = manager.createStartOrEndStringFilterCriteria(Model.of("s"), true, Model.of(true));
+        manager.setFilterCriteria(FilterCriteriaType.STRING_START, criteria);
+        String field = wicket.getProperty(STRING_FIELD).getObject().getName();
+        queryModel.addFilterCriteriaManager(field, manager);
+        queryModel.setSort(NUMBER_FIELD, SortOrder.ASCENDING);
+        assertTrue(queryModel.getObject().size() == 3);
+        assertTrue(queryModel.getObject().get(0).field(STRING_FIELD).equals(STR_VALUE_1));
+        assertTrue(queryModel.getObject().get(1).field(STRING_FIELD).equals(STR_VALUE_2));
+        assertTrue(queryModel.getObject().get(2).field(STRING_FIELD).equals(STR_VALUE_4));
+        queryModel.detach();
+        manager.clearFilterCriterias();
+
+        criteria = manager.createStartOrEndStringFilterCriteria(Model.of("1"), false, Model.of(true));
+        manager.setFilterCriteria(FilterCriteriaType.STRING_END, criteria);
+        assertTrue(queryModel.getObject().size() == 1);
+        assertTrue(queryModel.getObject().get(0).field(STRING_FIELD).equals(STR_VALUE_1));
+
+    }
 }
