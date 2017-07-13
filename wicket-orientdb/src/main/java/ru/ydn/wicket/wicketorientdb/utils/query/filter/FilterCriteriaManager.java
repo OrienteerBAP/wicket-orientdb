@@ -3,6 +3,7 @@ package ru.ydn.wicket.wicketorientdb.utils.query.filter;
 import com.google.common.base.Strings;
 import com.google.common.collect.Maps;
 import com.orientechnologies.orient.core.metadata.schema.OProperty;
+import com.orientechnologies.orient.core.metadata.schema.OType;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.util.lang.Args;
 import ru.ydn.wicket.wicketorientdb.utils.query.filter.value.IFilterValue;
@@ -83,6 +84,15 @@ public class FilterCriteriaManager implements IFilterCriteriaManager {
         IStringConverter<T> stringConverter = StringConverter.getStringConverter(property.getType());
         ListFilterValue<?> value = new ListFilterValue<>(models, stringConverter);
         return new RangeFilterCriteria(property.getName(), value, join);
+    }
+
+    @Override
+    public IFilterCriteria createStartOrEndStringFilterCriteria(IModel<String> model, boolean start, IModel<Boolean> join) {
+        OProperty property = propertyModel.getObject();
+        Args.isTrue(property.getType() == OType.STRING, "property.getType() == OType.STRING");
+        IStringConverter<String> stringConverter = StringConverter.getStringConverter(property.getType());
+        IFilterValue value = new PrimeFilterValue<>(model, stringConverter);
+        return new StartOrEndStringFilterCriteria(property.getName(), value, start, join);
     }
 
     @Override

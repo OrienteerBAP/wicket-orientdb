@@ -5,7 +5,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import com.orientechnologies.orient.core.metadata.schema.OProperty;
 import org.apache.wicket.WicketRuntimeException;
 import org.apache.wicket.extensions.markup.html.repeater.data.sort.SortOrder;
 import org.apache.wicket.model.IModel;
@@ -28,7 +27,6 @@ import com.orientechnologies.orient.core.metadata.schema.OClass;
 import com.orientechnologies.orient.core.record.ORecord;
 import com.orientechnologies.orient.core.record.impl.ODocument;
 import com.orientechnologies.orient.core.sql.query.OSQLSynchQuery;
-import ru.ydn.wicket.wicketorientdb.utils.query.filter.IFilterCriteria;
 import ru.ydn.wicket.wicketorientdb.utils.query.filter.IFilterCriteriaManager;
 
 /**
@@ -134,6 +132,13 @@ public class OQueryModel<K> extends LoadableDetachableModel<List<K>>
      */
     public IFilterCriteriaManager getFilterCriteriaManager(String field) {
         return queryManager.getFilterCriteriaManager(field);
+    }
+
+    /**
+     * Remove all filter criteria managers for current {@link OQueryModel<K>}
+     */
+    public void clearFilterCriteriaManagers() {
+        queryManager.clearFilterCriteriaManagers();
     }
 
     /**

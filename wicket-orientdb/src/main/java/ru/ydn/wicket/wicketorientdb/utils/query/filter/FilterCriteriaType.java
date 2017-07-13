@@ -8,7 +8,9 @@ import org.apache.wicket.util.io.IClusterable;
 public enum FilterCriteriaType implements IClusterable {
     EQUALS("equalsFilter"),
     LIST("listFilter"),
-    RANGE("rangeFilter");
+    RANGE("rangeFilter"),
+    STRING_START("stringStartFilter"),
+    STRING_END("stringEndFilter");
 
     private final String name;
 

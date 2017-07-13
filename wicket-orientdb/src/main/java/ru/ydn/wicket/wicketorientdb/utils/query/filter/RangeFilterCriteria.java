@@ -13,7 +13,7 @@ public class RangeFilterCriteria extends AbstractFilterCriteria {
     private final IFilterValue filterValue;
 
     public RangeFilterCriteria(String field, ListFilterValue<?> filterValue, IModel<Boolean> join) {
-        super(field, "range_" + field, join);
+        super(field, FilterCriteriaType.RANGE.getName() + field, join);
         this.filterValue = filterValue;
     }
 
