@@ -9,6 +9,9 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import ru.ydn.wicket.wicketorientdb.model.OQueryDataProvider;
 import ru.ydn.wicket.wicketorientdb.model.OQueryModel;
 import ru.ydn.wicket.wicketorientdb.utils.query.filter.FilterCriteriaManager;
 import ru.ydn.wicket.wicketorientdb.utils.query.filter.FilterCriteriaType;
@@ -22,6 +25,8 @@ import static org.junit.Assert.assertTrue;
 import static ru.ydn.wicket.wicketorientdb.filter.ITesterFilterConstants.*;
 
 public class TestFilters {
+
+    private static final Logger LOG = LoggerFactory.getLogger(TestFilters.class);
 
     @ClassRule
     public static WicketOrientDbFilterTesterScope wicket = new WicketOrientDbFilterTesterScope();
@@ -115,5 +120,18 @@ public class TestFilters {
         assertTrue(queryModel.getObject().size() == 1);
         assertTrue(queryModel.getObject().get(0).field(STRING_FIELD).equals(STR_VALUE_1));
 
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testProvider() {
+        IFilterCriteriaManager manager = new FilterCriteriaManager(wicket.getProperty(NUMBER_FIELD));
+        IFilterCriteria equalsFilterCriteria = manager.createEqualsFilterCriteria(Model.of(NUM_VALUE_1), Model.of(true));
+        manager.setFilterCriteria(FilterCriteriaType.EQUALS, equalsFilterCriteria);
+        String numField = wicket.getProperty(NUMBER_FIELD).getObject().getName();
+        queryModel.addFilterCriteriaManager(numField, manager);
+        OQueryDataProvider provider = new OQueryDataProvider(queryModel);
+        assertTrue(queryModel.size() == queryModel.getObject().size());
+        assertTrue(provider.size() == queryModel.getObject().size());
     }
 }

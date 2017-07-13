@@ -60,12 +60,12 @@ public class StringQueryManager implements IQueryManager, IClusterable {
 
 	@Override
 	public String getSql() {
-		return sql;
+		return sql + " " + getFilterCriteria(sql);
 	}
 
 	@Override
 	public String getCountSql() {
-		return countSql;
+		return countSql + " " + getFilterCriteria(countSql);
 	}
 
 	@Override
@@ -80,6 +80,16 @@ public class StringQueryManager implements IQueryManager, IClusterable {
 		boolean wrapForSkip = containExpand && first != null;
 		if (wrapForSkip) sb.append("select from (");
 		sb.append(sql);
+		sb.append(getFilterCriteria(sql));
+		if (sortBy != null) sb.append(" ORDER BY " + sortBy + (isAscending ? "" : " desc"));
+		if (wrapForSkip) sb.append(") ");
+		if (first != null) sb.append(" SKIP " + first);
+		if (count != null && count > 0) sb.append(" LIMIT " + count);
+		return sb.toString();
+	}
+
+	private String getFilterCriteria(String sql) {
+    	StringBuilder sb = new StringBuilder();
 		if (!managers.isEmpty()) {
 			String filter = applyFilters();
 			if (!Strings.isNullOrEmpty(filter)) {
@@ -90,10 +100,6 @@ public class StringQueryManager implements IQueryManager, IClusterable {
 				if (containsWhere) sb.append(")");
 			}
 		}
-		if (sortBy != null) sb.append(" ORDER BY " + sortBy + (isAscending ? "" : " desc"));
-		if (wrapForSkip) sb.append(") ");
-		if (first != null) sb.append(" SKIP " + first);
-		if (count != null && count > 0) sb.append(" LIMIT " + count);
 		return sb.toString();
 	}
 
