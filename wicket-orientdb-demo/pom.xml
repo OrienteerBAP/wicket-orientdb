@@ -21,7 +21,7 @@
 	<parent>
     <artifactId>wicket-orientdb-parent</artifactId>
     <groupId>ru.ydn.wicket.wicket-orientdb</groupId>
-    <version>1.3-SNAPSHOT</version>
+    <version>1.3-SNAPSHOTsmart-filters</version>
   </parent>
 	<artifactId>wicket-orientdb-demo</artifactId>
 	<packaging>war</packaging>
