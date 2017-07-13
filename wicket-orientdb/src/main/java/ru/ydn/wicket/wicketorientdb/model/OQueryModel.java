@@ -1,14 +1,11 @@
 package ru.ydn.wicket.wicketorientdb.model;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
+import com.orientechnologies.orient.core.metadata.schema.OProperty;
 import org.apache.wicket.WicketRuntimeException;
 import org.apache.wicket.extensions.markup.html.repeater.data.sort.SortOrder;
 import org.apache.wicket.model.IModel;
@@ -26,12 +23,13 @@ import com.google.common.base.Function;
 import com.google.common.collect.Iterators;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.orientechnologies.orient.core.command.OCommandContext;
 import com.orientechnologies.orient.core.db.document.ODatabaseDocument;
 import com.orientechnologies.orient.core.metadata.schema.OClass;
 import com.orientechnologies.orient.core.record.ORecord;
 import com.orientechnologies.orient.core.record.impl.ODocument;
 import com.orientechnologies.orient.core.sql.query.OSQLSynchQuery;
+import ru.ydn.wicket.wicketorientdb.utils.query.filter.IFilterCriteria;
+import ru.ydn.wicket.wicketorientdb.utils.query.filter.IFilterCriteriaManager;
 
 /**
  * Model to obtain data from OrientDB by query
@@ -68,7 +66,7 @@ public class OQueryModel<K> extends LoadableDetachableModel<List<K>>
     private Map<String, IModel<Object>> params = new HashMap<String, IModel<Object>>();
     private Map<String, IModel<Object>> variables = new HashMap<String, IModel<Object>>();
     private String sortableParameter=null;
-    private boolean isAccessing=true;
+    private boolean isAscending =true;
     private boolean containExpand=true;
     
     private transient Long size;
@@ -118,7 +116,26 @@ public class OQueryModel<K> extends LoadableDetachableModel<List<K>>
         super.detach();
         return this;
     }
-    
+
+
+    /**
+     * Add filter for {@link OQueryModel}
+     * @param field {@link String} filtered field
+     * @param manager {@link IFilterCriteriaManager} filter manager
+     */
+    public void addFilterCriteriaManager(String field, IFilterCriteriaManager manager) {
+        queryManager.addFilterCriteriaManager(field, manager);
+    }
+
+    /**
+     * Get filter from {@link OQueryModel} by field name
+     * @param field {@link String} filtered field
+     * @return {@link IFilterCriteriaManager} or null if no filter for field
+     */
+    public IFilterCriteriaManager getFilterCriteriaManager(String field) {
+        return queryManager.getFilterCriteriaManager(field);
+    }
+
     /**
      * Set value for context variable
      * @param varName name of the variable to set
@@ -191,7 +208,7 @@ public class OQueryModel<K> extends LoadableDetachableModel<List<K>>
     
     protected String prepareSql(Integer first, Integer count)
     {
-    	return queryManager.prepareSql(first, count, sortableParameter, isAccessing);
+    	return queryManager.prepareSql(first, count, sortableParameter, isAscending);
     }
     
     /**
@@ -226,22 +243,22 @@ public class OQueryModel<K> extends LoadableDetachableModel<List<K>>
 
 
     /**
-     * Is data shold be in accessing order?
-     * @return true if sort is accessing
+     * Is data shold be in ascending order?
+     * @return true if sort is ascending
      */
-    public boolean isAccessing()
+    public boolean isAscending()
     {
-        return isAccessing;
+        return isAscending;
     }
 
     /**
      * Set order
-     * @param accessing true - for accessing, false - descessing
+     * @param ascending true - for ascending, false - descessing
      * @return this {@link OQueryModel}
      */
-    public OQueryModel<K> setAccessing(boolean accessing)
+    public OQueryModel<K> setAscending(boolean ascending)
     {
-        isAccessing = accessing;
+        isAscending = ascending;
         super.detach();
         return this;
     }
@@ -275,7 +292,7 @@ public class OQueryModel<K> extends LoadableDetachableModel<List<K>>
     public OQueryModel<K> setSort(String sortableParameter, SortOrder order)
     {
     	setSortableParameter(sortableParameter);
-    	setAccessing(SortOrder.ASCENDING.equals(order));
+    	setAscending(SortOrder.ASCENDING.equals(order));
     	return this;
     }
     

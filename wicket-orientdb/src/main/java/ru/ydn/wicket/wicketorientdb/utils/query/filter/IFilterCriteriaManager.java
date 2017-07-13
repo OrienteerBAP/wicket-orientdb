@@ -1,0 +1,83 @@
+package ru.ydn.wicket.wicketorientdb.utils.query.filter;
+
+import org.apache.wicket.model.IModel;
+import org.apache.wicket.util.io.IClusterable;
+
+import java.util.List;
+import java.util.Map;
+
+/**
+ * Interface for management field filters
+ */
+public interface IFilterCriteriaManager extends IClusterable {
+    /**
+     * Apply chain of filters for current field
+     * @return SQL which is after WHERE statement
+     * Example: a = 1 AND b = 3
+     */
+    public String apply();
+
+    /**
+     * Set which statement will be use between filters (AND or OR)
+     * @param and if and true (default and is true) filters are tied with AND statement.
+     *           If and is false filters are tied with OR statement.
+     */
+    public void setAnd(boolean and);
+
+    /**
+     * Create equals filter
+     * @param model {@link IModel} model of value for filter
+     * @param join {@link IModel<Boolean>} if true - result of filtering includes to result.
+     * @param <T> type of value
+     * @return {@link IFilterCriteria} which represents equals filter
+     */
+    public <T> IFilterCriteria createEqualsFilterCriteria(IModel<T> model, IModel<Boolean> join);
+
+    /**
+     * Create list fileter
+     * @param models {@link List<IModel<T>>} list of models for filter
+     * @param join {@link IModel<Boolean>} if true - result of filtering includes to result.
+     * @param <T> type of value
+     * @return {@link IFilterCriteria} which represents list filter
+     */
+    public <T> IFilterCriteria createListFilterCriteria(List<IModel<T>> models, IModel<Boolean> join);
+
+    /**
+     * Create range filter
+     * @param models {@link List<IModel<T>>} list of 2 models for filter
+     * @param join {@link IModel<Boolean>} if true - result of filtering includes to result.
+     * @param <T> type of value
+     * @return {@link IFilterCriteria} which represents range filter
+     */
+    public <T> IFilterCriteria createRangeFilterCriteria(List<IModel<T>> models, IModel<Boolean> join);
+
+    /**
+     * Set filter for current field
+     * @param type {@link FilterCriteriaType} type of filter
+     * @param filterCriteria {@link IFilterCriteria} filter
+     */
+    public void setFilterCriteria(FilterCriteriaType type, IFilterCriteria filterCriteria);
+
+    /**
+     * Get filter by type
+     * @param type {@link FilterCriteriaType} type of filter
+     * @return {@link IFilterCriteria} filter
+     */
+    public IFilterCriteria getFilterCriteria(FilterCriteriaType type);
+
+    /**
+     * @return {@link Map<FilterCriteriaType, IFilterCriteria>}
+     */
+    public Map<FilterCriteriaType, IFilterCriteria> getFilterCriterias();
+
+    /**
+     * Clear filters for current field
+     */
+    public void clearFilterCriterias();
+
+    /**
+     * Check if filter is apply
+     * @return true if filter is apply
+     */
+    public boolean isFilterApply();
+}
