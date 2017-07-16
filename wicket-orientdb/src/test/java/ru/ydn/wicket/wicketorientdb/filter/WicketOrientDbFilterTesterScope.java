@@ -80,7 +80,7 @@ public class WicketOrientDbFilterTesterScope extends WicketOrientDbTesterScope {
         properties.put(DATE_FIELD, new OPropertyModel(oClass.createProperty(DATE_FIELD, OType.DATE)));
         properties.put(DATETIME_FIELD, new OPropertyModel(oClass.createProperty(DATETIME_FIELD, OType.DATETIME)));
         if (complexTypes) {
-            oClass.createProperty(LINK_FIELD, OType.LINK);
+            properties.put(LINK_FIELD, new OPropertyModel(oClass.createProperty(LINK_FIELD, OType.LINK)));
             oClass.createProperty(LINK_LIST_FIELD, OType.LINKLIST);
             oClass.createProperty(LINK_SET_FIELD, OType.LINKSET);
             oClass.createProperty(LINK_MAP_FIELD, OType.LINKMAP);

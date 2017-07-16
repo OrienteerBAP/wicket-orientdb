@@ -1,8 +1,10 @@
 package ru.ydn.wicket.wicketorientdb.utils.query.filter;
 
+import com.orientechnologies.orient.core.record.impl.ODocument;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.util.io.IClusterable;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -34,22 +36,22 @@ public interface IFilterCriteriaManager extends IClusterable {
     public <T> IFilterCriteria createEqualsFilterCriteria(IModel<T> model, IModel<Boolean> join);
 
     /**
-     * Create list fileter
-     * @param models {@link List<IModel<T>>} list of models for filter
+     * Create collection filter
+     * @param models {@link Collection<IModel<T>>} collection of models for filter
      * @param join {@link IModel<Boolean>} if true - result of filtering includes to result of query.
      * @param <T> type of value
      * @return {@link IFilterCriteria} which represents list filter
      */
-    public <T> IFilterCriteria createListFilterCriteria(List<IModel<T>> models, IModel<Boolean> join);
+    public <T> IFilterCriteria createCollectionFilterCriteria(Collection<IModel<T>> models, IModel<Boolean> join);
 
     /**
      * Create range filter
-     * @param models {@link List<IModel<T>>} list of 2 models for filter
+     * @param models {@link Collection<IModel<T>>} list of 2 models for filter
      * @param join {@link IModel<Boolean>} if true - result of filtering includes to result of query.
      * @param <T> type of value
      * @return {@link IFilterCriteria} which represents range filter
      */
-    public <T> IFilterCriteria createRangeFilterCriteria(List<IModel<T>> models, IModel<Boolean> join);
+    public <T> IFilterCriteria createRangeFilterCriteria(Collection<IModel<T>> models, IModel<Boolean> join);
 
     /**
      * Create filter for search string which start or end with model value
@@ -60,6 +62,22 @@ public interface IFilterCriteriaManager extends IClusterable {
      * @return {@link IFilterCriteria} which represents start or end string filter
      */
     public IFilterCriteria createStartOrEndStringFilterCriteria(IModel<String> model, boolean start, IModel<Boolean> join);
+
+    /**
+     * Create filter for search string which contains model value
+     * @param model {@link IModel<String>} value
+     * @param join {@link IModel<Boolean>} if true - result of filtering includes to result of query.
+     * @return {@link IFilterCriteria} which represents contains string filter
+     */
+    public IFilterCriteria createContainsStringFilterCriteria(IModel<String> model, IModel<Boolean> join);
+
+    /**
+     * Create filter for search {@link ODocument} in collection of links
+     * @param model {@link IModel<Collection<ODocument>>} value
+     * @param join {@link IModel<Boolean>} if true - result of filtering includes to result of query.
+     * @return {@link IFilterCriteria} which represents link collection filter
+     */
+    public IFilterCriteria createLinkCollectionFilterCriteria(IModel<Collection<ODocument>> model, IModel<Boolean> join);
 
     /**
      * Set filter for current field

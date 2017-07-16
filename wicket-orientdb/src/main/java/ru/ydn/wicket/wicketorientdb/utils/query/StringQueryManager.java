@@ -80,7 +80,6 @@ public class StringQueryManager implements IQueryManager, IClusterable {
 		boolean wrapForSkip = containExpand && first != null;
 		if (wrapForSkip) sb.append("select from (");
 		sb.append(sql);
-		sb.append(getFilterCriteria(sql));
 		if (sortBy != null) sb.append(" ORDER BY " + sortBy + (isAscending ? "" : " desc"));
 		if (wrapForSkip) sb.append(") ");
 		if (first != null) sb.append(" SKIP " + first);

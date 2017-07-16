@@ -3,15 +3,16 @@ package ru.ydn.wicket.wicketorientdb.utils.query.filter;
 import com.google.common.base.Strings;
 import com.google.common.collect.Maps;
 import com.orientechnologies.orient.core.metadata.schema.OProperty;
-import com.orientechnologies.orient.core.metadata.schema.OType;
+import com.orientechnologies.orient.core.record.impl.ODocument;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.util.CollectionModel;
 import org.apache.wicket.util.lang.Args;
 import ru.ydn.wicket.wicketorientdb.utils.query.filter.value.IFilterValue;
-import ru.ydn.wicket.wicketorientdb.utils.query.filter.value.ListFilterValue;
+import ru.ydn.wicket.wicketorientdb.utils.query.filter.value.CollectionFilterValue;
 import ru.ydn.wicket.wicketorientdb.utils.query.filter.value.PrimeFilterValue;
 
+import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -62,37 +63,52 @@ public class FilterCriteriaManager implements IFilterCriteriaManager {
     @Override
     public <T> IFilterCriteria createEqualsFilterCriteria(IModel<T> model, IModel<Boolean> join) {
         OProperty property = propertyModel.getObject();
-        IStringConverter<T> stringConverter = StringConverter.getStringConverter(property.getType());
+        IStringConverter<T> stringConverter = StringConverter.createStringConverter(property.getType());
         IFilterValue value = new PrimeFilterValue<>(model, stringConverter);
 
         return new EqualsFilterCriteria(property.getName(), value, join);
     }
 
     @Override
-    public <T> IFilterCriteria createListFilterCriteria(List<IModel<T>> models, IModel<Boolean> join) {
+    public <T> IFilterCriteria createCollectionFilterCriteria(Collection<IModel<T>> models, IModel<Boolean> join) {
         OProperty property = propertyModel.getObject();
-        IStringConverter<T> stringConverter = StringConverter.getStringConverter(property.getType());
-        ListFilterValue<?> value = new ListFilterValue<>(models, stringConverter);
+        IStringConverter<IModel<T>> stringConverter = StringConverter.createStringConverter(property.getType());
+        CollectionFilterValue<?> value = new CollectionFilterValue<>(new CollectionModel<>(models), stringConverter);
 
-        return new ListFilterCriteria(property.getName(), value, join);
+        return new CollectionFilterCriteria(property.getName(), value, join);
     }
 
     @Override
-    public <T> IFilterCriteria createRangeFilterCriteria(List<IModel<T>> models, IModel<Boolean> join) {
+    public <T> IFilterCriteria createRangeFilterCriteria(Collection<IModel<T>> models, IModel<Boolean> join) {
         Args.isTrue(models.size() == 2, "models.size() == 2");
         OProperty property = propertyModel.getObject();
-        IStringConverter<T> stringConverter = StringConverter.getStringConverter(property.getType());
-        ListFilterValue<?> value = new ListFilterValue<>(models, stringConverter);
+        IStringConverter<IModel<T>> stringConverter = StringConverter.createStringConverter(property.getType());
+        CollectionFilterValue<?> value = new CollectionFilterValue<>(new CollectionModel<>(models), stringConverter);
         return new RangeFilterCriteria(property.getName(), value, join);
     }
 
     @Override
     public IFilterCriteria createStartOrEndStringFilterCriteria(IModel<String> model, boolean start, IModel<Boolean> join) {
         OProperty property = propertyModel.getObject();
-        Args.isTrue(property.getType() == OType.STRING, "property.getType() == OType.STRING");
-        IStringConverter<String> stringConverter = StringConverter.getStringConverter(property.getType());
+        IStringConverter<String> stringConverter = StringConverter.createStringConverter(property.getType());
         IFilterValue value = new PrimeFilterValue<>(model, stringConverter);
         return new StartOrEndStringFilterCriteria(property.getName(), value, start, join);
+    }
+
+    @Override
+    public IFilterCriteria createContainsStringFilterCriteria(IModel<String> model, IModel<Boolean> join) {
+        OProperty property = propertyModel.getObject();
+        IStringConverter<String> stringConverter = StringConverter.createStringConverter(property.getType());
+        IFilterValue value = new PrimeFilterValue<>(model, stringConverter);
+        return new ContainsTextFilterCriteria(property.getName(), value, join);
+    }
+
+    @Override
+    public IFilterCriteria createLinkCollectionFilterCriteria(IModel<Collection<ODocument>> model, IModel<Boolean> join) {
+        OProperty property = propertyModel.getObject();
+        IStringConverter<ODocument> stringConverter = StringConverter.createStringConverter(property.getType());
+        CollectionFilterValue<ODocument> filterValue = new CollectionFilterValue<>(model, stringConverter, true);
+        return new CollectionFilterCriteria(property.getName(), filterValue, join);
     }
 
     @Override
@@ -118,9 +134,11 @@ public class FilterCriteriaManager implements IFilterCriteriaManager {
     @Override
     public boolean isFilterApply() {
         for (IFilterCriteria criteria : filterCriterias.values()) {
-            String filter = criteria.apply();
-            if (!Strings.isNullOrEmpty(filter)) {
-                return true;
+            if (criteria != null) {
+                String filter = criteria.apply();
+                if (!Strings.isNullOrEmpty(filter)) {
+                    return true;
+                }
             }
         }
         return false;

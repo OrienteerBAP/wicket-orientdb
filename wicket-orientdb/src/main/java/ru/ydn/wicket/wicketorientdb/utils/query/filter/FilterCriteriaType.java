@@ -9,8 +9,14 @@ public enum FilterCriteriaType implements IClusterable {
     EQUALS("equalsFilter"),
     LIST("listFilter"),
     RANGE("rangeFilter"),
+    CONTAINS_TEXT("containsTextFilter"),
     STRING_START("stringStartFilter"),
-    STRING_END("stringEndFilter");
+    STRING_END("stringEndFilter"),
+    LINK("linkFilter"),
+    LINKLIST("linkListFilter"),
+    LINKSET("linkSetFilter"),
+    LINKMAP("linkMapFilter"),
+    COLLECTION("collection");
 
     private final String name;
 

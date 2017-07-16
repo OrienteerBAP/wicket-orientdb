@@ -3,16 +3,17 @@ package ru.ydn.wicket.wicketorientdb.utils.query.filter;
 import com.google.common.base.Strings;
 import org.apache.wicket.model.IModel;
 import ru.ydn.wicket.wicketorientdb.utils.query.filter.value.IFilterValue;
-import ru.ydn.wicket.wicketorientdb.utils.query.filter.value.ListFilterValue;
+import ru.ydn.wicket.wicketorientdb.utils.query.filter.value.CollectionFilterValue;
 
 /**
- * List filter
+ * Collection filter
+ * SELECT FROM Class WHERE num IN ['1', '2', '3']
  */
-public class ListFilterCriteria extends AbstractFilterCriteria {
+public class CollectionFilterCriteria extends AbstractFilterCriteria {
 
     private final IFilterValue filterValue;
 
-    public ListFilterCriteria(String field, ListFilterValue<?> filterValue, IModel<Boolean> join) {
+    public <T> CollectionFilterCriteria(String field, CollectionFilterValue<T> filterValue, IModel<Boolean> join) {
         super(field, FilterCriteriaType.LIST + "_" + field, join);
         this.filterValue = filterValue;
     }

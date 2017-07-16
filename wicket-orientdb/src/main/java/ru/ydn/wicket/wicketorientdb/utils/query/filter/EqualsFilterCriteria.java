@@ -6,6 +6,7 @@ import ru.ydn.wicket.wicketorientdb.utils.query.filter.value.IFilterValue;
 
 /**
  * Equals filter
+ * SELECT FROM Class WHERE num = '1'
  */
 public class EqualsFilterCriteria extends AbstractFilterCriteria {
 
