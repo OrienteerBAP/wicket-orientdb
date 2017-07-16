@@ -4,6 +4,8 @@ import com.google.common.base.Strings;
 import org.apache.wicket.model.IModel;
 import ru.ydn.wicket.wicketorientdb.utils.query.filter.value.IFilterValue;
 
+import java.util.List;
+
 /**
  * Filter for search documents which have string field 'field' and starts or end with 'value'
  * Example:
@@ -25,19 +27,22 @@ public class StartOrEndStringFilterCriteria extends AbstractFilterCriteria {
 
     @Override
     protected String apply(String field) {
-        String filter = filterValue.getString();
-        if (Strings.isNullOrEmpty(filter))
+        List<String> stringList = filterValue.toStringList();
+        if (!needToApplyFilter(stringList))
             return null;
         StringBuilder sb = new StringBuilder();
         sb.append(field);
         sb.append(" LIKE ");
         sb.append("'");
         if (!start) sb.append("%");
-        sb.append(filter);
+        sb.append(stringList.get(0));
         if (start) sb.append("%");
         sb.append("'");
         return sb.toString();
     }
 
-
+    @Override
+    protected boolean needToApplyFilter(List<String> stringList) {
+        return super.needToApplyFilter(stringList) && !Strings.isNullOrEmpty(stringList.get(0));
+    }
 }

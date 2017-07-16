@@ -11,6 +11,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
+import ru.ydn.wicket.wicketorientdb.model.ODocumentModel;
 import ru.ydn.wicket.wicketorientdb.model.OQueryDataProvider;
 import ru.ydn.wicket.wicketorientdb.model.OQueryModel;
 import ru.ydn.wicket.wicketorientdb.utils.query.filter.FilterCriteriaManager;
@@ -48,7 +49,7 @@ public class TestFilters {
     @SuppressWarnings("unchecked")
     public void testEqualsFilterCriteria() {
         IFilterCriteriaManager manager = new FilterCriteriaManager(wicket.getProperty(NUMBER_FIELD));
-        IFilterCriteria equalsFilterCriteria = manager.createEqualsFilterCriteria(Model.of(NUM_VALUE_1), Model.of(true));
+        IFilterCriteria equalsFilterCriteria = manager.createEqualsFilterCriteria(Model.of(NUM_VALUE_1), false, Model.of(true));
         manager.setFilterCriteria(FilterCriteriaType.EQUALS, equalsFilterCriteria);
         String numField = wicket.getProperty(NUMBER_FIELD).getObject().getName();
         queryModel.addFilterCriteriaManager(numField, manager);
@@ -57,7 +58,7 @@ public class TestFilters {
         queryModel.detach();
 
         manager = new FilterCriteriaManager(wicket.getProperty(STRING_FIELD));
-        equalsFilterCriteria = manager.createEqualsFilterCriteria(Model.of(STR_VALUE_1), Model.of(true));
+        equalsFilterCriteria = manager.createEqualsFilterCriteria(Model.of(STR_VALUE_1), false, Model.of(true));
         manager.setFilterCriteria(FilterCriteriaType.EQUALS, equalsFilterCriteria);
         String strField = wicket.getProperty(STRING_FIELD).getObject().getName();
         queryModel.addFilterCriteriaManager(strField, manager);
@@ -124,13 +125,33 @@ public class TestFilters {
     @SuppressWarnings("unchecked")
     public void testProvider() {
         IFilterCriteriaManager manager = new FilterCriteriaManager(wicket.getProperty(NUMBER_FIELD));
-        IFilterCriteria equalsFilterCriteria = manager.createEqualsFilterCriteria(Model.of(NUM_VALUE_1), Model.of(true));
+        IFilterCriteria equalsFilterCriteria = manager.createEqualsFilterCriteria(Model.of(NUM_VALUE_1), false, Model.of(true));
         manager.setFilterCriteria(FilterCriteriaType.EQUALS, equalsFilterCriteria);
         String numField = wicket.getProperty(NUMBER_FIELD).getObject().getName();
         queryModel.addFilterCriteriaManager(numField, manager);
         OQueryDataProvider provider = new OQueryDataProvider(queryModel);
         assertTrue(queryModel.size() == queryModel.getObject().size());
         assertTrue(provider.size() == queryModel.getObject().size());
+    }
+
+    @Test
+    public void testLinkFilter() {
+        IModel<OProperty> property = wicket.getProperty(NUMBER_FIELD);
+        IFilterCriteriaManager manager = new FilterCriteriaManager(property);
+        IFilterCriteria equalsFilterCriteria = manager.createEqualsFilterCriteria(Model.of(NUM_VALUE_1), false, Model.of(true));
+        manager.setFilterCriteria(FilterCriteriaType.EQUALS, equalsFilterCriteria);
+        queryModel.addFilterCriteriaManager(property.getObject().getName(), manager);
+        ODocument document = queryModel.getObject().get(0).field(LINK_FIELD);
+        queryModel.clearFilterCriteriaManagers();
+        queryModel.detach();
+
+        property = wicket.getProperty(LINK_FIELD);
+        manager = new FilterCriteriaManager(property);
+        equalsFilterCriteria = manager.createEqualsFilterCriteria(new ODocumentModel(document), true, Model.of(true));
+        manager.setFilterCriteria(FilterCriteriaType.LINK, equalsFilterCriteria);
+        queryModel.addFilterCriteriaManager(property.getObject().getName(), manager);
+        assertTrue(queryModel.size() == 1);
+        assertTrue(queryModel.getObject().get(0).field(STRING_FIELD).equals(STR_VALUE_1));
     }
 
     @Test

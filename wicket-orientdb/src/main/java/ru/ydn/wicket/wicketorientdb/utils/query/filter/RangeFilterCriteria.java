@@ -5,6 +5,8 @@ import org.apache.wicket.model.IModel;
 import ru.ydn.wicket.wicketorientdb.utils.query.filter.value.IFilterValue;
 import ru.ydn.wicket.wicketorientdb.utils.query.filter.value.CollectionFilterValue;
 
+import java.util.List;
+
 /**
  * Range filter
  * SELECT FROM Class WHERE num BETWEEN '1' AND '5'
@@ -13,21 +15,29 @@ public class RangeFilterCriteria extends AbstractFilterCriteria {
 
     private final IFilterValue filterValue;
 
-    public RangeFilterCriteria(String field, CollectionFilterValue<?> filterValue, IModel<Boolean> join) {
+    public <T> RangeFilterCriteria(String field, CollectionFilterValue<T> filterValue, IModel<Boolean> join) {
         super(field, FilterCriteriaType.RANGE.getName() + field, join);
         this.filterValue = filterValue;
     }
 
     @Override
     protected String apply(String field) {
-        String filter = filterValue.getString();
-        if (Strings.isNullOrEmpty(filter) || !filter.contains(IFilterValue.VALUE_SEPARATOR))
+        List<String> stringList = filterValue.toStringList();
+        if (!needToApplyFilter(stringList))
             return null;
-        filter = filter.replaceAll(IFilterValue.VALUE_SEPARATOR, " AND ");
         StringBuilder sb = new StringBuilder();
         sb.append(field);
         sb.append(" BETWEEN ");
-        sb.append(filter);
+        sb.append(stringList.get(0));
+        sb.append(" AND ");
+        sb.append(stringList.get(1));
         return sb.toString();
+    }
+
+    @Override
+    protected boolean needToApplyFilter(List<String> stringList) {
+        return super.needToApplyFilter(stringList) && stringList.size() == 2
+                && !Strings.isNullOrEmpty(stringList.get(0))
+                && !Strings.isNullOrEmpty(stringList.get(1));
     }
 }

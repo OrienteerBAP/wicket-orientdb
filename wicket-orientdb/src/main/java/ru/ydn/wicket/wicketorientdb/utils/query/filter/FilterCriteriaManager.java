@@ -61,12 +61,12 @@ public class FilterCriteriaManager implements IFilterCriteriaManager {
     }
 
     @Override
-    public <T> IFilterCriteria createEqualsFilterCriteria(IModel<T> model, IModel<Boolean> join) {
+    public <T> IFilterCriteria createEqualsFilterCriteria(IModel<T> model, boolean rid, IModel<Boolean> join) {
         OProperty property = propertyModel.getObject();
         IStringConverter<T> stringConverter = StringConverter.createStringConverter(property.getType());
         IFilterValue value = new PrimeFilterValue<>(model, stringConverter);
 
-        return new EqualsFilterCriteria(property.getName(), value, join);
+        return new EqualsFilterCriteria(property.getName(), value, rid, join);
     }
 
     @Override
@@ -99,7 +99,7 @@ public class FilterCriteriaManager implements IFilterCriteriaManager {
     public IFilterCriteria createContainsStringFilterCriteria(IModel<String> model, IModel<Boolean> join) {
         OProperty property = propertyModel.getObject();
         IStringConverter<String> stringConverter = StringConverter.createStringConverter(property.getType());
-        IFilterValue value = new PrimeFilterValue<>(model, stringConverter);
+        PrimeFilterValue<String> value = new PrimeFilterValue<>(model, stringConverter);
         return new ContainsTextFilterCriteria(property.getName(), value, join);
     }
 

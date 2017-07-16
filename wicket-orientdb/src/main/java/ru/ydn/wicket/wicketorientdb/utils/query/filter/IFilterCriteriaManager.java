@@ -29,11 +29,12 @@ public interface IFilterCriteriaManager extends IClusterable {
     /**
      * Create equals filter
      * @param model {@link IModel} model of value for filter
+     * @param rid - if true - equals with ORID (link)
      * @param join {@link IModel<Boolean>} if true - result of filtering includes to result of query.
      * @param <T> type of value
      * @return {@link IFilterCriteria} which represents equals filter
      */
-    public <T> IFilterCriteria createEqualsFilterCriteria(IModel<T> model, IModel<Boolean> join);
+    public <T> IFilterCriteria createEqualsFilterCriteria(IModel<T> model, boolean rid, IModel<Boolean> join);
 
     /**
      * Create collection filter

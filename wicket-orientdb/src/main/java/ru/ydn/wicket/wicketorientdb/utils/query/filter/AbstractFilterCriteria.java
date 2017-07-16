@@ -3,6 +3,8 @@ package ru.ydn.wicket.wicketorientdb.utils.query.filter;
 import com.google.common.base.Strings;
 import org.apache.wicket.model.IModel;
 
+import java.util.List;
+
 /**
  * Abstract class for IFilterCriteria
  */
@@ -31,6 +33,9 @@ public abstract class AbstractFilterCriteria implements IFilterCriteria {
         return sb.toString();
     }
 
+    protected boolean needToApplyFilter(List<String> stringList) {
+        return stringList != null && !stringList.isEmpty();
+    }
 
     protected abstract String apply(String field);
 

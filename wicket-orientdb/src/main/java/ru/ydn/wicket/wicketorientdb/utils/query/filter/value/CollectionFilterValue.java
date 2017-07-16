@@ -1,11 +1,14 @@
 package ru.ydn.wicket.wicketorientdb.utils.query.filter.value;
 
 import com.google.common.base.Strings;
+import com.google.common.collect.Lists;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.util.lang.Args;
 import ru.ydn.wicket.wicketorientdb.utils.query.filter.IStringConverter;
 
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Implementation of {@link IFilterValue} for contains {@link Collection<T> } value
@@ -32,9 +35,9 @@ public class CollectionFilterValue<T> implements IFilterValue {
 
     @Override
     @SuppressWarnings("unchecked")
-    public String getString() {
-        StringBuilder sb = new StringBuilder();
-        int counter = 0;
+    public List<String> toStringList() {
+
+        List<String> result = Lists.newArrayList();
         if (collectionModel.getObject() != null && !collectionModel.getObject().isEmpty()) {
             for (T value : collectionModel.getObject()) {
                 String valueInString;
@@ -44,16 +47,11 @@ public class CollectionFilterValue<T> implements IFilterValue {
                 } else valueInString = stringConverter.apply(value);
 
                 if (!Strings.isNullOrEmpty(valueInString)) {
-                    if (counter > 0)
-                        sb.append(VALUE_SEPARATOR);
-                    if (!rid) sb.append("'");
-                    sb.append(valueInString);
-                    if (!rid) sb.append("'");
-                    counter++;
+                    result.add(rid ? valueInString : "'" + valueInString + "'");
                 }
             }
         }
-        return sb.toString();
+        return Collections.unmodifiableList(result);
     }
 
 }
