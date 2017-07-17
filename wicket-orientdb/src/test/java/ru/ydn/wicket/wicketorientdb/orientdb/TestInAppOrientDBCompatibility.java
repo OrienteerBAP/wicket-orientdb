@@ -39,7 +39,7 @@ import com.orientechnologies.orient.core.sql.query.OSQLSynchQuery;
 public class TestInAppOrientDBCompatibility
 {
 	@ClassRule
-	public static WicketOrientDbTesterScope wicket = new WicketOrientDbTesterScope();
+	public static WicketOrientDbTesterScope wicket = new WicketOrientDbTesterScope("admin", "admin");
 	
 	@Test
 	public void testGettingFields()
