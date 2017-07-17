@@ -9,7 +9,6 @@ import com.orientechnologies.orient.core.metadata.schema.OType;
 import com.orientechnologies.orient.core.record.impl.ODocument;
 import com.orientechnologies.orient.core.sql.OCommandSQL;
 import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.Model;
 import org.apache.wicket.util.lang.Args;
 import org.apache.wicket.util.tester.WicketTester;
 import org.junit.runner.Description;
@@ -18,9 +17,7 @@ import ru.ydn.wicket.wicketorientdb.junit.WicketOrientDbTesterScope;
 import ru.ydn.wicket.wicketorientdb.model.OPropertyModel;
 import ru.ydn.wicket.wicketorientdb.utils.DBClosure;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static ru.ydn.wicket.wicketorientdb.filter.ITesterFilterConstants.*;
 
@@ -48,6 +45,10 @@ public class WicketOrientDbFilterTesterScope extends WicketOrientDbTesterScope {
 
     public IModel<OProperty> getProperty(String name) {
         return properties.get(name);
+    }
+
+    public Collection<IModel<OProperty>> getProperties() {
+        return Collections.unmodifiableCollection(properties.values());
     }
 
     private List<OClass> initTestClasses() {

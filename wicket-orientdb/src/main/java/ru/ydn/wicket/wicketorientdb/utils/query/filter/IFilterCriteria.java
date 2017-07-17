@@ -3,8 +3,6 @@ package ru.ydn.wicket.wicketorientdb.utils.query.filter;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.util.io.IClusterable;
 
-import java.util.List;
-
 /**
  * Interface for save filter criteria and generate SQL depending on filter criteria
  */
@@ -16,15 +14,34 @@ public interface IFilterCriteria extends IClusterable {
     public String apply();
 
     /**
-     * Get filtered field name
+     * Get join
+     * @return {@link IModel<Boolean>} if true - result of filtering will be include to result
+     */
+    public IModel<Boolean> getJoinModel();
+
+    /**
      * @return filtered field name
      */
     public String getField();
 
     /**
-     * Get join
-     * @return {@link IModel<Boolean>} if true - result of filtering will be include to result
+     * @return filter name
      */
-    public IModel<Boolean> getJoinModel();
     public String getName();
+
+    /**
+     * @return model for filtering
+     */
+    public IModel<?> getModel();
+
+    /**
+     * @return {@link FilterCriteriaType} for current FilterCriteria
+     */
+    public FilterCriteriaType getFilterCriteriaType();
+
+    /**
+     * Check if current {@link IFilterCriteria} is empty
+     * @return true if current {@link IFilterCriteria} is empty
+     */
+    public boolean isEmpty();
 }

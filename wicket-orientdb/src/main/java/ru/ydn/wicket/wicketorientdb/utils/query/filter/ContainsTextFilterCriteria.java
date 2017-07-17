@@ -1,10 +1,6 @@
 package ru.ydn.wicket.wicketorientdb.utils.query.filter;
 
 import org.apache.wicket.model.IModel;
-import ru.ydn.wicket.wicketorientdb.utils.query.filter.value.IFilterValue;
-import ru.ydn.wicket.wicketorientdb.utils.query.filter.value.PrimeFilterValue;
-
-import java.util.List;
 
 /**
  * Contains text filter
@@ -12,23 +8,21 @@ import java.util.List;
  */
 public class ContainsTextFilterCriteria extends AbstractFilterCriteria {
 
-    private final IFilterValue value;
-
-    public ContainsTextFilterCriteria(String field, PrimeFilterValue<String> value, IModel<Boolean> join) {
-        super(field, FilterCriteriaType.CONTAINS_TEXT + "_" + field, join);
-        this.value = value;
+    public ContainsTextFilterCriteria(String field, IModel<String> model, IModel<Boolean> join) {
+        super(field, model, join);
     }
 
     @Override
     protected String apply(String field) {
-        List<String> stringList = value.toStringList();
-        if (!needToApplyFilter(stringList))
-            return null;
         StringBuilder sb = new StringBuilder();
         sb.append(field)
-                .append(" CONTAINSTEXT '")
-                .append(stringList.get(0))
-                .append("'");
+                .append(" CONTAINSTEXT :")
+                .append(getName());
         return sb.toString();
+    }
+
+    @Override
+    public FilterCriteriaType getFilterCriteriaType() {
+        return FilterCriteriaType.CONTAINS_TEXT;
     }
 }

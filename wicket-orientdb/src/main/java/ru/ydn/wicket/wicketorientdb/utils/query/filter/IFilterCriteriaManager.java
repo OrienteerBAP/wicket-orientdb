@@ -5,7 +5,6 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.util.io.IClusterable;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -28,41 +27,27 @@ public interface IFilterCriteriaManager extends IClusterable {
 
     /**
      * Create equals filter
-     * @param model {@link IModel} model of value for filter
-     * @param rid - if true - equals with ORID (link)
+     * @param model {@link IModel<?>} model of value for filter
      * @param join {@link IModel<Boolean>} if true - result of filtering includes to result of query.
-     * @param <T> type of value
      * @return {@link IFilterCriteria} which represents equals filter
      */
-    public <T> IFilterCriteria createEqualsFilterCriteria(IModel<T> model, boolean rid, IModel<Boolean> join);
+    public IFilterCriteria createEqualsFilterCriteria(IModel<?> model, IModel<Boolean> join);
 
     /**
      * Create collection filter
-     * @param models {@link Collection<IModel<T>>} collection of models for filter
+     * @param models {@link IModel<Collection<IModel<?>>>} collection of models for filter
      * @param join {@link IModel<Boolean>} if true - result of filtering includes to result of query.
-     * @param <T> type of value
      * @return {@link IFilterCriteria} which represents list filter
      */
-    public <T> IFilterCriteria createCollectionFilterCriteria(Collection<IModel<T>> models, IModel<Boolean> join);
+    public IFilterCriteria createCollectionFilterCriteria(IModel<Collection<IModel<?>>> models, IModel<Boolean> join);
 
     /**
      * Create range filter
-     * @param models {@link Collection<IModel<T>>} list of 2 models for filter
+     * @param models {@link IModel<Collection<IModel<?>>>} list of 2 models for filter
      * @param join {@link IModel<Boolean>} if true - result of filtering includes to result of query.
-     * @param <T> type of value
      * @return {@link IFilterCriteria} which represents range filter
      */
-    public <T> IFilterCriteria createRangeFilterCriteria(Collection<IModel<T>> models, IModel<Boolean> join);
-
-    /**
-     * Create filter for search string which start or end with model value
-     * @param model {@link IModel<String>} value
-     * @param start if true search strings which starts with value,
-     *              if false search strings which ends with value.
-     * @param join {@link IModel<Boolean>} if true - result of filtering includes to result of query.
-     * @return {@link IFilterCriteria} which represents start or end string filter
-     */
-    public IFilterCriteria createStartOrEndStringFilterCriteria(IModel<String> model, boolean start, IModel<Boolean> join);
+    public IFilterCriteria createRangeFilterCriteria(IModel<Collection<IModel<?>>> models, IModel<Boolean> join);
 
     /**
      * Create filter for search string which contains model value
@@ -75,17 +60,17 @@ public interface IFilterCriteriaManager extends IClusterable {
     /**
      * Create filter for search {@link ODocument} in collection of links
      * @param model {@link IModel<Collection<ODocument>>} value
+     * @param list if true create filter for LINKLIST field
      * @param join {@link IModel<Boolean>} if true - result of filtering includes to result of query.
      * @return {@link IFilterCriteria} which represents link collection filter
      */
-    public IFilterCriteria createLinkCollectionFilterCriteria(IModel<Collection<ODocument>> model, IModel<Boolean> join);
+    public IFilterCriteria createLinkCollectionFilterCriteria(IModel<Collection<ODocument>> model, boolean list, IModel<Boolean> join);
 
     /**
-     * Set filter for current field
-     * @param type {@link FilterCriteriaType} type of filter
+     * Add filter for current field
      * @param filterCriteria {@link IFilterCriteria} filter
      */
-    public void setFilterCriteria(FilterCriteriaType type, IFilterCriteria filterCriteria);
+    public void addFilterCriteria(IFilterCriteria filterCriteria);
 
     /**
      * Get filter by type
