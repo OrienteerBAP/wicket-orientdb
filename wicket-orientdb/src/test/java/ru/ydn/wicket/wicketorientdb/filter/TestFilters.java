@@ -7,10 +7,7 @@ import org.apache.wicket.extensions.markup.html.repeater.data.sort.SortOrder;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.util.CollectionModel;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.ClassRule;
-import org.junit.Test;
+import org.junit.*;
 import ru.ydn.wicket.wicketorientdb.model.ODocumentModel;
 import ru.ydn.wicket.wicketorientdb.model.OQueryDataProvider;
 import ru.ydn.wicket.wicketorientdb.model.OQueryModel;
@@ -70,7 +67,7 @@ public class TestFilters {
     }
 
     @Test
-    public void testEqualsToDateFilterCriteria() throws ParseException {
+    public void testEqualsToDateTimeFilterCriteria() throws ParseException {
         IModel<OProperty> property = wicket.getProperty(DATETIME_FIELD);
         IFilterCriteriaManager manager = new FilterCriteriaManager(property);
         IModel<String> model = Model.of(DATETIME_VALUE_1);
@@ -82,6 +79,25 @@ public class TestFilters {
 
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         IModel<Date> dateModel = Model.of(dateFormat.parse(DATETIME_VALUE_1));
+        manager.addFilterCriteria(manager.createEqualsFilterCriteria(dateModel, Model.of(true)));
+        queryModel.addFilterCriteriaManager(property.getObject().getName(), manager);
+        assertTrue(queryModel.size() == 1);
+    }
+
+    @Test
+    @Ignore
+    public void testEqualsToDateFilterCriteria() throws ParseException {
+        IModel<OProperty> property = wicket.getProperty(DATE_FIELD);
+        IFilterCriteriaManager manager = new FilterCriteriaManager(property);
+        IModel<String> model = Model.of(DATE_VALUE_1);
+        manager.addFilterCriteria(manager.createEqualsFilterCriteria(model, Model.of(true)));
+        queryModel.addFilterCriteriaManager(property.getObject().getName(), manager);
+        assertTrue(queryModel.size() == 1);
+        queryModel.clearFilterCriteriaManagers();
+        queryModel.detach();
+
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        IModel<Date> dateModel = Model.of(dateFormat.parse(DATE_VALUE_1));
         manager.addFilterCriteria(manager.createEqualsFilterCriteria(dateModel, Model.of(true)));
         queryModel.addFilterCriteriaManager(property.getObject().getName(), manager);
         assertTrue(queryModel.size() == 1);
