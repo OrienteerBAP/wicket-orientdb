@@ -6,6 +6,7 @@ import org.junit.After;
 import org.junit.ClassRule;
 import org.junit.Test;
 
+import com.orientechnologies.orient.core.metadata.security.OSecurityUser;
 import com.orientechnologies.orient.core.metadata.security.OUser;
 
 import ru.ydn.wicket.wicketorientdb.junit.WicketOrientDbTester;
@@ -52,9 +53,8 @@ public class TestSecurity
 		//Signin and check signed in state
 		assertTrue(tester.signIn(user, password));
 		assertTrue(tester.isSignedIn());
-		OUser thisUser = tester.getMetadata().getSecurity().getUser(user);
-		assertEquals(thisUser.getIdentity(), tester.getSession().getUser().getIdentity());
-		assertEquals(thisUser.getIdentity(), tester.getDatabase().getUser().getIdentity());
+		assertEquals(user, tester.getDatabase().getUser().getName());
+		assertEquals(user, tester.getSession().getUser().getName());
 		assertTrue(tester.getSession().getRoles().hasRole(userRole));
 		
 		//Signout and check signed out state

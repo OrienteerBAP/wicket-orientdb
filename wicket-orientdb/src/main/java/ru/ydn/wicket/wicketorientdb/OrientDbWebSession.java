@@ -14,6 +14,7 @@ import com.orientechnologies.orient.core.db.document.ODatabaseDocument;
 import com.orientechnologies.orient.core.exception.OSecurityAccessException;
 import com.orientechnologies.orient.core.metadata.schema.OSchema;
 import com.orientechnologies.orient.core.metadata.security.ORole;
+import com.orientechnologies.orient.core.metadata.security.OSecurityRole;
 import com.orientechnologies.orient.core.metadata.security.OSecurityUser;
 import com.orientechnologies.orient.core.metadata.security.OUser;
 
@@ -25,7 +26,7 @@ public class OrientDbWebSession extends AuthenticatedWebSession {
 	private static final long serialVersionUID = 2L;
 	private String username;
 	private String password;
-	private OUser user;
+	private OSecurityUser user;
 	private boolean userReloaded=false;
 	
 	public OrientDbWebSession(Request request) {
@@ -42,10 +43,10 @@ public class OrientDbWebSession extends AuthenticatedWebSession {
 		Roles ret = new Roles();
 		if(isSignedIn())
 		{
-			Set<ORole> roles = getUser().getRoles();
-			for (ORole oRole : roles) {
+			Set<? extends OSecurityRole> roles = getUser().getRoles();
+			for (OSecurityRole oRole : roles) {
 				ret.add(oRole.getName());
-				ORole parent = oRole.getParentRole();
+				OSecurityRole parent = oRole.getParentRole();
 				while(parent!=null && !ret.contains(parent.getName()))
 				{
 					ret.add(parent.getName());
@@ -87,8 +88,9 @@ public class OrientDbWebSession extends AuthenticatedWebSession {
 				newDB.activateOnCurrentThread();
 			}
 			setUser(username, password);
-			user = newDB.getMetadata().getSecurity().getUser(username);
-			newDB.setUser(user);
+			user = newDB.getUser();
+//			user = newDB.getMetadata().getSecurity().getUser(username);
+//			newDB.setUser(user);
 			if(inTransaction && !newDB.getTransaction().isActive()) newDB.begin();
 			return true;
 		} catch (OSecurityAccessException e)
@@ -107,20 +109,20 @@ public class OrientDbWebSession extends AuthenticatedWebSession {
 	
 	public OSecurityUser getEffectiveUser()
 	{
-		OUser ret = getUser();
+		OSecurityUser ret = getUser();
 		return ret!=null?ret:getDatabase().getUser();
 	}
 	
 	/**
 	 * @return currently signed in {@link OUser}. Returns null in case of no user was signed in.
 	 */
-	public OUser getUser()
+	public OSecurityUser getUser()
 	{
 		if(user!=null)
 		{
 			if(!userReloaded)
 			{
-				user.load();
+				user.getDocument().load();
 				userReloaded = true;
 			}
 		}

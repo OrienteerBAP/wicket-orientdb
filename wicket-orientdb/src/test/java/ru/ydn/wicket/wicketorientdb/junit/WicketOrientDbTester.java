@@ -12,6 +12,7 @@ import org.apache.wicket.protocol.http.mock.MockHttpServletRequest;
 import org.apache.wicket.protocol.http.mock.MockHttpServletResponse;
 import org.apache.wicket.request.Url;
 import org.apache.wicket.util.crypt.Base64;
+import org.apache.wicket.util.string.Strings;
 import org.apache.wicket.util.tester.WicketTester;
 
 import com.orientechnologies.orient.core.db.document.ODatabaseDocument;
@@ -27,7 +28,13 @@ public class WicketOrientDbTester extends WicketTester
 
 	public WicketOrientDbTester(OrientDbWebApplication application)
 	{
+		this(application, null, null);
+	}
+	
+	public WicketOrientDbTester(OrientDbWebApplication application, String username, String password)
+	{
 		super(application);
+		if(!Strings.isEmpty(username) && !Strings.isEmpty(password)) signIn(username, password);
 	}
 
 	@Override

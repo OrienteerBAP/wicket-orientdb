@@ -124,19 +124,7 @@ public abstract class OrientDbWebApplication extends AuthenticatedWebApplication
 				registerHooks(iDatabase);
 				//Fix for "feature" appeared in OrientDB 2.1.1
 				//Issue: https://github.com/orientechnologies/orientdb/issues/4906
-				OSecurity security = iDatabase.getMetadata().getSecurity();
-				ORole readerRole = security.getRole("reader");
-				readerRole.grant(ResourceGeneric.CLUSTER, "orole", ORole.PERMISSION_READ);
-				readerRole.grant(ResourceGeneric.CLUSTER, "ouser", ORole.PERMISSION_READ);
-				readerRole.grant(ResourceGeneric.CLASS, "orole", ORole.PERMISSION_READ);
-				readerRole.grant(ResourceGeneric.CLASS, "ouser", ORole.PERMISSION_READ);
-				readerRole.save();
-				ORole writerRole = security.getRole("writer");
-				writerRole.grant(ResourceGeneric.CLUSTER, "orole", ORole.PERMISSION_READ);
-				writerRole.grant(ResourceGeneric.CLUSTER, "ouser", ORole.PERMISSION_READ);
-				writerRole.grant(ResourceGeneric.CLASS, "orole", ORole.PERMISSION_READ);
-				writerRole.grant(ResourceGeneric.CLASS, "ouser", ORole.PERMISSION_READ);
-				writerRole.save();
+				fixOrientDBRights(iDatabase);
 			}
 			
 			public void registerHooks(ODatabaseInternal iDatabase) {
@@ -201,6 +189,29 @@ public abstract class OrientDbWebApplication extends AuthenticatedWebApplication
 		//workaround to support changing system users passwords in web interface
 		getOrientDbSettings().getORecordHooks().add(OUserCatchPasswordHook.class);
 		PropertyResolver.setLocator(this, new ODocumentPropertyLocator(new PropertyResolver.CachingPropertyLocator(new PropertyResolver.DefaultPropertyLocator())));
+	}
+	
+	/**
+	 * Required for explicit update of rights due to changes in OrientDB 2.2.23
+	 * Related issue: https://github.com/orientechnologies/orientdb/issues/7549
+	 * @param db - database to apply fix on
+	 */
+	public void fixOrientDBRights(ODatabase<?> db) {
+		OSecurity security = db.getMetadata().getSecurity();
+		ORole readerRole = security.getRole("reader");
+		readerRole.grant(ResourceGeneric.CLUSTER, "orole", ORole.PERMISSION_READ);
+		readerRole.grant(ResourceGeneric.CLUSTER, "ouser", ORole.PERMISSION_READ);
+		readerRole.grant(ResourceGeneric.CLASS, "orole", ORole.PERMISSION_READ);
+		readerRole.grant(ResourceGeneric.CLASS, "ouser", ORole.PERMISSION_READ);
+		readerRole.grant(ResourceGeneric.SYSTEM_CLUSTERS, null, ORole.PERMISSION_READ);
+		readerRole.save();
+		ORole writerRole = security.getRole("writer");
+		writerRole.grant(ResourceGeneric.CLUSTER, "orole", ORole.PERMISSION_READ);
+		writerRole.grant(ResourceGeneric.CLUSTER, "ouser", ORole.PERMISSION_READ);
+		writerRole.grant(ResourceGeneric.CLASS, "orole", ORole.PERMISSION_READ);
+		writerRole.grant(ResourceGeneric.CLASS, "ouser", ORole.PERMISSION_READ);
+		writerRole.grant(ResourceGeneric.SYSTEM_CLUSTERS, null, ORole.PERMISSION_READ);
+		writerRole.save();
 	}
 	
 	protected TransactionRequestCycleListener newTransactionRequestCycleListener()
