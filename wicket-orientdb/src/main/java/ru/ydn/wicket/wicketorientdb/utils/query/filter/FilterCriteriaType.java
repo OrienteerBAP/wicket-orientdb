@@ -18,32 +18,28 @@ public final class FilterCriteriaType implements IClusterable {
 
     private static final Pattern NAME_PATTERN = Pattern.compile("^[a-zA-Z0-9]+$");
 
-    public static final FilterCriteriaType EQUALS        = createAndRegister("equals", false, false);
-    public static final FilterCriteriaType COLLECTION    = createAndRegister("collection", true, true);
-    public static final FilterCriteriaType RANGE         = createAndRegister("range", true, true);
-    public static final FilterCriteriaType CONTAINS_TEXT = createAndRegister("containsText", false, false);
-    public static final FilterCriteriaType LINK          = createAndRegister("link", false, false);
-    public static final FilterCriteriaType LINKLIST      = createAndRegister("linkList", true, false);
-    public static final FilterCriteriaType LINKSET       = createAndRegister("linkSet", true, false);
+    public static final FilterCriteriaType EQUALS        = createAndRegister("equals", false);
+    public static final FilterCriteriaType COLLECTION    = createAndRegister("collection", true);
+    public static final FilterCriteriaType RANGE         = createAndRegister("range", true);
+    public static final FilterCriteriaType CONTAINS_TEXT = createAndRegister("containsText", false);
+    public static final FilterCriteriaType LINK          = createAndRegister("link", false);
+    public static final FilterCriteriaType LINKLIST      = createAndRegister("linkList", true);
+    public static final FilterCriteriaType LINKSET       = createAndRegister("linkSet", true);
 
     private final boolean collection;
-    private final boolean includeModels;
     private final String name;
 
     /**
      * @param name name of {@link FilterCriteriaType}
-     * @param modelCollection if true - {@link FilterCriteriaType} include {@link IModel<Collection<?>>}
-     * @param includeModels if true - {@link IFilterCriteria} appropriate to current {@link FilterCriteriaType}
-     *                   contains model like {@link IModel<Collection<IModel<?>>>}
+     * @param collection if true - {@link FilterCriteriaType} include {@link IModel<Collection<?>>}
      */
-    private FilterCriteriaType(String name, boolean modelCollection, boolean includeModels) {
+    private FilterCriteriaType(String name, boolean collection) {
         if (!NAME_PATTERN.matcher(name).matches())
             throw new IllegalStateException(
                     String.format("FilterCriteriaType name '%s' don't match with pattern: '%s'",
                             name, NAME_PATTERN.pattern()));
         this.name = name;
-        this.collection = modelCollection;
-        this.includeModels = includeModels;
+        this.collection = collection;
     }
 
     /**
@@ -57,41 +53,31 @@ public final class FilterCriteriaType implements IClusterable {
      * @return if true - {@link IFilterCriteria} appropriate to current {@link FilterCriteriaType}
      *                   contains model like {@link IModel<Collection<?>>}
      */
-    public boolean isModelCollection() {
+    public boolean isCollection() {
         return collection;
     }
 
-    /**
-     * @return if true - {@link IFilterCriteria} include {@link IModel<Collection<IModel<?>>>}
-     */
-    public boolean isIncludeModels() {
-        return includeModels;
-    }
 
     /**
      * Create {@link FilterCriteriaType}
      * @param name name of current {@link FilterCriteriaType}
-     * @param modelCollection if true - {@link FilterCriteriaType} include {@link IModel<Collection<?>>}
-     * @param includeModels if true - {@link IFilterCriteria} appropriate to current {@link FilterCriteriaType}
-     *                   contains model like {@link IModel<Collection<IModel<?>>>}
+     * @param collection if true - {@link FilterCriteriaType} include {@link IModel<Collection<?>>}
      * @return new {@link FilterCriteriaType}
      * @throws IllegalStateException if name don't matches with name pattern
      */
-    public static FilterCriteriaType create(String name,  boolean modelCollection, boolean includeModels) {
-        return new FilterCriteriaType(name, modelCollection, includeModels);
+    public static FilterCriteriaType create(String name,  boolean collection) {
+        return new FilterCriteriaType(name, collection);
     }
 
     /**
      * Create and register {@link FilterCriteriaType}
      * @param name name of current {@link FilterCriteriaType}
-     * @param modelCollection if true - {@link FilterCriteriaType} include {@link IModel<Collection<?>>}
-     * @param includeModels if true - {@link IFilterCriteria} appropriate to current {@link FilterCriteriaType}
-     *                   contains model like {@link IModel<Collection<IModel<?>>>}
+     * @param collection if true - {@link FilterCriteriaType} include {@link IModel<Collection<?>>}
      * @return new {@link FilterCriteriaType}
      * @throws IllegalStateException if {@link FilterCriteriaType} with current name if already registered
      */
-    public static FilterCriteriaType createAndRegister(String name,  boolean modelCollection, boolean includeModels) {
-        FilterCriteriaType type = create(name, modelCollection, includeModels);
+    public static FilterCriteriaType createAndRegister(String name,  boolean collection) {
+        FilterCriteriaType type = create(name, collection);
         register(type);
         return type;
     }

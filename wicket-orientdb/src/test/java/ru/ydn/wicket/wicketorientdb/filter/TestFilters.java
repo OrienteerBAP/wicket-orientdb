@@ -106,10 +106,10 @@ public class TestFilters {
     @Test
     @SuppressWarnings("unchecked")
     public void testCollectionFilterCriteria() {
-        List<IModel<?>> models = Lists.newArrayList();
-        models.add(Model.of(NUM_VALUE_1));
-        models.add(Model.of(NUM_VALUE_2));
-        IModel<Collection<IModel<?>>> collectionModel = new CollectionModel<>(models);
+        List<Integer> models = Lists.newArrayList();
+        models.add(NUM_VALUE_1);
+        models.add(NUM_VALUE_2);
+        IModel<Collection<Integer>> collectionModel = new CollectionModel<>(models);
         IFilterCriteriaManager manager = new FilterCriteriaManager(wicket.getProperty(NUMBER_FIELD));
         manager.addFilterCriteria(manager.createCollectionFilterCriteria(collectionModel, Model.of(true)));
         String field = wicket.getProperty(NUMBER_FIELD).getObject().getName();
@@ -122,10 +122,10 @@ public class TestFilters {
 
     @Test
     public void testRangeFilterCriteria() {
-        List<IModel<?>> models = Lists.newArrayList();
-        models.add(Model.of(NUM_VALUE_1));
-        models.add(Model.of(NUM_VALUE_3));
-        IModel<Collection<IModel<?>>> collectionModel = new CollectionModel<>(models);
+        List<Integer> models = Lists.newArrayList();
+        models.add(NUM_VALUE_1);
+        models.add(NUM_VALUE_3);
+        IModel<Collection<Integer>> collectionModel = new CollectionModel<>(models);
         IFilterCriteriaManager manager = new FilterCriteriaManager(wicket.getProperty(NUMBER_FIELD));
         manager.addFilterCriteria(manager.createRangeFilterCriteria(collectionModel, Model.of(true)));
         String field = wicket.getProperty(NUMBER_FIELD).getObject().getName();
@@ -174,10 +174,10 @@ public class TestFilters {
     @Test
     public void testLinkCollectionFilter() {
         IFilterCriteriaManager manager = new FilterCriteriaManager(wicket.getProperty(NUMBER_FIELD));
-        List<IModel<?>> models = Lists.newArrayList();
-        models.add(Model.of(NUM_VALUE_1));
-        models.add(Model.of(NUM_VALUE_2));
-        IModel<Collection<IModel<?>>> collectionModel = new CollectionModel<>(models);
+        List<Integer> models = Lists.newArrayList();
+        models.add(NUM_VALUE_1);
+        models.add(NUM_VALUE_2);
+        IModel<Collection<Integer>> collectionModel = new CollectionModel<>(models);
         IFilterCriteria collectionFilterCriteria = manager.createCollectionFilterCriteria(collectionModel, Model.of(true));
         manager.addFilterCriteria(collectionFilterCriteria);
         String numField = wicket.getProperty(NUMBER_FIELD).getObject().getName();

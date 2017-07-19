@@ -13,6 +13,7 @@ import org.apache.wicket.WicketRuntimeException;
 import org.apache.wicket.extensions.markup.html.repeater.data.sort.SortOrder;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
+import org.apache.wicket.model.Model;
 import ru.ydn.wicket.wicketorientdb.OrientDbWebSession;
 import ru.ydn.wicket.wicketorientdb.utils.ConvertToODocumentFunction;
 import ru.ydn.wicket.wicketorientdb.utils.DocumentWrapperTransformer;
@@ -24,6 +25,7 @@ import ru.ydn.wicket.wicketorientdb.utils.query.filter.FilterCriteriaType;
 import ru.ydn.wicket.wicketorientdb.utils.query.filter.IFilterCriteria;
 import ru.ydn.wicket.wicketorientdb.utils.query.filter.IFilterCriteriaManager;
 
+import java.io.Serializable;
 import java.util.*;
 
 /**
@@ -131,29 +133,13 @@ public class OQueryModel<K> extends LoadableDetachableModel<List<K>>
         for (FilterCriteriaType type : criterias.keySet()) {
             IFilterCriteria criteria = criterias.get(type);
             if (criteria == null) continue;
-            if (type.isModelCollection() && type.isIncludeModels()) {
-                addQueryParametersFromCollectionModels(criteria);
-            } else {
-                setParameter(criteria.getName(), criteria.getModel());
-            }
-        }
-    }
+            if (type.equals(FilterCriteriaType.RANGE)) {
+                Collection<?> collection = (Collection<?>) criteria.getModel().getObject();
+                Iterator<?> iterator = collection.iterator();
+                setParameter(criteria.getName() + 0, Model.of((Serializable) iterator.next()));
+                setParameter(criteria.getName() + 1, Model.of((Serializable) iterator.next()));
+            } else setParameter(criteria.getName(), criteria.getModel());
 
-    /**
-     * Add query parameters from collection model
-     * @param criteria {@link IFilterCriteria} which contains collection like {@link Collection<IModel<?>>}
-     */
-    @SuppressWarnings("unchecked")
-    private void addQueryParametersFromCollectionModels(IFilterCriteria criteria) {
-        IModel<Collection<IModel<?>>> collectionModel = (IModel<Collection<IModel<?>>>) criteria.getModel();
-        Collection<IModel<?>> collection = collectionModel.getObject();
-        if (collection != null && !collection.isEmpty()) {
-            Iterator<IModel<?>> iterator = collection.iterator();
-            int counter = 0;
-            while (iterator.hasNext()) {
-                setParameter(criteria.getName() + counter, iterator.next());
-                counter++;
-            }
         }
     }
 

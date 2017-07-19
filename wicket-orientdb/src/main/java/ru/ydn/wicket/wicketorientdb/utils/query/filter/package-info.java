@@ -1,4 +1,4 @@
 /**
- * Classes for change filter behaviour
+ * Contains classes for change filter behaviour
  */
 package ru.ydn.wicket.wicketorientdb.utils.query.filter;

@@ -56,24 +56,21 @@ public class FilterCriteriaManager implements IFilterCriteriaManager {
     }
 
     @Override
-    public IFilterCriteria createEqualsFilterCriteria(IModel<?> model, IModel<Boolean> join) {
+    public <T> IFilterCriteria createEqualsFilterCriteria(IModel<T> model, IModel<Boolean> join) {
         OProperty property = propertyModel.getObject();
         return new EqualsFilterCriteria(property.getName(), model, join);
     }
 
     @Override
-    public IFilterCriteria createCollectionFilterCriteria(IModel<Collection<IModel<?>>> models, IModel<Boolean> join) {
-        Args.notNull(models.getObject(), "models");
+    public <T> IFilterCriteria createCollectionFilterCriteria(IModel<Collection<T>> model, IModel<Boolean> join) {
         OProperty property = propertyModel.getObject();
-        return new CollectionFilterCriteria(property.getName(), models, join);
+        return new CollectionFilterCriteria(property.getName(), model, join);
     }
 
     @Override
-    public IFilterCriteria createRangeFilterCriteria(IModel<Collection<IModel<?>>> models, IModel<Boolean> join) {
-        Args.notNull(models.getObject(), "models");
-        Args.isTrue(models.getObject().size() == 2, "models.getObject().size() == 2");
+    public <T> IFilterCriteria createRangeFilterCriteria(IModel<Collection<T>> model, IModel<Boolean> join) {
         OProperty property = propertyModel.getObject();
-        return new RangeFilterCriteria(property.getName(), models, join);
+        return new RangeFilterCriteria(property.getName(), model, join);
     }
 
 

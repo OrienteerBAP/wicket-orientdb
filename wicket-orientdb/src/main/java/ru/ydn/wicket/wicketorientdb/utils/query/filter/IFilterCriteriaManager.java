@@ -27,27 +27,30 @@ public interface IFilterCriteriaManager extends IClusterable {
 
     /**
      * Create equals filter
-     * @param model {@link IModel<?>} model of value for filter
+     * @param model {@link IModel<T>} model of value for filter
      * @param join {@link IModel<Boolean>} if true - result of filtering includes to result of query.
+     * @param <T> type of value
      * @return {@link IFilterCriteria} which represents equals filter
      */
-    public IFilterCriteria createEqualsFilterCriteria(IModel<?> model, IModel<Boolean> join);
+    public <T> IFilterCriteria createEqualsFilterCriteria(IModel<T> model, IModel<Boolean> join);
 
     /**
      * Create collection filter
-     * @param models {@link IModel<Collection<IModel<?>>>} collection of models for filter
+     * @param model {@link IModel<Collection<T>>} model of collection for filter
      * @param join {@link IModel<Boolean>} if true - result of filtering includes to result of query.
+     * @param <T> type of value
      * @return {@link IFilterCriteria} which represents list filter
      */
-    public IFilterCriteria createCollectionFilterCriteria(IModel<Collection<IModel<?>>> models, IModel<Boolean> join);
+    public <T> IFilterCriteria createCollectionFilterCriteria(IModel<Collection<T>> model, IModel<Boolean> join);
 
     /**
      * Create range filter
-     * @param models {@link IModel<Collection<IModel<?>>>} list of 2 models for filter
+     * @param model {@link IModel<Collection<IModel<T>>>} model of list which contains 2 elements for filter
      * @param join {@link IModel<Boolean>} if true - result of filtering includes to result of query.
+     * @param <T> type of value
      * @return {@link IFilterCriteria} which represents range filter
      */
-    public IFilterCriteria createRangeFilterCriteria(IModel<Collection<IModel<?>>> models, IModel<Boolean> join);
+    public <T> IFilterCriteria createRangeFilterCriteria(IModel<Collection<T>> model, IModel<Boolean> join);
 
     /**
      * Create filter for search string which contains model value

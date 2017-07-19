@@ -60,14 +60,12 @@ public abstract class AbstractFilterCriteria implements IFilterCriteria {
     @SuppressWarnings("unchecked")
     public boolean isEmpty() {
         FilterCriteriaType type = getFilterCriteriaType();
-        if (!type.isModelCollection())
+        if (!type.isCollection())
             return getModel().getObject() == null;
         Collection<?> collection = (Collection<?>) getModel().getObject();
         boolean isEmpty = true;
         if (collection != null && !collection.isEmpty()) {
-            if (type.isIncludeModels())
-                isEmpty = checkModelsInCollectionModel((Collection<IModel<?>>) collection);
-            else isEmpty = checkCustomCollectionModel(collection);
+           isEmpty = checkCustomCollectionModel(collection);
         }
         return isEmpty;
     }

@@ -10,7 +10,7 @@ import java.util.Collection;
  */
 public class RangeFilterCriteria extends AbstractFilterCriteria {
 
-    public RangeFilterCriteria(String field, IModel<Collection<IModel<?>>> model, IModel<Boolean> join) {
+    public <T> RangeFilterCriteria(String field, IModel<Collection<T>> model, IModel<Boolean> join) {
         super(field, model, join);
     }
 
@@ -34,9 +34,9 @@ public class RangeFilterCriteria extends AbstractFilterCriteria {
     @Override
     @SuppressWarnings("unchecked")
     public boolean isEmpty() {
-        Collection<IModel<?>> collection = (Collection<IModel<?>>) getModel().getObject();
-        for (IModel<?> model : collection) {
-            if (model == null || model.getObject() == null) {
+        Collection<?> collection = (Collection<?>) getModel().getObject();
+        for (Object object : collection) {
+            if (object == null ) {
                 return true;
             }
         }
