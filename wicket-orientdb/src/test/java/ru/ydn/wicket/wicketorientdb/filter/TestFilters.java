@@ -240,6 +240,7 @@ public class TestFilters {
     }
 
     @Test
+    @Ignore
     public void testDateTimeCollection() throws ParseException {
         DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         List<Date> list = Lists.newArrayList();
