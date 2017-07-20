@@ -1,32 +1,45 @@
 package ru.ydn.wicket.wicketorientdb.utils.query.filter;
 
-import com.google.common.base.Strings;
 import org.apache.wicket.model.IModel;
-import ru.ydn.wicket.wicketorientdb.utils.query.filter.value.IFilterValue;
-import ru.ydn.wicket.wicketorientdb.utils.query.filter.value.ListFilterValue;
+
+import java.util.Collection;
 
 /**
  * Range filter
+ * SELECT FROM Class WHERE num BETWEEN '1' AND '5'
  */
 public class RangeFilterCriteria extends AbstractFilterCriteria {
 
-    private final IFilterValue filterValue;
-
-    public RangeFilterCriteria(String field, ListFilterValue<?> filterValue, IModel<Boolean> join) {
-        super(field, FilterCriteriaType.RANGE.getName() + field, join);
-        this.filterValue = filterValue;
+    public <T> RangeFilterCriteria(String field, IModel<Collection<T>> model, IModel<Boolean> join) {
+        super(field, model, join);
     }
 
     @Override
     protected String apply(String field) {
-        String filter = filterValue.getString();
-        if (Strings.isNullOrEmpty(filter) || !filter.contains(IFilterValue.VALUE_SEPARATOR))
-            return null;
-        filter = filter.replaceAll(IFilterValue.VALUE_SEPARATOR, " AND ");
         StringBuilder sb = new StringBuilder();
-        sb.append(field);
-        sb.append(" BETWEEN ");
-        sb.append(filter);
+        sb.append(field)
+                .append(" BETWEEN :")
+                .append(getName())
+                .append("0 AND :")
+                .append(getName())
+                .append("1");
         return sb.toString();
+    }
+
+    @Override
+    public FilterCriteriaType getFilterCriteriaType() {
+        return FilterCriteriaType.RANGE;
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public boolean isEmpty() {
+        Collection<?> collection = (Collection<?>) getModel().getObject();
+        for (Object object : collection) {
+            if (object == null ) {
+                return true;
+            }
+        }
+        return false;
     }
 }

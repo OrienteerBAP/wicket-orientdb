@@ -2,12 +2,11 @@ package ru.ydn.wicket.wicketorientdb.utils.query;
 
 import com.google.common.base.Strings;
 import com.google.common.collect.Maps;
-import com.orientechnologies.orient.core.metadata.schema.OProperty;
 import org.apache.wicket.WicketRuntimeException;
-import org.apache.wicket.model.IModel;
-import org.apache.wicket.util.io.IClusterable;
 import ru.ydn.wicket.wicketorientdb.utils.query.filter.IFilterCriteriaManager;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -15,7 +14,7 @@ import java.util.regex.Pattern;
 /**
  * String based query manager 
  */
-public class StringQueryManager implements IQueryManager, IClusterable {
+public class StringQueryManager implements IQueryManager {
 	
 	private static final Pattern PROJECTION_PATTERN = Pattern.compile("select\\b(.+?)\\bfrom\\b", Pattern.CASE_INSENSITIVE);
 	private static final Pattern EXPAND_PATTERN = Pattern.compile("expand\\((.+)\\)", Pattern.CASE_INSENSITIVE);
@@ -80,7 +79,6 @@ public class StringQueryManager implements IQueryManager, IClusterable {
 		boolean wrapForSkip = containExpand && first != null;
 		if (wrapForSkip) sb.append("select from (");
 		sb.append(sql);
-		sb.append(getFilterCriteria(sql));
 		if (sortBy != null) sb.append(" ORDER BY " + sortBy + (isAscending ? "" : " desc"));
 		if (wrapForSkip) sb.append(") ");
 		if (first != null) sb.append(" SKIP " + first);
@@ -109,11 +107,10 @@ public class StringQueryManager implements IQueryManager, IClusterable {
 		for (String key : managers.keySet()) {
 			IFilterCriteriaManager manager = managers.get(key);
 			if (manager != null) {
-				String filter = manager.apply();
-				if (!Strings.isNullOrEmpty(filter)) {
+				if (manager.isFilterApply()) {
 					if (counter > 0)
 						sb.append(" AND ");
-					sb.append(filter);
+					sb.append(manager.apply());
 					counter++;
 				}
 			}
@@ -124,6 +121,11 @@ public class StringQueryManager implements IQueryManager, IClusterable {
 	@Override
 	public void addFilterCriteriaManager(String field, IFilterCriteriaManager manager) {
 		managers.put(field, manager);
+	}
+
+	@Override
+	public Collection<IFilterCriteriaManager> getFilterCriteriaManagers() {
+		return Collections.unmodifiableCollection(managers.values());
 	}
 
 	@Override

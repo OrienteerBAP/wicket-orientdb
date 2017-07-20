@@ -1,23 +1,5 @@
 package ru.ydn.wicket.wicketorientdb.model;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.wicket.WicketRuntimeException;
-import org.apache.wicket.extensions.markup.html.repeater.data.sort.SortOrder;
-import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.LoadableDetachableModel;
-
-import ru.ydn.wicket.wicketorientdb.OrientDbWebSession;
-import ru.ydn.wicket.wicketorientdb.utils.ConvertToODocumentFunction;
-import ru.ydn.wicket.wicketorientdb.utils.DocumentWrapperTransformer;
-import ru.ydn.wicket.wicketorientdb.utils.GetObjectFunction;
-import ru.ydn.wicket.wicketorientdb.utils.OSchemaUtils;
-import ru.ydn.wicket.wicketorientdb.utils.query.IQueryManager;
-import ru.ydn.wicket.wicketorientdb.utils.query.StringQueryManager;
-
 import com.google.common.base.Function;
 import com.google.common.collect.Iterators;
 import com.google.common.collect.Lists;
@@ -27,7 +9,24 @@ import com.orientechnologies.orient.core.metadata.schema.OClass;
 import com.orientechnologies.orient.core.record.ORecord;
 import com.orientechnologies.orient.core.record.impl.ODocument;
 import com.orientechnologies.orient.core.sql.query.OSQLSynchQuery;
+import org.apache.wicket.WicketRuntimeException;
+import org.apache.wicket.extensions.markup.html.repeater.data.sort.SortOrder;
+import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.LoadableDetachableModel;
+import org.apache.wicket.model.Model;
+import ru.ydn.wicket.wicketorientdb.OrientDbWebSession;
+import ru.ydn.wicket.wicketorientdb.utils.ConvertToODocumentFunction;
+import ru.ydn.wicket.wicketorientdb.utils.DocumentWrapperTransformer;
+import ru.ydn.wicket.wicketorientdb.utils.GetObjectFunction;
+import ru.ydn.wicket.wicketorientdb.utils.OSchemaUtils;
+import ru.ydn.wicket.wicketorientdb.utils.query.IQueryManager;
+import ru.ydn.wicket.wicketorientdb.utils.query.StringQueryManager;
+import ru.ydn.wicket.wicketorientdb.utils.query.filter.FilterCriteriaType;
+import ru.ydn.wicket.wicketorientdb.utils.query.filter.IFilterCriteria;
 import ru.ydn.wicket.wicketorientdb.utils.query.filter.IFilterCriteriaManager;
+
+import java.io.Serializable;
+import java.util.*;
 
 /**
  * Model to obtain data from OrientDB by query
@@ -123,6 +122,25 @@ public class OQueryModel<K> extends LoadableDetachableModel<List<K>>
      */
     public void addFilterCriteriaManager(String field, IFilterCriteriaManager manager) {
         queryManager.addFilterCriteriaManager(field, manager);
+    }
+
+    /**
+     * Add query parameters from {@link IFilterCriteriaManager}
+     * @param manager {@link IFilterCriteriaManager} for filtering
+     */
+    private void addQueryParametersFromManager(IFilterCriteriaManager manager) {
+        Map<FilterCriteriaType, IFilterCriteria> criterias = manager.getFilterCriterias();
+        for (FilterCriteriaType type : criterias.keySet()) {
+            IFilterCriteria criteria = criterias.get(type);
+            if (criteria == null) continue;
+            if (type.equals(FilterCriteriaType.RANGE)) {
+                Collection<?> collection = (Collection<?>) criteria.getModel().getObject();
+                Iterator<?> iterator = collection.iterator();
+                setParameter(criteria.getName() + 0, Model.of((Serializable) iterator.next()));
+                setParameter(criteria.getName() + 1, Model.of((Serializable) iterator.next()));
+            } else setParameter(criteria.getName(), criteria.getModel());
+
+        }
     }
 
     /**
@@ -243,6 +261,9 @@ public class OQueryModel<K> extends LoadableDetachableModel<List<K>>
     private Map<String, Object> prepareParams()
     {
     	//return Maps.transformValues(params, GetObjectFunction.getInstance());
+        for (IFilterCriteriaManager manager : queryManager.getFilterCriteriaManagers()) {
+            addQueryParametersFromManager(manager);
+        }
     	return Maps.transformValues(params, GetObjectAndWrapDocumentsFunction.getInstance());
     }
 

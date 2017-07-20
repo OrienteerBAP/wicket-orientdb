@@ -3,12 +3,12 @@ package ru.ydn.wicket.wicketorientdb.utils.query.filter;
 import org.apache.wicket.model.IModel;
 
 /**
- * Equals filter
- * SELECT FROM Class WHERE num = '1'
+ * Contains text filter
+ * SELECT FROM Class WHERE name CONTAINSTEXT 'text'
  */
-public class EqualsFilterCriteria extends AbstractFilterCriteria {
+public class ContainsTextFilterCriteria extends AbstractFilterCriteria {
 
-    public EqualsFilterCriteria(String field, IModel<?> model, IModel<Boolean> join) {
+    public ContainsTextFilterCriteria(String field, IModel<String> model, IModel<Boolean> join) {
         super(field, model, join);
     }
 
@@ -16,14 +16,13 @@ public class EqualsFilterCriteria extends AbstractFilterCriteria {
     protected String apply(String field) {
         StringBuilder sb = new StringBuilder();
         sb.append(field)
-                .append(" = :")
+                .append(" CONTAINSTEXT :")
                 .append(getName());
-
         return sb.toString();
     }
 
     @Override
     public FilterCriteriaType getFilterCriteriaType() {
-        return FilterCriteriaType.EQUALS;
+        return FilterCriteriaType.CONTAINS_TEXT;
     }
 }
