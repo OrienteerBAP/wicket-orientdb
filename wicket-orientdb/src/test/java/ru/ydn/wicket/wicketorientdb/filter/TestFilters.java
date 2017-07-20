@@ -238,4 +238,17 @@ public class TestFilters {
         queryModel.detach();
         queryModel.clearFilterCriteriaManagers();
     }
+
+    @Test
+    public void testDateTimeCollection() throws ParseException {
+        DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        List<Date> list = Lists.newArrayList();
+        list.add(format.parse(DATETIME_VALUE_1));
+        list.add(format.parse(DATETIME_VALUE_2));
+        IModel<OProperty> property = wicket.getProperty(DATETIME_FIELD);
+        IFilterCriteriaManager manager = new FilterCriteriaManager(property);
+        manager.addFilterCriteria(manager.createCollectionFilterCriteria(new CollectionModel<>(list), Model.of(true)));
+        queryModel.addFilterCriteriaManager(property.getObject().getName(), manager);
+        assertTrue(queryModel.getObject().size() == 2);
+    }
 }
