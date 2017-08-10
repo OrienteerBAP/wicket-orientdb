@@ -57,7 +57,6 @@
 		</module>
 		<module name="NestedTryDepth"/>
 		<module name="StringLiteralEquality"/>
-		<module name="TodoComment"/>
 		<module name="UncommentedMain"/>
         <!-- Specify method parameters code conventions -->
         <!--<module name="MethodParamPad">

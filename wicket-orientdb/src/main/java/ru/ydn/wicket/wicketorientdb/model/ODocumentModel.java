@@ -13,7 +13,9 @@ import com.orientechnologies.orient.core.db.document.ODatabaseDocument;
 import com.orientechnologies.orient.core.db.record.OIdentifiable;
 import com.orientechnologies.orient.core.exception.ORecordNotFoundException;
 import com.orientechnologies.orient.core.id.ORID;
+import com.orientechnologies.orient.core.record.ORecordInternal;
 import com.orientechnologies.orient.core.record.impl.ODocument;
+import com.orientechnologies.orient.core.record.impl.ODocumentInternal;
 
 /**
  * Model for storing of {@link ODocument}
@@ -94,6 +96,10 @@ public class ODocumentModel extends LoadableDetachableModel<ODocument> implement
 		        {
 		        	orid=null;
 		        	savedDocument = doc;
+		        	//Should be there to avoid double documents and rolling back to prev doc
+		        	//Related issue https://github.com/orientechnologies/orientdb/issues/7646
+		        	//TODO: remove when that will be fixed in OrientDB
+		        	ORecordInternal.setDirtyManager(savedDocument, null);
 		        }
 			}
 			else
