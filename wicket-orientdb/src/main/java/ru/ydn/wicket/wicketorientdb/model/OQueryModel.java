@@ -133,13 +133,14 @@ public class OQueryModel<K> extends LoadableDetachableModel<List<K>>
         for (FilterCriteriaType type : criterias.keySet()) {
             IFilterCriteria criteria = criterias.get(type);
             if (criteria == null) continue;
-            if (type.equals(FilterCriteriaType.RANGE)) {
-                Collection<?> collection = (Collection<?>) criteria.getModel().getObject();
-                Iterator<?> iterator = collection.iterator();
-                setParameter(criteria.getName() + 0, Model.of((Serializable) iterator.next()));
-                setParameter(criteria.getName() + 1, Model.of((Serializable) iterator.next()));
-            } else setParameter(criteria.getName(), criteria.getModel());
-
+            if (criteria.getModel().getObject() != null) {
+                if (type.equals(FilterCriteriaType.RANGE)) {
+                    Collection<?> collection = (Collection<?>) criteria.getModel().getObject();
+                    Iterator<?> iterator = collection.iterator();
+                    setParameter(criteria.getName() + 0, Model.of((Serializable) iterator.next()));
+                    setParameter(criteria.getName() + 1, Model.of((Serializable) iterator.next()));
+                } else setParameter(criteria.getName(), criteria.getModel());
+            }
         }
     }
 
