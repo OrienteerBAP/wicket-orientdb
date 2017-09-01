@@ -35,11 +35,14 @@ public class RangeFilterCriteria extends AbstractFilterCriteria {
     @SuppressWarnings("unchecked")
     public boolean isEmpty() {
         Collection<?> collection = (Collection<?>) getModel().getObject();
-        for (Object object : collection) {
-            if (object == null ) {
-                return true;
+        if (collection != null) {
+            for (Object object : collection) {
+                if (object == null) {
+                    return true;
+                }
             }
+            return false;
         }
-        return false;
+        return true;
     }
 }
