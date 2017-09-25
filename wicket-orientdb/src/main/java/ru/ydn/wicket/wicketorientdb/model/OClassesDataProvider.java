@@ -33,7 +33,7 @@ public class OClassesDataProvider extends AbstractJavaSortableDataProvider<OClas
 		});
 	}
 	
-	public OClassesDataProvider(IModel<Collection<OClass>> dataModel) {
+	public OClassesDataProvider(IModel<? extends Collection<OClass>> dataModel) {
 		super(dataModel);
 	}
 	
