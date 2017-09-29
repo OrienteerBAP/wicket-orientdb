@@ -5,6 +5,7 @@ import java.util.Set;
 import org.apache.wicket.Session;
 import org.apache.wicket.authroles.authentication.AuthenticatedWebSession;
 import org.apache.wicket.authroles.authorization.strategies.role.Roles;
+import org.apache.wicket.model.IModel;
 import org.apache.wicket.protocol.http.WebSession;
 import org.apache.wicket.request.Request;
 
@@ -17,6 +18,9 @@ import com.orientechnologies.orient.core.metadata.security.ORole;
 import com.orientechnologies.orient.core.metadata.security.OSecurityRole;
 import com.orientechnologies.orient.core.metadata.security.OSecurityUser;
 import com.orientechnologies.orient.core.metadata.security.OUser;
+import com.orientechnologies.orient.core.record.impl.ODocument;
+
+import ru.ydn.wicket.wicketorientdb.model.ODocumentModel;
 
 /**
  * Implemetation of {@link WebSession} which shold be used in OrientDB based applications
@@ -26,8 +30,7 @@ public class OrientDbWebSession extends AuthenticatedWebSession {
 	private static final long serialVersionUID = 2L;
 	private String username;
 	private String password;
-	private OSecurityUser user;
-	private boolean userReloaded=false;
+	private IModel<ODocument> userModel = new ODocumentModel();
 	
 	public OrientDbWebSession(Request request) {
 		super(request);
@@ -88,7 +91,7 @@ public class OrientDbWebSession extends AuthenticatedWebSession {
 				newDB.activateOnCurrentThread();
 			}
 			setUser(username, password);
-			user = newDB.getUser();
+			userModel.setObject(newDB.getUser().getDocument());
 //			user = newDB.getMetadata().getSecurity().getUser(username);
 //			newDB.setUser(user);
 			if(inTransaction && !newDB.getTransaction().isActive()) newDB.begin();
@@ -104,7 +107,7 @@ public class OrientDbWebSession extends AuthenticatedWebSession {
 	{
 		this.username = username;
 		this.password = password;
-		this.user = null;
+		this.userModel.setObject(null);
 	}
 	
 	public OSecurityUser getEffectiveUser()
@@ -113,31 +116,29 @@ public class OrientDbWebSession extends AuthenticatedWebSession {
 		return ret!=null?ret:getDatabase().getUser();
 	}
 	
+	
+	
 	/**
 	 * @return currently signed in {@link OUser}. Returns null in case of no user was signed in.
 	 */
 	public OSecurityUser getUser()
 	{
-		if(user!=null)
-		{
-			if(!userReloaded)
-			{
-				user.getDocument().load();
-				userReloaded = true;
-			}
-		}
-		else
-		{
-			user = username!=null?getDatabase().getMetadata().getSecurity().getUser(username):null;
-			userReloaded = true;
-		}
-		return user;
+		ODocument userDoc = getUserAsODocument();
+		return userDoc!=null?new OUser(userDoc):null;
+	}
+	
+	/**
+	 * @return {@link ODocument} for a logged in user
+	 */
+	public ODocument getUserAsODocument()
+	{
+		return userModel.getObject();
 	}
 	
 	@Override
 	public void detach() {
 		super.detach();
-		userReloaded = false;
+		userModel.detach();
 	}
 	
 	public String getUsername()
@@ -155,7 +156,7 @@ public class OrientDbWebSession extends AuthenticatedWebSession {
 		super.signOut();
 		this.username=null;
 		this.password=null;
-		this.user=null;
+		this.userModel.setObject(null);
 		ODatabaseRecordThreadLocal.INSTANCE.remove();
 	}
 

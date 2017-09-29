@@ -91,7 +91,11 @@ public class TestRestApi
 		String sql = "select * from OUser where @rid = "+rid;
 		String url = "orientdb/query/db/sql/"+URLEncoder.encode(sql, "UTF8");
 		String ret = wicket.getTester().executeUrl(url, "GET", null);
-		assertTrue(ret.contains(userDoc.toJSON()));
+		System.out.println("\nret = "+ret);
+		System.out.println("doc = "+userDoc.toJSON());
+		assertTrue(ret.contains(userDoc.getIdentity().toString()));
+		assertTrue(ret.contains((String)userDoc.field("name")));
+		assertTrue(ret.contains((String)userDoc.field("password")));
 	}
 	
 	@Test
@@ -120,15 +124,15 @@ public class TestRestApi
 		tester.signIn("writer", "writer");
 		assertTrue(tester.isSignedIn());
 		assertEquals("writer", tester.getSession().getUser().getName());
-		assertContains("writer", tester.getSession().getUser().getDocument().toJSON());
-		assertContains(tester.getSession().getUser().getDocument().toJSON(), getCurrentUser());
+		assertContains("writer", tester.getSession().getUserAsODocument().toJSON());
+		assertContains(tester.getSession().getUserAsODocument().toJSON(), getCurrentUser());
 		tester.signOut();
 		assertFalse(tester.isSignedIn());
 		assertContains(tester.getDatabase().getUser().getDocument().toJSON(), getCurrentUser());
 		tester.signIn("admin", "admin");
 		assertTrue(tester.isSignedIn());
 		assertEquals("admin", tester.getSession().getUser().getName());
-		assertContains(tester.getSession().getUser().getDocument().toJSON(),getCurrentUser());
+		assertContains(tester.getSession().getUserAsODocument().toJSON(),getCurrentUser());
 		
 		tester.signOut();
 		assertFalse(tester.isSignedIn());
@@ -137,7 +141,7 @@ public class TestRestApi
 		String currentUser = getCurrentUser("admin", "admin");
 		assertTrue(tester.isSignedIn());
 		assertEquals("admin", tester.getSession().getUser().getName());
-		assertContains(tester.getSession().getUser().getDocument().toJSON(), currentUser);
+		assertContains(tester.getSession().getUserAsODocument().toJSON(), currentUser);
 		
 	}
 	
