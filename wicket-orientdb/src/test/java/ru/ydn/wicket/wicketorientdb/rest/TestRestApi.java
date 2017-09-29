@@ -91,8 +91,6 @@ public class TestRestApi
 		String sql = "select * from OUser where @rid = "+rid;
 		String url = "orientdb/query/db/sql/"+URLEncoder.encode(sql, "UTF8");
 		String ret = wicket.getTester().executeUrl(url, "GET", null);
-		System.out.println("\nret = "+ret);
-		System.out.println("doc = "+userDoc.toJSON());
 		assertTrue(ret.contains(userDoc.getIdentity().toString()));
 		assertTrue(ret.contains((String)userDoc.field("name")));
 		assertTrue(ret.contains((String)userDoc.field("password")));
