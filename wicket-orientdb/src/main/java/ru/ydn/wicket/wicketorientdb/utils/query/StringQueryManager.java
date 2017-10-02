@@ -26,7 +26,8 @@ public class StringQueryManager implements IQueryManager {
     private String sql;
     private String countSql;
     private final Map<String, IFilterCriteriaManager> managers;
-    
+    private String linkListField;
+
     public StringQueryManager(String sql) {
     	this.sql = sql;
     	Matcher matcher = PROJECTION_PATTERN.matcher(sql);
@@ -92,10 +93,10 @@ public class StringQueryManager implements IQueryManager {
 			String filter = applyFilters();
 			if (!Strings.isNullOrEmpty(filter)) {
 				boolean containsWhere = sql.toUpperCase().contains("WHERE");
-				if (containsWhere) sb.append(" AND(");
-				else sb.append(" WHERE ");
-				sb.append(filter);
-				if (containsWhere) sb.append(")");
+				sb.append(containsWhere ? " AND " : " WHERE ");
+				if (!Strings.isNullOrEmpty(linkListField)) {
+					sb.append(" :").append(linkListField).append(" CONTAINS(").append(filter).append(")");
+				} else sb.append(filter);
 			}
 		}
 		return sb.toString();
@@ -136,6 +137,11 @@ public class StringQueryManager implements IQueryManager {
 	@Override
 	public void clearFilterCriteriaManagers() {
 		managers.clear();
+	}
+
+	@Override
+	public void setLinkListField(String linkListField) {
+		this.linkListField = linkListField;
 	}
 
 }

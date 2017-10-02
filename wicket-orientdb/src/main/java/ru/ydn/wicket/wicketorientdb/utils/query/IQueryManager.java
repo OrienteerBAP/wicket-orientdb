@@ -61,4 +61,10 @@ public interface IQueryManager extends IClusterable {
 	 * Delete all {@link IFilterCriteriaManager} for current {@link IQueryManager}
 	 */
 	public void clearFilterCriteriaManagers();
+
+	/**
+	 * Set filtering for link lists. Wrap filter string.
+	 * @param linkListField if non null SQL generate as "... WHERE linkListFieldName contains (myFilteredValue = 'some value')"
+	 */
+	public void setLinkListField(String linkListField);
 }

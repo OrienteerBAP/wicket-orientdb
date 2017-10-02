@@ -8,6 +8,7 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.util.CollectionModel;
 import org.junit.*;
+import ru.ydn.wicket.wicketorientdb.model.ODocumentLinksQueryDataProvider;
 import ru.ydn.wicket.wicketorientdb.model.ODocumentModel;
 import ru.ydn.wicket.wicketorientdb.model.OQueryDataProvider;
 import ru.ydn.wicket.wicketorientdb.model.OQueryModel;
