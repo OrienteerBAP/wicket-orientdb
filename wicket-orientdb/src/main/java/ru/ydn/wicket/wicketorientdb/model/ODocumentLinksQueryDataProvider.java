@@ -19,8 +19,7 @@ public class ODocumentLinksQueryDataProvider extends OQueryDataProvider<ODocumen
 	}
 	
 	public ODocumentLinksQueryDataProvider(IModel<ODocument> docModel, OProperty property) {
-		super("select expand("+property.getName()+") from "+property.getOwnerClass().getName()+" where @rid = :doc");
+		super("select from (select expand("+property.getName()+") from "+property.getOwnerClass().getName()+" where @rid = :doc)");
 		setParameter("doc", docModel);
-		getFilterState().setLinkListParameter("linkList", Model.of(property.getName()));
 	}
 }

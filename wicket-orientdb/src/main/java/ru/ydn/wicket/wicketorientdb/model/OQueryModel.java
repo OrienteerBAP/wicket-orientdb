@@ -116,11 +116,6 @@ public class OQueryModel<K> extends LoadableDetachableModel<List<K>>
     }
 
 
-    public OQueryModel<K> setLinkListParameter(String paramName, IModel<String> fieldName) {
-        queryManager.setLinkListField(paramName);
-        return setParameter(paramName, fieldName);
-    }
-
     /**
      * Add filter for {@link OQueryModel}
      * @param field {@link String} filtered field
