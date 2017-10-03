@@ -12,6 +12,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.wicket.Session;
 import org.apache.wicket.ThreadContext;
+import org.apache.wicket.request.cycle.RequestCycle;
 
 import ru.ydn.wicket.wicketorientdb.OrientDbWebSession;
 
@@ -53,7 +54,7 @@ public class PersonalCookieManager extends CookieHandler
 	{
 		try
 		{
-			if(!ThreadContext.exists()) return defaultManager;
+			if(!ThreadContext.exists() || RequestCycle.get()==null) return defaultManager;
 			
 			OrientDbWebSession session = OrientDbWebSession.get();
 			session.bind();
