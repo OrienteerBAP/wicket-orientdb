@@ -8,6 +8,9 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.util.CollectionModel;
 import org.junit.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import ru.ydn.wicket.wicketorientdb.model.ODocumentLinksQueryDataProvider;
 import ru.ydn.wicket.wicketorientdb.model.ODocumentModel;
 import ru.ydn.wicket.wicketorientdb.model.OQueryDataProvider;
 import ru.ydn.wicket.wicketorientdb.model.OQueryModel;
@@ -22,6 +25,8 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -251,5 +256,21 @@ public class TestFilters {
         manager.addFilterCriteria(manager.createCollectionFilterCriteria(new CollectionModel<>(list), Model.of(true)));
         queryModel.addFilterCriteriaManager(property.getObject().getName(), manager);
         assertTrue(queryModel.getObject().size() == 2);
+    }
+
+    @Test
+    public void testODocumentLinkQueryProvider() {
+        IFilterCriteriaManager manager = new FilterCriteriaManager(wicket.getProperty(NUMBER_FIELD));
+        IFilterCriteria equalsFilterCriteria = manager.createEqualsFilterCriteria(Model.of(NUM_VALUE_1), Model.of(true));
+        manager.addFilterCriteria(equalsFilterCriteria);
+        String numField = wicket.getProperty(NUMBER_FIELD).getObject().getName();
+        queryModel.addFilterCriteriaManager(numField, manager);
+        ODocument doc = queryModel.getObject().get(0);
+        IModel<OProperty> property = wicket.getProperty(LINK_LIST_FIELD);
+        ODocumentLinksQueryDataProvider provider = new ODocumentLinksQueryDataProvider(new ODocumentModel(doc), property);
+        OQueryModel<ODocument> state = provider.getFilterState();
+        state.addFilterCriteriaManager(numField, manager);
+        state.detach();
+        assertTrue(provider.size() == 1);
     }
 }

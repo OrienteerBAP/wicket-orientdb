@@ -12,7 +12,7 @@ import org.apache.wicket.model.IModel;
  * @param <T> data type
  * @param <S> sort type
  */
-public abstract class ForwardingDataProvider<T, S> extends SortableDataProvider<T, S>{
+public abstract class ForwardingDataProvider<T, S> extends AbstractFilteredProvider<T, S>{
 
 	protected abstract SortableDataProvider<T,S> delegate();
 

@@ -61,4 +61,5 @@ public interface IQueryManager extends IClusterable {
 	 * Delete all {@link IFilterCriteriaManager} for current {@link IQueryManager}
 	 */
 	public void clearFilterCriteriaManagers();
+
 }

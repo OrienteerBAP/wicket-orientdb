@@ -8,8 +8,6 @@ import org.apache.wicket.extensions.markup.html.repeater.data.table.filter.IFilt
 import org.apache.wicket.extensions.markup.html.repeater.util.SortParam;
 import org.apache.wicket.extensions.markup.html.repeater.util.SortableDataProvider;
 import org.apache.wicket.model.IModel;
-import org.apache.wicket.util.lang.Args;
-import ru.ydn.wicket.wicketorientdb.utils.query.filter.IFilterCriteria;
 
 import java.util.Iterator;
 
@@ -17,9 +15,7 @@ import java.util.Iterator;
  * Provider of data by quering of OrientDB
  * @param <K> The provider object type
  */
-public class OQueryDataProvider <K> extends SortableDataProvider<K, String>
-        implements IFilterStateLocator<OQueryModel<K>>
-{
+public class OQueryDataProvider <K> extends AbstractFilteredProvider<K, String> {
 	private static final long serialVersionUID = 1L;
 	private OQueryModel<K> model;
 
@@ -137,7 +133,7 @@ public class OQueryDataProvider <K> extends SortableDataProvider<K, String>
     }
 
     @Override
-    public void setFilterState(OQueryModel<K> queryModel) {
-        throw new UnsupportedOperationException("For change filter state, please see class OQueryModel");
+    public boolean isFilterEnable() {
+        return true;
     }
 }

@@ -19,14 +19,15 @@ public class StringQueryManager implements IQueryManager {
 	private static final Pattern PROJECTION_PATTERN = Pattern.compile("select\\b(.+?)\\bfrom\\b", Pattern.CASE_INSENSITIVE);
 	private static final Pattern EXPAND_PATTERN = Pattern.compile("expand\\((.+)\\)", Pattern.CASE_INSENSITIVE);
     private static final Pattern ORDER_CHECK_PATTERN = Pattern.compile("order\\s+by", Pattern.CASE_INSENSITIVE);
-    
+	private static final Pattern EMBEDDED_PATTERN = Pattern.compile("\\(select\\b(.+?)\\bfrom\\b(.+)\\)", Pattern.CASE_INSENSITIVE);
+
     private String projection;
     private boolean containExpand;
     private boolean hasOrderBy;
     private String sql;
     private String countSql;
     private final Map<String, IFilterCriteriaManager> managers;
-    
+
     public StringQueryManager(String sql) {
     	this.sql = sql;
     	Matcher matcher = PROJECTION_PATTERN.matcher(sql);
@@ -91,11 +92,13 @@ public class StringQueryManager implements IQueryManager {
 		if (!managers.isEmpty()) {
 			String filter = applyFilters();
 			if (!Strings.isNullOrEmpty(filter)) {
-				boolean containsWhere = sql.toUpperCase().contains("WHERE");
-				if (containsWhere) sb.append(" AND(");
-				else sb.append(" WHERE ");
-				sb.append(filter);
-				if (containsWhere) sb.append(")");
+				Matcher matcher = EMBEDDED_PATTERN.matcher(sql);
+				boolean containsWhere;
+				if (matcher.find()) {
+					String tmp = matcher.replaceAll("");
+					containsWhere = tmp.toUpperCase().contains("WHERE");
+				} else containsWhere = sql.toUpperCase().contains("WHERE");
+				sb.append(containsWhere ? " AND " : " WHERE ").append(filter);
 			}
 		}
 		return sb.toString();

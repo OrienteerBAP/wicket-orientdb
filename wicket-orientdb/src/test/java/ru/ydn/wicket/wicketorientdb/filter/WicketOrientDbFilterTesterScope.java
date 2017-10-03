@@ -82,13 +82,13 @@ public class WicketOrientDbFilterTesterScope extends WicketOrientDbTesterScope {
         properties.put(DATETIME_FIELD, new OPropertyModel(oClass.createProperty(DATETIME_FIELD, OType.DATETIME)));
         if (complexTypes) {
             properties.put(LINK_FIELD, new OPropertyModel(oClass.createProperty(LINK_FIELD, OType.LINK)));
-            oClass.createProperty(LINK_LIST_FIELD, OType.LINKLIST);
-            oClass.createProperty(LINK_SET_FIELD, OType.LINKSET);
-            oClass.createProperty(LINK_MAP_FIELD, OType.LINKMAP);
-            oClass.createProperty(EMBEDDED_FIELD, OType.EMBEDDED);
-            oClass.createProperty(EMBEDDED_LIST_FIELD, OType.EMBEDDEDLIST);
-            oClass.createProperty(EMBEDDED_SET_FIELD, OType.EMBEDDEDSET);
-            oClass.createProperty(EMBEDDED_MAP_FIELD, OType.EMBEDDEDMAP);
+            properties.put(LINK_LIST_FIELD, new OPropertyModel(oClass.createProperty(LINK_LIST_FIELD, OType.LINKLIST)));
+            properties.put(LINK_SET_FIELD, new OPropertyModel(oClass.createProperty(LINK_SET_FIELD, OType.LINKSET)));
+            properties.put(LINK_MAP_FIELD, new OPropertyModel(oClass.createProperty(LINK_MAP_FIELD, OType.LINKMAP)));
+            properties.put(EMBEDDED_FIELD, new OPropertyModel(oClass.createProperty(EMBEDDED_FIELD, OType.EMBEDDED)));
+            properties.put(EMBEDDED_LIST_FIELD, new OPropertyModel(oClass.createProperty(EMBEDDED_LIST_FIELD, OType.EMBEDDEDLIST)));
+            properties.put(EMBEDDED_SET_FIELD, new OPropertyModel(oClass.createProperty(EMBEDDED_SET_FIELD, OType.EMBEDDEDSET)));
+            properties.put(EMBEDDED_MAP_FIELD, new OPropertyModel(oClass.createProperty(EMBEDDED_MAP_FIELD, OType.EMBEDDEDMAP)));
         }
         db.commit();
         return oClass;
