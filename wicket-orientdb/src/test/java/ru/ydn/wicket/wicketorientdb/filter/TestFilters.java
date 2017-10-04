@@ -8,8 +8,6 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.util.CollectionModel;
 import org.junit.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import ru.ydn.wicket.wicketorientdb.model.ODocumentLinksQueryDataProvider;
 import ru.ydn.wicket.wicketorientdb.model.ODocumentModel;
 import ru.ydn.wicket.wicketorientdb.model.OQueryDataProvider;
@@ -25,8 +23,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -271,6 +267,7 @@ public class TestFilters {
         OQueryModel<ODocument> state = provider.getFilterState();
         state.addFilterCriteriaManager(numField, manager);
         state.detach();
-        assertTrue(provider.size() == 1);
+        assertTrue("size must be 1, but it is " + provider.size(), provider.size() == 1);
+        assertTrue(state.getObject().get(0) != null);
     }
 }
