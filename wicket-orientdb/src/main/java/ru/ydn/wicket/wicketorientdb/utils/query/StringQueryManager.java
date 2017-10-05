@@ -36,7 +36,7 @@ public class StringQueryManager implements IQueryManager {
         	Matcher expandMatcher = EXPAND_PATTERN.matcher(projection);
         	containExpand = expandMatcher.find();
         	if(containExpand) {
-				countSql = "select count(*) from (" + sql + ")";
+				countSql = matcher.replaceFirst("select sum("+expandMatcher.group(1)+".size()) as count from");
         	}
         	else {
         		countSql = matcher.replaceFirst("select count(*) from"); 
@@ -81,7 +81,11 @@ public class StringQueryManager implements IQueryManager {
 
 	private String prepareSql(String sql, boolean countSql) {
     	String filter = applyFilters();
-		return prepareSql(sql, filter, null, false, !countSql && containExpand && !Strings.isNullOrEmpty(filter));
+    	boolean wrapForSkip = containExpand && !Strings.isNullOrEmpty(filter);
+    	if (countSql && wrapForSkip) {
+    		sql = "select count(*) from (" + this.sql + ")";
+		}
+		return prepareSql(sql, filter, null, false, !countSql && wrapForSkip);
 	}
 
 	private String prepareSql(String sql, String filter, String sortBy, boolean isAscending, boolean wrapForSkip) {
