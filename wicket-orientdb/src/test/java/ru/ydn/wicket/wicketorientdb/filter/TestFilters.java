@@ -8,6 +8,7 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.util.CollectionModel;
 import org.junit.*;
+import ru.ydn.wicket.wicketorientdb.model.ODocumentLinksQueryDataProvider;
 import ru.ydn.wicket.wicketorientdb.model.ODocumentModel;
 import ru.ydn.wicket.wicketorientdb.model.OQueryDataProvider;
 import ru.ydn.wicket.wicketorientdb.model.OQueryModel;
@@ -251,5 +252,22 @@ public class TestFilters {
         manager.addFilterCriteria(manager.createCollectionFilterCriteria(new CollectionModel<>(list), Model.of(true)));
         queryModel.addFilterCriteriaManager(property.getObject().getName(), manager);
         assertTrue(queryModel.getObject().size() == 2);
+    }
+
+    @Test
+    public void testODocumentLinkQueryProvider() {
+        IFilterCriteriaManager manager = new FilterCriteriaManager(wicket.getProperty(NUMBER_FIELD));
+        IFilterCriteria equalsFilterCriteria = manager.createEqualsFilterCriteria(Model.of(NUM_VALUE_1), Model.of(true));
+        manager.addFilterCriteria(equalsFilterCriteria);
+        String numField = wicket.getProperty(NUMBER_FIELD).getObject().getName();
+        queryModel.addFilterCriteriaManager(numField, manager);
+        ODocument doc = queryModel.getObject().get(0);
+        IModel<OProperty> property = wicket.getProperty(LINK_LIST_FIELD);
+        ODocumentLinksQueryDataProvider provider = new ODocumentLinksQueryDataProvider(new ODocumentModel(doc), property);
+        OQueryModel<ODocument> state = provider.getFilterState();
+        state.addFilterCriteriaManager(numField, manager);
+        state.detach();
+        assertTrue("size must be 1, but it is " + provider.size(), provider.size() == 1);
+        assertTrue(state.getObject().get(0) != null);
     }
 }

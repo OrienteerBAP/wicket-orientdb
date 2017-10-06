@@ -19,33 +19,30 @@ public class StringQueryManager implements IQueryManager {
 	private static final Pattern PROJECTION_PATTERN = Pattern.compile("select\\b(.+?)\\bfrom\\b", Pattern.CASE_INSENSITIVE);
 	private static final Pattern EXPAND_PATTERN = Pattern.compile("expand\\((.+)\\)", Pattern.CASE_INSENSITIVE);
     private static final Pattern ORDER_CHECK_PATTERN = Pattern.compile("order\\s+by", Pattern.CASE_INSENSITIVE);
-    
+	private static final Pattern EMBEDDED_PATTERN = Pattern.compile("\\(select\\b(.+?)\\bfrom\\b(.+)\\)", Pattern.CASE_INSENSITIVE);
+
     private String projection;
     private boolean containExpand;
     private boolean hasOrderBy;
     private String sql;
     private String countSql;
     private final Map<String, IFilterCriteriaManager> managers;
-    
+
     public StringQueryManager(String sql) {
     	this.sql = sql;
     	Matcher matcher = PROJECTION_PATTERN.matcher(sql);
-        if(matcher.find())
-        {
+        if(matcher.find()) {
         	projection = matcher.group(1).trim();
         	Matcher expandMatcher = EXPAND_PATTERN.matcher(projection);
         	containExpand = expandMatcher.find();
-        	if(containExpand)
-        	{
-        		countSql = matcher.replaceFirst("select sum("+expandMatcher.group(1)+".size()) as count from");
+        	if(containExpand) {
+				countSql = matcher.replaceFirst("select sum("+expandMatcher.group(1)+".size()) as count from");
         	}
-        	else
-        	{
+        	else {
         		countSql = matcher.replaceFirst("select count(*) from"); 
         	}
         }
-        else
-        {
+        else {
             throw new WicketRuntimeException("Can't find 'object(<.>)' part in your request: "+sql);
         }
         hasOrderBy = ORDER_CHECK_PATTERN.matcher(sql).find();
@@ -59,12 +56,12 @@ public class StringQueryManager implements IQueryManager {
 
 	@Override
 	public String getSql() {
-		return sql + " " + getFilterCriteria(sql);
+		return prepareSql(sql, false);
 	}
 
 	@Override
 	public String getCountSql() {
-		return countSql + " " + getFilterCriteria(countSql);
+		return prepareSql(countSql, true);
 	}
 
 	@Override
@@ -74,31 +71,42 @@ public class StringQueryManager implements IQueryManager {
 
 	@Override
 	public String prepareSql(Integer first, Integer count, String sortBy, boolean isAscending) {
-		String sql = getSql();
+		String filter = applyFilters();
 		StringBuilder sb = new StringBuilder(sql.length() * 2);
-		boolean wrapForSkip = containExpand && first != null;
-		if (wrapForSkip) sb.append("select from (");
-		sb.append(sql);
-		if (sortBy != null) sb.append(" ORDER BY " + sortBy + (isAscending ? "" : " desc"));
-		if (wrapForSkip) sb.append(") ");
-		if (first != null) sb.append(" SKIP " + first);
-		if (count != null && count > 0) sb.append(" LIMIT " + count);
+		sb.append(prepareSql(sql, filter, sortBy, isAscending, containExpand && first != null || containExpand && !Strings.isNullOrEmpty(filter)));
+		if (first != null) sb.append(" SKIP ").append(first);
+		if (count != null && count > 0) sb.append(" LIMIT ").append(count);
 		return sb.toString();
 	}
 
-	private String getFilterCriteria(String sql) {
-    	StringBuilder sb = new StringBuilder();
-		if (!managers.isEmpty()) {
-			String filter = applyFilters();
-			if (!Strings.isNullOrEmpty(filter)) {
-				boolean containsWhere = sql.toUpperCase().contains("WHERE");
-				if (containsWhere) sb.append(" AND(");
-				else sb.append(" WHERE ");
-				sb.append(filter);
-				if (containsWhere) sb.append(")");
-			}
+	private String prepareSql(String sql, boolean countSql) {
+    	String filter = applyFilters();
+    	boolean wrapForSkip = containExpand && !Strings.isNullOrEmpty(filter);
+    	if (countSql && wrapForSkip) {
+    		sql = "select count(*) from (" + this.sql + ")";
 		}
-		return sb.toString();
+		return prepareSql(sql, filter, null, false, !countSql && wrapForSkip);
+	}
+
+	private String prepareSql(String sql, String filter, String sortBy, boolean isAscending, boolean wrapForSkip) {
+    	StringBuilder sb = new StringBuilder(sql.length() * 2);
+    	boolean filterForSkip = !Strings.isNullOrEmpty(filter);
+		if (wrapForSkip) sb.append("select from (");
+		sb.append(sql);
+		if (filterForSkip && !wrapForSkip) {
+			filterForSkip = false;
+			sb.append(!isSqlContainsWhere(sql) ? " WHERE " : " AND ").append(filter);
+		}
+		if (sortBy != null) sb.append(" ORDER BY ").append(sortBy).append(isAscending ? "" : " desc");
+		if (wrapForSkip) sb.append(") ");
+
+		if (filterForSkip) sb.append(wrapForSkip || !isSqlContainsWhere(sql) ? " WHERE " : " AND ").append(filter);
+    	return sb.toString();
+	}
+
+	private boolean isSqlContainsWhere(String sql) {
+		Matcher matcher = EMBEDDED_PATTERN.matcher(sql);
+		return matcher.replaceAll("").toUpperCase().contains("WHERE");
 	}
 
 	private String applyFilters() {

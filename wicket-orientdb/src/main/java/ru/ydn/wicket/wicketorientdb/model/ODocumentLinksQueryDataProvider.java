@@ -1,10 +1,9 @@
 package ru.ydn.wicket.wicketorientdb.model;
 
 
-import org.apache.wicket.model.IModel;
-
 import com.orientechnologies.orient.core.metadata.schema.OProperty;
 import com.orientechnologies.orient.core.record.impl.ODocument;
+import org.apache.wicket.model.IModel;
 
 /**
  * Provider of links for a document which use SQL.

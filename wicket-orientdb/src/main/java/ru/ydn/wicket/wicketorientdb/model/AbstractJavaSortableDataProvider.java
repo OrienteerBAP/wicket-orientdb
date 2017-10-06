@@ -22,7 +22,7 @@ import com.google.common.collect.Ordering;
  * @param <T> type of entities provided by this {@link IDataProvider}
  * @param <S> the type of the sorting parameter
  */
-public abstract class AbstractJavaSortableDataProvider<T, S> extends SortableDataProvider<T, S>
+public abstract class AbstractJavaSortableDataProvider<T, S> extends AbstractFilteredProvider<T, S>
 {
 	private static final long serialVersionUID = 1L;
 	private final IModel<? extends Collection<T>> dataModel;

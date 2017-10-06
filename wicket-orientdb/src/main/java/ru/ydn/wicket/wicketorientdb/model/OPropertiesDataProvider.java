@@ -13,9 +13,7 @@ import com.orientechnologies.orient.core.metadata.schema.OProperty;
 /**
  * {@link SortableDataProvider} for listing of {@link OProperty}es of specific {@link OClass}
  */
-public class OPropertiesDataProvider
-		extends
-		AbstractJavaSortableDataProvider<OProperty, String> {
+public class OPropertiesDataProvider extends AbstractJavaSortableDataProvider<OProperty, String> {
 	
 	private static final long serialVersionUID = 1L;
 

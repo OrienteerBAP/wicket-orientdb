@@ -70,4 +70,24 @@ public class ODocumentLinksDataProvider extends ForwardingDataProvider<ODocument
 	public IModel<ODocument> model(ODocument object) {
 		return new ODocumentModel(object);
 	}
+
+	@Override
+	public boolean isFilterEnable() {
+		boolean enable = false;
+		if (useQueryProvider()) {
+			delegate();
+			enable = queryProvider.isFilterEnable();
+		}
+		return enable;
+	}
+
+	@Override
+	public OQueryModel<ODocument> getFilterState() {
+		OQueryModel<ODocument> model = null;
+		if (useQueryProvider()) {
+			delegate();
+			model = queryProvider.getFilterState();
+		}
+		return model;
+	}
 }
