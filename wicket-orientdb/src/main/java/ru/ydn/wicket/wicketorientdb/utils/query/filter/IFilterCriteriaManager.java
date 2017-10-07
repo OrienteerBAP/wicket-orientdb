@@ -70,6 +70,23 @@ public interface IFilterCriteriaManager extends IClusterable {
     public IFilterCriteria createLinkCollectionFilterCriteria(IModel<Collection<ODocument>> model, boolean list, IModel<Boolean> join);
 
     /**
+     * Create filter for search {@link ODocument} map which contains given key
+     * @param model {@link IModel<String>} key
+     * @param join {@link IModel<Boolean>} if true - result of filtering includes to result of query
+     * @return {@link IFilterCriteria} which represents map key filter
+     */
+    public IFilterCriteria createMapContainsKeyCriteria(IModel<String> model, IModel<Boolean> join);
+
+    /**
+     * Create filter for search {@link ODocument} map which contains giiven key
+     * @param model {@link IModel<T>} key
+     * @param join {@link IModel<Boolean>} if true - result of filtering includes to result of query
+     * @param <T> type of value
+     * @return {@link IFilterCriteria} which represents map
+     */
+    public <T> IFilterCriteria createMapContainsValueCriteria(IModel<T> model, IModel<Boolean> join);
+
+    /**
      * Add filter for current field
      * @param filterCriteria {@link IFilterCriteria} filter
      */

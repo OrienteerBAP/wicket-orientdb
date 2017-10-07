@@ -19,10 +19,7 @@ import ru.ydn.wicket.wicketorientdb.utils.query.filter.IFilterCriteriaManager;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -252,6 +249,51 @@ public class TestFilters {
         manager.addFilterCriteria(manager.createCollectionFilterCriteria(new CollectionModel<>(list), Model.of(true)));
         queryModel.addFilterCriteriaManager(property.getObject().getName(), manager);
         assertTrue(queryModel.getObject().size() == 2);
+    }
+
+    @Test
+    public void testEmbeddedMapKey() {
+        String key = MAP_KEYS.get(0);
+        IModel<OProperty> property = wicket.getProperty(EMBEDDED_MAP_FIELD);
+        IFilterCriteriaManager manager = new FilterCriteriaManager(property);
+        manager.addFilterCriteria(manager.createMapContainsKeyCriteria(Model.of(key), Model.<Boolean>of(true)));
+        queryModel.addFilterCriteriaManager(EMBEDDED_MAP_FIELD, manager);
+        assertTrue("size must be 1 but it is - " + queryModel.getObject().size() , queryModel.getObject().size() == 1);
+    }
+
+    @Test
+    public void testLinkMapKey() {
+        String key = MAP_KEYS.get(0);
+        IModel<OProperty> property = wicket.getProperty(LINK_MAP_FIELD);
+        IFilterCriteriaManager manager = new FilterCriteriaManager(property);
+        manager.addFilterCriteria(manager.createMapContainsKeyCriteria(Model.of(key), Model.<Boolean>of(true)));
+        queryModel.addFilterCriteriaManager(LINK_MAP_FIELD, manager);
+        assertTrue("size must be 1 but it is - " + queryModel.getObject().size() , queryModel.getObject().size() == 1);
+    }
+
+    @Test
+    @Ignore
+    public void testEmbeddedMapValue() {
+        IModel<OProperty> property = wicket.getProperty(EMBEDDED_MAP_FIELD);
+        IFilterCriteriaManager manager = new FilterCriteriaManager(property);
+        manager.addFilterCriteria(manager.createMapContainsValueCriteria(Model.of(STR_VALUE_1), Model.<Boolean>of(true)));
+        queryModel.addFilterCriteriaManager(EMBEDDED_MAP_FIELD, manager);
+        assertTrue("size must be 1 but it is - " + queryModel.getObject().size() , queryModel.getObject().size() == 1);
+    }
+
+    @Test
+    public void testLinkMapValue() {
+        String key = MAP_KEYS.get(0);
+        IModel<OProperty> property = wicket.getProperty(LINK_MAP_FIELD);
+        IFilterCriteriaManager manager = new FilterCriteriaManager(property);
+        manager.addFilterCriteria(manager.createMapContainsKeyCriteria(Model.of(key), Model.<Boolean>of(true)));
+        queryModel.addFilterCriteriaManager(LINK_MAP_FIELD, manager);
+        ODocument document = queryModel.getObject().get(0);
+        Map<String, ODocument> map = document.field(LINK_MAP_FIELD);
+        manager.clearFilterCriterias();
+        queryModel.detach();
+        manager.addFilterCriteria(manager.createMapContainsValueCriteria(Model.of(map.get(STR_VALUE_1)), Model.<Boolean>of(true)));
+        assertTrue("size must be 1, but it is - " + queryModel.size(), queryModel.size() == 1);
     }
 
     @Test

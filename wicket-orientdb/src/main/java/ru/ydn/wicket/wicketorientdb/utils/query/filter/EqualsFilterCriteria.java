@@ -14,12 +14,7 @@ public class EqualsFilterCriteria extends AbstractFilterCriteria {
 
     @Override
     protected String apply(String field) {
-        StringBuilder sb = new StringBuilder();
-        sb.append(field)
-                .append(" = :")
-                .append(getName());
-
-        return sb.toString();
+        return field + " = :" + getName();
     }
 
     @Override

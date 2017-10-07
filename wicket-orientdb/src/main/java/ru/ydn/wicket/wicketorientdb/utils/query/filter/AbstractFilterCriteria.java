@@ -59,28 +59,22 @@ public abstract class AbstractFilterCriteria implements IFilterCriteria {
     @Override
     @SuppressWarnings("unchecked")
     public boolean isEmpty() {
-        FilterCriteriaType type = getFilterCriteriaType();
-        if (!type.isCollection())
-            return getModel().getObject() == null;
-        Collection<?> collection = (Collection<?>) getModel().getObject();
         boolean isEmpty = true;
-        if (collection != null && !collection.isEmpty()) {
-           isEmpty = checkCustomCollectionModel(collection);
+        FilterCriteriaType type = getFilterCriteriaType();
+        if (type.isCollection()) {
+            Collection<?> collection = (Collection<?>) getModel().getObject();
+            if (collection != null && !collection.isEmpty()) {
+                isEmpty = isCollectionEmpty(collection);
+            }
+        } else {
+            isEmpty = getModel().getObject() == null;
         }
         return isEmpty;
     }
 
-    private boolean checkCustomCollectionModel(Collection<?> collection) {
+    private boolean isCollectionEmpty(Collection<?> collection) {
         for (Object object : collection) {
             if (object != null)
-                return false;
-        }
-        return true;
-    }
-
-    private boolean checkModelsInCollectionModel(Collection<IModel<?>> collection) {
-        for (IModel<?> model : collection) {
-            if (model != null && model.getObject() != null)
                 return false;
         }
         return true;

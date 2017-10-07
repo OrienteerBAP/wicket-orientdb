@@ -14,11 +14,7 @@ public class ContainsTextFilterCriteria extends AbstractFilterCriteria {
 
     @Override
     protected String apply(String field) {
-        StringBuilder sb = new StringBuilder();
-        sb.append(field)
-                .append(" CONTAINSTEXT :")
-                .append(getName());
-        return sb.toString();
+        return field + " CONTAINSTEXT :" + getName();
     }
 
     @Override
