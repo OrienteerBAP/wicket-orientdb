@@ -57,8 +57,7 @@ public class FilterCriteriaManager implements IFilterCriteriaManager {
 
     @Override
     public <T> IFilterCriteria createEqualsFilterCriteria(IModel<T> model, IModel<Boolean> join) {
-        OProperty property = propertyModel.getObject();
-        return new EqualsFilterCriteria(property.getName(), model, join);
+        return new EqualsFilterCriteria(propertyModel.getObject().getName(), model, join);
     }
 
     @Override
@@ -69,21 +68,28 @@ public class FilterCriteriaManager implements IFilterCriteriaManager {
 
     @Override
     public <T> IFilterCriteria createRangeFilterCriteria(IModel<Collection<T>> model, IModel<Boolean> join) {
-        OProperty property = propertyModel.getObject();
-        return new RangeFilterCriteria(property.getName(), model, join);
+        return new RangeFilterCriteria(propertyModel.getObject().getName(), model, join);
     }
 
 
     @Override
     public IFilterCriteria createContainsStringFilterCriteria(IModel<String> model, IModel<Boolean> join) {
-        OProperty property = propertyModel.getObject();
-        return new ContainsTextFilterCriteria(property.getName(), model, join);
+        return new ContainsTextFilterCriteria(propertyModel.getObject().getName(), model, join);
     }
 
     @Override
     public IFilterCriteria createLinkCollectionFilterCriteria(IModel<Collection<ODocument>> model, boolean list, IModel<Boolean> join) {
-        OProperty property = propertyModel.getObject();
-        return new CollectionLinkFilterCriteria(property.getName(), model, list, join);
+        return new CollectionLinkFilterCriteria(propertyModel.getObject().getName(), model, list, join);
+    }
+
+    @Override
+    public IFilterCriteria createMapContainsKeyCriteria(IModel<String> model, IModel<Boolean> join) {
+        return new MapContainsKeyFilterCriteria(propertyModel.getObject().getName(), model, join);
+    }
+
+    @Override
+    public <T> IFilterCriteria createMapContainsValueCriteria(IModel<T> model, IModel<Boolean> join) {
+        return new MapContainsValueFilterCriteria(propertyModel.getObject().getName(), model, join);
     }
 
     @Override
