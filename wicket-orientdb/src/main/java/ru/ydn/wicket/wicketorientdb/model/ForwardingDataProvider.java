@@ -1,10 +1,11 @@
 package ru.ydn.wicket.wicketorientdb.model;
 
-import java.util.Iterator;
-
+import org.apache.wicket.extensions.markup.html.repeater.util.SortParam;
 import org.apache.wicket.extensions.markup.html.repeater.util.SortableDataProvider;
 import org.apache.wicket.markup.repeater.data.IDataProvider;
 import org.apache.wicket.model.IModel;
+
+import java.util.Iterator;
 
 /**
  * {@link IDataProvider} which primary delegate invocations to underlying {@link IDataProvider}
@@ -36,5 +37,12 @@ public abstract class ForwardingDataProvider<T, S> extends AbstractFilteredProvi
 	public IModel<T> model(T object) {
 		return delegate().model(object);
 	}
-	
+
+
+	@Override
+	public void setSort(SortParam<S> param) {
+		super.setSort(param);
+		delegate().setSort(param);
+	}
+
 }

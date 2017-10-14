@@ -1,10 +1,10 @@
 package ru.ydn.wicket.wicketorientdb.model;
 
-import org.apache.wicket.extensions.markup.html.repeater.util.SortableDataProvider;
-import org.apache.wicket.model.IModel;
-
 import com.orientechnologies.orient.core.metadata.schema.OProperty;
 import com.orientechnologies.orient.core.record.impl.ODocument;
+import org.apache.wicket.extensions.markup.html.repeater.util.SortParam;
+import org.apache.wicket.extensions.markup.html.repeater.util.SortableDataProvider;
+import org.apache.wicket.model.IModel;
 
 /**
  * Smart {@link ForwardingDataProvider} which provides links for a property of a document.
@@ -41,19 +41,29 @@ public class ODocumentLinksDataProvider extends ForwardingDataProvider<ODocument
 			thisRunProvider = null;
 		}
 	}
-	
+
 	@Override
 	protected SortableDataProvider delegate() {
 		if(thisRunProvider==null)
 		{
 			if(useQueryProvider())
 			{
-				if(queryProvider==null) queryProvider = new ODocumentLinksQueryDataProvider(docModel, propertyModel);
+				if(queryProvider==null) queryProvider = new ODocumentLinksQueryDataProvider(docModel, propertyModel) {
+					@Override
+					public SortParam<String> getSort() {
+						return ODocumentLinksDataProvider.this.getSort();
+					}
+				};
 				thisRunProvider = queryProvider;
 			}
 			else
 			{
-				if(javaSortableProvider==null) javaSortableProvider = new ODocumentLinksJavaSortableDataProvider<String>(docModel, propertyModel);
+				if(javaSortableProvider==null) javaSortableProvider = new ODocumentLinksJavaSortableDataProvider<String>(docModel, propertyModel){
+					@Override
+					public SortParam<String> getSort() {
+						return ODocumentLinksDataProvider.this.getSort();
+					}
+				};
 				thisRunProvider = javaSortableProvider;
 			}
 		}
