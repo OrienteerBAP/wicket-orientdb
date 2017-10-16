@@ -16,14 +16,7 @@ public class RangeFilterCriteria extends AbstractFilterCriteria {
 
     @Override
     protected String apply(String field) {
-        StringBuilder sb = new StringBuilder();
-        sb.append(field)
-                .append(" BETWEEN :")
-                .append(getName())
-                .append("0 AND :")
-                .append(getName())
-                .append("1");
-        return sb.toString();
+        return field + " BETWEEN :" + getName() + "0 AND :" + getName() + "1";
     }
 
     @Override
