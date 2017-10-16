@@ -78,13 +78,31 @@ public interface IFilterCriteriaManager extends IClusterable {
     public IFilterCriteria createMapContainsKeyCriteria(IModel<String> model, IModel<Boolean> join);
 
     /**
-     * Create filter for search {@link ODocument} map which contains giiven key
+     * Create filter for search {@link ODocument} map which contains given value
      * @param model {@link IModel<T>} key
      * @param join {@link IModel<Boolean>} if true - result of filtering includes to result of query
      * @param <T> type of value
-     * @return {@link IFilterCriteria} which represents map
+     * @return {@link IFilterCriteria} which represents map value filter
      */
     public <T> IFilterCriteria createMapContainsValueCriteria(IModel<T> model, IModel<Boolean> join);
+
+    /**
+     * Create filter for search {@link ODocument} which contains embedded field with given value
+     * @param model {@link IModel<T>} - value
+     * @param join {@link IModel<Boolean>} if true - result of filtering includes to result of query
+     * @param <T> type of value
+     * @return {@link IFilterCriteria} which represents embedded contains value filter
+     */
+    public <T> IFilterCriteria createEmbeddedContainsValueCriteria(IModel<T> model, IModel<Boolean> join);
+
+    /**
+     * Create filter for search {@link ODocument} which contains embedded field with given key
+     * @param model {@link IModel<T>} - key
+     * @param join {@link IModel<Boolean>} if true - result of filtering includes to result of query
+     * @param <T> type of value
+     * @return {@link IFilterCriteria} which represents embedded contains key filter
+     */
+    public <T> IFilterCriteria createEmbeddedContainsKeyCriteria(IModel<T> model, IModel<Boolean> join);
 
     /**
      * Add filter for current field

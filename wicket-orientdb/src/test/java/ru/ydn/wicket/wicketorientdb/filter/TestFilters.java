@@ -26,7 +26,6 @@ import static org.junit.Assert.assertTrue;
 import static ru.ydn.wicket.wicketorientdb.filter.ITesterFilterConstants.*;
 
 public class TestFilters {
-
     @ClassRule
     public static WicketOrientDbFilterTesterScope wicket = new WicketOrientDbFilterTesterScope();
 
@@ -238,7 +237,6 @@ public class TestFilters {
     }
 
     @Test
-    @Ignore
     public void testDateTimeCollection() throws ParseException {
         DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         List<Date> list = Lists.newArrayList();
@@ -293,6 +291,26 @@ public class TestFilters {
         manager.clearFilterCriterias();
         queryModel.detach();
         manager.addFilterCriteria(manager.createMapContainsValueCriteria(Model.of(map.get(STR_VALUE_1)), Model.<Boolean>of(true)));
+        assertTrue("size must be 1, but it is - " + queryModel.size(), queryModel.size() == 1);
+    }
+
+    @Test
+    @Ignore
+    public void testEmbeddedContainsValueFilter() {
+        IFilterCriteriaManager manager = new FilterCriteriaManager(wicket.getProperty(EMBEDDED_FIELD));
+        IFilterCriteria criteria = manager.createEmbeddedContainsValueCriteria(Model.of(STR_VALUE_2), Model.of(true));
+        manager.addFilterCriteria(criteria);
+        queryModel.addFilterCriteriaManager(EMBEDDED_FIELD, manager);
+        assertTrue("size must be 1, but it is - " + queryModel.size(), queryModel.size() == 1);
+    }
+
+    @Test
+    @Ignore
+    public void testEmbeddedContainsKeyFilter() {
+        IFilterCriteriaManager manager = new FilterCriteriaManager(wicket.getProperty(EMBEDDED_FIELD));
+        IFilterCriteria criteria = manager.createEmbeddedContainsKeyCriteria(Model.of(MAP_KEYS.get(0)), Model.of(true));
+        manager.addFilterCriteria(criteria);
+        queryModel.addFilterCriteriaManager(EMBEDDED_FIELD, manager);
         assertTrue("size must be 1, but it is - " + queryModel.size(), queryModel.size() == 1);
     }
 
