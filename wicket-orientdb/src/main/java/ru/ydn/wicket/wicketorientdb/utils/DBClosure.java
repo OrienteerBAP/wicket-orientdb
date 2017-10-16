@@ -10,6 +10,7 @@ import com.orientechnologies.orient.core.db.ODatabaseDocumentInternal;
 import com.orientechnologies.orient.core.db.ODatabaseRecordThreadLocal;
 import com.orientechnologies.orient.core.db.OPartitionedDatabasePoolFactory;
 import com.orientechnologies.orient.core.db.document.ODatabaseDocument;
+import com.orientechnologies.orient.core.record.impl.ODocument;
 
 /**
  * Closure for execution of portion queries/command on database for different user (commonly, under admin)
@@ -85,4 +86,25 @@ public abstract class DBClosure<V> implements Serializable
 	 * @return results for execution on supplied DB
 	 */
 	protected abstract V execute(ODatabaseDocument db);
+	
+	
+	/**
+	 * Allow to save set of document under admin
+	 * @param docs set of document to be saved
+	 */
+	public static void sudoSave(final ODocument... docs) {
+		if(docs==null || docs.length==0) return;
+		new DBClosure<Boolean>() {
+
+			@Override
+			protected Boolean execute(ODatabaseDocument db) {
+				db.begin();
+				for (ODocument doc : docs) {
+					db.save(doc);
+				}
+				db.commit();
+				return true;
+			}
+		}.execute();
+	}
 }
