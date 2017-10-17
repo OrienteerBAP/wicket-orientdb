@@ -22,15 +22,16 @@ public abstract class AbstractFilterCriteria implements IFilterCriteria {
 
     @Override
     public String apply() {
-        String filter = apply(getField());
-        if (Strings.isNullOrEmpty(filter))
-            return null;
-
-        StringBuilder sb = new StringBuilder();
-        if (!join.getObject()) sb.append("NOT(");
-        sb.append(filter);
-        if (!join.getObject()) sb.append(")");
-        return sb.toString();
+        String result = null;
+        String filter = !isEmpty() ? apply(getField()) : null;
+        if (!Strings.isNullOrEmpty(filter)) {
+            StringBuilder sb = new StringBuilder();
+            if (!join.getObject()) sb.append("NOT(");
+            sb.append(filter);
+            if (!join.getObject()) sb.append(")");
+            result = sb.toString();
+        }
+        return result;
     }
 
     protected abstract String apply(String field);

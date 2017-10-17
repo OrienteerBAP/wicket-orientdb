@@ -7,6 +7,7 @@ import org.apache.wicket.extensions.markup.html.repeater.data.sort.SortOrder;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.util.CollectionModel;
+import org.apache.wicket.model.util.ListModel;
 import org.junit.*;
 import ru.ydn.wicket.wicketorientdb.model.ODocumentLinksQueryDataProvider;
 import ru.ydn.wicket.wicketorientdb.model.ODocumentModel;
@@ -122,18 +123,45 @@ public class TestFilters {
         List<Integer> models = Lists.newArrayList();
         models.add(NUM_VALUE_1);
         models.add(NUM_VALUE_3);
-        IModel<Collection<Integer>> collectionModel = new CollectionModel<>(models);
+        IModel<List<Integer>> listModel = new ListModel<>(models);
         IFilterCriteriaManager manager = new FilterCriteriaManager(wicket.getProperty(NUMBER_FIELD));
-        manager.addFilterCriteria(manager.createRangeFilterCriteria(collectionModel, Model.of(true)));
+        manager.addFilterCriteria(manager.createRangeFilterCriteria(listModel, Model.of(true)));
         String field = wicket.getProperty(NUMBER_FIELD).getObject().getName();
         queryModel.addFilterCriteriaManager(field, manager);
         queryModel.setSort(NUMBER_FIELD, SortOrder.ASCENDING);
-        assertTrue(queryModel.getObject().size() == 3);
+        assertTrue("size must be 3, but it is - " + queryModel.size(), queryModel.size() == 3);
         assertTrue(queryModel.getObject().get(0).field(NUMBER_FIELD).equals(NUM_VALUE_1));
         assertTrue(queryModel.getObject().get(1).field(NUMBER_FIELD).equals(NUM_VALUE_2));
         assertTrue(queryModel.getObject().get(2).field(NUMBER_FIELD).equals(NUM_VALUE_3));
     }
 
+    @Test
+    public void testRangeFilterCriteriaSecondNull() {
+        List<Integer> models = Lists.newArrayList();
+        models.add(NUM_VALUE_3);
+        models.add(null);
+        IModel<List<Integer>> listModel = new ListModel<>(models);
+        IFilterCriteriaManager manager = new FilterCriteriaManager(wicket.getProperty(NUMBER_FIELD));
+        manager.addFilterCriteria(manager.createRangeFilterCriteria(listModel, Model.of(true)));
+        String field = wicket.getProperty(NUMBER_FIELD).getObject().getName();
+        queryModel.addFilterCriteriaManager(field, manager);
+        queryModel.setSort(NUMBER_FIELD, SortOrder.ASCENDING);
+        assertTrue("size must be 2, but it is - " + queryModel.size(), queryModel.size() == 2);
+    }
+
+    @Test
+    public void testRangeFilterCriteriaFirstNull() {
+        List<Integer> models = Lists.newArrayList();
+        models.add(null);
+        models.add(NUM_VALUE_2);
+        IModel<List<Integer>> listModel = new ListModel<>(models);
+        IFilterCriteriaManager manager = new FilterCriteriaManager(wicket.getProperty(NUMBER_FIELD));
+        manager.addFilterCriteria(manager.createRangeFilterCriteria(listModel, Model.of(true)));
+        String field = wicket.getProperty(NUMBER_FIELD).getObject().getName();
+        queryModel.addFilterCriteriaManager(field, manager);
+        queryModel.setSort(NUMBER_FIELD, SortOrder.ASCENDING);
+        assertTrue("size must be 2, but it is - " + queryModel.size(), queryModel.size() == 2);
+    }
 
     @Test
     @SuppressWarnings("unchecked")
