@@ -8,6 +8,7 @@ import org.apache.wicket.util.lang.Args;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -67,7 +68,7 @@ public class FilterCriteriaManager implements IFilterCriteriaManager {
     }
 
     @Override
-    public <T> IFilterCriteria createRangeFilterCriteria(IModel<Collection<T>> model, IModel<Boolean> join) {
+    public <T> IFilterCriteria createRangeFilterCriteria(IModel<List<T>> model, IModel<Boolean> join) {
         return new RangeFilterCriteria(propertyModel.getObject().getName(), model, join);
     }
 

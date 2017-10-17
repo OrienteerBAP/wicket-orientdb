@@ -6,7 +6,6 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.orientechnologies.orient.core.db.document.ODatabaseDocument;
 import com.orientechnologies.orient.core.metadata.schema.OClass;
-import com.orientechnologies.orient.core.metadata.schema.OProperty;
 import com.orientechnologies.orient.core.record.ORecord;
 import com.orientechnologies.orient.core.record.impl.ODocument;
 import com.orientechnologies.orient.core.sql.query.OSQLSynchQuery;
@@ -27,7 +26,10 @@ import ru.ydn.wicket.wicketorientdb.utils.query.filter.IFilterCriteria;
 import ru.ydn.wicket.wicketorientdb.utils.query.filter.IFilterCriteriaManager;
 
 import java.io.Serializable;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Model to obtain data from OrientDB by query
@@ -136,10 +138,13 @@ public class OQueryModel<K> extends LoadableDetachableModel<List<K>>
             if (criteria == null) continue;
             if (criteria.getModel().getObject() != null) {
                 if (type.equals(FilterCriteriaType.RANGE)) {
-                    Collection<?> collection = (Collection<?>) criteria.getModel().getObject();
-                    Iterator<?> iterator = collection.iterator();
-                    setParameter(criteria.getName() + 0, Model.of((Serializable) iterator.next()));
-                    setParameter(criteria.getName() + 1, Model.of((Serializable) iterator.next()));
+                    List<?> list = (List<?>) criteria.getModel().getObject();
+                    Object first = list.get(0);
+                    Object second = list.get(1);
+                    if (first != null && second != null) {
+                        setParameter(criteria.getName() + 0, Model.of((Serializable) first));
+                        setParameter(criteria.getName() + 1, Model.of((Serializable) second));
+                    } else setParameter(criteria.getName(), Model.of(first != null ? (Serializable) first : (Serializable) second));
                 } else setParameter(criteria.getName(), criteria.getModel());
             }
         }

@@ -5,6 +5,7 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.util.io.IClusterable;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -45,12 +46,12 @@ public interface IFilterCriteriaManager extends IClusterable {
 
     /**
      * Create range filter
-     * @param model {@link IModel<Collection<IModel<T>>>} model of list which contains 2 elements for filter
+     * @param model {@link IModel<List<IModel<T>>>} model of list which contains 2 elements for filter
      * @param join {@link IModel<Boolean>} if true - result of filtering includes to result of query.
      * @param <T> type of value
      * @return {@link IFilterCriteria} which represents range filter
      */
-    public <T> IFilterCriteria createRangeFilterCriteria(IModel<Collection<T>> model, IModel<Boolean> join);
+    public <T> IFilterCriteria createRangeFilterCriteria(IModel<List<T>> model, IModel<Boolean> join);
 
     /**
      * Create filter for search string which contains model value
