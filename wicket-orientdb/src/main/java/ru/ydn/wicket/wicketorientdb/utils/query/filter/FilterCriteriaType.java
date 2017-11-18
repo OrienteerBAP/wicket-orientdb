@@ -29,6 +29,7 @@ public final class FilterCriteriaType implements IClusterable {
     public static final FilterCriteriaType CONTAINS_VALUE          = createAndRegister("containsValue", false, true);
     public static final FilterCriteriaType EMBEDDED_CONTAINS_VALUE = createAndRegister("embeddedContainsValue", false, false);
     public static final FilterCriteriaType EMBEDDED_CONTAINS_KEY   = createAndRegister("embeddedContainsKey", false, false);
+    public static final FilterCriteriaType EMBEDDED_COLLECTION     = createAndRegister("embeddedCollection", true, false);
 
     private final boolean collection;
     private final boolean map;

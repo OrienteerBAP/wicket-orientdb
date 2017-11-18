@@ -17,9 +17,6 @@ public class CollectionFilterCriteria extends AbstractFilterCriteria {
     @Override
     @SuppressWarnings("unchecked")
     protected String apply(String field) {
-        IModel<Collection<?>> collectionModel = (IModel<Collection<?>>) getModel();
-        if (collectionModel.getObject() == null || collectionModel.getObject().isEmpty())
-            return null;
         return field + " IN :" + getName();
     }
 

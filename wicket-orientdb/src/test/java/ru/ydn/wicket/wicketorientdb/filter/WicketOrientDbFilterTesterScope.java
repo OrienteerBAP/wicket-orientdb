@@ -70,8 +70,10 @@ public class WicketOrientDbFilterTesterScope extends WicketOrientDbTesterScope {
                 createMapDocsForDocuments(documentsForTestClass, documentsForLinkClass, false);
                 createEmbeddedFieldsForDocuments(documentsForTestClass,
                         createDocumentsWithPrimaryTypesForOClass(testClass, false));
-                createEmbeddedListFieldsForDocuments(documentsForTestClass,
-                        createListOfDocuments(createDocumentsWithPrimaryTypesForOClass(testClass, false)));
+                createEmbeddedCollectionFieldsForDocuments(documentsForTestClass,
+                        createListOfDocuments(createDocumentsWithPrimaryTypesForOClass(testClass, false)), true);
+                createEmbeddedCollectionFieldsForDocuments(documentsForTestClass,
+                        createListOfDocuments(createDocumentsWithPrimaryTypesForOClass(testClass, false)), false);
                 createMapDocsForDocuments(documentsForTestClass,
                         createDocumentsWithPrimaryTypesForOClass(testClass, false), true);
                 db.commit();
@@ -157,11 +159,12 @@ public class WicketOrientDbFilterTesterScope extends WicketOrientDbTesterScope {
         }
     }
 
-    private void createEmbeddedListFieldsForDocuments(List<ODocument> documents, List<List<ODocument>> embeddedList) {
+    private void createEmbeddedCollectionFieldsForDocuments(List<ODocument> documents, List<List<ODocument>> embeddedList, boolean list) {
         Args.isTrue(documents.size() == embeddedList.size(), "documents.size() == embeddedList.size()");
+        String field = list ? EMBEDDED_LIST_FIELD : EMBEDDED_SET_FIELD;
         for (int i = 0; i < documents.size(); i++) {
             ODocument document = documents.get(i);
-            document.field(EMBEDDED_LIST_FIELD, embeddedList.get(i), OType.EMBEDDEDLIST);
+            document.field(field, embeddedList.get(i), OType.EMBEDDEDLIST);
             document.save();
         }
     }

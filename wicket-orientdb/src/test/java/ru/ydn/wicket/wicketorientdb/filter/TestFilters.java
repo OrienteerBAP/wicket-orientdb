@@ -339,6 +339,30 @@ public class TestFilters {
     }
 
     @Test
+    public void testEmbeddedListFilter() {
+        IFilterCriteriaManager manager = new FilterCriteriaManager(wicket.getProperty(EMBEDDED_LIST_FIELD));
+        List<String> list = new ArrayList<>();
+        list.add(STR_VALUE_2);
+        IModel<Collection<String>> model = new CollectionModel<String>(list);
+        IFilterCriteria criteria = manager.createEmbeddedCollectionCriteria(Model.of(STRING_FIELD), model, Model.of(true));
+        manager.addFilterCriteria(criteria);
+        queryModel.addFilterCriteriaManager(EMBEDDED_LIST_FIELD, manager);
+        assertTrue("size must be more than 0, but it is - " + queryModel.size(), queryModel.size() > 0);
+    }
+
+    @Test
+    public void testEmbeddedSetFilter() {
+        IFilterCriteriaManager manager = new FilterCriteriaManager(wicket.getProperty(EMBEDDED_SET_FIELD));
+        List<String> list = new ArrayList<>();
+        list.add(STR_VALUE_2);
+        IModel<Collection<String>> model = new CollectionModel<String>(list);
+        IFilterCriteria criteria = manager.createEmbeddedCollectionCriteria(Model.of(STRING_FIELD), model, Model.of(true));
+        manager.addFilterCriteria(criteria);
+        queryModel.addFilterCriteriaManager(EMBEDDED_SET_FIELD, manager);
+        assertTrue("size must be more than 0, but it is - " + queryModel.size(), queryModel.size() > 0);
+    }
+
+    @Test
     public void testODocumentLinkQueryProvider() {
         IFilterCriteriaManager manager = new FilterCriteriaManager(wicket.getProperty(NUMBER_FIELD));
         IFilterCriteria equalsFilterCriteria = manager.createEqualsFilterCriteria(Model.of(NUM_VALUE_1), Model.of(true));
