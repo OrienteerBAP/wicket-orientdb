@@ -106,14 +106,23 @@ public interface IFilterCriteriaManager extends IClusterable {
     public <T> IFilterCriteria createEmbeddedContainsKeyCriteria(IModel<T> model, IModel<Boolean> join);
 
     /**
-     * Create filter for search {@link ODocument} which contains embedded list with given field and with given key
+     * Create filter for search {@link ODocument} which contains embedded collection with given field and with given key
      * @param key {@link IModel<String>} - key in embedded
-     * @param model {@link IModel<Collection<T>>} - value in embedded list
+     * @param model {@link IModel<Collection<T>>} - value in embedded collection
      * @param join - {@link IModel<Boolean>} if true - result of filtering includes to result of query
      * @param <T> type of value
      * @return {@link IFilterCriteria} which represents embedded collection filter
      */
     public <T> IFilterCriteria createEmbeddedCollectionCriteria(IModel<String> key, IModel<Collection<T>> model, IModel<Boolean> join);
+
+    /**
+     * Create filter for search {@link ODocument} which contains embedded collection with given value
+     * @param model {@link IModel<Collection<T>>} - value in embedded collection
+     * @param join - {@link IModel<Boolean>} if true - result of filtering includes to result of query
+     * @param <T> type of value
+     * @return {@link IFilterCriteria} which represents contains embedded collection filter
+     */
+    public <T> IFilterCriteria createEmbeddedCollectionContainsValueCriteria(IModel<T> model, IModel<Boolean> join);
 
     /**
      * Add filter for current field

@@ -8,7 +8,10 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.util.CollectionModel;
 import org.apache.wicket.model.util.ListModel;
-import org.junit.*;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.ClassRule;
+import org.junit.Test;
 import ru.ydn.wicket.wicketorientdb.model.ODocumentLinksQueryDataProvider;
 import ru.ydn.wicket.wicketorientdb.model.ODocumentModel;
 import ru.ydn.wicket.wicketorientdb.model.OQueryDataProvider;
@@ -360,6 +363,16 @@ public class TestFilters {
         manager.addFilterCriteria(criteria);
         queryModel.addFilterCriteriaManager(EMBEDDED_SET_FIELD, manager);
         assertTrue("size must be more than 0, but it is - " + queryModel.size(), queryModel.size() > 0);
+    }
+
+
+    @Test
+    public void testEmbeddedListContainsValueFilter() {
+        IFilterCriteriaManager manager = new FilterCriteriaManager(wicket.getProperty(EMBEDDED_LIST_STRING_FIELD));
+        IFilterCriteria criteria = manager.createEmbeddedCollectionContainsValueCriteria(Model.of(STR_VALUE_1), Model.of(true));
+        manager.addFilterCriteria(criteria);
+        queryModel.addFilterCriteriaManager(EMBEDDED_LIST_STRING_FIELD, manager);
+        assertTrue("size must 1, but it is - " + queryModel.size(), queryModel.size() == 1);
     }
 
     @Test

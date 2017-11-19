@@ -18,18 +18,19 @@ public final class FilterCriteriaType implements IClusterable {
 
     private static final Pattern NAME_PATTERN = Pattern.compile("^[a-zA-Z0-9]+$");
 
-    public static final FilterCriteriaType EQUALS                  = createAndRegister("equals", false, false);
-    public static final FilterCriteriaType COLLECTION              = createAndRegister("collection", true, false);
-    public static final FilterCriteriaType RANGE                   = createAndRegister("range", true, false);
-    public static final FilterCriteriaType CONTAINS_TEXT           = createAndRegister("containsText", false, false);
-    public static final FilterCriteriaType LINK                    = createAndRegister("link", false, false);
-    public static final FilterCriteriaType LINKLIST                = createAndRegister("linkList", true, false);
-    public static final FilterCriteriaType LINKSET                 = createAndRegister("linkSet", true, false);
-    public static final FilterCriteriaType CONTAINS_KEY            = createAndRegister("containsKey", false, true);
-    public static final FilterCriteriaType CONTAINS_VALUE          = createAndRegister("containsValue", false, true);
-    public static final FilterCriteriaType EMBEDDED_CONTAINS_VALUE = createAndRegister("embeddedContainsValue", false, false);
-    public static final FilterCriteriaType EMBEDDED_CONTAINS_KEY   = createAndRegister("embeddedContainsKey", false, false);
-    public static final FilterCriteriaType EMBEDDED_COLLECTION     = createAndRegister("embeddedCollection", true, false);
+    public static final FilterCriteriaType EQUALS                        = createAndRegister("equals", false, false);
+    public static final FilterCriteriaType COLLECTION                   = createAndRegister("collection", true, false);
+    public static final FilterCriteriaType RANGE                        = createAndRegister("range", true, false);
+    public static final FilterCriteriaType CONTAINS_TEXT                = createAndRegister("containsText", false, false);
+    public static final FilterCriteriaType LINK                         = createAndRegister("link", false, false);
+    public static final FilterCriteriaType LINKLIST                     = createAndRegister("linkList", true, false);
+    public static final FilterCriteriaType LINKSET                      = createAndRegister("linkSet", true, false);
+    public static final FilterCriteriaType CONTAINS_KEY                 = createAndRegister("containsKey", false, true);
+    public static final FilterCriteriaType CONTAINS_VALUE               = createAndRegister("containsValue", false, true);
+    public static final FilterCriteriaType EMBEDDED_CONTAINS_VALUE      = createAndRegister("embeddedContainsValue", false, false);
+    public static final FilterCriteriaType EMBEDDED_CONTAINS_KEY        = createAndRegister("embeddedContainsKey", false, false);
+    public static final FilterCriteriaType EMBEDDED_COLLECTION          = createAndRegister("embeddedCollection", true, false);
+    public static final FilterCriteriaType EMBEDDED_COLLECTION_CONTAINS = createAndRegister("embeddedCollectionContains", false, false);
 
     private final boolean collection;
     private final boolean map;
