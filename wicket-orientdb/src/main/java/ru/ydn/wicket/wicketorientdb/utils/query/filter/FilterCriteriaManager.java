@@ -95,12 +95,22 @@ public class FilterCriteriaManager implements IFilterCriteriaManager {
 
     @Override
     public <T> IFilterCriteria createEmbeddedContainsValueCriteria(IModel<T> model, IModel<Boolean> join) {
-        return new EmbeddedContainsValue(propertyModel.getObject().getName(), model, join);
+        return new EmbeddedContainsValueCriteria(propertyModel.getObject().getName(), model, join);
     }
 
     @Override
     public <T> IFilterCriteria createEmbeddedContainsKeyCriteria(IModel<T> model, IModel<Boolean> join) {
-        return new EmbeddedContainsKey(propertyModel.getObject().getName(), model, join);
+        return new EmbeddedContainsKeyCriteria(propertyModel.getObject().getName(), model, join);
+    }
+
+    @Override
+    public <T> IFilterCriteria createEmbeddedCollectionCriteria(IModel<String> key, IModel<Collection<T>> model, IModel<Boolean> join) {
+        return new EmbeddedCollectionFieldFilterCriteria(propertyModel.getObject().getName(), key, model, join);
+    }
+
+    @Override
+    public <T> IFilterCriteria createEmbeddedCollectionContainsValueCriteria(IModel<T> model, IModel<Boolean> join) {
+        return new EmbeddedCollectionContainsValueFilterCriteria(propertyModel.getObject().getName(), model, join);
     }
 
     @Override

@@ -8,7 +8,10 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.util.CollectionModel;
 import org.apache.wicket.model.util.ListModel;
-import org.junit.*;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.ClassRule;
+import org.junit.Test;
 import ru.ydn.wicket.wicketorientdb.model.ODocumentLinksQueryDataProvider;
 import ru.ydn.wicket.wicketorientdb.model.ODocumentModel;
 import ru.ydn.wicket.wicketorientdb.model.OQueryDataProvider;
@@ -83,7 +86,6 @@ public class TestFilters {
     }
 
     @Test
-    @Ignore
     public void testEqualsToDateFilterCriteria() throws ParseException {
         IModel<OProperty> property = wicket.getProperty(DATE_FIELD);
         IFilterCriteriaManager manager = new FilterCriteriaManager(property);
@@ -298,7 +300,6 @@ public class TestFilters {
     }
 
     @Test
-    @Ignore
     public void testEmbeddedMapValue() {
         IModel<OProperty> property = wicket.getProperty(EMBEDDED_MAP_FIELD);
         IFilterCriteriaManager manager = new FilterCriteriaManager(property);
@@ -323,7 +324,6 @@ public class TestFilters {
     }
 
     @Test
-    @Ignore
     public void testEmbeddedContainsValueFilter() {
         IFilterCriteriaManager manager = new FilterCriteriaManager(wicket.getProperty(EMBEDDED_FIELD));
         IFilterCriteria criteria = manager.createEmbeddedContainsValueCriteria(Model.of(STR_VALUE_2), Model.of(true));
@@ -333,13 +333,46 @@ public class TestFilters {
     }
 
     @Test
-    @Ignore
     public void testEmbeddedContainsKeyFilter() {
         IFilterCriteriaManager manager = new FilterCriteriaManager(wicket.getProperty(EMBEDDED_FIELD));
-        IFilterCriteria criteria = manager.createEmbeddedContainsKeyCriteria(Model.of(MAP_KEYS.get(0)), Model.of(true));
+        IFilterCriteria criteria = manager.createEmbeddedContainsKeyCriteria(Model.of(STRING_FIELD), Model.of(true));
         manager.addFilterCriteria(criteria);
         queryModel.addFilterCriteriaManager(EMBEDDED_FIELD, manager);
-        assertTrue("size must be 1, but it is - " + queryModel.size(), queryModel.size() == 1);
+        assertTrue("size must be more than 0, but it is - " + queryModel.size(), queryModel.size() > 0);
+    }
+
+    @Test
+    public void testEmbeddedListFilter() {
+        IFilterCriteriaManager manager = new FilterCriteriaManager(wicket.getProperty(EMBEDDED_LIST_FIELD));
+        List<String> list = new ArrayList<>();
+        list.add(STR_VALUE_2);
+        IModel<Collection<String>> model = new CollectionModel<String>(list);
+        IFilterCriteria criteria = manager.createEmbeddedCollectionCriteria(Model.of(STRING_FIELD), model, Model.of(true));
+        manager.addFilterCriteria(criteria);
+        queryModel.addFilterCriteriaManager(EMBEDDED_LIST_FIELD, manager);
+        assertTrue("size must be more than 0, but it is - " + queryModel.size(), queryModel.size() > 0);
+    }
+
+    @Test
+    public void testEmbeddedSetFilter() {
+        IFilterCriteriaManager manager = new FilterCriteriaManager(wicket.getProperty(EMBEDDED_SET_FIELD));
+        List<String> list = new ArrayList<>();
+        list.add(STR_VALUE_2);
+        IModel<Collection<String>> model = new CollectionModel<String>(list);
+        IFilterCriteria criteria = manager.createEmbeddedCollectionCriteria(Model.of(STRING_FIELD), model, Model.of(true));
+        manager.addFilterCriteria(criteria);
+        queryModel.addFilterCriteriaManager(EMBEDDED_SET_FIELD, manager);
+        assertTrue("size must be more than 0, but it is - " + queryModel.size(), queryModel.size() > 0);
+    }
+
+
+    @Test
+    public void testEmbeddedListContainsValueFilter() {
+        IFilterCriteriaManager manager = new FilterCriteriaManager(wicket.getProperty(EMBEDDED_LIST_STRING_FIELD));
+        IFilterCriteria criteria = manager.createEmbeddedCollectionContainsValueCriteria(Model.of(STR_VALUE_1), Model.of(true));
+        manager.addFilterCriteria(criteria);
+        queryModel.addFilterCriteriaManager(EMBEDDED_LIST_STRING_FIELD, manager);
+        assertTrue("size must 1, but it is - " + queryModel.size(), queryModel.size() == 1);
     }
 
     @Test

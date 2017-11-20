@@ -6,9 +6,9 @@ import org.apache.wicket.model.IModel;
  * Embedded contains value filter criteria
  * SELECT FROM Test WHERE embedded.values() CONTAINS :myValue
  */
-public class EmbeddedContainsValue extends AbstractFilterCriteria {
+public class EmbeddedContainsValueCriteria extends AbstractFilterCriteria {
 
-    public EmbeddedContainsValue(String field, IModel<?> model, IModel<Boolean> join) {
+    public EmbeddedContainsValueCriteria(String field, IModel<?> model, IModel<Boolean> join) {
         super(field, model, join);
     }
 
