@@ -38,24 +38,26 @@ public class TransactionRequestCycleListener extends
 
 	@Override
 	public void end(RequestCycle cycle) {
-		ODatabaseDocument db = ODatabaseRecordThreadLocal.INSTANCE.get();
-		if(db.getTransaction().isActive()) db.commit();
+		ODatabaseDocument db = ODatabaseRecordThreadLocal.INSTANCE.getIfDefined();
+		if(db!=null && db.getTransaction().isActive()) db.commit();
 	}
 	
 	@Override
 	public void onDetach(RequestCycle cycle) {
-		ODatabaseDocument db = ODatabaseRecordThreadLocal.INSTANCE.get();
-		if(db.getTransaction().isActive()) db.commit(true);
-		db.close();
-		ODatabaseRecordThreadLocal.INSTANCE.remove();
+		ODatabaseDocument db = ODatabaseRecordThreadLocal.INSTANCE.getIfDefined();
+		if(db!=null) {
+			if(db.getTransaction().isActive()) db.commit(true);
+			db.close();
+			ODatabaseRecordThreadLocal.INSTANCE.remove();
+		}
 	}
 	
 	
 
 	@Override
 	public IRequestHandler onException(RequestCycle cycle, Exception ex) {
-		ODatabaseDocument db = ODatabaseRecordThreadLocal.INSTANCE.get();
-		if(!db.isClosed()) db.rollback();
+		ODatabaseDocument db = ODatabaseRecordThreadLocal.INSTANCE.getIfDefined();
+		if(db!=null && !db.isClosed()) db.rollback();
 		return null;
 	}
 	
