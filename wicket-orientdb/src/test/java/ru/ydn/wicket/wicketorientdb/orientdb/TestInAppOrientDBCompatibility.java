@@ -25,6 +25,7 @@ import com.orientechnologies.orient.core.hook.ORecordHook;
 import com.orientechnologies.orient.core.hook.ORecordHook.DISTRIBUTED_EXECUTION_MODE;
 import com.orientechnologies.orient.core.hook.ORecordHook.RESULT;
 import com.orientechnologies.orient.core.id.ORID;
+import com.orientechnologies.orient.core.id.ORecordId;
 import com.orientechnologies.orient.core.metadata.function.OFunction;
 import com.orientechnologies.orient.core.metadata.schema.OClass;
 import com.orientechnologies.orient.core.metadata.schema.OProperty;
@@ -769,5 +770,26 @@ public class TestInAppOrientDBCompatibility
 		Method method = ODocument.class.getDeclaredMethod("getImmutableSchemaClass");
 		method.setAccessible(true);
 		return (OClass) method.invoke(doc);
+	}
+	
+	@Ignore //TODO: Uncomment when OrientDB issue will be fixed: https://github.com/orientechnologies/orientdb/issues/8067
+	@Test
+	public void testLinkToOUser() {
+		ODatabaseDocument db = wicket.getTester().getDatabase();
+		OSchema schema = db.getMetadata().getSchema();
+		final OClass classA = schema.createClass("TestLinkToOUser");
+		classA.createProperty("name", OType.STRING);
+		classA.createProperty("user", OType.LINK).setLinkedClass(schema.getClass("OUser"));
+		ORID userRid = new ORecordId("#5:0");
+		ODocument doc = new ODocument(classA);
+		wicket.getTester().signIn("writer", "writer");
+		db = wicket.getTester().getDatabase();
+		db.begin();
+		ODocument userDoc = userRid.getRecord();
+		userDoc.field("roles");
+		doc.field("Admin");
+		doc.field("user", userDoc);
+		doc.save();
+		db.commit();
 	}
 }
