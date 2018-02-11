@@ -45,7 +45,7 @@ public interface IQueryManager extends IClusterable {
 	public void addFilterCriteriaManager(String field, IFilterCriteriaManager manager);
 
 	/**
-	 * @return unmodifiable {@link Collection<IFilterCriteriaManager>} with all {@link IFilterCriteriaManager}
+	 * @return unmodifiable {@link Collection} with all {@link IFilterCriteriaManager}
 	 * for current {@link IQueryManager}
 	 */
 	public Collection<IFilterCriteriaManager> getFilterCriteriaManagers();

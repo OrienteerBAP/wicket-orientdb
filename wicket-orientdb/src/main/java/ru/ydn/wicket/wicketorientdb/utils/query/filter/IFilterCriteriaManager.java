@@ -28,8 +28,8 @@ public interface IFilterCriteriaManager extends IClusterable {
 
     /**
      * Create equals filter
-     * @param model {@link IModel<T>} model of value for filter
-     * @param join {@link IModel<Boolean>} if true - result of filtering includes to result of query.
+     * @param model {@link IModel} model of value for filter
+     * @param join {@link IModel} if true - result of filtering includes to result of query.
      * @param <T> type of value
      * @return {@link IFilterCriteria} which represents equals filter
      */
@@ -37,8 +37,8 @@ public interface IFilterCriteriaManager extends IClusterable {
 
     /**
      * Create collection filter
-     * @param model {@link IModel<Collection<T>>} model of collection for filter
-     * @param join {@link IModel<Boolean>} if true - result of filtering includes to result of query.
+     * @param model {@link IModel} model of collection for filter
+     * @param join {@link IModel} if true - result of filtering includes to result of query.
      * @param <T> type of value
      * @return {@link IFilterCriteria} which represents list filter
      */
@@ -46,8 +46,8 @@ public interface IFilterCriteriaManager extends IClusterable {
 
     /**
      * Create range filter
-     * @param model {@link IModel<List<IModel<T>>>} model of list which contains 2 elements for filter
-     * @param join {@link IModel<Boolean>} if true - result of filtering includes to result of query.
+     * @param model {@link IModel} model of list which contains 2 elements for filter
+     * @param join {@link IModel} if true - result of filtering includes to result of query.
      * @param <T> type of value
      * @return {@link IFilterCriteria} which represents range filter
      */
@@ -55,33 +55,33 @@ public interface IFilterCriteriaManager extends IClusterable {
 
     /**
      * Create filter for search string which contains model value
-     * @param model {@link IModel<String>} value
-     * @param join {@link IModel<Boolean>} if true - result of filtering includes to result of query.
+     * @param model {@link IModel} with {@link String} value
+     * @param join {@link IModel} if true - result of filtering includes to result of query.
      * @return {@link IFilterCriteria} which represents contains string filter
      */
     public IFilterCriteria createContainsStringFilterCriteria(IModel<String> model, IModel<Boolean> join);
 
     /**
      * Create filter for search {@link ODocument} in collection of links
-     * @param model {@link IModel<Collection<ODocument>>} value
+     * @param model {@link IModel} value
      * @param list if true create filter for LINKLIST field
-     * @param join {@link IModel<Boolean>} if true - result of filtering includes to result of query.
+     * @param join {@link IModel} if true - result of filtering includes to result of query.
      * @return {@link IFilterCriteria} which represents link collection filter
      */
     public IFilterCriteria createLinkCollectionFilterCriteria(IModel<Collection<ODocument>> model, boolean list, IModel<Boolean> join);
 
     /**
      * Create filter for search {@link ODocument} map which contains given key
-     * @param model {@link IModel<String>} key
-     * @param join {@link IModel<Boolean>} if true - result of filtering includes to result of query
+     * @param model {@link IModel} key
+     * @param join {@link IModel} if true - result of filtering includes to result of query
      * @return {@link IFilterCriteria} which represents map key filter
      */
     public IFilterCriteria createMapContainsKeyCriteria(IModel<String> model, IModel<Boolean> join);
 
     /**
      * Create filter for search {@link ODocument} map which contains given value
-     * @param model {@link IModel<T>} key
-     * @param join {@link IModel<Boolean>} if true - result of filtering includes to result of query
+     * @param model {@link IModel} key
+     * @param join {@link IModel} if true - result of filtering includes to result of query
      * @param <T> type of value
      * @return {@link IFilterCriteria} which represents map value filter
      */
@@ -89,8 +89,8 @@ public interface IFilterCriteriaManager extends IClusterable {
 
     /**
      * Create filter for search {@link ODocument} which contains embedded field with given value
-     * @param model {@link IModel<T>} - value
-     * @param join {@link IModel<Boolean>} if true - result of filtering includes to result of query
+     * @param model {@link IModel} - value
+     * @param join {@link IModel} if true - result of filtering includes to result of query
      * @param <T> type of value
      * @return {@link IFilterCriteria} which represents embedded contains value filter
      */
@@ -98,8 +98,8 @@ public interface IFilterCriteriaManager extends IClusterable {
 
     /**
      * Create filter for search {@link ODocument} which contains embedded field with given key
-     * @param model {@link IModel<T>} - key
-     * @param join {@link IModel<Boolean>} if true - result of filtering includes to result of query
+     * @param model {@link IModel} - key
+     * @param join {@link IModel} if true - result of filtering includes to result of query
      * @param <T> type of value
      * @return {@link IFilterCriteria} which represents embedded contains key filter
      */
@@ -107,9 +107,9 @@ public interface IFilterCriteriaManager extends IClusterable {
 
     /**
      * Create filter for search {@link ODocument} which contains embedded collection with given field and with given key
-     * @param key {@link IModel<String>} - key in embedded
-     * @param model {@link IModel<Collection<T>>} - value in embedded collection
-     * @param join - {@link IModel<Boolean>} if true - result of filtering includes to result of query
+     * @param key {@link IModel} - key in embedded
+     * @param model {@link IModel} - value in embedded collection
+     * @param join - {@link IModel} if true - result of filtering includes to result of query
      * @param <T> type of value
      * @return {@link IFilterCriteria} which represents embedded collection filter
      */
@@ -117,8 +117,8 @@ public interface IFilterCriteriaManager extends IClusterable {
 
     /**
      * Create filter for search {@link ODocument} which contains embedded collection with given value
-     * @param model {@link IModel<Collection<T>>} - value in embedded collection
-     * @param join - {@link IModel<Boolean>} if true - result of filtering includes to result of query
+     * @param model {@link IModel} - value in embedded collection
+     * @param join - {@link IModel} if true - result of filtering includes to result of query
      * @param <T> type of value
      * @return {@link IFilterCriteria} which represents contains embedded collection filter
      */
@@ -138,7 +138,7 @@ public interface IFilterCriteriaManager extends IClusterable {
     public IFilterCriteria getFilterCriteria(FilterCriteriaType type);
 
     /**
-     * @return {@link Map<FilterCriteriaType, IFilterCriteria>}
+     * @return {@link Map}
      */
     public Map<FilterCriteriaType, IFilterCriteria> getFilterCriterias();
 

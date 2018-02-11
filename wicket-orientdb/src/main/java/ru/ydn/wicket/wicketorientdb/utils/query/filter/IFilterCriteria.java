@@ -15,7 +15,7 @@ public interface IFilterCriteria extends IClusterable {
 
     /**
      * Get join
-     * @return {@link IModel<Boolean>} if true - result of filtering will be include to result
+     * @return {@link IModel} with boolean. If true - result of filtering will be include to result
      */
     public IModel<Boolean> getJoinModel();
 

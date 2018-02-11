@@ -60,7 +60,7 @@ public final class FilterCriteriaType implements IClusterable {
 
     /**
      * @return if true - {@link IFilterCriteria} appropriate to current {@link FilterCriteriaType}
-     *                   contains model like {@link IModel<Collection<?>>}
+     *                   contains model with {@link Collection}
      */
     public boolean isCollection() {
         return collection;
@@ -77,7 +77,7 @@ public final class FilterCriteriaType implements IClusterable {
     /**
      * Create {@link FilterCriteriaType}
      * @param name name of current {@link FilterCriteriaType}
-     * @param collection if true - {@link FilterCriteriaType} include {@link IModel<Collection<?>>}
+     * @param collection if true - {@link FilterCriteriaType} include {@link IModel} with {@link Collection}
      * @param map if true
      * @return new {@link FilterCriteriaType}
      * @throws IllegalStateException if name don't matches with name pattern
@@ -89,7 +89,7 @@ public final class FilterCriteriaType implements IClusterable {
     /**
      * Create and register {@link FilterCriteriaType}
      * @param name name of current {@link FilterCriteriaType}
-     * @param collection if true - {@link FilterCriteriaType} include {@link IModel<Collection<?>>}
+     * @param collection if true - {@link FilterCriteriaType} include {@link IModel} with {@link Collection}
      * @param map d
      * @return new {@link FilterCriteriaType}
      * @throws IllegalStateException if {@link FilterCriteriaType} with current name if already registered
@@ -122,7 +122,7 @@ public final class FilterCriteriaType implements IClusterable {
     }
 
     /**
-     * @return unmodifiable {@link Collection<FilterCriteriaType>} which contains all registered {@link FilterCriteriaType}
+     * @return unmodifiable {@link Collection} of {@link FilterCriteriaType} which contains all registered {@link FilterCriteriaType}
      */
     public static Collection<FilterCriteriaType> getRegisteredCriteriaTypes() {
         return Collections.unmodifiableCollection(REGISTRY.values());

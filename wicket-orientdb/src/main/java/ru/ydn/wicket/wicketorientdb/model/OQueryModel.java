@@ -160,7 +160,7 @@ public class OQueryModel<K> extends LoadableDetachableModel<List<K>>
     }
 
     /**
-     * Remove all filter criteria managers for current {@link OQueryModel<K>}
+     * Remove all filter criteria managers for current {@link OQueryModel}
      */
     public void clearFilterCriteriaManagers() {
         queryManager.clearFilterCriteriaManagers();
