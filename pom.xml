@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>ru.ydn.wicket.wicket-orientdb</groupId>
 	<artifactId>wicket-orientdb-parent</artifactId>
-	<version>1.3-SNAPSHOT</version>
+	<version>1.3</version>
 	<packaging>pom</packaging>
 	<name>wicket-orientdb-parent</name>
 	<description>Wicket library for OrientDB</description>
@@ -13,7 +13,7 @@
 		<url>https://github.com/OrienteerBAP/wicket-orientdb</url>
 		<connection>scm:git:ssh://github.com/OrienteerBAP/wicket-orientdb.git</connection>
 		<developerConnection>scm:git:ssh://git@github.com/OrienteerBAP/wicket-orientdb.git</developerConnection>
-		<tag>HEAD</tag>
+		<tag>v1.3</tag>
 	</scm>
 
 	<issueManagement>
