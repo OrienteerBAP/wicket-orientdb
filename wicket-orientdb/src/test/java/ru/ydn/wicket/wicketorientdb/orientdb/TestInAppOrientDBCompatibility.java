@@ -267,8 +267,8 @@ public class TestInAppOrientDBCompatibility
 		doc.field("b", 2);
 		doc.save();
 		doc.reload();
-		assertEquals(2, doc.field("a"));
-		assertEquals(2, doc.field("b"));
+		assertEquals(2, (Object) doc.field("a"));
+		assertEquals(2, (Object) doc.field("b"));
 		assertNull(doc.field("c"));
 		db.registerHook(new ODocumentHookAbstract(db) {
 			
@@ -287,7 +287,7 @@ public class TestInAppOrientDBCompatibility
 				List<ODocument> calculated = database.query(new OSQLSynchQuery<Object>(script));
 				if(calculated!=null && !calculated.isEmpty())
 				{
-					iDocument.field("c", calculated.get(0).field("value"));
+					iDocument.field("c", (Object) calculated.get(0).field("value"));
 				}
 			}
 			
@@ -297,18 +297,18 @@ public class TestInAppOrientDBCompatibility
 			}
 		});
 		doc.reload();
-		assertEquals(2, doc.field("a"));
-		assertEquals(2, doc.field("b"));
-		assertEquals(4, doc.field("c"));
+		assertEquals(2, (Object) doc.field("a"));
+		assertEquals(2, (Object) doc.field("b"));
+		assertEquals(4, (Object) doc.field("c"));
 		
 		doc = new ODocument(oClass);
 		doc.field("a", 3);
 		doc.field("b", 3);
 		doc.save();
 		
-		assertEquals(3, doc.field("a"));
-		assertEquals(3, doc.field("b"));
-		assertEquals(6, doc.field("c"));
+		assertEquals(3, (Object) doc.field("a"));
+		assertEquals(3, (Object) doc.field("b"));
+		assertEquals(6, (Object) doc.field("c"));
 	}
 	
 	private static final Random RANDOM = new Random();
@@ -460,7 +460,7 @@ public class TestInAppOrientDBCompatibility
 			@Override
 			public void onRecordAfterRead(ODocument iDocument) {
 				if(!iDocument.containsField("b"))
-					iDocument.field("b", iDocument.field("a"));
+					iDocument.field("b", (Object) iDocument.field("a"));
 			}
 			
 			
@@ -725,7 +725,7 @@ public class TestInAppOrientDBCompatibility
 			@Override
 			public RESULT onRecordBeforeCreate(ODocument iDocument) {
 				ODocument mirror = new ODocument(classB);
-				mirror.field("name", iDocument.field("name"));
+				mirror.field("name", (Object) iDocument.field("name"));
 				iDocument.field("mirror", mirror);
 				return RESULT.RECORD_CHANGED;
 			}

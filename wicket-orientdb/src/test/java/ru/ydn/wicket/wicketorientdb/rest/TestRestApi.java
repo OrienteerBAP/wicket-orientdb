@@ -79,7 +79,7 @@ public class TestRestApi
 		int nextB = RANDOM.nextInt();
 		ret = wicket.getTester().executeUrl("orientdb/command/db/sql", "POST", "update "+TEST_REST_CLASS+" set b = "+nextB);
 		doc.reload();
-		assertEquals(nextB, doc.field("b"));
+		assertEquals(nextB, (Object) doc.field("b"));
 	}
 	
 	@Test
