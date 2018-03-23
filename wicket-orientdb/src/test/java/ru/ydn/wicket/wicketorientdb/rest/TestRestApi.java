@@ -1,33 +1,26 @@
 package ru.ydn.wicket.wicketorientdb.rest;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
-import java.io.StringReader;
 import java.net.URLEncoder;
-import java.nio.charset.Charset;
 import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.servlet.ServletInputStream;
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.wicket.protocol.http.mock.MockHttpServletRequest;
-import org.apache.wicket.protocol.http.mock.MockHttpServletResponse;
-import org.apache.wicket.request.Url;
-import org.apache.wicket.util.crypt.Base64;
 import org.junit.ClassRule;
 import org.junit.ComparisonFailure;
 import org.junit.Test;
 
-import ru.ydn.wicket.wicketorientdb.LazyAuthorizationRequestCycleListener;
-import ru.ydn.wicket.wicketorientdb.junit.WicketOrientDbTester;
-import ru.ydn.wicket.wicketorientdb.junit.WicketOrientDbTesterScope;
-
 import com.orientechnologies.orient.core.id.ORID;
 import com.orientechnologies.orient.core.metadata.security.OSecurityUser;
 import com.orientechnologies.orient.core.record.impl.ODocument;
+
+import ru.ydn.wicket.wicketorientdb.junit.WicketOrientDbTester;
+import ru.ydn.wicket.wicketorientdb.junit.WicketOrientDbTesterScope;
 
 public class TestRestApi
 {

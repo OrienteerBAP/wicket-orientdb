@@ -76,7 +76,7 @@ public class TestStandaloneOrientDBCompatibility
 	public void testOrientDbLifeCycle(String dbURL, boolean createDb, boolean dropDb) throws Exception
 	{
 		Orient.instance().startup();
-		assertNotNull(ODatabaseRecordThreadLocal.INSTANCE);
+		assertNotNull(ODatabaseRecordThreadLocal.instance());
 		Orient.instance().removeShutdownHook();
 		OServer server = OServerMain.create();
 		server.startup(OrientDbTestWebApplication.class.getResource("db.config.xml").openStream());
@@ -87,10 +87,10 @@ public class TestStandaloneOrientDBCompatibility
 			if(!dbToCreate.exists()) dbToCreate.create();
 			dbToCreate.close();
 		}
-		assertNotNull(ODatabaseRecordThreadLocal.INSTANCE);
+		assertNotNull(ODatabaseRecordThreadLocal.instance());
 		ODatabaseDocument db = new OPartitionedDatabasePoolFactory().get(dbURL, "admin", "admin").acquire();
 		db.close();
-		assertNotNull(ODatabaseRecordThreadLocal.INSTANCE);
+		assertNotNull(ODatabaseRecordThreadLocal.instance());
 		if(dropDb)
 		{
 			ODatabaseDocument dbToDrop = new ODatabaseDocumentTx(dbURL);

@@ -13,7 +13,7 @@ import org.apache.wicket.markup.html.form.Form;
 /**
  * Update Form EncType to "multipart/form-data" of there is something which require multipart is in target ajax response
  */
-public class FixFormEncTypeListener extends AjaxRequestTarget.AbstractListener {
+public class FixFormEncTypeListener implements AjaxRequestTarget.IListener {
 
 	@Override
 	public void onAfterRespond(Map<String, Component> map, IJavaScriptResponse response) {

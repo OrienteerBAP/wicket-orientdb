@@ -36,7 +36,6 @@ import ru.ydn.wicket.wicketorientdb.model.OClassesDataProvider;
 import ru.ydn.wicket.wicketorientdb.model.ODocumentLinksDataProvider;
 import ru.ydn.wicket.wicketorientdb.model.ODocumentMapWrapper;
 import ru.ydn.wicket.wicketorientdb.model.ODocumentModel;
-import ru.ydn.wicket.wicketorientdb.model.ODocumentPropertyModel;
 import ru.ydn.wicket.wicketorientdb.model.OIndexesDataProvider;
 import ru.ydn.wicket.wicketorientdb.model.OPropertiesDataProvider;
 import ru.ydn.wicket.wicketorientdb.model.OPropertyModel;
@@ -353,18 +352,6 @@ public class TestModels
 		db.commit();
 		db.getLocalCache().clear();
 		db.begin();
-	}
-	
-	@Test
-	public void testODocumentPropertyModel()
-	{
-		ORecordId recordId = new ORecordId("#5:0");
-		ODocumentModel docModel = new ODocumentModel(recordId);
-		ODocumentPropertyModel<String> model = new ODocumentPropertyModel<String>(docModel, "name");
-		assertModelObjectEquals("admin", model);
-		ODocumentPropertyModel<Collection<String>> rolesNames = new ODocumentPropertyModel<Collection<String>>(docModel, "roles.name");
-		System.out.println(rolesNames.getObject());
-		assertTrue(rolesNames.getObject().contains("admin"));
 	}
 	
 	@Test

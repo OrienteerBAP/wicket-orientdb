@@ -31,7 +31,7 @@ public class OClusterModel extends PrototypeLoadableDetachableModel<OCluster>{
     }
 
     private OStorage getStorage() {
-        return ODatabaseRecordThreadLocal.INSTANCE.get().getDatabaseOwner().getStorage();
+        return ODatabaseRecordThreadLocal.instance().get().getDatabaseOwner().getStorage();
     }
 
     @Override

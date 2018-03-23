@@ -3,15 +3,14 @@ package ru.ydn.wicket.wicketorientdb.junit;
 import java.io.IOException;
 import java.io.StringReader;
 import java.nio.charset.Charset;
+import java.util.Base64;
 
 import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.wicket.protocol.http.WebApplication;
 import org.apache.wicket.protocol.http.mock.MockHttpServletRequest;
 import org.apache.wicket.protocol.http.mock.MockHttpServletResponse;
 import org.apache.wicket.request.Url;
-import org.apache.wicket.util.crypt.Base64;
 import org.apache.wicket.util.string.Strings;
 import org.apache.wicket.util.tester.WicketTester;
 
@@ -112,7 +111,7 @@ public class WicketOrientDbTester extends WicketTester
 		request.setMethod(method);
 		if(username!=null && password!=null)
 		{
-			request.setHeader(LazyAuthorizationRequestCycleListener.AUTHORIZATION_HEADER, "Basic "+Base64.encodeBase64String((username+":"+password).getBytes()));
+			request.setHeader(LazyAuthorizationRequestCycleListener.AUTHORIZATION_HEADER, "Basic "+Base64.getEncoder().encodeToString((username+":"+password).getBytes()));
 		}
 		if(!processRequest(request))
 		{

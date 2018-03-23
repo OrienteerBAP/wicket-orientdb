@@ -377,7 +377,7 @@ public class TestInAppOrientDBCompatibility
 		classA.createProperty("property1", OType.STRING).setNotNull(true);
 		classA.createProperty("property2", OType.STRING).setReadonly(true);
 		classA.createProperty("property3", OType.STRING).setMandatory(true);
-		db.registerHook(new ODocumentHookAbstract() {
+		db.registerHook(new ODocumentHookAbstract(db) {
 			
 			
 			
@@ -425,7 +425,7 @@ public class TestInAppOrientDBCompatibility
 	{
 		final String className = "TestUpdatesInHook";
 		ODatabaseDocument db = wicket.getTester().getDatabase();
-		db.registerHook(new ODocumentHookAbstract() {
+		db.registerHook(new ODocumentHookAbstract(db) {
 			
 			{
 				setIncludeClasses(className);
@@ -484,12 +484,12 @@ public class TestInAppOrientDBCompatibility
 		doc.save();
 		doc.reload();
 //		doc = db.reload(doc, null, true);
-		assertEquals(doc.field("a"), doc.field("b"));
+		assertEquals((Object) doc.field("a"), (Object) doc.field("b"));
 		doc.field("a", "test4");
 		doc.save();
 		doc.reload();
 //		doc = db.reload(doc, null, true);
-		assertEquals(doc.field("a"), doc.field("b"));
+		assertEquals((Object) doc.field("a"), (Object) doc.field("b"));
 		db.commit();
 	}
 	
@@ -547,7 +547,7 @@ public class TestInAppOrientDBCompatibility
 		final OClass classA = schema.createClass(className);
 		classA.createProperty("a", OType.STRING);
 		classA.createProperty("b", OType.STRING);
-		db.registerHook(new ODocumentHookAbstract() {
+		db.registerHook(new ODocumentHookAbstract(db) {
 			
 			{
 				setIncludeClasses(className);
@@ -716,7 +716,7 @@ public class TestInAppOrientDBCompatibility
 		classA.createProperty("name", OType.STRING);
 		classA.createProperty("mirror", OType.LINK).setLinkedClass(classB);
 		classB.createProperty("name", OType.STRING);
-		db.registerHook(new ODocumentHookAbstract() {
+		db.registerHook(new ODocumentHookAbstract(db) {
 			
 			{
 				setIncludeClasses(classA.getName());

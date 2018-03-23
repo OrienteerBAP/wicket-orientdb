@@ -1,20 +1,17 @@
 package ru.ydn.wicket.wicketorientdb.model;
 
-import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IModel;
 
-import ru.ydn.wicket.wicketorientdb.OrientDbWebSession;
-
 import com.orientechnologies.orient.core.db.ODatabase;
-import com.orientechnologies.orient.core.db.ODatabaseDocumentInternal;
 import com.orientechnologies.orient.core.db.document.ODatabaseDocument;
+
+import ru.ydn.wicket.wicketorientdb.OrientDbWebSession;
 
 /**
  * Simple {@link IModel} to return current {@link ODatabase}
  * @param <T> the type of required {@link ODatabase}
  */
-public class CurrentDatabaseModel<T extends ODatabase<?>> extends
-		AbstractReadOnlyModel<T> {
+public class CurrentDatabaseModel<T extends ODatabase<?>> implements IModel<T> {
 	private static final CurrentDatabaseModel<ODatabaseDocument> INSTANCE = new CurrentDatabaseModel<ODatabaseDocument>();
 	
 	@SuppressWarnings("unchecked")

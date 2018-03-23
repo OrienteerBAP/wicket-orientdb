@@ -65,7 +65,7 @@ public class OrientDbWebSession extends AuthenticatedWebSession {
 	 */
 	public ODatabaseDocumentInternal getDatabase()
 	{
-		return ODatabaseRecordThreadLocal.INSTANCE.get();
+		return ODatabaseRecordThreadLocal.instance().get();
 	}
 	
 	/**
@@ -157,7 +157,7 @@ public class OrientDbWebSession extends AuthenticatedWebSession {
 		this.username=null;
 		this.password=null;
 		this.userModel.setObject(null);
-		ODatabaseRecordThreadLocal.INSTANCE.remove();
+		ODatabaseRecordThreadLocal.instance().remove();
 	}
 
 }

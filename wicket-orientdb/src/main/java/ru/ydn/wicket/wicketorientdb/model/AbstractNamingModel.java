@@ -2,7 +2,6 @@ package ru.ydn.wicket.wicketorientdb.model;
 
 import org.apache.wicket.Application;
 import org.apache.wicket.Component;
-import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IComponentAssignedModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.IWrapModel;
@@ -14,7 +13,7 @@ import org.apache.wicket.util.string.Strings;
  * Model calculate resource key for passed object and then return either key value from resources or buitified version of resource key.
  * @param <T> type to be named
  */
-public abstract class AbstractNamingModel<T> extends AbstractReadOnlyModel<String> implements IComponentAssignedModel<String>
+public abstract class AbstractNamingModel<T> implements IComponentAssignedModel<String>
 {
 	private static final long serialVersionUID = 1L;
 	private String resourceKey;

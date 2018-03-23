@@ -59,7 +59,7 @@ public class MainUtilsTest
 
 			@Override
 			protected OSecurityUser execute(ODatabaseDocument db) {
-				assertEquals(db, ODatabaseRecordThreadLocal.INSTANCE.get());
+				assertEquals(db, ODatabaseRecordThreadLocal.instance().get());
 				return db.getUser();
 			}
 		};
@@ -70,7 +70,7 @@ public class MainUtilsTest
 
 			@Override
 			protected OSecurityUser execute(ODatabaseDocument db) {
-				assertEquals(db, ODatabaseRecordThreadLocal.INSTANCE.get());
+				assertEquals(db, ODatabaseRecordThreadLocal.instance().get());
 				return db.getUser();
 			}
 		};

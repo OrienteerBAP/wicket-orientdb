@@ -27,6 +27,6 @@ public class ListOClustersModel extends AbstractListModel<OCluster>{
     }
 
     private OStorage getStorage() {
-        return ODatabaseRecordThreadLocal.INSTANCE.get().getDatabaseOwner().getStorage();
+        return ODatabaseRecordThreadLocal.instance().get().getDatabaseOwner().getStorage();
     }
 }

@@ -159,12 +159,12 @@ public class OSecurityHelper
 		public final static AccessToIsAllowedInRestrictedAccessHook INSTANCE = new AccessToIsAllowedInRestrictedAccessHook();
 		
 		public AccessToIsAllowedInRestrictedAccessHook() {
-			super(ODatabaseRecordThreadLocal.INSTANCE.get());
+			super(ODatabaseRecordThreadLocal.instance().get());
 		}
 		@Override
 		public boolean isAllowed(ODocument iDocument,
 				ORestrictedOperation iAllowOperation, boolean iReadOriginal) {
-			database = ODatabaseRecordThreadLocal.INSTANCE.get();
+			database = ODatabaseRecordThreadLocal.instance().get();
 			return super.isAllowed(iDocument, iAllowOperation, iReadOriginal);
 		}
 		

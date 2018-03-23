@@ -1,16 +1,10 @@
 package ru.ydn.wicket.wicketorientdb.model;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
-import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.util.lang.Args;
 
-import ru.ydn.wicket.wicketorientdb.proto.OClassPrototyper;
-
-import com.orientechnologies.orient.core.index.OIndex;
 import com.orientechnologies.orient.core.metadata.schema.OClass;
 import com.orientechnologies.orient.core.metadata.schema.OProperty;
 
