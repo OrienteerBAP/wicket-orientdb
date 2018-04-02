@@ -1,6 +1,7 @@
 package ru.ydn.wicket.wicketorientdb.utils;
 
 import java.io.Serializable;
+import java.util.function.Function;
 
 import ru.ydn.wicket.wicketorientdb.DefaultODatabaseThreadLocalFactory;
 import ru.ydn.wicket.wicketorientdb.IOrientDbSettings;
@@ -88,6 +89,20 @@ public abstract class DBClosure<V> implements Serializable
 	 * @return results for execution on supplied DB
 	 */
 	protected abstract V execute(ODatabaseDocument db);
+	
+	/**
+	 * Simplified function to execute under admin
+	 * @param func function to be executed
+	 * @return result of a function
+	 */
+	public static <R> R sudo(Function<ODatabaseDocument, R> func) {
+		return new DBClosure<R>() {
+			@Override
+			protected R execute(ODatabaseDocument db) {
+				return func.apply(db);
+			}
+		}.execute();
+	}
 	
 	
 	/**
