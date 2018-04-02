@@ -1,18 +1,16 @@
 package ru.ydn.wicket.wicketorientdb.utils;
 
-import java.io.Serializable;
-import java.util.function.Function;
-
-import ru.ydn.wicket.wicketorientdb.DefaultODatabaseThreadLocalFactory;
-import ru.ydn.wicket.wicketorientdb.IOrientDbSettings;
-import ru.ydn.wicket.wicketorientdb.OrientDbWebApplication;
-
 import com.orientechnologies.orient.core.db.ODatabaseDocumentInternal;
 import com.orientechnologies.orient.core.db.ODatabaseRecordThreadLocal;
-import com.orientechnologies.orient.core.db.OPartitionedDatabasePoolFactory;
 import com.orientechnologies.orient.core.db.document.ODatabaseDocument;
 import com.orientechnologies.orient.core.record.impl.ODocument;
 import com.orientechnologies.orient.core.type.ODocumentWrapper;
+import ru.ydn.wicket.wicketorientdb.IOrientDbSettings;
+import ru.ydn.wicket.wicketorientdb.OrientDbWebApplication;
+
+import java.io.Serializable;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 /**
  * Closure for execution of portion queries/command on database for different user (commonly, under admin)
@@ -93,6 +91,7 @@ public abstract class DBClosure<V> implements Serializable
 	/**
 	 * Simplified function to execute under admin
 	 * @param func function to be executed
+	 * @param <R> type of returned value
 	 * @return result of a function
 	 */
 	public static <R> R sudo(Function<ODatabaseDocument, R> func) {
@@ -100,6 +99,20 @@ public abstract class DBClosure<V> implements Serializable
 			@Override
 			protected R execute(ODatabaseDocument db) {
 				return func.apply(db);
+			}
+		}.execute();
+	}
+
+	/**
+	 * Simplified consumer to execute under admin
+	 * @param consumer - consumer to be executed
+	 */
+	public static void sudoConsumer(Consumer<ODatabaseDocument> consumer) {
+		new DBClosure<Void>() {
+			@Override
+			protected Void execute(ODatabaseDocument db) {
+				consumer.accept(db);
+				return null;
 			}
 		}.execute();
 	}
