@@ -107,7 +107,7 @@ public abstract class DBClosure<V> implements Serializable
 	 * Simplified consumer to execute under admin
 	 * @param consumer - consumer to be executed
 	 */
-	public static void sudo(Consumer<ODatabaseDocument> consumer) {
+	public static void sudoConsumer(Consumer<ODatabaseDocument> consumer) {
 		new DBClosure<Void>() {
 			@Override
 			protected Void execute(ODatabaseDocument db) {
