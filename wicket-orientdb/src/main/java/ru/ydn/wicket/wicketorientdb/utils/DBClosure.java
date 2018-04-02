@@ -9,6 +9,7 @@ import ru.ydn.wicket.wicketorientdb.IOrientDbSettings;
 import ru.ydn.wicket.wicketorientdb.OrientDbWebApplication;
 
 import java.io.Serializable;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 /**
@@ -98,6 +99,20 @@ public abstract class DBClosure<V> implements Serializable
 			@Override
 			protected R execute(ODatabaseDocument db) {
 				return func.apply(db);
+			}
+		}.execute();
+	}
+
+	/**
+	 * Simplified consumer to execute under admin
+	 * @param consumer - consumer to be executed
+	 */
+	public static void sudo(Consumer<ODatabaseDocument> consumer) {
+		new DBClosure<Void>() {
+			@Override
+			protected Void execute(ODatabaseDocument db) {
+				consumer.accept(db);
+				return null;
 			}
 		}.execute();
 	}
