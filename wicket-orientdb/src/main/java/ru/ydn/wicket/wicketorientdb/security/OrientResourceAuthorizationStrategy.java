@@ -1,7 +1,8 @@
 package ru.ydn.wicket.wicketorientdb.security;
 
-import java.util.Map;
-
+import com.orientechnologies.orient.core.metadata.security.ODatabaseSecurityResources;
+import com.orientechnologies.orient.core.metadata.security.ORule;
+import com.orientechnologies.orient.core.metadata.security.OSecurityUser;
 import org.apache.wicket.Component;
 import org.apache.wicket.Page;
 import org.apache.wicket.authorization.Action;
@@ -10,13 +11,9 @@ import org.apache.wicket.request.component.IRequestableComponent;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.request.resource.IResource;
 import org.apache.wicket.util.string.Strings;
-
-import com.orientechnologies.orient.core.metadata.security.ODatabaseSecurityResources;
-import com.orientechnologies.orient.core.metadata.security.ORule;
-import com.orientechnologies.orient.core.metadata.security.OSecurityUser;
-import com.orientechnologies.orient.core.metadata.security.OUser;
-
 import ru.ydn.wicket.wicketorientdb.OrientDbWebSession;
+
+import java.util.Map;
 
 /**
  * OrientDB specific {@link IAuthorizationStrategy}. It supports 3 types for components securing
@@ -91,6 +88,7 @@ public class OrientResourceAuthorizationStrategy  implements IAuthorizationStrat
 	{
 		if(!resource.action().equals(action.getName())) return true;
 		OSecurityUser user = OrientDbWebSession.get().getUser();
+		if (user == null) user = OrientDbWebSession.get().getEffectiveUser();
 		if(user==null) return false;
 		int iOperation = OrientPermission.combinedPermission(resource.permissions());
 		ORule.ResourceGeneric value = OSecurityHelper.getResourceGeneric(resource.value());
