@@ -87,8 +87,7 @@ public class OrientResourceAuthorizationStrategy  implements IAuthorizationStrat
 	public boolean checkResource(RequiredOrientResource resource, Action action)
 	{
 		if(!resource.action().equals(action.getName())) return true;
-		OSecurityUser user = OrientDbWebSession.get().getUser();
-		if (user == null) user = OrientDbWebSession.get().getEffectiveUser();
+		OSecurityUser user = OrientDbWebSession.get().getEffectiveUser();
 		if(user==null) return false;
 		int iOperation = OrientPermission.combinedPermission(resource.permissions());
 		ORule.ResourceGeneric value = OSecurityHelper.getResourceGeneric(resource.value());
