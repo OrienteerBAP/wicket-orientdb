@@ -35,8 +35,8 @@ public class OrientDbTestWebApplication extends OrientDbWebApplication
 		});
 		getRequestCycleListeners().add(new LazyAuthorizationRequestCycleListener());
 		getOrientDbSettings().setDBUrl(DB_MEMORY_URL);
-		getOrientDbSettings().setGuestUserName("admin");
-		getOrientDbSettings().setGuestPassword("admin");
+		getOrientDbSettings().setGuestUserName("reader");
+		getOrientDbSettings().setGuestPassword("reader");
 		getOrientDbSettings().setAdminUserName("admin");
 		getOrientDbSettings().setAdminPassword("admin");
 		getOrientDbSettings().getORecordHooks().add(TestHook.class);

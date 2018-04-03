@@ -47,7 +47,7 @@ import ru.ydn.wicket.wicketorientdb.model.SimpleNamingModel;
 public class TestModels
 {
 	@ClassRule
-	public static WicketOrientDbTesterScope wicket = new WicketOrientDbTesterScope();
+	public static WicketOrientDbTesterScope wicket = new WicketOrientDbTesterScope("admin", "admin");
 	
 	@Test
 	public void testOClassesDataProvider()

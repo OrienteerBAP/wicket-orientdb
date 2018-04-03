@@ -70,9 +70,10 @@ public class TestRestApi
 		assertTrue(ret.contains(doc.toJSON()));
 		
 		int nextB = RANDOM.nextInt();
-		ret = wicket.getTester().executeUrl("orientdb/command/db/sql", "POST", "update "+TEST_REST_CLASS+" set b = "+nextB);
+		ret = wicket.getTester().executeUrl("orientdb/command/db/sql", "POST", "update "+TEST_REST_CLASS+" set b = "+nextB, "admin", "admin");
 		doc.reload();
 		assertEquals(nextB, (Object) doc.field("b"));
+		wicket.getTester().signOut();
 	}
 	
 	@Test

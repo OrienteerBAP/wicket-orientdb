@@ -24,7 +24,7 @@ import static org.junit.Assert.*;
 public class TestPrototypers
 {
 	@ClassRule
-	public static WicketOrientDbTesterScope wicket = new WicketOrientDbTesterScope();
+	public static WicketOrientDbTesterScope wicket = new WicketOrientDbTesterScope("admin", "admin");
 	
 	@Test
 	public void testMyBeanPrototyper() throws Exception
