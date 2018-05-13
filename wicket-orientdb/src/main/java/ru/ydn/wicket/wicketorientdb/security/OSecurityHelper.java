@@ -34,6 +34,10 @@ public class OSecurityHelper
 	public static final String COMMAND_GREMLIN = "COMMAND_GREMLIN";
 	public static final String RECORD_HOOK = "RECORD_HOOK";
 	public static final String SYSTEM_CLUSTERS = "SYSTEM_CLUSTERS";
+	public static final String FEATURE = "FEATURE";
+	
+	public static final ResourceGeneric FEATURE_RESOURCE = new ResourceGeneric(FEATURE, FEATURE.toLowerCase()) {
+	};
 	
 	private static final Map<OrientPermission, ORestrictedOperation> MAPPING_FOR_HACK = new HashMap<OrientPermission, ORestrictedOperation>();
 	static
