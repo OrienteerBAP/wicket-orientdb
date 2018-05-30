@@ -43,7 +43,8 @@ public class ODocumentWrapperModel<T extends ODocumentWrapper> extends Model<T> 
 
 	@Override
 	public void detach() {
-		if (!getObject().getDocument().getIdentity().isNew()) {
+		T ret = getObject();
+		if (ret != null && !ret.getDocument().getIdentity().isNew()) {
 			needToReload = true;
 		}
 		super.detach();
