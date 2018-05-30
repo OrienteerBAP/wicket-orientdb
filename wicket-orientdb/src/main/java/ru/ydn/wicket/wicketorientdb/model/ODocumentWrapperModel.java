@@ -10,18 +10,16 @@ import com.orientechnologies.orient.core.type.ODocumentWrapper;
  *
  * @param <T> {@link ODocumentWrapper} type
  */
-public class ODocumentWrapperModel<T extends ODocumentWrapper> extends Model<T>
-{
+public class ODocumentWrapperModel<T extends ODocumentWrapper> extends Model<T> {
 	private static final long serialVersionUID = 1L;
 	
 	private boolean needToReload=false;
-	public ODocumentWrapperModel()
-	{
+
+	public ODocumentWrapperModel() {
 		super();
 	}
 
-	public ODocumentWrapperModel(T object)
-	{
+	public ODocumentWrapperModel(T object) {
 		super(object);
 		needToReload=false;
 	}
@@ -29,9 +27,8 @@ public class ODocumentWrapperModel<T extends ODocumentWrapper> extends Model<T>
 
 	@Override
 	public T getObject() {
-		T ret=  super.getObject();
-		if(ret!=null && needToReload)
-		{
+		T ret = super.getObject();
+		if(ret != null && needToReload) {
 			ret.load();
 			needToReload = false;
 		}
@@ -46,7 +43,9 @@ public class ODocumentWrapperModel<T extends ODocumentWrapper> extends Model<T>
 
 	@Override
 	public void detach() {
-		needToReload = true;
+		if (!getObject().getDocument().getIdentity().isNew()) {
+			needToReload = true;
+		}
 		super.detach();
 	}
 	
