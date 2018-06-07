@@ -1,5 +1,6 @@
 package ru.ydn.wicket.wicketorientdb.security;
 
+
 import org.apache.wicket.authorization.Action;
 /**
  * Annotation for specification of required OrientDB resources
@@ -7,6 +8,7 @@ import org.apache.wicket.authorization.Action;
 @java.lang.annotation.Target(value = {java.lang.annotation.ElementType.TYPE})
 @java.lang.annotation.Retention(value = java.lang.annotation.RetentionPolicy.RUNTIME)
 @java.lang.annotation.Documented
+@java.lang.annotation.Repeatable(RequiredOrientResources.class)
 public @interface RequiredOrientResource {
 	String value();
 	String specific() default "";
