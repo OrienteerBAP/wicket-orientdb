@@ -1,5 +1,6 @@
 package ru.ydn.wicket.wicketorientdb.model;
 
+import com.orientechnologies.orient.core.exception.ORecordNotFoundException;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 
@@ -27,12 +28,16 @@ public class ODocumentWrapperModel<T extends ODocumentWrapper> extends Model<T> 
 
 	@Override
 	public T getObject() {
-		T ret = super.getObject();
-		if(ret != null && needToReload) {
-			ret.load();
-			needToReload = false;
+		try {
+			T ret = super.getObject();
+			if(ret != null && needToReload) {
+				ret.load();
+				needToReload = false;
+			}
+			return ret;
+		} catch (ORecordNotFoundException e) {
+			return null;
 		}
-		return ret;
 	}
 
 	@Override
