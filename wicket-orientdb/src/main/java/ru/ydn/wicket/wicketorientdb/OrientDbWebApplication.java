@@ -1,31 +1,5 @@
 package ru.ydn.wicket.wicketorientdb;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-
-import org.apache.wicket.Application;
-import org.apache.wicket.ConverterLocator;
-import org.apache.wicket.IApplicationListener;
-import org.apache.wicket.IConverterLocator;
-import org.apache.wicket.authroles.authentication.AuthenticatedWebApplication;
-import org.apache.wicket.core.util.lang.PropertyResolver;
-import org.apache.wicket.core.util.lang.PropertyResolver.IPropertyLocator;
-import org.apache.wicket.markup.html.IPackageResourceGuard;
-import org.apache.wicket.markup.html.SecurePackageResourceGuard;
-import org.apache.wicket.protocol.http.AjaxEnclosureListener;
-import org.apache.wicket.protocol.http.WebApplication;
-
-import ru.ydn.wicket.wicketorientdb.components.IHookPosition;
-import ru.ydn.wicket.wicketorientdb.converter.ODocumentConverter;
-import ru.ydn.wicket.wicketorientdb.converter.OIdentifiableConverter;
-import ru.ydn.wicket.wicketorientdb.rest.OrientDBHttpAPIResource;
-import ru.ydn.wicket.wicketorientdb.security.WicketOrientDbAuthorizationStrategy;
-import ru.ydn.wicket.wicketorientdb.utils.FixFormEncTypeListener;
-import ru.ydn.wicket.wicketorientdb.utils.ODocumentPropertyLocator;
-
-import com.google.common.collect.Collections2;
 import com.orientechnologies.orient.core.Orient;
 import com.orientechnologies.orient.core.db.ODatabase;
 import com.orientechnologies.orient.core.db.ODatabaseInternal;
@@ -39,6 +13,24 @@ import com.orientechnologies.orient.core.metadata.security.ORule.ResourceGeneric
 import com.orientechnologies.orient.core.metadata.security.OSecurity;
 import com.orientechnologies.orient.core.record.impl.ODocument;
 import com.orientechnologies.orient.server.OServer;
+import org.apache.wicket.Application;
+import org.apache.wicket.ConverterLocator;
+import org.apache.wicket.IApplicationListener;
+import org.apache.wicket.IConverterLocator;
+import org.apache.wicket.authroles.authentication.AuthenticatedWebApplication;
+import org.apache.wicket.core.util.lang.PropertyResolver;
+import org.apache.wicket.protocol.http.WebApplication;
+import ru.ydn.wicket.wicketorientdb.components.IHookPosition;
+import ru.ydn.wicket.wicketorientdb.converter.ODocumentConverter;
+import ru.ydn.wicket.wicketorientdb.converter.OIdentifiableConverter;
+import ru.ydn.wicket.wicketorientdb.rest.OrientDBHttpAPIResource;
+import ru.ydn.wicket.wicketorientdb.security.WicketOrientDbAuthorizationStrategy;
+import ru.ydn.wicket.wicketorientdb.utils.FixFormEncTypeListener;
+import ru.ydn.wicket.wicketorientdb.utils.ODocumentPropertyLocator;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 /**
  * {@link WebApplication} realization for applications on top of OrientDB
