@@ -18,6 +18,7 @@ import org.apache.wicket.protocol.http.AjaxEnclosureListener;
 import org.apache.wicket.protocol.http.WebApplication;
 
 import ru.ydn.wicket.wicketorientdb.components.IHookPosition;
+import ru.ydn.wicket.wicketorientdb.converter.HexConverter;
 import ru.ydn.wicket.wicketorientdb.converter.ODocumentConverter;
 import ru.ydn.wicket.wicketorientdb.converter.OIdentifiableConverter;
 import ru.ydn.wicket.wicketorientdb.rest.OrientDBHttpAPIResource;
@@ -225,6 +226,7 @@ public abstract class OrientDbWebApplication extends AuthenticatedWebApplication
 		ConverterLocator locator =  new ConverterLocator();
 		locator.set(OIdentifiable.class, new OIdentifiableConverter<OIdentifiable>());
 		locator.set(ODocument.class, new ODocumentConverter());
+		locator.set(byte[].class, new HexConverter());
 		return locator;
 	}
 

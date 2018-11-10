@@ -26,6 +26,17 @@ public abstract class AbstractJointConverter<F> extends Converter<F, String> imp
 		return convertToObject(b, Session.exists()?Session.get().getLocale():Locale.getDefault());
 	}
 	
+	protected ConversionException newConversionException(final String message, 
+														final Object value, 
+														final Class<?> targetType,
+														final Locale locale)
+	{
+			return new ConversionException(message).setSourceValue(value)
+				.setTargetType(targetType)
+				.setConverter(this)
+				.setLocale(locale);
+	}
+	
 	/**
 	 * Utility method to construct converter from 2 functions
 	 * @param <F> type to convert from
