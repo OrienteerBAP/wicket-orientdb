@@ -21,7 +21,8 @@ public abstract class SerializableConverter<F, T> extends Converter<F, T> implem
 	 * @param from function to convert backward
 	 * @return converter
 	 */
-	public static <F, T> SerializableConverter<F, T> of(final SerializableFunction<? super F, ? extends T> to, final SerializableFunction<? super T, ? extends F> from) {
+	public final static <F, T> SerializableConverter<F, T> of(final SerializableFunction<? super F, ? extends T> to, 
+															  final SerializableFunction<? super T, ? extends F> from) {
 		return new SerializableConverter<F, T>() {
 
 			@Override
