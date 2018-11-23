@@ -1,6 +1,7 @@
 package ru.ydn.wicket.wicketorientdb.utils;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 import org.apache.wicket.util.lang.Objects;
 
@@ -365,12 +366,34 @@ public class OSchemaHelper
 	public OClass getOClass() {
 		return lastClass;
 	}
+	
+	/**
+	 * Do actions on OClass
+	 * @param consumer to perform actions
+	 * @return this helper
+	 */
+	public OSchemaHelper doOnOClass(Consumer<OClass> consumer) {
+		checkOClass();
+		consumer.accept(getOClass());
+		return this;
+	}
 
 	/**
 	 * @return current {@link OProperty}
 	 */
 	public OProperty getOProperty() {
 		return lastProperty;
+	}
+	
+	/**
+	 * Do actions on OProperty
+	 * @param consumer to perform actions
+	 * @return this helper
+	 */
+	public OSchemaHelper doOnOProperty(Consumer<OProperty> consumer) {
+		checkOProperty();
+		consumer.accept(getOProperty());
+		return this;
 	}
 
 	/**
@@ -381,10 +404,32 @@ public class OSchemaHelper
 	}
 	
 	/**
+	 * Do actions on OIndex
+	 * @param consumer to perform actions
+	 * @return this helper
+	 */
+	public OSchemaHelper doOnOIndex(Consumer<OIndex<?>> consumer) {
+		checkOIndex();
+		consumer.accept(getOIndex());
+		return this;
+	}
+	
+	/**
 	 * @return current {@link ODocument}
 	 */
 	public ODocument getODocument() {
 		return lastDocument;
+	}
+	
+	/**
+	 * Do actions on ODocument
+	 * @param consumer to perform actions
+	 * @return this helper
+	 */
+	public OSchemaHelper doOnODocument(Consumer<ODocument> consumer) {
+		checkODocument();
+		consumer.accept(getODocument());
+		return this;
 	}
 	
 	/**

@@ -3,9 +3,12 @@ package ru.ydn.wicket.wicketorientdb.model;
 import org.apache.wicket.WicketRuntimeException;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.util.lang.Args;
+import org.danekja.java.util.function.serializable.SerializableFunction;
 
 import com.google.common.base.Converter;
 import com.google.common.base.Function;
+
+import ru.ydn.wicket.wicketorientdb.converter.SerializableConverter;
 
 /**
  * Model for lazy apply of function on object from underling model
@@ -15,12 +18,18 @@ import com.google.common.base.Function;
 public class FunctionModel<F, T> extends AbstractConverterModel<F, T>
 {
 	private static final long serialVersionUID = 1L;
-	private Function<? super F, ? extends T> function;
+	private SerializableFunction<? super F, ? extends T> function;
 	
-	public FunctionModel(IModel<F> fromModel, Function<? super F, ? extends T> function) {
+	public FunctionModel(IModel<F> fromModel, SerializableFunction<? super F, ? extends T> function) {
 		super(fromModel);
 		Args.notNull(function, "Function should be specified");
 		this.function = function;
+	}
+	
+	public FunctionModel(IModel<F> fromModel, SerializableFunction<? super F, ? extends T> function, SerializableFunction<? super T, ? extends F> backwardFunction) {
+		super(fromModel);
+		Args.notNull(function, "Function should be specified");
+		this.function = SerializableConverter.of(function, backwardFunction);
 	}
 	
 	@Override
