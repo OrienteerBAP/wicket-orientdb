@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>ru.ydn.wicket.wicket-orientdb</groupId>
 	<artifactId>wicket-orientdb-parent</artifactId>
-	<version>1.4-SNAPSHOT</version>
+	<version>1.4-SNAPSHOT-distributed</version>
 	<packaging>pom</packaging>
 	<name>wicket-orientdb-parent</name>
 	<description>Wicket library for OrientDB</description>

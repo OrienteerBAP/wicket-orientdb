@@ -21,7 +21,7 @@
 	<parent>
     <artifactId>wicket-orientdb-parent</artifactId>
     <groupId>ru.ydn.wicket.wicket-orientdb</groupId>
-    <version>1.4-SNAPSHOT</version>
+    <version>1.4-SNAPSHOT-distributed</version>
   </parent>
 	<artifactId>wicket-orientdb-demo</artifactId>
 	<packaging>war</packaging>
