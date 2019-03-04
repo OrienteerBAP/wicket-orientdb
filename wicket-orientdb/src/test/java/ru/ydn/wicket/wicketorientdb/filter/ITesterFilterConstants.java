@@ -7,6 +7,8 @@ interface ITesterFilterConstants {
 
     public static final String TEST_CLASS_NAME      = "FilterTestOClass";
     public static final String LINK_TEST_CLASS_NAME = "LinkFilterOClass";
+    public static final String PARENT_CLASS_NAME    = "ParentClass";
+    public static final String CHILD_CLASS_NAME     = "ChildClass";
 
     public static final String STRING_FIELD               = "name";
     public static final String NUMBER_FIELD               = "number";

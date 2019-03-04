@@ -16,14 +16,22 @@ import java.util.Map;
  */
 public class FilterCriteriaManager implements IFilterCriteriaManager {
 
-    private final IModel<OProperty> propertyModel;
+    private final String field;
     private final Map<FilterCriteriaType, IFilterCriteria> filterCriterias;
     private boolean and;
 
     public FilterCriteriaManager(IModel<OProperty> propertyModel) {
-        Args.notNull(propertyModel, "propertyModel");
-        Args.notNull(propertyModel.getObject(), "propertyModel.getObject()");
-        this.propertyModel = propertyModel;
+        this(propertyModel.getObject().getName());
+    }
+
+    public FilterCriteriaManager(OProperty property) {
+        this(property.getName());
+    }
+
+    public FilterCriteriaManager(String field) {
+        Args.notNull(field, "field");
+
+        this.field = field;
         filterCriterias = Maps.newHashMap();
         and = true;
     }
@@ -58,59 +66,62 @@ public class FilterCriteriaManager implements IFilterCriteriaManager {
 
     @Override
     public <T> IFilterCriteria createEqualsFilterCriteria(IModel<T> model, IModel<Boolean> join) {
-        return new EqualsFilterCriteria(propertyModel.getObject().getName(), model, join);
+        return new EqualsFilterCriteria(field, model, join);
     }
 
     @Override
     public <T> IFilterCriteria createCollectionFilterCriteria(IModel<Collection<T>> model, IModel<Boolean> join) {
-        OProperty property = propertyModel.getObject();
-        return new CollectionFilterCriteria(property.getName(), model, join);
+        return new CollectionFilterCriteria(field, model, join);
     }
 
     @Override
     public <T> IFilterCriteria createRangeFilterCriteria(IModel<List<T>> model, IModel<Boolean> join) {
-        return new RangeFilterCriteria(propertyModel.getObject().getName(), model, join);
+        return new RangeFilterCriteria(field, model, join);
     }
-
 
     @Override
     public IFilterCriteria createContainsStringFilterCriteria(IModel<String> model, IModel<Boolean> join) {
-        return new ContainsTextFilterCriteria(propertyModel.getObject().getName(), model, join);
+        return new ContainsTextFilterCriteria(field, model, join);
     }
 
     @Override
     public IFilterCriteria createLinkCollectionFilterCriteria(IModel<Collection<ODocument>> model, boolean list, IModel<Boolean> join) {
-        return new CollectionLinkFilterCriteria(propertyModel.getObject().getName(), model, list, join);
+        return new CollectionLinkFilterCriteria(field, model, list, join);
     }
 
     @Override
     public IFilterCriteria createMapContainsKeyCriteria(IModel<String> model, IModel<Boolean> join) {
-        return new MapContainsKeyFilterCriteria(propertyModel.getObject().getName(), model, join);
+        return new MapContainsKeyFilterCriteria(field, model, join);
     }
 
     @Override
     public <T> IFilterCriteria createMapContainsValueCriteria(IModel<T> model, IModel<Boolean> join) {
-        return new MapContainsValueFilterCriteria(propertyModel.getObject().getName(), model, join);
+        return new MapContainsValueFilterCriteria(field, model, join);
     }
 
     @Override
     public <T> IFilterCriteria createEmbeddedContainsValueCriteria(IModel<T> model, IModel<Boolean> join) {
-        return new EmbeddedContainsValueCriteria(propertyModel.getObject().getName(), model, join);
+        return new EmbeddedContainsValueCriteria(field, model, join);
     }
 
     @Override
     public <T> IFilterCriteria createEmbeddedContainsKeyCriteria(IModel<T> model, IModel<Boolean> join) {
-        return new EmbeddedContainsKeyCriteria(propertyModel.getObject().getName(), model, join);
+        return new EmbeddedContainsKeyCriteria(field, model, join);
     }
 
     @Override
     public <T> IFilterCriteria createEmbeddedCollectionCriteria(IModel<String> key, IModel<Collection<T>> model, IModel<Boolean> join) {
-        return new EmbeddedCollectionFieldFilterCriteria(propertyModel.getObject().getName(), key, model, join);
+        return new EmbeddedCollectionFieldFilterCriteria(field, key, model, join);
     }
 
     @Override
     public <T> IFilterCriteria createEmbeddedCollectionContainsValueCriteria(IModel<T> model, IModel<Boolean> join) {
-        return new EmbeddedCollectionContainsValueFilterCriteria(propertyModel.getObject().getName(), model, join);
+        return new EmbeddedCollectionContainsValueFilterCriteria(field, model, join);
+    }
+
+    @Override
+    public IFilterCriteria createClassInstanceOfCriteria(IModel<String> model, IModel<Boolean> join) {
+        return new ClassInstanceOfFilterCriteria(field, model, join);
     }
 
     @Override

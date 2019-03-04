@@ -63,6 +63,15 @@ public class WicketOrientDbFilterTesterScope extends WicketOrientDbTesterScope {
             protected List<OClass> execute(ODatabaseDocument db) {
                 OClass testClass = createOClass(db, TEST_CLASS_NAME, true);
                 OClass linkClass = createOClass(db, LINK_TEST_CLASS_NAME, false);
+
+                OClass parent = createOClass(db, PARENT_CLASS_NAME, false);
+                OClass child = createOClass(db, CHILD_CLASS_NAME, false);
+
+                child.addSuperClass(parent);
+
+                createDocumentsWithPrimaryTypesForOClass(parent, true);
+                createDocumentsWithPrimaryTypesForOClass(child, true);
+
                 List<ODocument> documentsForTestClass = createDocumentsWithPrimaryTypesForOClass(testClass, true);
                 List<ODocument> documentsForLinkClass = createDocumentsWithPrimaryTypesForOClass(linkClass, true);
                 createLinksForDocuments(documentsForTestClass, documentsForLinkClass);
