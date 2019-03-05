@@ -8,13 +8,14 @@ import org.apache.wicket.model.IModel;
  */
 public class ClassInstanceOfFilterCriteria extends AbstractFilterCriteria {
 
-    public ClassInstanceOfFilterCriteria(String field, IModel<?> model, IModel<Boolean> join) {
+    public ClassInstanceOfFilterCriteria(String field, IModel<String> model, IModel<Boolean> join) {
         super(field, model, join);
     }
 
     @Override
     protected String apply(String field) {
-        return field + " instanceof :" + getName();
+        // TODO: access to model by name instead by value after fix fot PR: https://github.com/orientechnologies/orientdb/issues/8797
+        return field + " instanceof \"" + getModel().getObject() + "\"";
     }
 
     @Override
