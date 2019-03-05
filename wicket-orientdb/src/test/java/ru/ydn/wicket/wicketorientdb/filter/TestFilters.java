@@ -25,8 +25,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static ru.ydn.wicket.wicketorientdb.filter.ITesterFilterConstants.*;
 
 public class TestFilters {
@@ -391,4 +390,62 @@ public class TestFilters {
         assertTrue("size must be 1, but it is " + provider.size(), provider.size() == 1);
         assertTrue(state.getObject().get(0) != null);
     }
+
+    @Test
+    public void testClassInstanceOfFilter() {
+        OQueryModel<ODocument> queryModel = new OQueryModel<>("SELECT FROM " + PARENT_CLASS_NAME);
+
+        IFilterCriteriaManager manager = new FilterCriteriaManager("@class");
+        IFilterCriteria criteria = manager.createClassInstanceOfCriteria(Model.of(PARENT_CLASS_NAME), Model.of(true));
+        manager.addFilterCriteria(criteria);
+
+        queryModel.addFilterCriteriaManager("@class", manager);
+
+        List<ODocument> docs = queryModel.getObject();
+        assertFalse(docs.isEmpty());
+        assertEquals(8, docs.size());
+
+        queryModel.detach();
+        queryModel.clearFilterCriteriaManagers();
+
+        criteria = manager.createClassInstanceOfCriteria(Model.of(CHILD_CLASS_NAME), Model.of(true));
+        manager.addFilterCriteria(criteria);
+        queryModel.addFilterCriteriaManager("@class", manager);
+
+        docs = queryModel.getObject();
+        assertFalse(docs.isEmpty());
+        assertEquals(4, docs.size());
+    }
+
+    @Test
+    public void testClassInCollectionFilter() {
+        OQueryModel<ODocument> queryModel = new OQueryModel<>("SELECT FROM " + PARENT_CLASS_NAME);
+
+        IFilterCriteriaManager manager = new FilterCriteriaManager("@class");
+
+        IModel<Collection<String>> model = new CollectionModel<>(Collections.singletonList(PARENT_CLASS_NAME));
+
+        IFilterCriteria criteria = manager.createClassInCollectionCriteria(model, Model.of(true));
+        manager.addFilterCriteria(criteria);
+
+        queryModel.addFilterCriteriaManager("@class", manager);
+
+        List<ODocument> docs = queryModel.getObject();
+        assertFalse(docs.isEmpty());
+        assertEquals(4, docs.size());
+
+        queryModel.detach();
+        queryModel.clearFilterCriteriaManagers();
+
+        model = new CollectionModel<>(Collections.singletonList(CHILD_CLASS_NAME));
+
+        criteria = manager.createClassInCollectionCriteria(model, Model.of(true));
+        manager.addFilterCriteria(criteria);
+        queryModel.addFilterCriteriaManager("@class", manager);
+
+        docs = queryModel.getObject();
+        assertFalse(docs.isEmpty());
+        assertEquals(4, docs.size());
+    }
+
 }

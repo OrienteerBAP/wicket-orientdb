@@ -124,6 +124,10 @@ public interface IFilterCriteriaManager extends IClusterable {
      */
     public <T> IFilterCriteria createEmbeddedCollectionContainsValueCriteria(IModel<T> model, IModel<Boolean> join);
 
+    public IFilterCriteria createClassInstanceOfCriteria(IModel<String> model, IModel<Boolean> join);
+
+    public IFilterCriteria createClassInCollectionCriteria(IModel<Collection<String>> model, IModel<Boolean> join);
+
     /**
      * Add filter for current field
      * @param filterCriteria {@link IFilterCriteria} filter

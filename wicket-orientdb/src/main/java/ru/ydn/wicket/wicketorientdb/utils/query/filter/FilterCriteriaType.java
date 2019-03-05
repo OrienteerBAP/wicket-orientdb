@@ -18,7 +18,7 @@ public final class FilterCriteriaType implements IClusterable {
 
     private static final Pattern NAME_PATTERN = Pattern.compile("^[a-zA-Z0-9]+$");
 
-    public static final FilterCriteriaType EQUALS                        = createAndRegister("equals", false, false);
+    public static final FilterCriteriaType EQUALS                       = createAndRegister("equals", false, false);
     public static final FilterCriteriaType COLLECTION                   = createAndRegister("collection", true, false);
     public static final FilterCriteriaType RANGE                        = createAndRegister("range", true, false);
     public static final FilterCriteriaType CONTAINS_TEXT                = createAndRegister("containsText", false, false);
@@ -31,6 +31,8 @@ public final class FilterCriteriaType implements IClusterable {
     public static final FilterCriteriaType EMBEDDED_CONTAINS_KEY        = createAndRegister("embeddedContainsKey", false, false);
     public static final FilterCriteriaType EMBEDDED_COLLECTION          = createAndRegister("embeddedCollection", true, false);
     public static final FilterCriteriaType EMBEDDED_COLLECTION_CONTAINS = createAndRegister("embeddedCollectionContains", false, false);
+    public static final FilterCriteriaType CLASS_INSTANCE_OF            = createAndRegister("classInstanceOf", false, false);
+    public static final FilterCriteriaType CLASS_IN_COLLECTION          = createAndRegister("classInCollection", true, false);
 
     private final boolean collection;
     private final boolean map;
