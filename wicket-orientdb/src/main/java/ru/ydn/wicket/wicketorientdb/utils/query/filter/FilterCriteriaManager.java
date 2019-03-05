@@ -125,6 +125,11 @@ public class FilterCriteriaManager implements IFilterCriteriaManager {
     }
 
     @Override
+    public IFilterCriteria createClassInCollectionCriteria(IModel<Collection<String>> model, IModel<Boolean> join) {
+        return new ClassInCollectionFilterCriteria(field, model, join);
+    }
+
+    @Override
     public void addFilterCriteria(IFilterCriteria filterCriteria) {
         filterCriterias.put(filterCriteria.getFilterCriteriaType(), filterCriteria);
     }

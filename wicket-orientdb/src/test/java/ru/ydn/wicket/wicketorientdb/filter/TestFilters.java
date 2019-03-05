@@ -417,4 +417,35 @@ public class TestFilters {
         assertEquals(4, docs.size());
     }
 
+    @Test
+    public void testClassInCollectionFilter() {
+        OQueryModel<ODocument> queryModel = new OQueryModel<>("SELECT FROM " + PARENT_CLASS_NAME);
+
+        IFilterCriteriaManager manager = new FilterCriteriaManager("@class");
+
+        IModel<Collection<String>> model = new CollectionModel<>(Collections.singletonList(PARENT_CLASS_NAME));
+
+        IFilterCriteria criteria = manager.createClassInCollectionCriteria(model, Model.of(true));
+        manager.addFilterCriteria(criteria);
+
+        queryModel.addFilterCriteriaManager("@class", manager);
+
+        List<ODocument> docs = queryModel.getObject();
+        assertFalse(docs.isEmpty());
+        assertEquals(4, docs.size());
+
+        queryModel.detach();
+        queryModel.clearFilterCriteriaManagers();
+
+        model = new CollectionModel<>(Collections.singletonList(CHILD_CLASS_NAME));
+
+        criteria = manager.createClassInCollectionCriteria(model, Model.of(true));
+        manager.addFilterCriteria(criteria);
+        queryModel.addFilterCriteriaManager("@class", manager);
+
+        docs = queryModel.getObject();
+        assertFalse(docs.isEmpty());
+        assertEquals(4, docs.size());
+    }
+
 }
