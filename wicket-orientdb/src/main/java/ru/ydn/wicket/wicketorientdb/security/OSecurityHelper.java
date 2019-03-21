@@ -157,23 +157,6 @@ public class OSecurityHelper
 		return new RequiredOrientResource[]{new RequiredOrientResourceImpl(resource.getName(), specific, action, permissions)};
 	}
 	
-	//Very-very bad hack - should be changed in OrientDB
-	private static class AccessToIsAllowedInRestrictedAccessHook extends ORestrictedAccessHook
-	{
-		public final static AccessToIsAllowedInRestrictedAccessHook INSTANCE = new AccessToIsAllowedInRestrictedAccessHook();
-		
-		public AccessToIsAllowedInRestrictedAccessHook() {
-			super(ODatabaseRecordThreadLocal.instance().get());
-		}
-		@Override
-		public boolean isAllowed(ODocument iDocument,
-				ORestrictedOperation iAllowOperation, boolean iReadOriginal) {
-			database = ODatabaseRecordThreadLocal.instance().get();
-			return super.isAllowed(iDocument, iAllowOperation, iReadOriginal);
-		}
-		
-	}
-	
 	/**
 	 * Check that all required permissions present for specified {@link ODocument}
 	 * @param doc {@link ODocument} to check security rights for
@@ -187,7 +170,9 @@ public class OSecurityHelper
 			ORestrictedOperation allowOperation = MAPPING_FOR_HACK.get(orientPermission);
 			if(allowOperation!=null)
 			{
-				if(!AccessToIsAllowedInRestrictedAccessHook.INSTANCE.isAllowed(doc, allowOperation, false)) return false;
+				if(!ORestrictedAccessHook.isAllowed(ODatabaseRecordThreadLocal.instance().get(), 
+													doc, allowOperation, false)) 
+					return false;
 			}
 		}
 		return true;

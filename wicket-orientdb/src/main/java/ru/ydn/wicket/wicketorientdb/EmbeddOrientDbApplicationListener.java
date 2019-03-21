@@ -74,7 +74,7 @@ public class EmbeddOrientDbApplicationListener implements IApplicationListener {
 			server.activate();
 			server.removeShutdownHook();
 			app.setServer(server);
-			app.getOrientDbSettings().setDatabasePoolFactory(server.getDatabasePoolFactory());
+//			app.getOrientDbSettings().setDatabasePoolFactory(server.getDatabasePoolFactory());
 			onAfterServerStartupAndActivation(app);
 		} catch (Exception e) {
 			throw new WicketRuntimeException("Can't start OrientDB Embedded Server", e);
