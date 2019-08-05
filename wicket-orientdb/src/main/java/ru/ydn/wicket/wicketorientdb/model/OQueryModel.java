@@ -1,13 +1,13 @@
 package ru.ydn.wicket.wicketorientdb.model;
 
 import com.google.common.base.Function;
-import com.google.common.collect.Iterators;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.orientechnologies.orient.core.db.document.ODatabaseDocument;
 import com.orientechnologies.orient.core.metadata.schema.OClass;
+import com.orientechnologies.orient.core.record.OElement;
 import com.orientechnologies.orient.core.record.ORecord;
 import com.orientechnologies.orient.core.record.impl.ODocument;
+import com.orientechnologies.orient.core.sql.executor.OResultSet;
 import com.orientechnologies.orient.core.sql.query.OSQLSynchQuery;
 import org.apache.wicket.WicketRuntimeException;
 import org.apache.wicket.extensions.markup.html.repeater.data.sort.SortOrder;
@@ -26,10 +26,8 @@ import ru.ydn.wicket.wicketorientdb.utils.query.filter.IFilterCriteria;
 import ru.ydn.wicket.wicketorientdb.utils.query.filter.IFilterCriteriaManager;
 
 import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Model to obtain data from OrientDB by query
@@ -62,7 +60,7 @@ public class OQueryModel<K> extends LoadableDetachableModel<List<K>>
 	private static final long serialVersionUID = 1L;
 
 	private IQueryManager queryManager;
-    private Function<?, K> transformer;
+    private Function<OElement, K> transformer;
     private Map<String, IModel<Object>> params = new HashMap<String, IModel<Object>>();
     private Map<String, IModel<Object>> variables = new HashMap<String, IModel<Object>>();
     private String sortableParameter=null;
@@ -76,7 +74,7 @@ public class OQueryModel<K> extends LoadableDetachableModel<List<K>>
 	 */
     public OQueryModel(String sql)
     {
-    	this(sql, (Function<?, K>)null);
+    	this(sql, (Function<?, K>) null);
     }
     
     /**
@@ -179,22 +177,27 @@ public class OQueryModel<K> extends LoadableDetachableModel<List<K>>
         super.detach();
         return this;
     }
-    
-    protected <T> OSQLSynchQuery<T> enhanceContextByVariables(OSQLSynchQuery<T> query) {
-    	for(Map.Entry<String, IModel<Object>> var: variables.entrySet()) {
-    		query.getContext().setVariable(var.getKey(), var.getValue().getObject());
-    	}
-    	return query;
-    }
+
+//    protected Map<String, Object> createQueryVariablesMap() {
+//        return variables.entrySet().stream()
+//                .collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().getObject()));
+//    }
 
 	@SuppressWarnings("unchecked")
-	protected List<K> load()
-    {
+	protected List<K> load() {
     	ODatabaseDocument db = OrientDbWebSession.get().getDatabase();
-    	OSQLSynchQuery<K> query = new OSQLSynchQuery<K>(prepareSql(null, null));
-    	List<?> ret = db.query(enhanceContextByVariables(query), prepareParams());
-    	
-    	return transformer==null?(List<K>)ret:Lists.transform(ret, (Function<Object, K>)transformer);
+        String sql = prepareSql(null, null);
+        OResultSet result = db.query(sql, createQueryVariablesMap());
+
+        if (transformer != null) {
+            return result.elementStream()
+                    .map(transformer)
+                    .collect(Collectors.toCollection(LinkedList::new));
+        }
+
+        return result.elementStream()
+                .map(e -> (K) e)
+                .collect(Collectors.toCollection(LinkedList::new));
     }
 
 	/**
@@ -206,7 +209,7 @@ public class OQueryModel<K> extends LoadableDetachableModel<List<K>>
     @SuppressWarnings("unchecked")
 	public Iterator<K> iterator(long first, long count)
     {
-    	return iterator(first, count, (Function<Object, K>)transformer);
+    	return iterator(first, count, (Function<OElement, K>) transformer);
     }
     
     /**
@@ -218,12 +221,23 @@ public class OQueryModel<K> extends LoadableDetachableModel<List<K>>
 	 * @return {@link Iterator} over results
 	 */
     @SuppressWarnings("unchecked")
-	public <T> Iterator<T> iterator(long first, long count, Function<Object, T> transformer)
-    {
+	public <T> Iterator<T> iterator(long first, long count, Function<OElement, T> transformer) {
     	ODatabaseDocument db = OrientDbWebSession.get().getDatabase();
-    	OSQLSynchQuery<K> query = new OSQLSynchQuery<K>(prepareSql((int)first, (int)count));
-    	Iterator<?> iterator = db.query(enhanceContextByVariables(query), prepareParams()).iterator();
-    	return transformer==null?(Iterator<T>)iterator:Iterators.transform(iterator, transformer);
+
+        Map<String, Object> params = new HashMap<>(createQueryVariablesMap());
+        params.putAll(prepareParams());
+
+        OResultSet result = db.query(prepareSql((int) first, (int) count), params);
+
+        if (transformer != null) {
+            return result.elementStream()
+                    .map(transformer)
+                    .iterator();
+        }
+
+    	return result.elementStream()
+                .map(e -> (T) e)
+                .iterator();
     }
     
     /**
@@ -265,9 +279,7 @@ public class OQueryModel<K> extends LoadableDetachableModel<List<K>>
     	return size;
     }
 
-    private Map<String, Object> prepareParams()
-    {
-    	//return Maps.transformValues(params, GetObjectFunction.getInstance());
+    private Map<String, Object> prepareParams() {
         for (IFilterCriteriaManager manager : queryManager.getFilterCriteriaManagers()) {
             addQueryParametersFromManager(manager);
         }

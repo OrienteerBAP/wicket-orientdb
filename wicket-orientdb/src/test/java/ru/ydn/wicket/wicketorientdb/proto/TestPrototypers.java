@@ -173,7 +173,7 @@ public class TestPrototypers
 		newIndex = OIndexPrototyper.newPrototype("NewClass", Arrays.asList("description"));
 		PropertyResolver.setValue("type", newIndex, "notunique", null);
 		assertEquals(0, property.getAllIndexes().size());
-		PropertyResolver.setValue("algorithm", newIndex, ODefaultIndexFactory.SBTREE_ALGORITHM, null);
+		PropertyResolver.setValue("algorithm", newIndex, "SBTREE", null);
 		ODocument metadata = new ODocument();
 		metadata.field("test", "test123", OType.STRING);
 		PropertyResolver.setValue("metadata", newIndex, metadata, null);

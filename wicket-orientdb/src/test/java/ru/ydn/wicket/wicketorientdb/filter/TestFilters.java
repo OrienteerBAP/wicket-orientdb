@@ -3,6 +3,8 @@ package ru.ydn.wicket.wicketorientdb.filter;
 import com.google.common.collect.Lists;
 import com.orientechnologies.orient.core.metadata.schema.OProperty;
 import com.orientechnologies.orient.core.record.impl.ODocument;
+import com.orientechnologies.orient.core.sql.executor.OResultSet;
+import com.orientechnologies.orient.core.sql.query.OSQLSynchQuery;
 import org.apache.wicket.extensions.markup.html.repeater.data.sort.SortOrder;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
@@ -12,10 +14,13 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ru.ydn.wicket.wicketorientdb.model.ODocumentLinksQueryDataProvider;
 import ru.ydn.wicket.wicketorientdb.model.ODocumentModel;
 import ru.ydn.wicket.wicketorientdb.model.OQueryDataProvider;
 import ru.ydn.wicket.wicketorientdb.model.OQueryModel;
+import ru.ydn.wicket.wicketorientdb.utils.DBClosure;
 import ru.ydn.wicket.wicketorientdb.utils.query.filter.FilterCriteriaManager;
 import ru.ydn.wicket.wicketorientdb.utils.query.filter.IFilterCriteria;
 import ru.ydn.wicket.wicketorientdb.utils.query.filter.IFilterCriteriaManager;
@@ -29,6 +34,9 @@ import static org.junit.Assert.*;
 import static ru.ydn.wicket.wicketorientdb.filter.ITesterFilterConstants.*;
 
 public class TestFilters {
+
+    private static final Logger LOG = LoggerFactory.getLogger(TestFilters.class);
+
     @ClassRule
     public static WicketOrientDbFilterTesterScope wicket = new WicketOrientDbFilterTesterScope();
 

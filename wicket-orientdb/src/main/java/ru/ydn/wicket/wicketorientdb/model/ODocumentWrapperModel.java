@@ -31,7 +31,7 @@ public class ODocumentWrapperModel<T extends ODocumentWrapper> extends Model<T> 
 		try {
 			T ret = super.getObject();
 			if(ret != null && needToReload) {
-				ret.load();
+				ret.getDocument().load();
 				needToReload = false;
 			}
 			return ret;
