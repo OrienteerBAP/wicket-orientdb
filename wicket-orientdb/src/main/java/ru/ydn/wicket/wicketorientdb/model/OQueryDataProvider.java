@@ -2,6 +2,7 @@ package ru.ydn.wicket.wicketorientdb.model;
 
 import com.google.common.base.Function;
 import com.orientechnologies.orient.core.metadata.schema.OClass;
+import com.orientechnologies.orient.core.record.OElement;
 import com.orientechnologies.orient.core.record.impl.ODocument;
 import org.apache.wicket.extensions.markup.html.repeater.data.sort.SortOrder;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.filter.IFilterStateLocator;
@@ -30,7 +31,7 @@ public class OQueryDataProvider <K> extends AbstractFilteredProvider<K, String> 
 	 * @param sql SQL to be executed to obtain data
 	 * @param transformer transformer for wrapping of {@link ODocument} ot required type
 	 */
-	public OQueryDataProvider(String sql, Function<?, K> transformer)
+	public OQueryDataProvider(String sql, Function<OElement, K> transformer)
 	{
 		this(new OQueryModel<K>(sql, transformer));
 	}

@@ -8,7 +8,6 @@ import com.orientechnologies.orient.core.record.OElement;
 import com.orientechnologies.orient.core.record.ORecord;
 import com.orientechnologies.orient.core.record.impl.ODocument;
 import com.orientechnologies.orient.core.sql.executor.OResultSet;
-import com.orientechnologies.orient.core.sql.query.OSQLSynchQuery;
 import org.apache.wicket.WicketRuntimeException;
 import org.apache.wicket.extensions.markup.html.repeater.data.sort.SortOrder;
 import org.apache.wicket.model.IModel;
@@ -74,7 +73,7 @@ public class OQueryModel<K> extends LoadableDetachableModel<List<K>>
 	 */
     public OQueryModel(String sql)
     {
-    	this(sql, (Function<?, K>) null);
+    	this(sql, (Function<OElement, K>) null);
     }
     
     /**
@@ -83,7 +82,7 @@ public class OQueryModel<K> extends LoadableDetachableModel<List<K>>
 	 */
     public OQueryModel(String sql, Class<? extends K> wrapperClass)
     {
-    	this(sql, new DocumentWrapperTransformer<K>(wrapperClass));
+    	this(sql, new DocumentWrapperTransformer<>(wrapperClass));
     }
 
     /**
@@ -91,10 +90,10 @@ public class OQueryModel<K> extends LoadableDetachableModel<List<K>>
 	 * @param transformer transformer for wrapping of {@link ODocument} ot required type
 	 */
     @SuppressWarnings("unchecked")
-	public OQueryModel(String sql, Function<?, K> transformer)
+	public OQueryModel(String sql, Function<OElement, K> transformer)
     {
     	this.queryManager = new StringQueryManager(sql);
-        this.transformer = transformer!=null?transformer:(Function<?, K>)ConvertToODocumentFunction.INSTANCE;
+        this.transformer = transformer != null ? transformer : (Function<OElement, K>) ConvertToODocumentFunction.INSTANCE;
         if(queryManager.hasOrderBy())
         {
             throw new WicketRuntimeException(OQueryModel.class.getSimpleName()+" doesn't support 'order by' in supplied sql");
@@ -187,11 +186,11 @@ public class OQueryModel<K> extends LoadableDetachableModel<List<K>>
 	protected List<K> load() {
     	ODatabaseDocument db = OrientDbWebSession.get().getDatabase();
         String sql = prepareSql(null, null);
-        OResultSet result = db.query(sql, createQueryVariablesMap());
+        OResultSet result = db.query(sql, prepareParams());
 
         if (transformer != null) {
             return result.elementStream()
-                    .map(transformer)
+                    .map(e -> transformer.apply(e))
                     .collect(Collectors.toCollection(LinkedList::new));
         }
 
@@ -207,9 +206,9 @@ public class OQueryModel<K> extends LoadableDetachableModel<List<K>>
 	 * @return {@link Iterator} over results
 	 */
     @SuppressWarnings("unchecked")
-	public Iterator<K> iterator(long first, long count)
+	public Iterator<Object> iterator(long first, long count)
     {
-    	return iterator(first, count, (Function<OElement, K>) transformer);
+    	return iterator(first, count, (Function<OElement, Object>) transformer);
     }
     
     /**
@@ -224,10 +223,7 @@ public class OQueryModel<K> extends LoadableDetachableModel<List<K>>
 	public <T> Iterator<T> iterator(long first, long count, Function<OElement, T> transformer) {
     	ODatabaseDocument db = OrientDbWebSession.get().getDatabase();
 
-        Map<String, Object> params = new HashMap<>(createQueryVariablesMap());
-        params.putAll(prepareParams());
-
-        OResultSet result = db.query(prepareSql((int) first, (int) count), params);
+        OResultSet result = db.query(prepareSql((int) first, (int) count), prepareParams());
 
         if (transformer != null) {
             return result.elementStream()
@@ -259,20 +255,15 @@ public class OQueryModel<K> extends LoadableDetachableModel<List<K>>
      * Get the size of the data
      * @return results size
      */
-    public long size()
-    {
-    	if(size==null)
-    	{
+    public long size() {
+    	if (size == null) {
 	    	ODatabaseDocument db = OrientDbWebSession.get().getDatabase();
-	    	OSQLSynchQuery<ODocument> query = new OSQLSynchQuery<ODocument>(queryManager.getCountSql());
-	    	List<ODocument> ret = db.query(enhanceContextByVariables(query), prepareParams());
-	    	if(ret!=null && ret.size()>0)
-	    	{
-	    		Number sizeNumber = ret.get(0).field("count");
-	    		size = sizeNumber!=null?sizeNumber.longValue():0;
-	    	}
-	    	else
-	    	{
+	    	OResultSet result = db.query(queryManager.getCountSql(), prepareParams());
+
+	    	if (result.hasNext()) {
+	    		Number sizeNumber = result.next().getProperty("count");
+	    		size = sizeNumber != null ? sizeNumber.longValue() : 0;
+	    	} else {
 	    		size = 0L;
 	    	}
     	}
@@ -283,7 +274,16 @@ public class OQueryModel<K> extends LoadableDetachableModel<List<K>>
         for (IFilterCriteriaManager manager : queryManager.getFilterCriteriaManagers()) {
             addQueryParametersFromManager(manager);
         }
-    	return Maps.transformValues(params, GetObjectAndWrapDocumentsFunction.getInstance());
+
+        Map<String, Object> paramsMap = Maps.transformValues(params, GetObjectAndWrapDocumentsFunction.getInstance());
+        Map<String, Object> variablesMap = variables.entrySet().stream()
+                .collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().getObject()));
+
+        Map<String, Object> result = new HashMap<>();
+        result.putAll(variablesMap);
+        result.putAll(paramsMap);
+
+        return result;
     }
 
 
