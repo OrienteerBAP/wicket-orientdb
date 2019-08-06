@@ -28,7 +28,6 @@ public class OrientDbTestWebApplication extends OrientDbWebApplication
 				ODatabaseDocumentTx db = new ODatabaseDocumentTx(DB_MEMORY_URL);
 				if(!db.exists()) db = db.create();
 				if(db.isClosed()) db.open(settings.getAdminUserName(), settings.getAdminPassword());
-				db.getMetadata().load();
 				db.close();
 			}
 
