@@ -61,7 +61,6 @@ public class OQueryModel<K> extends LoadableDetachableModel<List<K>>
 	private IQueryManager queryManager;
     private Function<OElement, K> transformer;
     private Map<String, IModel<Object>> params = new HashMap<String, IModel<Object>>();
-    private Map<String, IModel<Object>> variables = new HashMap<String, IModel<Object>>();
     private String sortableParameter=null;
     private boolean isAscending =true;
     private boolean containExpand=true;
@@ -163,24 +162,6 @@ public class OQueryModel<K> extends LoadableDetachableModel<List<K>>
         queryManager.clearFilterCriteriaManagers();
     }
 
-    /**
-     * Set value for context variable
-     * @param varName name of the variable to set
-     * @param value {@link IModel} for the variable value
-     * @return this {@link OQueryModel}
-     */
-    @SuppressWarnings("unchecked")
-	public OQueryModel<K> setContextVariable(String varName, IModel<?> value)
-    {
-        variables.put(varName, (IModel<Object>)value);
-        super.detach();
-        return this;
-    }
-
-//    protected Map<String, Object> createQueryVariablesMap() {
-//        return variables.entrySet().stream()
-//                .collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().getObject()));
-//    }
 
 	@SuppressWarnings("unchecked")
 	protected List<K> load() {
@@ -275,15 +256,7 @@ public class OQueryModel<K> extends LoadableDetachableModel<List<K>>
             addQueryParametersFromManager(manager);
         }
 
-        Map<String, Object> paramsMap = Maps.transformValues(params, GetObjectAndWrapDocumentsFunction.getInstance());
-        Map<String, Object> variablesMap = variables.entrySet().stream()
-                .collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().getObject()));
-
-        Map<String, Object> result = new HashMap<>();
-        result.putAll(variablesMap);
-        result.putAll(paramsMap);
-
-        return result;
+        return Maps.transformValues(params, GetObjectAndWrapDocumentsFunction.getInstance());
     }
 
 

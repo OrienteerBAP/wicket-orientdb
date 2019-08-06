@@ -39,7 +39,7 @@ public class StringQueryManager implements IQueryManager {
 				countSql = matcher.replaceFirst("select sum("+expandMatcher.group(1)+".size()) as count from");
         	}
         	else {
-        		countSql = matcher.replaceFirst("select count(*) from"); 
+        		countSql = matcher.replaceFirst("select count(*) as count from");
         	}
         }
         else {
