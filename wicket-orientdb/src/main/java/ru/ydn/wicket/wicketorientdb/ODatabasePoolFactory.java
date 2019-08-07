@@ -12,7 +12,8 @@ import com.orientechnologies.orient.core.db.OrientDBConfigBuilder;
 import java.util.Objects;
 
 /**
- *
+ * Implementation of database pool factory.
+ * Works like LRU cache, using {@link ConcurrentLinkedHashMap<PoolIdentity, ODatabasePool>} as store for databases pools
  */
 public class ODatabasePoolFactory extends OOrientListenerAbstract {
 
@@ -38,11 +39,11 @@ public class ODatabasePoolFactory extends OOrientListenerAbstract {
     }
 
     /**
-     *
-     * @param database
-     * @param username
-     * @param password
-     * @return
+     * Get or create database pool instance for given user
+     * @param database name of database
+     * @param username name of user which need access to database
+     * @param password user password
+     * @return {@link ODatabasePool} which is new instance of pool or instance from pool storage
      */
     public ODatabasePool get(String database, String username, String password) {
         checkForClose();
@@ -61,13 +62,17 @@ public class ODatabasePoolFactory extends OOrientListenerAbstract {
     }
 
     /**
-     *
+     * Close all open pools and clear pool storage
      */
     public void reset() {
         poolStore.forEach((identity, pool) -> pool.close());
         poolStore.clear();
     }
 
+    /**
+     * Close all open pools and clear pool storage. Set flag closed to true, so this instance can't be used again.
+     * Need create new instance of {@link ODatabasePoolFactory} after close one of factories.
+     */
     public void close() {
         if (!isClosed()) {
             closed = true;
@@ -75,14 +80,25 @@ public class ODatabasePoolFactory extends OOrientListenerAbstract {
         }
     }
 
+    /**
+     * @return true if factory is closed
+     */
     public boolean isClosed() {
         return closed;
     }
 
+    /**
+     * @return max pool size. Default is 64
+     */
     public int getMaxPoolSize() {
         return maxPoolSize;
     }
 
+    /**
+     * Set max pool size which will be used for create new {@link ODatabasePool}
+     * @param maxPoolSize max pool size
+     * @return this instance
+     */
     public ODatabasePoolFactory setMaxPoolSize(int maxPoolSize) {
         this.maxPoolSize = maxPoolSize;
         return this;
