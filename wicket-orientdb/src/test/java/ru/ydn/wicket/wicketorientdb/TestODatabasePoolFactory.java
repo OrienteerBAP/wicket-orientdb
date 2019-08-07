@@ -1,7 +1,7 @@
 package ru.ydn.wicket.wicketorientdb;
 
-import com.orientechnologies.orient.core.Orient;
 import com.orientechnologies.orient.core.db.*;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -10,6 +10,8 @@ import static org.junit.Assert.assertNotEquals;
 public class TestODatabasePoolFactory {
 
     @Test
+    @Ignore
+    // run this test separate from wicket-orientdb
     public void testEvictions() {
         OrientDB orientDB = new OrientDB("embedded:testdb", OrientDBConfig.defaultConfig());
         orientDB.createIfNotExists("testdb", ODatabaseType.MEMORY);
