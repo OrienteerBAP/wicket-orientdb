@@ -83,7 +83,7 @@ public class StringQueryManager implements IQueryManager {
     	String filter = applyFilters();
     	boolean wrapForSkip = containExpand && !Strings.isNullOrEmpty(filter);
     	if (countSql && wrapForSkip) {
-    		sql = "select count(*) from (" + this.sql + ")";
+    		sql = "select count(*) as count from (" + this.sql + ")";
 		}
 		return prepareSql(sql, filter, null, false, !countSql && wrapForSkip);
 	}
