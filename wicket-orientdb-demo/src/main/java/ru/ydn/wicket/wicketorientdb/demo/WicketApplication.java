@@ -3,6 +3,8 @@ package ru.ydn.wicket.wicketorientdb.demo;
 import java.sql.Date;
 import java.util.Random;
 
+import com.orientechnologies.orient.core.db.ODatabaseType;
+import com.orientechnologies.orient.core.db.OrientDB;
 import org.apache.wicket.authroles.authentication.pages.SignInPage;
 import org.apache.wicket.markup.html.WebPage;
 
@@ -52,17 +54,12 @@ public class WicketApplication extends OrientDbWebApplication
 
 			@Override
 			public void onAfterServerStartupAndActivation(OrientDbWebApplication app) throws Exception {
-				
-				IOrientDbSettings settings = app.getOrientDbSettings();
-				ODatabaseDocumentTx db = new ODatabaseDocumentTx(settings.getDBUrl());
-				if(!db.exists()) db = db.create();
-				if(db.isClosed()) db.open(settings.getAdminUserName(), settings.getAdminPassword());
-				db.getMetadata().load();
-				db.close();
+				OrientDB orientDB = getServer().getContext();
+				orientDB.createIfNotExists(DB_NAME, ODatabaseType.MEMORY);
 			}
 			
 		});
-		getOrientDbSettings().setDBUrl("memory:"+DB_NAME);
+		getOrientDbSettings().setDBUrl(DB_NAME);
 		getOrientDbSettings().setGuestUserName("admin");
 		getOrientDbSettings().setGuestPassword("admin");
 		getApplicationListeners().add(new AbstractDataInstallator() {
