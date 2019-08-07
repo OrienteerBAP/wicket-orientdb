@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.orientechnologies.orient.core.Orient;
+import com.orientechnologies.orient.core.db.ODatabasePool;
 import com.orientechnologies.orient.core.db.ODatabaseThreadLocalFactory;
 import com.orientechnologies.orient.core.db.OPartitionedDatabasePoolFactory;
 import com.orientechnologies.orient.core.hook.ORecordHook;
@@ -27,10 +28,16 @@ public class OrientDbSettings implements IOrientDbSettings
 	private String adminUserName=ADMIN_DEFAULT_USERNAME;
 	private String adminPassword=ADMIN_DEFAULT_PASSWORD;
 	private String orientDbRestApiUrl;
-	private OPartitionedDatabasePoolFactory poolFactory = new OPartitionedDatabasePoolFactory();
+
+	private ODatabasePoolFactory poolFactory;
 	
 	private List<Class<? extends ORecordHook>> oRecordHooks = new ArrayList<Class<? extends ORecordHook>>();
-	
+
+	public OrientDbSettings() {
+		super();
+		this.poolFactory = new ODatabasePoolFactory();
+	}
+
 	@Override
 	public String getDBUrl() {
 		return dbUrl;
@@ -38,7 +45,7 @@ public class OrientDbSettings implements IOrientDbSettings
 
 
 	@Override
-	public OPartitionedDatabasePoolFactory getDatabasePoolFactory() {
+	public ODatabasePoolFactory getDatabasePoolFactory() {
 		return poolFactory;
 	}
 
@@ -53,7 +60,7 @@ public class OrientDbSettings implements IOrientDbSettings
 	}
 
 	@Override
-	public void setDatabasePoolFactory(OPartitionedDatabasePoolFactory poolFactory) {
+	public void setDatabasePoolFactory(ODatabasePoolFactory poolFactory) {
 		this.poolFactory = poolFactory;
 	}
 	

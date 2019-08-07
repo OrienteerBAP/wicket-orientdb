@@ -77,10 +77,12 @@ public class EmbeddOrientDbApplicationListener implements IApplicationListener {
 			server.removeShutdownHook();
 			app.setServer(server);
 
-			OPartitionedDatabasePoolFactory pool = new OPartitionedDatabasePoolFactory();
-			pool.setMaxPoolSize(server.getContextConfiguration().getValueAsInteger(OGlobalConfiguration.DB_POOL_MAX));
+//			OPartitionedDatabasePoolFactory pool = new OPartitionedDatabasePoolFactory();
+//			pool.setMaxPoolSize(server.getContextConfiguration().getValueAsInteger(OGlobalConfiguration.DB_POOL_MAX));
 
-			app.getOrientDbSettings().setDatabasePoolFactory(pool);
+			ODatabasePoolFactory poolFactory = new ODatabasePoolFactory();
+
+			app.getOrientDbSettings().setDatabasePoolFactory(poolFactory);
 			onAfterServerStartupAndActivation(app);
 		} catch (Exception e) {
 			throw new WicketRuntimeException("Can't start OrientDB Embedded Server", e);

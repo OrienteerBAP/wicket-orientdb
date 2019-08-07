@@ -2,6 +2,7 @@ package ru.ydn.wicket.wicketorientdb;
 
 import java.util.Set;
 
+import com.orientechnologies.orient.core.db.ODatabaseSession;
 import org.apache.wicket.Session;
 import org.apache.wicket.authroles.authentication.AuthenticatedWebSession;
 import org.apache.wicket.authroles.authorization.strategies.role.Roles;
@@ -77,12 +78,12 @@ public class OrientDbWebSession extends AuthenticatedWebSession {
 
 	@Override
 	public boolean authenticate(String username, String password) {
-		ODatabaseDocumentInternal currentDB = getDatabase();
+		ODatabaseDocument currentDB = getDatabase();
 		try
 		{
 			boolean inTransaction = currentDB.getTransaction().isActive();
 			IOrientDbSettings settings = OrientDbWebApplication.get().getOrientDbSettings();
-			ODatabaseDocumentInternal newDB = settings.getDatabasePoolFactory().get(settings.getDBUrl(), username, password).acquire();
+			ODatabaseSession newDB = settings.getDatabasePoolFactory().get(settings.getDBUrl(), username, password).acquire();
 			if(newDB!=currentDB)
 			{
 				currentDB.activateOnCurrentThread();

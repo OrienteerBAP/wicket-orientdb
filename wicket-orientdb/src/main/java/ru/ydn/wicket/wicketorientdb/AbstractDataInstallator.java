@@ -1,6 +1,7 @@
 package ru.ydn.wicket.wicketorientdb;
 
 
+import com.orientechnologies.orient.core.db.ODatabasePool;
 import org.apache.wicket.Application;
 import org.apache.wicket.IApplicationListener;
 import org.slf4j.Logger;
@@ -37,7 +38,8 @@ public abstract class AbstractDataInstallator implements IApplicationListener
 		IOrientDbSettings settings = app.getOrientDbSettings();
 		String username = settings.getAdminUserName();
 		String password = settings.getAdminPassword();
-		return settings.getDatabasePoolFactory().get(settings.getDBUrl(), username, password).acquire();
+		ODatabasePool pool = settings.getDatabasePoolFactory().get(settings.getDBUrl(), username, password);
+		return pool.acquire();
 	}
 	
 	protected abstract void installData(OrientDbWebApplication app, ODatabaseDocument db);

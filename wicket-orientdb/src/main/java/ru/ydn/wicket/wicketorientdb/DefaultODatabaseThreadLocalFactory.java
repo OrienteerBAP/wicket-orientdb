@@ -22,7 +22,6 @@ public class DefaultODatabaseThreadLocalFactory implements ODatabaseThreadLocalF
 	public ODatabaseDocumentInternal getThreadDatabase() {
 		IOrientDbSettings settings = app.getOrientDbSettings();
 		OrientDbWebSession session = OrientDbWebSession.exists()?OrientDbWebSession.get():null;
-		ODatabaseDocumentInternal db;
 		String username;
 		String password;
 		if(session!=null && session.isSignedIn())
@@ -35,8 +34,7 @@ public class DefaultODatabaseThreadLocalFactory implements ODatabaseThreadLocalF
 			username = settings.getGuestUserName();
 			password = settings.getGuestPassword();
 		}
-		db = settings.getDatabasePoolFactory().get(settings.getDBUrl(), username, password).acquire();
-		return db;
+		return (ODatabaseDocumentInternal) settings.getDatabasePoolFactory().get(settings.getDBUrl(), username, password).acquire();
 	}
 	
 	/**

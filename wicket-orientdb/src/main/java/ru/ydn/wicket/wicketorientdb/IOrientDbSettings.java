@@ -34,9 +34,9 @@ public interface IOrientDbSettings {
 	 */
 	public String getAdminPassword();
 	/**
-	 * @return {@link OPartitionedDatabasePoolFactory} for DB pool for the application
+	 * @return {@link ODatabasePoolFactory} for DB pool for the application
 	 */
-	public OPartitionedDatabasePoolFactory getDatabasePoolFactory();
+	public ODatabasePoolFactory getDatabasePoolFactory();
 	/**
 	 * @return factory for {@link ODatabaseDocument}
 	 */
@@ -72,10 +72,10 @@ public interface IOrientDbSettings {
 	 */
 	public void setAdminPassword(String password);
 	/**
-	 * Set {@link ODatabasePoolBase} which should be used for DB connections pooling
+	 * Set {@link ODatabasePoolFactory} which should be used for DB connections pooling
 	 * @param poolFactory setup a poolFactory
 	 */
-	public void setDatabasePoolFactory(OPartitionedDatabasePoolFactory poolFactory);
+	public void setDatabasePoolFactory(ODatabasePoolFactory poolFactory);
 	/**
 	 * Set {@link ODatabaseThreadLocalFactory} which should be used for obtaining {@link ODatabaseDocument}
 	 * @param factory factory of a {@link ThreadLocal} db
