@@ -3,7 +3,11 @@ package ru.ydn.wicket.wicketorientdb;
 import com.googlecode.concurrentlinkedhashmap.ConcurrentLinkedHashMap;
 import com.orientechnologies.orient.core.OOrientListenerAbstract;
 import com.orientechnologies.orient.core.Orient;
+import com.orientechnologies.orient.core.config.OGlobalConfiguration;
 import com.orientechnologies.orient.core.db.ODatabasePool;
+import com.orientechnologies.orient.core.db.OrientDB;
+import com.orientechnologies.orient.core.db.OrientDBConfig;
+import com.orientechnologies.orient.core.db.OrientDBConfigBuilder;
 
 import java.util.Objects;
 
@@ -12,18 +16,22 @@ import java.util.Objects;
  */
 public class ODatabasePoolFactory extends OOrientListenerAbstract {
 
+    private volatile int maxPoolSize = 64;
+
     private boolean closed;
     private final ConcurrentLinkedHashMap<PoolIdentity, ODatabasePool> poolStore;
+    private final OrientDB orientDB;
 
-    public ODatabasePoolFactory() {
-        this(100);
+    public ODatabasePoolFactory(OrientDB orientDB) {
+        this(orientDB, 100);
     }
 
-    public ODatabasePoolFactory(int capacity) {
+    public ODatabasePoolFactory(OrientDB orientDB, int capacity) {
         poolStore = new ConcurrentLinkedHashMap.Builder<PoolIdentity, ODatabasePool>()
                 .maximumWeightedCapacity(capacity)
                 .listener((identity, databasePool) -> databasePool.close())
                 .build();
+        this.orientDB = orientDB;
 
         Orient.instance().registerWeakOrientStartupListener(this);
         Orient.instance().registerWeakOrientShutdownListener(this);
@@ -31,25 +39,25 @@ public class ODatabasePoolFactory extends OOrientListenerAbstract {
 
     /**
      *
-     * @param url
+     * @param database
      * @param username
      * @param password
      * @return
      */
-    public ODatabasePool get(String url, String username, String password) {
+    public ODatabasePool get(String database, String username, String password) {
         checkForClose();
 
-        PoolIdentity identity = new PoolIdentity(url, username, password);
+        PoolIdentity identity = new PoolIdentity(database, username, password);
         ODatabasePool pool = poolStore.get(identity);
         if (pool != null) {
             return pool;
         }
 
-        return poolStore.computeIfAbsent(identity, indent -> new ODatabasePool(
-                    OrientDbWebApplication.lookupApplication().getServer().getContext(),
-                    identity.url, identity.username, identity.password
-                )
-        );
+        return poolStore.computeIfAbsent(identity, indent -> {
+            OrientDBConfigBuilder builder = OrientDBConfig.builder();
+            builder.addConfig(OGlobalConfiguration.DB_POOL_MAX, maxPoolSize);
+            return new ODatabasePool(orientDB, identity.url, identity.username, identity.password, builder.build());
+        });
     }
 
     /**
@@ -69,6 +77,15 @@ public class ODatabasePoolFactory extends OOrientListenerAbstract {
 
     public boolean isClosed() {
         return closed;
+    }
+
+    public int getMaxPoolSize() {
+        return maxPoolSize;
+    }
+
+    public ODatabasePoolFactory setMaxPoolSize(int maxPoolSize) {
+        this.maxPoolSize = maxPoolSize;
+        return this;
     }
 
     @Override
@@ -105,6 +122,15 @@ public class ODatabasePoolFactory extends OOrientListenerAbstract {
         @Override
         public int hashCode() {
             return Objects.hash(url, username, password);
+        }
+
+        @Override
+        public String toString() {
+            return "PoolIdentity{" +
+                    "url='" + url + '\'' +
+                    ", username='" + username + '\'' +
+                    ", password='" + password + '\'' +
+                    '}';
         }
     }
 }

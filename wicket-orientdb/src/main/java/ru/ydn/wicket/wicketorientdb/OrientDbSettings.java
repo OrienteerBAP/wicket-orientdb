@@ -35,7 +35,6 @@ public class OrientDbSettings implements IOrientDbSettings
 
 	public OrientDbSettings() {
 		super();
-		this.poolFactory = new ODatabasePoolFactory();
 	}
 
 	@Override
