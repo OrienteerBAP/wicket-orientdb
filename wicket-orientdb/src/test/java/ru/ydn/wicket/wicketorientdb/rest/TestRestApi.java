@@ -11,6 +11,8 @@ import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.orientechnologies.orient.core.iterator.ORecordIteratorClass;
+import com.orientechnologies.orient.core.record.ORecord;
 import org.junit.ClassRule;
 import org.junit.ComparisonFailure;
 import org.junit.Test;
@@ -21,6 +23,7 @@ import com.orientechnologies.orient.core.record.impl.ODocument;
 
 import ru.ydn.wicket.wicketorientdb.junit.WicketOrientDbTester;
 import ru.ydn.wicket.wicketorientdb.junit.WicketOrientDbTesterScope;
+import ru.ydn.wicket.wicketorientdb.utils.DBClosure;
 
 public class TestRestApi
 {
@@ -32,17 +35,15 @@ public class TestRestApi
 	private static final Random RANDOM = new Random();
 	
 	@Test
-	public void testGetDocument() throws Exception
-	{
-		ODocument doc = (ODocument) wicket.getTester().getDatabase().browseClass(TEST_REST_CLASS).current();
+	public void testGetDocument() throws Exception {
+        ODocument doc = wicket.getTester().getDatabase().browseClass(TEST_REST_CLASS).next();
 		ORID id = doc.getIdentity();
 		String ret = wicket.getTester().executeUrl("orientdb/document/db/"+id.getClusterId()+":"+id.getClusterPosition(), "GET", null);
 		assertEquals(doc.toJSON(), ret);
 	}
 	
 	@Test
-	public void testPostDocument() throws Exception
-	{
+	public void testPostDocument() throws Exception {
 		long current = wicket.getTester().getDatabase().countClass(TEST_REST_CLASS);
 		String content = "{\"@class\":\"TestRest\",\"a\":\"test2\",\"b\":11,\"c\":false}";
 		wicket.getTester().executeUrl("orientdb/document/db/", "POST", content);
@@ -63,9 +64,8 @@ public class TestRestApi
 	}
 	
 	@Test
-	public void testQueryAndUpdate() throws Exception
-	{
-		ODocument doc = (ODocument) wicket.getTester().getDatabase().browseClass(TEST_REST_CLASS).current();
+	public void testQueryAndUpdate() throws Exception {
+		ODocument doc = wicket.getTester().getDatabase().browseClass(TEST_REST_CLASS).next();
 		String ret = wicket.getTester().executeUrl("orientdb/query/db/sql/select+from+"+TEST_REST_CLASS, "GET", null);
 		assertTrue(ret.contains(doc.toJSON()));
 		
@@ -152,7 +152,7 @@ public class TestRestApi
 	
 	private String getCurrentUser(String username, String password) throws Exception
 	{
-		return wicket.getTester().executeUrl("orientdb/query/db/sql/select+from+$user", "GET", null, username, password);
+		return wicket.getTester().executeUrl("orientdb/query/db/sql/select+from+ouser", "GET", null, username, password);
 	}
 	
 }

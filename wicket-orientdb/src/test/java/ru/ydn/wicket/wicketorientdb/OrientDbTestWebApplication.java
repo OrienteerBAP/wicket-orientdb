@@ -1,5 +1,8 @@
 package ru.ydn.wicket.wicketorientdb;
 
+import com.orientechnologies.orient.core.db.ODatabaseType;
+import com.orientechnologies.orient.core.db.OrientDB;
+import com.orientechnologies.orient.core.db.OrientDBConfig;
 import org.apache.wicket.Application;
 import org.apache.wicket.Page;
 import org.apache.wicket.authroles.authentication.pages.SignInPage;
@@ -24,16 +27,14 @@ public class OrientDbTestWebApplication extends OrientDbWebApplication
 
 			@Override
 			public void onAfterServerStartupAndActivation(OrientDbWebApplication app) throws Exception {
-				IOrientDbSettings settings = app.getOrientDbSettings();
-				ODatabaseDocumentTx db = new ODatabaseDocumentTx(DB_MEMORY_URL);
-				if(!db.exists()) db = db.create();
-				if(db.isClosed()) db.open(settings.getAdminUserName(), settings.getAdminPassword());
-				db.close();
+
+				OrientDB orientDB = getServer().getContext();
+				orientDB.createIfNotExists(DB_NAME, ODatabaseType.MEMORY);
 			}
 
 		});
 		getRequestCycleListeners().add(new LazyAuthorizationRequestCycleListener());
-		getOrientDbSettings().setDBUrl(DB_MEMORY_URL);
+		getOrientDbSettings().setDBUrl(DB_NAME);
 		getOrientDbSettings().setGuestUserName("reader");
 		getOrientDbSettings().setGuestPassword("reader");
 		getOrientDbSettings().setAdminUserName("admin");

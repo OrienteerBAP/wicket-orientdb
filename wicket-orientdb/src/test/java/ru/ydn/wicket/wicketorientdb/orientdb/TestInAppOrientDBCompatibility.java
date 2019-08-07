@@ -597,18 +597,18 @@ public class TestInAppOrientDBCompatibility
 		doc.reload();
 		doc.delete();
 	}
-	
+
 	@Test
 	public void testAuthentication() throws Exception
 	{
 		WicketOrientDbTester tester = wicket.getTester();
-		String content = tester.executeUrl("orientdb/query/db/sql/select+from+$user", "GET", null, "reader", "reader");
+		String content = tester.executeUrl("orientdb/query/db/sql/select+from+ouser", "GET", null, "reader", "reader");
 		System.out.println(content);
 		assertTrue(content.contains("reader"));
-		content = tester.executeUrl("orientdb/query/db/sql/select+from+$user", "GET", null, "writer",  "writer");
+		content = tester.executeUrl("orientdb/query/db/sql/select+from+ouser", "GET", null, "writer",  "writer");
 		System.out.println(content);
 		assertTrue(content.contains("writer"));
-		content = tester.executeUrl("orientdb/query/db/sql/select+from+$user", "GET", null, "admin",  "admin");
+		content = tester.executeUrl("orientdb/query/db/sql/select+from+ouser", "GET", null, "admin",  "admin");
 		System.out.println(content);
 		assertTrue(content.contains("admin"));
 	}
