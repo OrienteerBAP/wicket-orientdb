@@ -1,8 +1,6 @@
 package ru.ydn.wicket.wicketorientdb.security;
 
-import com.orientechnologies.orient.core.metadata.security.ODatabaseSecurityResources;
 import com.orientechnologies.orient.core.metadata.security.ORule;
-import com.orientechnologies.orient.core.metadata.security.OSecurityUser;
 import org.apache.wicket.Component;
 import org.apache.wicket.Page;
 import org.apache.wicket.authorization.Action;
@@ -10,7 +8,6 @@ import org.apache.wicket.authorization.IAuthorizationStrategy;
 import org.apache.wicket.request.component.IRequestableComponent;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.request.resource.IResource;
-import org.apache.wicket.util.string.Strings;
 import ru.ydn.wicket.wicketorientdb.OrientDbWebSession;
 
 import java.util.Map;
@@ -25,7 +22,13 @@ import java.util.Map;
  */
 public class OrientResourceAuthorizationStrategy  implements IAuthorizationStrategy
 {
+	
+	private IResourceCheckingStrategy resourceCheckingStrategy;
 
+	public OrientResourceAuthorizationStrategy(IResourceCheckingStrategy resourceCheckingStrategy) {
+		this.resourceCheckingStrategy = resourceCheckingStrategy;
+	}
+	
 	@Override
 	public <T extends IRequestableComponent> boolean isInstantiationAuthorized(
 			Class<T> componentClass) {
@@ -87,18 +90,10 @@ public class OrientResourceAuthorizationStrategy  implements IAuthorizationStrat
 	public boolean checkResource(RequiredOrientResource resource, Action action)
 	{
 		if(!resource.action().equals(action.getName())) return true;
-		OSecurityUser user = OrientDbWebSession.get().getEffectiveUser();
-		if(user==null) return false;
-		int iOperation = OrientPermission.combinedPermission(resource.permissions());
-		ORule.ResourceGeneric value = OSecurityHelper.getResourceGeneric(resource.value());
-		String specific = resource.specific();
-		if(Strings.isEmpty(specific)) specific = null;
-		if(user.checkIfAllowed(value, specific, iOperation)!=null) return true;
-		while(!Strings.isEmpty(specific=Strings.beforeLastPathComponent(specific, '.')))
-		{
-			if(user.checkIfAllowed(value, specific+"."+ODatabaseSecurityResources.ALL, iOperation)!=null) return true;
-		}
-		return false;
+		
+		return resourceCheckingStrategy.checkResource(OSecurityHelper.getResourceGeneric(resource.value()), 
+											  resource.specific(),
+											  resource.permissions());
 	}
 	
 	/**
@@ -132,14 +127,9 @@ public class OrientResourceAuthorizationStrategy  implements IAuthorizationStrat
 			else resource = resource.substring(0, actionIndx);//Should cut off action
 		} else if(!Component.RENDER.equals(action)) return true; //Default suffix is for render: so other should be skipped
 		
-		OSecurityUser user = OrientDbWebSession.get().getUser();
-		if(user==null) return false;
-		ORule.ResourceGeneric generic = OSecurityHelper.getResourceGeneric(resource);
-		String specific = OSecurityHelper.getResourceSpecific(resource);
-		
-		return user!=null
-				?user.checkIfAllowed(generic, specific, OrientPermission.combinedPermission(permissions))!=null
-				:false;
+		return resourceCheckingStrategy.checkResource(OSecurityHelper.getResourceGeneric(resource),
+											  OSecurityHelper.getResourceSpecific(resource),
+											  permissions);
 	}
 	/**
 	 * Extract {@link RequiredOrientResource}s from a Class
