@@ -254,9 +254,8 @@ public abstract class OrientDbWebApplication extends AuthenticatedWebApplication
 	}
 	
 	@Override
-	public boolean checkResource(ResourceGeneric resource, String specific, OrientPermission... permissions) {
+	public boolean checkResource(ResourceGeneric resource, String specific, int iOperation) {
 		OSecurityUser user = OrientDbWebSession.get().getEffectiveUser();
-		int iOperation = OrientPermission.combinedPermission(permissions);
 		if(Strings.isEmpty(specific)) specific = null;
 		if(user.checkIfAllowed(resource, specific, iOperation)!=null) return true;
 		while(!Strings.isEmpty(specific=Strings.beforeLastPathComponent(specific, '.')))

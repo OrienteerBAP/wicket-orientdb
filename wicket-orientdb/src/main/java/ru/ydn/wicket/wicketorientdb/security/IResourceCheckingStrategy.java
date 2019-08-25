@@ -7,5 +7,8 @@ import com.orientechnologies.orient.core.metadata.security.ORule;
  */
 public interface IResourceCheckingStrategy {
 	
-	public boolean checkResource(ORule.ResourceGeneric resource, String specific, OrientPermission... permissions);
+	public default boolean checkResource(ORule.ResourceGeneric resource, String specific, OrientPermission... permissions) {
+		return checkResource(resource, specific, OrientPermission.combinedPermission(permissions));
+	}
+	public boolean checkResource(ORule.ResourceGeneric resource, String specific, int operation);
 }

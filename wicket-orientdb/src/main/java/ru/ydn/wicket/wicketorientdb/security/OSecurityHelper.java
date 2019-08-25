@@ -17,6 +17,7 @@ import com.orientechnologies.orient.core.metadata.security.ORule.ResourceGeneric
 import com.orientechnologies.orient.core.metadata.security.OSecurityShared;
 import com.orientechnologies.orient.core.record.impl.ODocument;
 
+import ru.ydn.wicket.wicketorientdb.OrientDbWebApplication;
 import ru.ydn.wicket.wicketorientdb.OrientDbWebSession;
 
 /**
@@ -212,8 +213,7 @@ public class OSecurityHelper
 	 */
 	public static boolean isAllowed(ORule.ResourceGeneric resource, String specific, OrientPermission... permissions)
 	{
-		return OrientDbWebSession.get().getEffectiveUser()
-					.checkIfAllowed(resource, specific, OrientPermission.combinedPermission(permissions))!=null;
+		return OrientDbWebApplication.lookupApplication().checkResource(resource, specific, permissions);
 	}
 	
 	public static <T extends Component> T secureComponent(T component, RequiredOrientResource... resources)
