@@ -268,7 +268,7 @@ public class TestModels
 	@Test
 	public void testODocumentMapWrapper()
 	{
-		Map<String, Object> map = new ODocumentMapWrapper(new ORecordId("#5:0"));
+		Map<String, Object> map = new ODocumentMapWrapper(new ORecordId("#6:0"));
 		assertTrue(map.containsKey("name"));
 		assertEquals("admin", map.get("name"));
 		assertTrue(map.size()>0);
@@ -281,11 +281,11 @@ public class TestModels
 	public void testODocumentModel()
 	{
 		ODatabaseDocument db = wicket.getTester().getDatabase();
-		ORecordId recordId = new ORecordId("#5:0");
+		ORecordId recordId = new ORecordId("#6:0");
 		ODocumentModel model = new ODocumentModel(recordId);
 		assertModelObjectEquals(recordId.getRecord(), model);
 		
-		recordId = new ORecordId("#5:1");
+		recordId = new ORecordId("#6:1");
 		model.setObject((ODocument)recordId.getRecord());
 		assertModelObjectEquals(recordId.getRecord(), model);
 		
@@ -325,7 +325,7 @@ public class TestModels
 	@Test
 	public void testODocumentPropertyLocator()
 	{
-		ORecordId recordId = new ORecordId("#5:0");
+		ORecordId recordId = new ORecordId("#6:0");
 		assertModelObjectEquals("admin", new PropertyModel<>(new ODocumentModel(recordId), "name"));
 		assertModelObjectEquals("OUser", new PropertyModel<>(new ODocumentModel(recordId), "@schemaClass.name"));
 	}

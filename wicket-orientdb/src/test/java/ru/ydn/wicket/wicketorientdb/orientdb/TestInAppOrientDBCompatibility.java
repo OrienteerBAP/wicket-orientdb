@@ -780,7 +780,7 @@ public class TestInAppOrientDBCompatibility
 		final OClass classA = schema.createClass("TestLinkToOUser");
 		classA.createProperty("name", OType.STRING);
 		classA.createProperty("user", OType.LINK).setLinkedClass(schema.getClass("OUser"));
-		ORID userRid = new ORecordId("#5:0");
+		ORID userRid = new ORecordId("#6:0");
 		ODocument doc = new ODocument(classA);
 		wicket.getTester().signIn("writer", "writer");
 		db = wicket.getTester().getDatabase();
