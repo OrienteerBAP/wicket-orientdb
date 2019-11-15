@@ -1,22 +1,18 @@
 package ru.ydn.wicket.wicketorientdb.orientdb;
 
-import static org.junit.Assert.assertNotNull;
-
-import com.orientechnologies.orient.core.db.ODatabaseType;
-import com.orientechnologies.orient.core.db.OrientDB;
-import org.junit.Ignore;
-import org.junit.Test;
-
-import ru.ydn.wicket.wicketorientdb.OrientDbTestWebApplication;
-
 import com.orientechnologies.orient.core.Orient;
 import com.orientechnologies.orient.core.db.ODatabaseRecordThreadLocal;
-import com.orientechnologies.orient.core.db.OPartitionedDatabasePoolFactory;
+import com.orientechnologies.orient.core.db.ODatabaseType;
+import com.orientechnologies.orient.core.db.OrientDB;
 import com.orientechnologies.orient.core.db.document.ODatabaseDocument;
-import com.orientechnologies.orient.core.db.document.ODatabaseDocumentTx;
 import com.orientechnologies.orient.core.exception.OStorageException;
 import com.orientechnologies.orient.server.OServer;
 import com.orientechnologies.orient.server.OServerMain;
+import org.junit.Ignore;
+import org.junit.Test;
+import ru.ydn.wicket.wicketorientdb.OrientDbTestWebApplication;
+
+import static org.junit.Assert.assertNotNull;
 
 public class TestStandaloneOrientDBCompatibility {
 
