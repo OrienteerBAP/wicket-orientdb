@@ -17,12 +17,15 @@ import org.apache.wicket.markup.html.IPackageResourceGuard;
 import org.apache.wicket.markup.html.SecurePackageResourceGuard;
 import org.apache.wicket.protocol.http.AjaxEnclosureListener;
 import org.apache.wicket.protocol.http.WebApplication;
+import org.apache.wicket.util.string.Strings;
 
 import ru.ydn.wicket.wicketorientdb.components.IHookPosition;
 import ru.ydn.wicket.wicketorientdb.converter.HexConverter;
 import ru.ydn.wicket.wicketorientdb.converter.ODocumentConverter;
 import ru.ydn.wicket.wicketorientdb.converter.OIdentifiableConverter;
 import ru.ydn.wicket.wicketorientdb.rest.OrientDBHttpAPIResource;
+import ru.ydn.wicket.wicketorientdb.security.IResourceCheckingStrategy;
+import ru.ydn.wicket.wicketorientdb.security.OrientPermission;
 import ru.ydn.wicket.wicketorientdb.security.WicketOrientDbAuthorizationStrategy;
 import ru.ydn.wicket.wicketorientdb.utils.FixFormEncTypeListener;
 import ru.ydn.wicket.wicketorientdb.utils.ODocumentPropertyLocator;
@@ -36,16 +39,18 @@ import com.orientechnologies.orient.core.db.document.ODatabaseDocument;
 import com.orientechnologies.orient.core.db.record.OIdentifiable;
 import com.orientechnologies.orient.core.hook.ORecordHook;
 import com.orientechnologies.orient.core.metadata.schema.OClass;
+import com.orientechnologies.orient.core.metadata.security.ODatabaseSecurityResources;
 import com.orientechnologies.orient.core.metadata.security.ORole;
 import com.orientechnologies.orient.core.metadata.security.ORule.ResourceGeneric;
 import com.orientechnologies.orient.core.metadata.security.OSecurity;
+import com.orientechnologies.orient.core.metadata.security.OSecurityUser;
 import com.orientechnologies.orient.core.record.impl.ODocument;
 import com.orientechnologies.orient.server.OServer;
 
 /**
  * {@link WebApplication} realization for applications on top of OrientDB
  */
-public abstract class OrientDbWebApplication extends AuthenticatedWebApplication {
+public abstract class OrientDbWebApplication extends AuthenticatedWebApplication implements IResourceCheckingStrategy {
 	
 	private IOrientDbSettings orientDbSettings = new OrientDbSettings();
 	private OServer server;
@@ -173,7 +178,7 @@ public abstract class OrientDbWebApplication extends AuthenticatedWebApplication
 		});
 		getRequestCycleListeners().add(newTransactionRequestCycleListener());
 		getRequestCycleListeners().add(new OrientDefaultExceptionsHandlingListener());
-		getSecuritySettings().setAuthorizationStrategy(new WicketOrientDbAuthorizationStrategy(this));
+		getSecuritySettings().setAuthorizationStrategy(new WicketOrientDbAuthorizationStrategy(this, this));
 		getApplicationListeners().add(new IApplicationListener() {
 			
 			
@@ -247,6 +252,18 @@ public abstract class OrientDbWebApplication extends AuthenticatedWebApplication
 	public String getOrientDBVersion() 
 	{
 		return Orient.class.getPackage().getImplementationVersion();
+	}
+	
+	@Override
+	public boolean checkResource(ResourceGeneric resource, String specific, int iOperation) {
+		OSecurityUser user = OrientDbWebSession.get().getEffectiveUser();
+		if(Strings.isEmpty(specific)) specific = null;
+		if(user.checkIfAllowed(resource, specific, iOperation)!=null) return true;
+		while(!Strings.isEmpty(specific=Strings.beforeLastPathComponent(specific, '.')))
+		{
+			if(user.checkIfAllowed(resource, specific+"."+ODatabaseSecurityResources.ALL, iOperation)!=null) return true;
+		}
+		return false;
 	}
 	
 }

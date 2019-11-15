@@ -14,9 +14,9 @@ import org.apache.wicket.authroles.authorization.strategies.role.annotations.Ann
 public class WicketOrientDbAuthorizationStrategy extends
 		CompoundAuthorizationStrategy {
 	
-	public WicketOrientDbAuthorizationStrategy(final IRoleCheckingStrategy roleCheckingStrategy)
+	public WicketOrientDbAuthorizationStrategy(final IRoleCheckingStrategy roleCheckingStrategy, IResourceCheckingStrategy resourceCheckingStrategy)
 	{
 		add(new AnnotationsRoleAuthorizationStrategy(roleCheckingStrategy));
-		add(new OrientResourceAuthorizationStrategy());
+		add(new OrientResourceAuthorizationStrategy(resourceCheckingStrategy));
 	}
 }
