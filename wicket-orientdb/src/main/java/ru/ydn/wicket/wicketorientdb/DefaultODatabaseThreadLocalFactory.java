@@ -34,7 +34,7 @@ public class DefaultODatabaseThreadLocalFactory implements ODatabaseThreadLocalF
 			username = settings.getGuestUserName();
 			password = settings.getGuestPassword();
 		}
-		return (ODatabaseDocumentInternal) settings.getDatabasePoolFactory().get(settings.getDBUrl(), username, password).acquire();
+		return (ODatabaseDocumentInternal) settings.getDatabasePoolFactory().get(settings.getDbName(), username, password).acquire();
 	}
 	
 	/**

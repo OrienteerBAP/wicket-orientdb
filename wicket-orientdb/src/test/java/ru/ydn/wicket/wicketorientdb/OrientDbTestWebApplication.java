@@ -23,12 +23,13 @@ public class OrientDbTestWebApplication extends OrientDbWebApplication
 			public void onAfterServerStartupAndActivation(OrientDbWebApplication app) throws Exception {
 
 				OrientDB orientDB = getServer().getContext();
-				orientDB.createIfNotExists(DB_NAME, ODatabaseType.MEMORY);
+				orientDB.createIfNotExists(getOrientDbSettings().getDbName(), getOrientDbSettings().getDbType());
 			}
 
 		});
 		getRequestCycleListeners().add(new LazyAuthorizationRequestCycleListener());
-		getOrientDbSettings().setDBUrl(DB_NAME);
+		getOrientDbSettings().setDbName(DB_NAME);
+		getOrientDbSettings().setDbType(ODatabaseType.MEMORY);
 		getOrientDbSettings().setGuestUserName("reader");
 		getOrientDbSettings().setGuestPassword("reader");
 		getOrientDbSettings().setAdminUserName("admin");

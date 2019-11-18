@@ -16,10 +16,11 @@ import java.util.function.Function;
  * Closure for execution of portion queries/command on database for different user (commonly, under admin)
  * @param <V> return type
  */
-public abstract class DBClosure<V> implements Serializable
-{
+public abstract class DBClosure<V> implements Serializable {
+
 	private static final long serialVersionUID = 1L;
-	private final String dbUrl;
+
+	private final String dbName;
 	private final String username;
 	private final String password;
 	
@@ -33,38 +34,41 @@ public abstract class DBClosure<V> implements Serializable
 		this(null, username, password);
 	}
 	
-	public DBClosure(String dbUrl, String username, String password)
-	{
-		this.dbUrl = dbUrl;
+	public DBClosure(String dbName, String username, String password) {
+		this.dbName = dbName;
 		this.username = username;
 		this.password = password;
 	}
+
 	/**
 	 * @return result of execution
 	 */
-	public final V execute()
-	{
+	public final V execute() {
 		ODatabaseDocument db = null;
 		ODatabaseRecordThreadLocal orientDbThreadLocal = ODatabaseRecordThreadLocal.instance();
-		ODatabaseDocument oldDb = orientDbThreadLocal.getIfDefined();
-		if(oldDb!=null) orientDbThreadLocal.remove(); //Required to avoid stack of transactions
-		try
-		{
-			db = getSettings().getDatabasePoolFactory().get(getDBUrl(), getUsername(), getPassword()).acquire();
+		ODatabaseDocumentInternal oldDb = orientDbThreadLocal.getIfDefined();
+		if (oldDb != null) {
+			orientDbThreadLocal.remove(); //Required to avoid stack of transactions
+		}
+		try {
+			db = getSettings().getDatabasePoolFactory().get(getDbName(), getUsername(), getPassword()).acquire();
 			db.activateOnCurrentThread();
 			return execute(db);
 		} 
-		finally
-		{
-			if(db!=null) db.close();
-			if(oldDb!=null) orientDbThreadLocal.set((ODatabaseDocumentInternal)oldDb);
-			else orientDbThreadLocal.remove();
+		finally {
+			if (db != null) {
+				db.close();
+			}
+			if (oldDb != null) {
+				orientDbThreadLocal.set(oldDb);
+			} else {
+				orientDbThreadLocal.remove();
+			}
 		}
 	}
 	
-	protected String getDBUrl()
-	{
-		return dbUrl!=null?dbUrl:getSettings().getDBUrl();
+	protected String getDbName() {
+		return dbName != null ? dbName : getSettings().getDbName();
 	}
 	
 	protected String getUsername()

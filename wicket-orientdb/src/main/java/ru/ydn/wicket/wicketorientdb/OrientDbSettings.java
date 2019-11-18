@@ -6,6 +6,7 @@ import java.util.List;
 import com.orientechnologies.orient.core.Orient;
 import com.orientechnologies.orient.core.db.ODatabasePool;
 import com.orientechnologies.orient.core.db.ODatabaseThreadLocalFactory;
+import com.orientechnologies.orient.core.db.ODatabaseType;
 import com.orientechnologies.orient.core.db.OPartitionedDatabasePoolFactory;
 import com.orientechnologies.orient.core.hook.ORecordHook;
 import com.orientechnologies.orient.server.OServer;
@@ -21,8 +22,9 @@ public class OrientDbSettings implements IOrientDbSettings
 	public static final String ADMIN_DEFAULT_PASSWORD = "admin";
 	public static final String READER_DEFAULT_USERNAME = "reader";
 	public static final String READER_DEFAULT_PASSWORD = "reader";
-	
-	private String dbUrl;
+
+	private String dbName;
+	private ODatabaseType dbType;
 	private String guestUserName=READER_DEFAULT_USERNAME;
 	private String guestPassword=READER_DEFAULT_PASSWORD;
 	private String adminUserName=ADMIN_DEFAULT_USERNAME;
@@ -38,8 +40,13 @@ public class OrientDbSettings implements IOrientDbSettings
 	}
 
 	@Override
-	public String getDBUrl() {
-		return dbUrl;
+	public String getDbName() {
+		return dbName;
+	}
+
+	@Override
+	public ODatabaseType getDbType() {
+		return dbType;
 	}
 
 
@@ -51,11 +58,6 @@ public class OrientDbSettings implements IOrientDbSettings
 	@Override
 	public ODatabaseThreadLocalFactory getDatabaseThreadLocalFactory() {
 		return Orient.instance().getDatabaseThreadFactory();
-	}
-
-	@Override
-	public void setDBUrl(String url) {
-		this.dbUrl = url;
 	}
 
 	@Override
@@ -128,6 +130,21 @@ public class OrientDbSettings implements IOrientDbSettings
 			setOrientDBRestApiUrl(resolveOrientDBRestApiUrl());
 		}
 		return orientDbRestApiUrl;
+	}
+
+	@Override
+	public void setDbName(String dbName) {
+		this.dbName = dbName;
+	}
+
+	@Override
+	public void setDbType(ODatabaseType dbType) {
+		this.dbType = dbType;
+	}
+
+	@Override
+	public void setDbType(String dbType) {
+		setDbType(ODatabaseType.valueOf(dbType.toUpperCase()));
 	}
 
 

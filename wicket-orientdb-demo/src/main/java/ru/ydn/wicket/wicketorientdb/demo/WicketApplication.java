@@ -48,11 +48,12 @@ public class WicketApplication extends OrientDbWebApplication
 			@Override
 			public void onAfterServerStartupAndActivation(OrientDbWebApplication app) throws Exception {
 				OrientDB orientDB = getServer().getContext();
-				orientDB.createIfNotExists(DB_NAME, ODatabaseType.MEMORY);
+				orientDB.createIfNotExists(getOrientDbSettings().getDbName(), getOrientDbSettings().getDbType());
 			}
 			
 		});
-		getOrientDbSettings().setDBUrl(DB_NAME);
+		getOrientDbSettings().setDbName(DB_NAME);
+		getOrientDbSettings().setDbType(ODatabaseType.MEMORY);
 		getOrientDbSettings().setGuestUserName("admin");
 		getOrientDbSettings().setGuestPassword("admin");
 		getApplicationListeners().add(new AbstractDataInstallator() {

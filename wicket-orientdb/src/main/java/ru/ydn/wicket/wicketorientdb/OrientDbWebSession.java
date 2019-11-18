@@ -79,13 +79,11 @@ public class OrientDbWebSession extends AuthenticatedWebSession {
 	@Override
 	public boolean authenticate(String username, String password) {
 		ODatabaseDocument currentDB = getDatabase();
-		try
-		{
+		try {
 			boolean inTransaction = currentDB.getTransaction().isActive();
 			IOrientDbSettings settings = OrientDbWebApplication.get().getOrientDbSettings();
-			ODatabaseSession newDB = settings.getDatabasePoolFactory().get(settings.getDBUrl(), username, password).acquire();
-			if(newDB!=currentDB)
-			{
+			ODatabaseSession newDB = settings.getDatabasePoolFactory().get(settings.getDbName(), username, password).acquire();
+			if (newDB != currentDB) {
 				currentDB.activateOnCurrentThread();
 				currentDB.commit();
 				currentDB.close();
@@ -93,12 +91,11 @@ public class OrientDbWebSession extends AuthenticatedWebSession {
 			}
 			setUser(username, password);
 			userModel.setObject(newDB.getUser().getDocument());
-//			user = newDB.getMetadata().getSecurity().getUser(username);
-//			newDB.setUser(user);
-			if(inTransaction && !newDB.getTransaction().isActive()) newDB.begin();
+			if (inTransaction && !newDB.getTransaction().isActive()) {
+				newDB.begin();
+			}
 			return true;
-		} catch (OSecurityAccessException e)
-		{
+		} catch (OSecurityAccessException e) {
 			currentDB.activateOnCurrentThread();
 			return false;
 		}

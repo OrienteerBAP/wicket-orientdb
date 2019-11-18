@@ -2,10 +2,7 @@ package ru.ydn.wicket.wicketorientdb;
 
 import java.util.List;
 
-import com.orientechnologies.orient.core.db.ODatabase;
-import com.orientechnologies.orient.core.db.ODatabasePoolBase;
-import com.orientechnologies.orient.core.db.ODatabaseThreadLocalFactory;
-import com.orientechnologies.orient.core.db.OPartitionedDatabasePoolFactory;
+import com.orientechnologies.orient.core.db.*;
 import com.orientechnologies.orient.core.db.document.ODatabaseDocument;
 import com.orientechnologies.orient.core.hook.ORecordHook;
 
@@ -13,10 +10,17 @@ import com.orientechnologies.orient.core.hook.ORecordHook;
  * OrientDB setting to be used in Wicket-OrientDB application
  */
 public interface IOrientDbSettings {
+
 	/**
-	 * @return URL to connect to the OrientDB
+	 * @return database name
 	 */
-	public String getDBUrl();
+	public String getDbName();
+
+	/**
+	 * @return {@link ODatabaseType} database type
+ 	 */
+	public ODatabaseType getDbType();
+
 	/**
 	 * @return Default DB username
 	 */
@@ -46,11 +50,21 @@ public interface IOrientDbSettings {
 	 * @return default url for orientdb rest API
 	 */
 	public String getOrientDBRestApiUrl();
+
 	/**
-	 * Set URL for the OrientDB
-	 * @param url URL of OrientDB database
+	 * Set name of database
+	 * @param dbName database name
 	 */
-	public void setDBUrl(String url);
+	public void setDbName(String dbName);
+
+	/**
+	 * Set database type
+	 * @param dbType database type
+	 */
+	public void setDbType(ODatabaseType dbType);
+
+	public void setDbType(String dbType);
+
 	/**
 	 * Set username for default user
 	 * @param userName default username for login
