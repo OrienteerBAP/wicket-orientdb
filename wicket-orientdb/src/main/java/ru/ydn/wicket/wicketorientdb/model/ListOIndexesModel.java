@@ -14,7 +14,7 @@ import com.orientechnologies.orient.core.metadata.schema.OProperty;
 /**
  * {@link IModel} to list all {@link OIndex}es for a given {@link OClass}
  */
-public class ListOIndexesModel extends AbstractListModel<OIndex<?>>
+public class ListOIndexesModel extends AbstractListModel<OIndex>
 {
 	private IModel<OClass> oClassModel;
 	private IModel<Boolean> allIndexesModel;
@@ -27,7 +27,7 @@ public class ListOIndexesModel extends AbstractListModel<OIndex<?>>
 	}
 
 	@Override
-	public Collection<OIndex<?>> getData() {
+	public Collection<OIndex> getData() {
 		OClass oClass = oClassModel.getObject();
 		if(oClass==null)
 		{

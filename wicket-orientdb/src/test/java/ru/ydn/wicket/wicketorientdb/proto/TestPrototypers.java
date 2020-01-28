@@ -159,13 +159,13 @@ public class TestPrototypers
 	{
 		OClass newClass = wicket.getTester().getSchema().createClass("NewClass");
 		OProperty property = newClass.createProperty("name", OType.STRING);
-		OIndex<?> newIndex = OIndexPrototyper.newPrototype("NewClass", Arrays.asList("name"));
+		OIndex newIndex = OIndexPrototyper.newPrototype("NewClass", Arrays.asList("name"));
 		assertTrue(property.getAllIndexes().size()==0);
 		PropertyResolver.setValue("type", newIndex, "notunique", null);
 		assertNotNull(newIndex.getDefinition());
 		assertTrue(newIndex.getDefinition().getFields().contains("name"));
 		assertTrue(newIndex instanceof IPrototype);
-		OIndex<?> realizedNewIndex = ((IPrototype<OIndex<?>>)newIndex).realizePrototype();
+		OIndex realizedNewIndex = ((IPrototype<OIndex>)newIndex).realizePrototype();
 		assertEquals(1, property.getAllIndexes().size());
 		assertEquals(1, newClass.getIndexes().size());
 		
@@ -177,7 +177,7 @@ public class TestPrototypers
 		ODocument metadata = new ODocument();
 		metadata.field("test", "test123", OType.STRING);
 		PropertyResolver.setValue("metadata", newIndex, metadata, null);
-		realizedNewIndex = ((IPrototype<OIndex<?>>)newIndex).realizePrototype();
+		realizedNewIndex = ((IPrototype<OIndex>)newIndex).realizePrototype();
 		assertEquals(1, property.getAllIndexes().size());
 		assertEquals(2, newClass.getIndexes().size());
 		assertEquals("test123", realizedNewIndex.getMetadata().field("test"));

@@ -28,7 +28,7 @@ public class OSchemaHelper
 	
 	protected OClass lastClass;
 	protected OProperty lastProperty;
-	protected OIndex<?> lastIndex;
+	protected OIndex lastIndex;
 	protected ODocument lastDocument;
 	
 	protected OSchemaHelper(ODatabaseDocument db)
@@ -399,7 +399,7 @@ public class OSchemaHelper
 	/**
 	 * @return current {@link OIndex}
 	 */
-	public OIndex<?> getOIndex() {
+	public OIndex getOIndex() {
 		return lastIndex;
 	}
 	
@@ -408,7 +408,7 @@ public class OSchemaHelper
 	 * @param consumer to perform actions
 	 * @return this helper
 	 */
-	public OSchemaHelper doOnOIndex(Consumer<OIndex<?>> consumer) {
+	public OSchemaHelper doOnOIndex(Consumer<OIndex> consumer) {
 		checkOIndex();
 		consumer.accept(getOIndex());
 		return this;
