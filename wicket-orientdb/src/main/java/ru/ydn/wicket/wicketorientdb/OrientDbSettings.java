@@ -4,10 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.orientechnologies.orient.core.Orient;
-import com.orientechnologies.orient.core.db.ODatabasePool;
-import com.orientechnologies.orient.core.db.ODatabaseThreadLocalFactory;
-import com.orientechnologies.orient.core.db.ODatabaseType;
-import com.orientechnologies.orient.core.db.OPartitionedDatabasePoolFactory;
+import com.orientechnologies.orient.core.db.*;
 import com.orientechnologies.orient.core.hook.ORecordHook;
 import com.orientechnologies.orient.server.OServer;
 import com.orientechnologies.orient.server.network.OServerNetworkListener;
@@ -31,7 +28,9 @@ public class OrientDbSettings implements IOrientDbSettings
 	private String adminPassword=ADMIN_DEFAULT_PASSWORD;
 	private String orientDbRestApiUrl;
 
-	private ODatabasePoolFactory poolFactory;
+	private OrientDB context;
+
+//	private ODatabasePoolFactory poolFactory;
 	
 	private List<Class<? extends ORecordHook>> oRecordHooks = new ArrayList<Class<? extends ORecordHook>>();
 
@@ -50,20 +49,20 @@ public class OrientDbSettings implements IOrientDbSettings
 	}
 
 
-	@Override
-	public ODatabasePoolFactory getDatabasePoolFactory() {
-		return poolFactory;
-	}
+//	@Override
+//	public ODatabasePoolFactory getDatabasePoolFactory() {
+//		return poolFactory;
+//	}
 
 	@Override
 	public ODatabaseThreadLocalFactory getDatabaseThreadLocalFactory() {
 		return Orient.instance().getDatabaseThreadFactory();
 	}
 
-	@Override
-	public void setDatabasePoolFactory(ODatabasePoolFactory poolFactory) {
-		this.poolFactory = poolFactory;
-	}
+//	@Override
+//	public void setDatabasePoolFactory(ODatabasePoolFactory poolFactory) {
+//		this.poolFactory = poolFactory;
+//	}
 	
 
 	@Override
@@ -120,6 +119,16 @@ public class OrientDbSettings implements IOrientDbSettings
 	@Override
 	public List<Class<? extends ORecordHook>> getORecordHooks() {
 		return oRecordHooks;
+	}
+
+	@Override
+	public OrientDB getContext() {
+		return context;
+	}
+
+	@Override
+	public void setContext(OrientDB orientDB) {
+		this.context = orientDB;
 	}
 
 

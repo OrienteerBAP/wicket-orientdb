@@ -51,7 +51,7 @@ public abstract class DBClosure<V> implements Serializable {
 			orientDbThreadLocal.remove(); //Required to avoid stack of transactions
 		}
 		try {
-			db = getSettings().getDatabasePoolFactory().get(getDbName(), getUsername(), getPassword()).acquire();
+			db = getSettings().getContext().cachedPool(getDbName(), getUsername(), getPassword()).acquire();
 			db.activateOnCurrentThread();
 			return execute(db);
 		} 

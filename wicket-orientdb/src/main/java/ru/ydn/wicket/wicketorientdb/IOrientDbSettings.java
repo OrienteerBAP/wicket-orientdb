@@ -38,10 +38,6 @@ public interface IOrientDbSettings {
 	 */
 	public String getAdminPassword();
 	/**
-	 * @return {@link ODatabasePoolFactory} for DB pool for the application
-	 */
-	public ODatabasePoolFactory getDatabasePoolFactory();
-	/**
 	 * @return factory for {@link ODatabaseDocument}
 	 */
 	public ODatabaseThreadLocalFactory getDatabaseThreadLocalFactory();
@@ -86,11 +82,6 @@ public interface IOrientDbSettings {
 	 */
 	public void setAdminPassword(String password);
 	/**
-	 * Set {@link ODatabasePoolFactory} which should be used for DB connections pooling
-	 * @param poolFactory setup a poolFactory
-	 */
-	public void setDatabasePoolFactory(ODatabasePoolFactory poolFactory);
-	/**
 	 * Set {@link ODatabaseThreadLocalFactory} which should be used for obtaining {@link ODatabaseDocument}
 	 * @param factory factory of a {@link ThreadLocal} db
 	 */
@@ -104,4 +95,7 @@ public interface IOrientDbSettings {
 	 * @return {@link List} of {@link ORecordHook} which should be registered for every DB instance created
 	 */
 	public List<Class<? extends ORecordHook>> getORecordHooks();
+
+	OrientDB getContext();
+	void setContext(OrientDB orientDB);
 }

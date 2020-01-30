@@ -38,7 +38,7 @@ public abstract class AbstractDataInstallator implements IApplicationListener
 		IOrientDbSettings settings = app.getOrientDbSettings();
 		String username = settings.getAdminUserName();
 		String password = settings.getAdminPassword();
-		ODatabasePool pool = settings.getDatabasePoolFactory().get(settings.getDbName(), username, password);
+		ODatabasePool pool = settings.getContext().cachedPool(settings.getDbName(), username, password);
 		return pool.acquire();
 	}
 	

@@ -82,7 +82,7 @@ public class OrientDbWebSession extends AuthenticatedWebSession {
 		try {
 			boolean inTransaction = currentDB.getTransaction().isActive();
 			IOrientDbSettings settings = OrientDbWebApplication.get().getOrientDbSettings();
-			ODatabaseSession newDB = settings.getDatabasePoolFactory().get(settings.getDbName(), username, password).acquire();
+			ODatabaseSession newDB = settings.getContext().cachedPool(settings.getDbName(), username, password).acquire();
 			if (newDB != currentDB) {
 				currentDB.activateOnCurrentThread();
 				currentDB.commit();

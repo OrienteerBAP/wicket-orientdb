@@ -5,12 +5,16 @@ import com.orientechnologies.orient.core.db.ODatabaseDocumentInternal;
 import com.orientechnologies.orient.core.db.ODatabaseInternal;
 import com.orientechnologies.orient.core.db.ODatabaseThreadLocalFactory;
 import com.orientechnologies.orient.core.db.document.ODatabaseDocument;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Implementation of {@link ODatabaseThreadLocalFactory} for obtaining {@link ODatabaseDocument} according to {@link IOrientDbSettings}
  */
 public class DefaultODatabaseThreadLocalFactory implements ODatabaseThreadLocalFactory
 {
+	private static final Logger LOG = LoggerFactory.getLogger(DefaultODatabaseThreadLocalFactory.class);
+
 	private OrientDbWebApplication app;
 	
 	public DefaultODatabaseThreadLocalFactory(OrientDbWebApplication app)
@@ -34,7 +38,9 @@ public class DefaultODatabaseThreadLocalFactory implements ODatabaseThreadLocalF
 			username = settings.getGuestUserName();
 			password = settings.getGuestPassword();
 		}
-		return (ODatabaseDocumentInternal) settings.getDatabasePoolFactory().get(settings.getDbName(), username, password).acquire();
+		ODatabaseDocumentInternal db = (ODatabaseDocumentInternal) settings.getContext().cachedPool(settings.getDbName(), username, password).acquire();
+		LOG.info("Thread database: {}", db);
+		return db;
 	}
 	
 	/**
