@@ -2,6 +2,7 @@ package ru.ydn.wicket.wicketorientdb;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
@@ -127,7 +128,9 @@ public abstract class OrientDbWebApplication extends AuthenticatedWebApplication
 		});
 		getAjaxRequestTargetListeners().add(new FixFormEncTypeListener());
 		//workaround to support changing system users passwords in web interface
-		getOrientDbSettings().getORecordHooks().add(OUserCatchPasswordHook.class);
+		List<Class<? extends ORecordHook>> hooks = new LinkedList<>(getOrientDbSettings().getORecordHooks());
+		hooks.add(OUserCatchPasswordHook.class);
+		getOrientDbSettings().setORecordHooks(hooks);
 		PropertyResolver.setLocator(this, new ODocumentPropertyLocator(new PropertyResolver.CachingPropertyLocator(new PropertyResolver.DefaultPropertyLocator())));
 	}
 
