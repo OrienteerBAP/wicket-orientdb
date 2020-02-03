@@ -35,12 +35,28 @@ public class TestRegisterHooks {
         assertRegisteredHook(db, RegisterHook.class);
     }
 
+    @Test
+    public void testRegisterHooksInTwoDatabases() {
+        ODatabaseDocument db = wicket.getTester().getDatabase();
+        IOrientDbSettings settings = wicket.getTester().getApplication().getOrientDbSettings();
+
+
+        List<Class<? extends ORecordHook>> hooks = new LinkedList<>(settings.getORecordHooks());
+        hooks.add(RegisterHook.class);
+        settings.setORecordHooks(hooks);
+
+        assertRegisteredHook(db, RegisterHook.class);
+
+        ODatabaseDocument db2 = settings.getContext().cachedPool(settings.getDbName(), settings.getAdminUserName(), settings.getAdminPassword()).acquire();
+
+        assertRegisteredHook(db2, RegisterHook.class);
+    }
 
     private void assertRegisteredHook(ODatabaseDocument db, Class<? extends ORecordHook> hookClass) {
         List<Class<? extends ORecordHook>> registeredHooks = db.getHooks().keySet().stream()
                 .map(ORecordHook::getClass).collect(Collectors.toList());
 
-        assertTrue("Hook " + hookClass + " is not registered", registeredHooks.contains(hookClass));
+        assertTrue("Hook " + hookClass + " is not registered in database: " + db, registeredHooks.contains(hookClass));
     }
 
 
