@@ -30,6 +30,7 @@ public abstract class AbstractDataInstallator implements IApplicationListener
 		finally
 		{
 			db.close();
+			app.getOrientDbSettings().getContext().invalidateCachedPools();
 		}
 	}
 	
