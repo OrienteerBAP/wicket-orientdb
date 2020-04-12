@@ -5,12 +5,16 @@ import com.orientechnologies.orient.core.db.ODatabaseDocumentInternal;
 import com.orientechnologies.orient.core.db.ODatabaseInternal;
 import com.orientechnologies.orient.core.db.ODatabaseThreadLocalFactory;
 import com.orientechnologies.orient.core.db.document.ODatabaseDocument;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Implementation of {@link ODatabaseThreadLocalFactory} for obtaining {@link ODatabaseDocument} according to {@link IOrientDbSettings}
  */
 public class DefaultODatabaseThreadLocalFactory implements ODatabaseThreadLocalFactory
 {
+	private static final Logger LOG = LoggerFactory.getLogger(DefaultODatabaseThreadLocalFactory.class);
+
 	private OrientDbWebApplication app;
 	
 	public DefaultODatabaseThreadLocalFactory(OrientDbWebApplication app)
@@ -22,7 +26,6 @@ public class DefaultODatabaseThreadLocalFactory implements ODatabaseThreadLocalF
 	public ODatabaseDocumentInternal getThreadDatabase() {
 		IOrientDbSettings settings = app.getOrientDbSettings();
 		OrientDbWebSession session = OrientDbWebSession.exists()?OrientDbWebSession.get():null;
-		ODatabaseDocumentInternal db;
 		String username;
 		String password;
 		if(session!=null && session.isSignedIn())
@@ -35,8 +38,7 @@ public class DefaultODatabaseThreadLocalFactory implements ODatabaseThreadLocalF
 			username = settings.getGuestUserName();
 			password = settings.getGuestPassword();
 		}
-		db = settings.getDatabasePoolFactory().get(settings.getDBUrl(), username, password).acquire();
-		return db;
+		return (ODatabaseDocumentInternal) settings.getContext().cachedPool(settings.getDbName(), username, password).acquire();
 	}
 	
 	/**

@@ -2,10 +2,7 @@ package ru.ydn.wicket.wicketorientdb;
 
 import java.util.List;
 
-import com.orientechnologies.orient.core.db.ODatabase;
-import com.orientechnologies.orient.core.db.ODatabasePoolBase;
-import com.orientechnologies.orient.core.db.ODatabaseThreadLocalFactory;
-import com.orientechnologies.orient.core.db.OPartitionedDatabasePoolFactory;
+import com.orientechnologies.orient.core.db.*;
 import com.orientechnologies.orient.core.db.document.ODatabaseDocument;
 import com.orientechnologies.orient.core.hook.ORecordHook;
 
@@ -13,10 +10,17 @@ import com.orientechnologies.orient.core.hook.ORecordHook;
  * OrientDB setting to be used in Wicket-OrientDB application
  */
 public interface IOrientDbSettings {
+
 	/**
-	 * @return URL to connect to the OrientDB
+	 * @return database name
 	 */
-	public String getDBUrl();
+	public String getDbName();
+
+	/**
+	 * @return {@link ODatabaseType} database type
+ 	 */
+	public ODatabaseType getDbType();
+
 	/**
 	 * @return Default DB username
 	 */
@@ -34,10 +38,6 @@ public interface IOrientDbSettings {
 	 */
 	public String getAdminPassword();
 	/**
-	 * @return {@link OPartitionedDatabasePoolFactory} for DB pool for the application
-	 */
-	public OPartitionedDatabasePoolFactory getDatabasePoolFactory();
-	/**
 	 * @return factory for {@link ODatabaseDocument}
 	 */
 	public ODatabaseThreadLocalFactory getDatabaseThreadLocalFactory();
@@ -46,11 +46,21 @@ public interface IOrientDbSettings {
 	 * @return default url for orientdb rest API
 	 */
 	public String getOrientDBRestApiUrl();
+
 	/**
-	 * Set URL for the OrientDB
-	 * @param url URL of OrientDB database
+	 * Set name of database
+	 * @param dbName database name
 	 */
-	public void setDBUrl(String url);
+	public void setDbName(String dbName);
+
+	/**
+	 * Set database type
+	 * @param dbType database type
+	 */
+	public void setDbType(ODatabaseType dbType);
+
+	public void setDbType(String dbType);
+
 	/**
 	 * Set username for default user
 	 * @param userName default username for login
@@ -72,11 +82,6 @@ public interface IOrientDbSettings {
 	 */
 	public void setAdminPassword(String password);
 	/**
-	 * Set {@link ODatabasePoolBase} which should be used for DB connections pooling
-	 * @param poolFactory setup a poolFactory
-	 */
-	public void setDatabasePoolFactory(OPartitionedDatabasePoolFactory poolFactory);
-	/**
 	 * Set {@link ODatabaseThreadLocalFactory} which should be used for obtaining {@link ODatabaseDocument}
 	 * @param factory factory of a {@link ThreadLocal} db
 	 */
@@ -90,4 +95,7 @@ public interface IOrientDbSettings {
 	 * @return {@link List} of {@link ORecordHook} which should be registered for every DB instance created
 	 */
 	public List<Class<? extends ORecordHook>> getORecordHooks();
+
+	OrientDB getContext();
+	void setContext(OrientDB orientDB);
 }

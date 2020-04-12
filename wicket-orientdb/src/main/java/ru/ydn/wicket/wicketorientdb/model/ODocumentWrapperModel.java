@@ -30,8 +30,8 @@ public class ODocumentWrapperModel<T extends ODocumentWrapper> extends Model<T> 
 	public T getObject() {
 		try {
 			T ret = super.getObject();
-			if(ret != null && needToReload) {
-				ret.reload();
+			if( ret != null && needToReload) {
+				ret.getDocument().load();
 				needToReload = false;
 			}
 			return ret;

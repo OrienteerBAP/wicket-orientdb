@@ -2,6 +2,8 @@ package ru.ydn.wicket.wicketorientdb.utils;
 
 import java.io.Serializable;
 import java.lang.reflect.Constructor;
+
+import com.orientechnologies.orient.core.record.OElement;
 import org.apache.wicket.WicketRuntimeException;
 import org.apache.wicket.util.lang.Args;
 
@@ -12,7 +14,7 @@ import com.orientechnologies.orient.core.record.impl.ODocument;
  * Transformer for wrapping of {@link ODocument}
  * @param <T> type to wrap to
  */
-public class DocumentWrapperTransformer<T> implements Function<ODocument, T>, Serializable
+public class DocumentWrapperTransformer<T> implements Function<OElement, T>, Serializable
 {
 	private static final long serialVersionUID = 1L;
 	private final Class<? extends T> wrapperClass;
@@ -48,12 +50,10 @@ public class DocumentWrapperTransformer<T> implements Function<ODocument, T>, Se
 	
 	
 	@Override
-	public T apply(ODocument input) {
-		try
-		{
-			return getConstructor().newInstance(input);
-		} catch (Exception e)
-		{
+	public T apply(OElement input) {
+		try {
+			return getConstructor().newInstance((ODocument) input);
+		} catch (Exception e) {
 			throw new WicketRuntimeException("Can't create wrapper instance of class '"+wrapperClass.getName()+"' for document: "+input, e);
 		} 
 	}

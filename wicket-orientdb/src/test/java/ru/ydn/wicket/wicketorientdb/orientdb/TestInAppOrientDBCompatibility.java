@@ -597,18 +597,18 @@ public class TestInAppOrientDBCompatibility
 		doc.reload();
 		doc.delete();
 	}
-	
+
 	@Test
 	public void testAuthentication() throws Exception
 	{
 		WicketOrientDbTester tester = wicket.getTester();
-		String content = tester.executeUrl("orientdb/query/db/sql/select+from+$user", "GET", null, "reader", "reader");
+		String content = tester.executeUrl("orientdb/query/db/sql/select+from+ouser", "GET", null, "reader", "reader");
 		System.out.println(content);
 		assertTrue(content.contains("reader"));
-		content = tester.executeUrl("orientdb/query/db/sql/select+from+$user", "GET", null, "writer",  "writer");
+		content = tester.executeUrl("orientdb/query/db/sql/select+from+ouser", "GET", null, "writer",  "writer");
 		System.out.println(content);
 		assertTrue(content.contains("writer"));
-		content = tester.executeUrl("orientdb/query/db/sql/select+from+$user", "GET", null, "admin",  "admin");
+		content = tester.executeUrl("orientdb/query/db/sql/select+from+ouser", "GET", null, "admin",  "admin");
 		System.out.println(content);
 		assertTrue(content.contains("admin"));
 	}
@@ -780,7 +780,7 @@ public class TestInAppOrientDBCompatibility
 		final OClass classA = schema.createClass("TestLinkToOUser");
 		classA.createProperty("name", OType.STRING);
 		classA.createProperty("user", OType.LINK).setLinkedClass(schema.getClass("OUser"));
-		ORID userRid = new ORecordId("#5:0");
+		ORID userRid = new ORecordId("#6:0");
 		ODocument doc = new ODocument(classA);
 		wicket.getTester().signIn("writer", "writer");
 		db = wicket.getTester().getDatabase();

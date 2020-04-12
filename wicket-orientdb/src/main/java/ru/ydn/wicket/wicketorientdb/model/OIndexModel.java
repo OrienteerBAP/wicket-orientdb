@@ -1,5 +1,7 @@
 package ru.ydn.wicket.wicketorientdb.model;
 
+import com.orientechnologies.orient.core.db.ODatabaseDocumentInternal;
+import com.orientechnologies.orient.core.index.OIndexManagerAbstract;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.IObjectClassAwareModel;
 
@@ -38,8 +40,9 @@ public class OIndexModel extends PrototypeLoadableDetachableModel<OIndex>
 	@Override
 	protected OIndex loadInstance() {
 		OClass oClass = classModel!=null?classModel.getObject():null;
-		OIndexManager indexManager = OrientDbWebSession.get().getDatabase().getMetadata().getIndexManager();
-		return oClass!=null? indexManager.getClassIndex(oClass.getName(), indexName):indexManager.getIndex(indexName);
+		ODatabaseDocumentInternal database = OrientDbWebSession.get().getDatabase();
+		OIndexManagerAbstract indexManager = database.getMetadata().getIndexManagerInternal();
+		return oClass != null ? indexManager.getClassIndex(database, oClass.getName(), indexName) : indexManager.getIndex(database, indexName);
 	}
 
 	@Override

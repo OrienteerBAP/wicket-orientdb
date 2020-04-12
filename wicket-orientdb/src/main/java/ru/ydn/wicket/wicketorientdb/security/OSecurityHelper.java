@@ -157,7 +157,6 @@ public class OSecurityHelper
 	{
 		return new RequiredOrientResource[]{new RequiredOrientResourceImpl(resource.getName(), specific, action, permissions)};
 	}
-	
 	/**
 	 * Check that all required permissions present for specified {@link ODocument}
 	 * @param doc {@link ODocument} to check security rights for
@@ -169,11 +168,10 @@ public class OSecurityHelper
 		if(!isAllowed(doc.getSchemaClass(), permissions)) return false;
 		for (OrientPermission orientPermission : permissions) {
 			ORestrictedOperation allowOperation = MAPPING_FOR_HACK.get(orientPermission);
-			if(allowOperation!=null)
-			{
-				if(!ORestrictedAccessHook.isAllowed(ODatabaseRecordThreadLocal.instance().get(), 
-													doc, allowOperation, false)) 
+			if(allowOperation != null) {
+				if (!ORestrictedAccessHook.isAllowed(ODatabaseRecordThreadLocal.instance().get(), doc, allowOperation, false)) {
 					return false;
+				}
 			}
 		}
 		return true;

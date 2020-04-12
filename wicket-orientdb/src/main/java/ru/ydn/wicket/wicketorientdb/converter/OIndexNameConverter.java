@@ -3,6 +3,7 @@ package ru.ydn.wicket.wicketorientdb.converter;
 import java.io.Serializable;
 import java.util.Locale;
 
+import com.orientechnologies.orient.core.db.ODatabaseDocumentInternal;
 import org.apache.wicket.util.convert.ConversionException;
 
 import ru.ydn.wicket.wicketorientdb.OrientDbWebSession;
@@ -20,7 +21,8 @@ public class OIndexNameConverter  extends AbstractJointConverter<OIndex> impleme
 
 	@Override
 	public OIndex convertToObject(String value, Locale locale) throws ConversionException {
-		return OrientDbWebSession.get().getDatabase().getMetadata().getIndexManager().getIndex(value);
+		ODatabaseDocumentInternal database = OrientDbWebSession.get().getDatabase();
+		return database.getMetadata().getIndexManagerInternal().getIndex(database, value);
 	}
 
 	@Override

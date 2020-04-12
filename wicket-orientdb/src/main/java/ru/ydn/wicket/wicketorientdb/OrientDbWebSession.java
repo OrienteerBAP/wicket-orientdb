@@ -2,6 +2,7 @@ package ru.ydn.wicket.wicketorientdb;
 
 import java.util.Set;
 
+import com.orientechnologies.orient.core.db.ODatabaseSession;
 import org.apache.wicket.Session;
 import org.apache.wicket.authroles.authentication.AuthenticatedWebSession;
 import org.apache.wicket.authroles.authorization.strategies.role.Roles;
@@ -77,14 +78,12 @@ public class OrientDbWebSession extends AuthenticatedWebSession {
 
 	@Override
 	public boolean authenticate(String username, String password) {
-		ODatabaseDocumentInternal currentDB = getDatabase();
-		try
-		{
+		ODatabaseDocument currentDB = getDatabase();
+		try {
 			boolean inTransaction = currentDB.getTransaction().isActive();
 			IOrientDbSettings settings = OrientDbWebApplication.get().getOrientDbSettings();
-			ODatabaseDocumentInternal newDB = settings.getDatabasePoolFactory().get(settings.getDBUrl(), username, password).acquire();
-			if(newDB!=currentDB)
-			{
+			ODatabaseSession newDB = settings.getContext().cachedPool(settings.getDbName(), username, password).acquire();
+			if (newDB != currentDB) {
 				currentDB.activateOnCurrentThread();
 				currentDB.commit();
 				currentDB.close();
@@ -92,12 +91,11 @@ public class OrientDbWebSession extends AuthenticatedWebSession {
 			}
 			setUser(username, password);
 			userModel.setObject(newDB.getUser().getDocument());
-//			user = newDB.getMetadata().getSecurity().getUser(username);
-//			newDB.setUser(user);
-			if(inTransaction && !newDB.getTransaction().isActive()) newDB.begin();
+			if (inTransaction && !newDB.getTransaction().isActive()) {
+				newDB.begin();
+			}
 			return true;
-		} catch (OSecurityAccessException e)
-		{
+		} catch (OSecurityAccessException e) {
 			currentDB.activateOnCurrentThread();
 			return false;
 		}
