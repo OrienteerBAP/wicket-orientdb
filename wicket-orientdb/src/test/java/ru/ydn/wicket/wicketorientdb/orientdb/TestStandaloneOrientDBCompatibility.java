@@ -14,6 +14,7 @@ import ru.ydn.wicket.wicketorientdb.OrientDbTestWebApplication;
 
 import static org.junit.Assert.assertNotNull;
 
+@Ignore
 public class TestStandaloneOrientDBCompatibility {
 
 	private static final String PLOCAL_DB_NAME = "testDBLifeCycleLocal";
