@@ -9,6 +9,7 @@ import org.apache.wicket.core.request.handler.PageProvider;
 import org.apache.wicket.core.request.handler.RenderPageRequestHandler;
 import org.apache.wicket.request.IRequestCycle;
 import org.apache.wicket.request.IRequestHandler;
+import org.apache.wicket.request.RequestHandlerExecutor.ReplaceHandlerException;
 import org.apache.wicket.request.cycle.IRequestCycleListener;
 import org.apache.wicket.request.cycle.RequestCycle;
 import org.apache.wicket.util.lang.Exceptions;
@@ -43,30 +44,34 @@ public class OrientDefaultExceptionsHandlingListener implements IRequestCycleLis
 	
 	@Override
 	public IRequestHandler onException(RequestCycle cycle, Exception ex) {
-		Throwable th = null;
-		if((th=Exceptions.findCause(ex, OSecurityException.class))!=null
-				|| (th=Exceptions.findCause(ex, OValidationException.class))!=null
-				|| (th=Exceptions.findCause(ex, OSchemaException.class))!=null
-				|| (th=Exceptions.findCause(ex, IllegalStateException.class))!=null && Exceptions.findCause(ex, WicketRuntimeException.class)==null)
-		{
-			Page page = extractCurrentPage(false);
-			if(page==null) {
-				return th instanceof OSecurityException ?
-							new UnauthorizedInstantiationHandler(extractCurrentPage(true))
-							:null; 
+		try {
+			Throwable th = null;
+			if((th=Exceptions.findCause(ex, OSecurityException.class))!=null
+					|| (th=Exceptions.findCause(ex, OValidationException.class))!=null
+					|| (th=Exceptions.findCause(ex, OSchemaException.class))!=null
+					|| (th=Exceptions.findCause(ex, IllegalStateException.class))!=null && Exceptions.findCause(ex, WicketRuntimeException.class)==null)
+			{
+				Page page = extractCurrentPage(false);
+				if(page==null) {
+					if(th instanceof OSecurityException) 
+						OrientDbWebApplication.get().restartResponseAtSignInPage(); //Will throw exception
+					return null;
+				}
+				OrientDbWebSession.get().error(th.getMessage());
+				return new RenderPageRequestHandler(new PageProvider(page),
+				RenderPageRequestHandler.RedirectPolicy.ALWAYS_REDIRECT);
 			}
-			OrientDbWebSession.get().error(th.getMessage());
-			return new RenderPageRequestHandler(new PageProvider(page),
-			RenderPageRequestHandler.RedirectPolicy.ALWAYS_REDIRECT);
-		}
-		else if((th=Exceptions.findCause(ex, UnauthorizedActionException.class))!=null)
-		{
-			final UnauthorizedActionException unauthorizedActionException = (UnauthorizedActionException)th;
-			return new UnauthorizedInstantiationHandler(unauthorizedActionException.getComponent());
-		}
-		else
-		{
-			return null;
+			else if((th=Exceptions.findCause(ex, UnauthorizedActionException.class))!=null)
+			{
+				final UnauthorizedActionException unauthorizedActionException = (UnauthorizedActionException)th;
+				return new UnauthorizedInstantiationHandler(unauthorizedActionException.getComponent());
+			}
+			else
+			{
+				return null;
+			}
+		} catch (ReplaceHandlerException e) {
+			return e.getReplacementRequestHandler();
 		}
 	}
 	

@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/OrienteerBAP/wicket-orientdb.svg?branch=master)](https://travis-ci.org/OrienteerBAP/wicket-orientdb) [![Coverage Status](https://img.shields.io/coveralls/OrienteerBAP/wicket-orientdb.svg)](https://coveralls.io/r/OrienteerBAP/wicket-orientdb) [![Dependency Status](https://www.versioneye.com/user/projects/5871d31340543803e80abb74/badge.svg?style=flat-square)](https://www.versioneye.com/user/projects/5871d31340543803e80abb74)
+[![Build Status](https://travis-ci.org/OrienteerBAP/wicket-orientdb.svg?branch=master)](https://travis-ci.org/OrienteerBAP/wicket-orientdb) [![Coverage Status](https://img.shields.io/coveralls/OrienteerBAP/wicket-orientdb.svg)](https://coveralls.io/r/OrienteerBAP/wicket-orientdb)
 
 wicket-orientdb
 ===============
