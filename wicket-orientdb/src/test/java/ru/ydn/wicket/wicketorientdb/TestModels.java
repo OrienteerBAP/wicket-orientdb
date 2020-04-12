@@ -92,11 +92,11 @@ public class TestModels
 		OClass oClass = schema.getClass("OUser");
 		OIndexesDataProvider provider = new OIndexesDataProvider(oClass, true);
 		provider.setSort("name", SortOrder.ASCENDING);
-		Iterator<? extends OIndex<?>> it = provider.iterator(0, -1);
-		List<OIndex<?>> allIndexes = new ArrayList<OIndex<?>>(oClass.getIndexes());
+		Iterator<? extends OIndex> it = provider.iterator(0, -1);
+		List<OIndex> allIndexes = new ArrayList<OIndex>(oClass.getIndexes());
 		while(it.hasNext())
 		{
-			OIndex<?> oIndex = it.next();
+			OIndex oIndex = it.next();
 			assertTrue(allIndexes.remove(provider.model(oIndex).getObject()));
 		}
 		assertTrue(allIndexes.size()==0);
@@ -109,9 +109,9 @@ public class TestModels
 		IModel<String> classNameModel = Model.of();
 		IModel<OClass> classModel = new OClassModel(classNameModel);
 		IModel<List<OProperty>> propertiesModel = new ListOPropertiesModel(classModel, null);
-		IModel<List<OIndex<?>>> indexesModel = new ListOIndexesModel(classModel, null);
+		IModel<List<OIndex>> indexesModel = new ListOIndexesModel(classModel, null);
 		List<OProperty> properties = propertiesModel.getObject();
-		List<OIndex<?>> indexes = indexesModel.getObject();
+		List<OIndex> indexes = indexesModel.getObject();
 		assertNotNull(properties);
 		assertNotNull(indexes);
 		assertTrue(properties.isEmpty());
@@ -359,7 +359,7 @@ public class TestModels
 	{
 		ORecordId recordId = new ORecordId("#5:0");
 		assertModelObjectEquals("admin", new PropertyModel<>(new ODocumentModel(recordId), "name"));
-		assertModelObjectEquals("OUser", new PropertyModel<>(new ODocumentModel(recordId), "@schemaClass.name"));
+		assertModelObjectEquals("ORole", new PropertyModel<>(new ODocumentModel(recordId), "@schemaClass.name"));
 	}
 	
 	@Test

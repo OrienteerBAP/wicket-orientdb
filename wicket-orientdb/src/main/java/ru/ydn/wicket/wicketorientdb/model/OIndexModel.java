@@ -13,12 +13,12 @@ import com.orientechnologies.orient.core.metadata.schema.OClass;
 /**
  * Model for storing {@link OIndex}
  */
-public class OIndexModel extends PrototypeLoadableDetachableModel<OIndex<?>>
+public class OIndexModel extends PrototypeLoadableDetachableModel<OIndex>
 {
 	private static final long serialVersionUID = 1L;
 	private IModel<OClass> classModel;
 	private String indexName;
-	public OIndexModel(OIndex<?> object)
+	public OIndexModel(OIndex object)
 	{
 		super(object);
 	}
@@ -36,14 +36,14 @@ public class OIndexModel extends PrototypeLoadableDetachableModel<OIndex<?>>
 
 
 	@Override
-	protected OIndex<?> loadInstance() {
+	protected OIndex loadInstance() {
 		OClass oClass = classModel!=null?classModel.getObject():null;
 		OIndexManager indexManager = OrientDbWebSession.get().getDatabase().getMetadata().getIndexManager();
 		return oClass!=null? indexManager.getClassIndex(oClass.getName(), indexName):indexManager.getIndex(indexName);
 	}
 
 	@Override
-	protected void handleObject(OIndex<?> object) {
+	protected void handleObject(OIndex object) {
 		indexName = object.getName();
 		OIndexDefinition indexDefinition = object.getDefinition();
 		if(indexDefinition!=null)
@@ -61,7 +61,7 @@ public class OIndexModel extends PrototypeLoadableDetachableModel<OIndex<?>>
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
-	public Class<OIndex<?>> getObjectClass() {
+	public Class<OIndex> getObjectClass() {
 		return (Class)OIndex.class;
 	}
 
