@@ -96,6 +96,8 @@ public interface IOrientDbSettings {
 	 */
 	public List<Class<? extends ORecordHook>> getORecordHooks();
 
+	void setORecordHooks(List<Class<? extends ORecordHook>> hooks);
+
 	OrientDB getContext();
 	void setContext(OrientDB orientDB);
 }

@@ -1,14 +1,18 @@
 package ru.ydn.wicket.wicketorientdb;
 
-import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import com.orientechnologies.orient.core.Orient;
 import com.orientechnologies.orient.core.db.*;
+import com.orientechnologies.orient.core.db.document.ODatabaseDocument;
 import com.orientechnologies.orient.core.hook.ORecordHook;
 import com.orientechnologies.orient.server.OServer;
 import com.orientechnologies.orient.server.network.OServerNetworkListener;
 import com.orientechnologies.orient.server.network.protocol.http.ONetworkProtocolHttpAbstract;
+import ru.ydn.wicket.wicketorientdb.utils.ODbUtils;
 
 /**
  * Default implementation of {@link IOrientDbSettings}
@@ -30,12 +34,11 @@ public class OrientDbSettings implements IOrientDbSettings
 
 	private OrientDB context;
 
-//	private ODatabasePoolFactory poolFactory;
-	
-	private List<Class<? extends ORecordHook>> oRecordHooks = new ArrayList<Class<? extends ORecordHook>>();
+	private List<Class<? extends ORecordHook>> oRecordHooks;
 
 	public OrientDbSettings() {
 		super();
+		oRecordHooks = Collections.unmodifiableList(Collections.emptyList());
 	}
 
 	@Override
@@ -48,22 +51,10 @@ public class OrientDbSettings implements IOrientDbSettings
 		return dbType;
 	}
 
-
-//	@Override
-//	public ODatabasePoolFactory getDatabasePoolFactory() {
-//		return poolFactory;
-//	}
-
 	@Override
 	public ODatabaseThreadLocalFactory getDatabaseThreadLocalFactory() {
 		return Orient.instance().getDatabaseThreadFactory();
 	}
-
-//	@Override
-//	public void setDatabasePoolFactory(ODatabasePoolFactory poolFactory) {
-//		this.poolFactory = poolFactory;
-//	}
-	
 
 	@Override
 	public String getGuestUserName() {
@@ -119,6 +110,28 @@ public class OrientDbSettings implements IOrientDbSettings
 	@Override
 	public List<Class<? extends ORecordHook>> getORecordHooks() {
 		return oRecordHooks;
+	}
+
+	@Override
+	public void setORecordHooks(List<Class<? extends ORecordHook>> hooks) {
+		if (hooks == null) {
+			hooks = Collections.emptyList();
+		}
+		synchronized (this) {
+			List<Class<? extends ORecordHook>> newHooks = Collections.unmodifiableList(hooks);
+
+			ODatabaseDocument db = ODatabaseRecordThreadLocal.instance().getIfDefined();
+			if (db != null) {
+				List<Class<? extends ORecordHook>> hooksToUnregister = oRecordHooks.stream()
+						.filter(hook -> !newHooks.contains(hook))
+						.collect(Collectors.toCollection(LinkedList::new));
+
+				ODbUtils.unregisterHooks((ODatabaseInternal<?>) db, hooksToUnregister);
+				ODbUtils.registerHooks((ODatabaseInternal<?>) db, newHooks);
+			}
+
+			this.oRecordHooks = newHooks;
+		}
 	}
 
 	@Override
