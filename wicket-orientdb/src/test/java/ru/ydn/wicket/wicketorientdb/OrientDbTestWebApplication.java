@@ -39,9 +39,7 @@ public class OrientDbTestWebApplication extends OrientDbWebApplication
 		getOrientDbSettings().setAdminUserName("admin");
 		getOrientDbSettings().setAdminPassword("admin");
 
-		List<Class<? extends ORecordHook>> hooks = new LinkedList<>(getOrientDbSettings().getORecordHooks());
-		hooks.add(TestHook.class);
-		getOrientDbSettings().setORecordHooks(hooks);
+		getOrientDbSettings().addORecordHooks(TestHook.class);
 
 		getApplicationListeners().add(new TestDataInstallator());
 		mountOrientDbRestApi();

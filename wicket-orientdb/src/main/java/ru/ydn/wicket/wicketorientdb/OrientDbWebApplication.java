@@ -128,9 +128,7 @@ public abstract class OrientDbWebApplication extends AuthenticatedWebApplication
 		});
 		getAjaxRequestTargetListeners().add(new FixFormEncTypeListener());
 		//workaround to support changing system users passwords in web interface
-		List<Class<? extends ORecordHook>> hooks = new LinkedList<>(getOrientDbSettings().getORecordHooks());
-		hooks.add(OUserCatchPasswordHook.class);
-		getOrientDbSettings().setORecordHooks(hooks);
+		getOrientDbSettings().addORecordHooks(OUserCatchPasswordHook.class);
 		PropertyResolver.setLocator(this, new ODocumentPropertyLocator(new PropertyResolver.CachingPropertyLocator(new PropertyResolver.DefaultPropertyLocator())));
 	}
 

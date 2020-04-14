@@ -92,11 +92,21 @@ public interface IOrientDbSettings {
 	 */
 	public void setOrientDBRestApiUrl(String orientDbRestApiUrl);
 	/**
-	 * @return {@link List} of {@link ORecordHook} which should be registered for every DB instance created
+	 * @return Unmodifiable{@link List} of {@link ORecordHook} which should be registered for every DB instance created
 	 */
 	public List<Class<? extends ORecordHook>> getORecordHooks();
-
-	void setORecordHooks(List<Class<? extends ORecordHook>> hooks);
+	
+	/**
+	 * Add new hooks to the list
+	 * @param classes to be added
+	 */
+	public void addORecordHooks(Class<? extends ORecordHook>...classes);
+	
+	/**
+	 * Remove hooks from the list
+	 * @param classes to be added
+	 */
+	public void removeORecordHooks(Class<? extends ORecordHook>...classes);
 
 	OrientDB getContext();
 	void setContext(OrientDB orientDB);

@@ -24,9 +24,7 @@ public class TestRegisterHooks {
         IOrientDbSettings settings = wicket.getTester().getApplication().getOrientDbSettings();
 
 
-        List<Class<? extends ORecordHook>> hooks = new LinkedList<>(settings.getORecordHooks());
-        hooks.add(RegisterHook.class);
-        settings.setORecordHooks(hooks);
+        settings.addORecordHooks(RegisterHook.class);
 
         assertRegisteredHook(db, RegisterHook.class);
 
@@ -40,11 +38,8 @@ public class TestRegisterHooks {
         ODatabaseDocument db = wicket.getTester().getDatabase();
         IOrientDbSettings settings = wicket.getTester().getApplication().getOrientDbSettings();
 
-
-        List<Class<? extends ORecordHook>> hooks = new LinkedList<>(settings.getORecordHooks());
-        hooks.add(RegisterHook.class);
-        settings.setORecordHooks(hooks);
-
+        settings.addORecordHooks(RegisterHook.class);
+        
         assertRegisteredHook(db, RegisterHook.class);
 
         ODatabaseDocument db2 = settings.getContext().cachedPool(settings.getDbName(), settings.getAdminUserName(), settings.getAdminPassword()).acquire();

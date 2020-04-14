@@ -1,5 +1,7 @@
 package ru.ydn.wicket.wicketorientdb;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -35,10 +37,12 @@ public class OrientDbSettings implements IOrientDbSettings
 	private OrientDB context;
 
 	private List<Class<? extends ORecordHook>> oRecordHooks;
+	private List<Class<? extends ORecordHook>> unmodifiableORecordHooks;
 
 	public OrientDbSettings() {
 		super();
-		oRecordHooks = Collections.unmodifiableList(Collections.emptyList());
+		oRecordHooks = new ArrayList<Class<? extends ORecordHook>>();
+		unmodifiableORecordHooks = Collections.unmodifiableList(oRecordHooks);
 	}
 
 	@Override
@@ -109,28 +113,28 @@ public class OrientDbSettings implements IOrientDbSettings
 
 	@Override
 	public List<Class<? extends ORecordHook>> getORecordHooks() {
-		return oRecordHooks;
+		return unmodifiableORecordHooks;
 	}
-
+	
+	@SuppressWarnings("unchecked")
 	@Override
-	public void setORecordHooks(List<Class<? extends ORecordHook>> hooks) {
-		if (hooks == null) {
-			hooks = Collections.emptyList();
+	public void addORecordHooks(Class<? extends ORecordHook>... classes) {
+		List<Class<? extends ORecordHook>> hooks = Arrays.asList(classes);
+		oRecordHooks.addAll(hooks);
+		ODatabaseDocument db = ODatabaseRecordThreadLocal.instance().getIfDefined();
+		if (db != null) {
+			ODbUtils.registerHooks((ODatabaseInternal<?>) db, hooks);
 		}
-		synchronized (this) {
-			List<Class<? extends ORecordHook>> newHooks = Collections.unmodifiableList(hooks);
-
-			ODatabaseDocument db = ODatabaseRecordThreadLocal.instance().getIfDefined();
-			if (db != null) {
-				List<Class<? extends ORecordHook>> hooksToUnregister = oRecordHooks.stream()
-						.filter(hook -> !newHooks.contains(hook))
-						.collect(Collectors.toCollection(LinkedList::new));
-
-				ODbUtils.unregisterHooks((ODatabaseInternal<?>) db, hooksToUnregister);
-				ODbUtils.registerHooks((ODatabaseInternal<?>) db, newHooks);
-			}
-
-			this.oRecordHooks = newHooks;
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public void removeORecordHooks(Class<? extends ORecordHook>... classes) {
+		List<Class<? extends ORecordHook>> hooks = Arrays.asList(classes);
+		oRecordHooks.removeAll(hooks);
+		ODatabaseDocument db = ODatabaseRecordThreadLocal.instance().getIfDefined();
+		if (db != null) {
+			ODbUtils.unregisterHooks((ODatabaseInternal<?>) db, hooks);
 		}
 	}
 
