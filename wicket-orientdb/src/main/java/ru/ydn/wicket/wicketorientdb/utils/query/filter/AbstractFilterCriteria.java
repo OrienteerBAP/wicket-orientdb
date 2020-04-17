@@ -10,7 +10,8 @@ import java.util.Collection;
  */
 public abstract class AbstractFilterCriteria implements IFilterCriteria {
 
-    private final String field;
+	private static final long serialVersionUID = 1L;
+	private final String field;
     private final IModel<?> model;
     private final IModel<Boolean> join;
 

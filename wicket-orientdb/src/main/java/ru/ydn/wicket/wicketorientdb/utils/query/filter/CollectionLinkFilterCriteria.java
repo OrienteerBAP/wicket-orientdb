@@ -11,7 +11,8 @@ import java.util.Collection;
  */
 public class CollectionLinkFilterCriteria extends CollectionFilterCriteria {
 
-    private final boolean list;
+	private static final long serialVersionUID = 1L;
+	private final boolean list;
 
     public CollectionLinkFilterCriteria(String field, IModel<Collection<ODocument>> model, boolean list, IModel<Boolean> join) {
         super(field, model, join);

@@ -1,25 +1,18 @@
 package ru.ydn.wicket.wicketorientdb.filter;
 
 import com.google.common.collect.Lists;
-import com.orientechnologies.orient.core.db.ODatabasePool;
 import com.orientechnologies.orient.core.metadata.schema.OProperty;
 import com.orientechnologies.orient.core.record.impl.ODocument;
-import com.orientechnologies.orient.core.sql.executor.OResult;
-import com.orientechnologies.orient.core.sql.executor.OResultSet;
-import com.orientechnologies.orient.core.sql.query.OSQLSynchQuery;
 import org.apache.wicket.extensions.markup.html.repeater.data.sort.SortOrder;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.util.CollectionModel;
 import org.apache.wicket.model.util.ListModel;
 import org.junit.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import ru.ydn.wicket.wicketorientdb.model.ODocumentLinksQueryDataProvider;
 import ru.ydn.wicket.wicketorientdb.model.ODocumentModel;
 import ru.ydn.wicket.wicketorientdb.model.OQueryDataProvider;
 import ru.ydn.wicket.wicketorientdb.model.OQueryModel;
-import ru.ydn.wicket.wicketorientdb.utils.DBClosure;
 import ru.ydn.wicket.wicketorientdb.utils.query.filter.FilterCriteriaManager;
 import ru.ydn.wicket.wicketorientdb.utils.query.filter.IFilterCriteria;
 import ru.ydn.wicket.wicketorientdb.utils.query.filter.IFilterCriteriaManager;
@@ -178,7 +171,7 @@ public class TestFilters {
         manager.addFilterCriteria(equalsFilterCriteria);
         String numField = wicket.getProperty(NUMBER_FIELD).getObject().getName();
         queryModel.addFilterCriteriaManager(numField, manager);
-        OQueryDataProvider provider = new OQueryDataProvider(queryModel);
+        OQueryDataProvider<ODocument> provider = new OQueryDataProvider<ODocument>(queryModel);
         assertTrue(queryModel.size() == queryModel.getObject().size());
         assertTrue(provider.size() == queryModel.getObject().size());
     }

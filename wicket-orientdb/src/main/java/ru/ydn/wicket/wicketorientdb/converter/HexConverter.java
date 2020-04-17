@@ -12,6 +12,7 @@ import org.apache.wicket.util.string.Strings;
  */
 public class HexConverter extends AbstractJointConverter<byte[]> {
 	
+	private static final long serialVersionUID = 1L;
 	private final String prefix;
 	private final int cols;
 	private final int maxLength;

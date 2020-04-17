@@ -11,7 +11,9 @@ import java.util.List;
  * select from Parent where @class in ["Child", "Child2"] */
 public class ClassInCollectionFilterCriteria extends AbstractFilterCriteria {
 
-    public ClassInCollectionFilterCriteria(String field, IModel<Collection<String>> model, IModel<Boolean> join) {
+	private static final long serialVersionUID = 1L;
+
+	public ClassInCollectionFilterCriteria(String field, IModel<Collection<String>> model, IModel<Boolean> join) {
         super(field, model, join);
     }
 

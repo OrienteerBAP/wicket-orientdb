@@ -13,7 +13,10 @@ import java.util.List;
  * {@link IModel} to list all {@link OCluster}s
  */
 public class ListOClustersModel extends AbstractListModel<OCluster>{
-    @Override
+	
+	private static final long serialVersionUID = 1L;
+
+	@Override
     protected Collection<OCluster> getData() {
         List<OCluster> cluster = new ArrayList<>();
         for(OCluster ocluster : getClusterInstances()) {

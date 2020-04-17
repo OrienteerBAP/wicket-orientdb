@@ -4,7 +4,6 @@ import org.apache.wicket.WicketRuntimeException;
 import org.apache.wicket.model.IModel;
 
 import com.google.common.base.Converter;
-import com.google.common.base.Function;
 
 /**
  * Model for lazy apply of function on object from underling model

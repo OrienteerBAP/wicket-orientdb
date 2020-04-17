@@ -1,7 +1,12 @@
 package ru.ydn.wicket.wicketorientdb.proto;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
 import java.io.Serializable;
-import java.net.NetPermission;
 import java.util.Arrays;
 import java.util.Collection;
 
@@ -9,7 +14,6 @@ import org.apache.wicket.core.util.lang.PropertyResolver;
 import org.junit.ClassRule;
 import org.junit.Test;
 
-import com.orientechnologies.orient.core.index.ODefaultIndexFactory;
 import com.orientechnologies.orient.core.index.OIndex;
 import com.orientechnologies.orient.core.metadata.schema.OClass;
 import com.orientechnologies.orient.core.metadata.schema.OProperty;
@@ -18,7 +22,6 @@ import com.orientechnologies.orient.core.metadata.schema.clusterselection.ORound
 import com.orientechnologies.orient.core.record.impl.ODocument;
 
 import ru.ydn.wicket.wicketorientdb.junit.WicketOrientDbTesterScope;
-import static org.junit.Assert.*;
 
 @SuppressWarnings("unchecked")
 public class TestPrototypers
@@ -31,6 +34,8 @@ public class TestPrototypers
 	{
 		IMyBean bean = MyBeanPrototyper.newPrototype(new IPrototypeListener<IMyBean>() {
 			
+			private static final long serialVersionUID = 1L;
+
 			@Override
 			public void onRealizePrototype(IPrototype<IMyBean> prototype) {
 				prototype.obtainRealizedObject().setHandledByListener(true); 

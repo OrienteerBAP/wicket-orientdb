@@ -12,6 +12,7 @@ import com.orientechnologies.orient.core.record.impl.ODocument;
  */
 public class GetODocumentFieldValueFunction<V> implements Function<ODocument, V>, Serializable {
 
+	private static final long serialVersionUID = 1L;
 	private final String fieldName;
 	
 	public GetODocumentFieldValueFunction(String fieldName) {

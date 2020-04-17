@@ -15,6 +15,9 @@ import java.util.Iterator;
  */
 public abstract class ForwardingDataProvider<T, S> extends AbstractFilteredProvider<T, S>{
 
+	private static final long serialVersionUID = 1L;
+
+
 	protected abstract SortableDataProvider<T,S> delegate();
 
 	@Override

@@ -16,7 +16,6 @@ import com.orientechnologies.orient.core.record.impl.ODocument;
 /**
  * Prototyper for {@link OIndex}
  */
-@SuppressWarnings("rawtypes")
 public class OIndexPrototyper extends AbstractPrototyper<OIndex>
 {
 	private static final long serialVersionUID = 1L;

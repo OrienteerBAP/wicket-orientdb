@@ -3,13 +3,11 @@ package ru.ydn.wicket.wicketorientdb.model;
 import com.orientechnologies.orient.core.db.ODatabaseDocumentInternal;
 import com.orientechnologies.orient.core.index.OIndexManagerAbstract;
 import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.IObjectClassAwareModel;
 
 import ru.ydn.wicket.wicketorientdb.OrientDbWebSession;
 
 import com.orientechnologies.orient.core.index.OIndex;
 import com.orientechnologies.orient.core.index.OIndexDefinition;
-import com.orientechnologies.orient.core.index.OIndexManager;
 import com.orientechnologies.orient.core.metadata.schema.OClass;
 
 /**

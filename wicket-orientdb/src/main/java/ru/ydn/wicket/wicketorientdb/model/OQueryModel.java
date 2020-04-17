@@ -63,7 +63,6 @@ public class OQueryModel<K> extends LoadableDetachableModel<List<K>>
     private Map<String, IModel<Object>> params = new HashMap<String, IModel<Object>>();
     private String sortableParameter=null;
     private boolean isAscending =true;
-    private boolean containExpand=true;
     
     private transient Long size;
     

@@ -15,7 +15,6 @@ import com.orientechnologies.orient.core.exception.ORecordNotFoundException;
 import com.orientechnologies.orient.core.id.ORID;
 import com.orientechnologies.orient.core.record.ORecordInternal;
 import com.orientechnologies.orient.core.record.impl.ODocument;
-import com.orientechnologies.orient.core.record.impl.ODocumentInternal;
 
 /**
  * Model for storing of {@link ODocument}
@@ -156,6 +155,8 @@ public class ODocumentModel extends LoadableDetachableModel<ODocument> implement
 	@Override
 	public <W> IWrapModel<W> wrapOnInheritance(final Component component) {
 		return new IWrapModel<W>() {
+
+			private static final long serialVersionUID = 1L;
 
 			@Override
 			public W getObject() {

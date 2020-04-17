@@ -15,7 +15,6 @@ import com.orientechnologies.orient.core.db.ODatabaseRecordThreadLocal;
 import com.orientechnologies.orient.core.db.document.ODatabaseDocument;
 import com.orientechnologies.orient.core.exception.OSecurityAccessException;
 import com.orientechnologies.orient.core.metadata.schema.OSchema;
-import com.orientechnologies.orient.core.metadata.security.ORole;
 import com.orientechnologies.orient.core.metadata.security.OSecurityRole;
 import com.orientechnologies.orient.core.metadata.security.OSecurityUser;
 import com.orientechnologies.orient.core.metadata.security.OUser;
@@ -24,7 +23,7 @@ import com.orientechnologies.orient.core.record.impl.ODocument;
 import ru.ydn.wicket.wicketorientdb.model.ODocumentModel;
 
 /**
- * Implemetation of {@link WebSession} which shold be used in OrientDB based applications
+ * Implementation of {@link WebSession} which shold be used in OrientDB based applications
  */
 public class OrientDbWebSession extends AuthenticatedWebSession {
 

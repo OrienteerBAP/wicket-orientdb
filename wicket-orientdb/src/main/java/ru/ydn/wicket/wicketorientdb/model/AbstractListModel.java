@@ -18,6 +18,8 @@ import com.google.common.collect.Collections2;
  */
 public abstract class AbstractListModel<T> extends LoadableDetachableModel<List<T>>
 {
+	
+	private static final long serialVersionUID = 1L;
 
 	@Override
 	public List<T> load() {

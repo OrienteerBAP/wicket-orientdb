@@ -15,8 +15,9 @@ import java.util.Map;
  * Default implementation of {@link IFilterCriteriaManager}
  */
 public class FilterCriteriaManager implements IFilterCriteriaManager {
-
-    private final String field;
+	
+	private static final long serialVersionUID = 1L;
+	private final String field;
     private final Map<FilterCriteriaType, IFilterCriteria> filterCriterias;
     private boolean and;
 

@@ -2,7 +2,6 @@ package ru.ydn.wicket.wicketorientdb;
 
 import java.util.Locale;
 
-import org.apache.wicket.util.tester.WicketTesterScope;
 import org.junit.ClassRule;
 import org.junit.Test;
 

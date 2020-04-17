@@ -2,7 +2,6 @@ package ru.ydn.wicket.wicketorientdb.model;
 
 import java.util.Collection;
 
-import org.apache.wicket.core.util.lang.PropertyResolver;
 import org.apache.wicket.model.IModel;
 
 import com.orientechnologies.orient.core.metadata.schema.OProperty;
@@ -16,6 +15,8 @@ import com.orientechnologies.orient.core.record.impl.ODocument;
  */
 public class ODocumentLinksJavaSortableDataProvider<S> extends
 		AbstractJavaSortableDataProvider<ODocument, S> {
+
+	private static final long serialVersionUID = 1L;
 
 	public ODocumentLinksJavaSortableDataProvider(IModel<ODocument> docModel, IModel<OProperty> propertyModel) {
 		this(new DynamicPropertyValueModel<Collection<ODocument>>(docModel, propertyModel));

@@ -1,15 +1,14 @@
 package ru.ydn.wicket.wicketorientdb.utils;
 
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
-import ru.ydn.wicket.wicketorientdb.proto.IPrototype;
-
 import com.google.common.collect.Iterators;
 import com.orientechnologies.orient.core.metadata.schema.OClass;
 import com.orientechnologies.orient.core.record.impl.ODocument;
+
+import ru.ydn.wicket.wicketorientdb.proto.IPrototype;
 
 /**
  * Useful utils over schema related objects

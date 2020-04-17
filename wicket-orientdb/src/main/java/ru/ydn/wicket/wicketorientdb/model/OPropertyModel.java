@@ -1,7 +1,6 @@
 package ru.ydn.wicket.wicketorientdb.model;
 
 import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.IObjectClassAwareModel;
 
 import ru.ydn.wicket.wicketorientdb.OrientDbWebSession;
 

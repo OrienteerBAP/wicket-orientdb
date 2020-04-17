@@ -11,8 +11,6 @@ import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.orientechnologies.orient.core.iterator.ORecordIteratorClass;
-import com.orientechnologies.orient.core.record.ORecord;
 import org.junit.ClassRule;
 import org.junit.ComparisonFailure;
 import org.junit.Test;
@@ -23,7 +21,6 @@ import com.orientechnologies.orient.core.record.impl.ODocument;
 
 import ru.ydn.wicket.wicketorientdb.junit.WicketOrientDbTester;
 import ru.ydn.wicket.wicketorientdb.junit.WicketOrientDbTesterScope;
-import ru.ydn.wicket.wicketorientdb.utils.DBClosure;
 
 public class TestRestApi
 {

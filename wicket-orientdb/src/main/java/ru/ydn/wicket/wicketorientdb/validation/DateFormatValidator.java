@@ -14,6 +14,7 @@ import org.apache.wicket.validation.ValidationError;
  */
 public class DateFormatValidator implements IValidator<String> {
 	
+	private static final long serialVersionUID = 1L;
 	public static final DateFormatValidator SIMPLE_DATE_FORMAT_VALIDATOR = new DateFormatValidator(); 
 
 	@Override

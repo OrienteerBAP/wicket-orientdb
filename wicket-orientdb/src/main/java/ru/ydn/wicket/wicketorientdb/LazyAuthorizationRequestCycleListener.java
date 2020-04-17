@@ -8,7 +8,6 @@ import org.apache.wicket.request.IRequestHandler;
 import org.apache.wicket.request.cycle.IRequestCycleListener;
 import org.apache.wicket.request.cycle.RequestCycle;
 import org.apache.wicket.request.http.WebRequest;
-import org.apache.wicket.util.crypt.StringUtils;
 
 /**
  * {@link IRequestCycleListener} for transparent/lazy authentication of a request.
@@ -16,11 +15,14 @@ import org.apache.wicket.util.crypt.StringUtils;
  */
 public class LazyAuthorizationRequestCycleListener implements IRequestCycleListener {
 	
-	public static final MetaDataKey<Boolean> LAZY_AUTHORIZED = new MetaDataKey<Boolean>() {};
+	public static final MetaDataKey<Boolean> LAZY_AUTHORIZED = new MetaDataKey<Boolean>() {
+		private static final long serialVersionUID = 1L;
+	};
 	public static final String AUTHORIZATION_HEADER = "Authorization";
 	
 	private static class LazyAuthorizationException extends AuthorizationException
 	{
+		private static final long serialVersionUID = 1L;
 
 		public LazyAuthorizationException() {
 			super("Deny: HTTP Basic Authorization");

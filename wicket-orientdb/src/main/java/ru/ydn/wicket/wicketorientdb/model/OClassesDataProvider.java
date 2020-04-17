@@ -4,7 +4,6 @@ import java.util.Collection;
 
 import org.apache.wicket.extensions.markup.html.repeater.util.SortableDataProvider;
 import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.LoadableDetachableModel;
 
 import ru.ydn.wicket.wicketorientdb.OrientDbWebSession;
 import ru.ydn.wicket.wicketorientdb.proto.OClassPrototyper;
@@ -26,6 +25,8 @@ public class OClassesDataProvider extends AbstractJavaSortableDataProvider<OClas
 	
 	public OClassesDataProvider(final Predicate<OClass> filterPredicate) {
 		super(new ListOClassesModel() {
+			private static final long serialVersionUID = 1L;
+
 			@Override
 			protected Predicate<? super OClass> getFilterPredicate() {
 				return filterPredicate;

@@ -9,6 +9,8 @@ import com.orientechnologies.orient.core.metadata.schema.OProperty;
  */
 public class OPropertyCustomModel extends AbstractCustomValueModel<OProperty, String, String> {
 
+	private static final long serialVersionUID = 1L;
+
 	public OPropertyCustomModel(IModel<OProperty> mainObjectModel,
 			IModel<String> propertyModel) {
 		super(mainObjectModel, propertyModel);

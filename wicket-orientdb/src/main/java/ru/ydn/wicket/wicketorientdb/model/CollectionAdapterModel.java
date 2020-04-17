@@ -16,6 +16,7 @@ import org.apache.wicket.model.LoadableDetachableModel;
  */
 public class CollectionAdapterModel<T, M extends Collection<T>> extends LoadableDetachableModel<List<T>>
 {
+	private static final long serialVersionUID = 1L;
 	private IModel<M> model;
 	
 	public CollectionAdapterModel(IModel<M> model) {

@@ -17,12 +17,14 @@ public class ODatabaseHooksInstallListener implements ODatabaseLifecycleListener
         this.app = app;
     }
 
-    @Override
+    @SuppressWarnings("rawtypes")
+	@Override
     public void onOpen(ODatabaseInternal iDatabase) {
         ODbUtils.registerHooks(iDatabase, app.getOrientDbSettings().getORecordHooks());
     }
 
-    @Override
+    @SuppressWarnings("rawtypes")
+	@Override
     public void onCreate(ODatabaseInternal iDatabase) {
         ODbUtils.registerHooks(iDatabase, app.getOrientDbSettings().getORecordHooks());
         //Fix for "feature" appeared in OrientDB 2.1.1
@@ -30,10 +32,12 @@ public class ODatabaseHooksInstallListener implements ODatabaseLifecycleListener
         ODbUtils.fixOrientDBRights(iDatabase);
     }
 
-    @Override
+    @SuppressWarnings("rawtypes")
+	@Override
     public void onClose(ODatabaseInternal iDatabase) {/*NOP*/}
 
-    @Override
+    @SuppressWarnings("rawtypes")
+	@Override
     public void onDrop(ODatabaseInternal iDatabase) {/*NOP*/}
 
 

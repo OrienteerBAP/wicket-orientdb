@@ -6,9 +6,6 @@ import org.junit.After;
 import org.junit.ClassRule;
 import org.junit.Test;
 
-import com.orientechnologies.orient.core.metadata.security.OSecurityUser;
-import com.orientechnologies.orient.core.metadata.security.OUser;
-
 import ru.ydn.wicket.wicketorientdb.junit.WicketOrientDbTester;
 import ru.ydn.wicket.wicketorientdb.junit.WicketOrientDbTesterScope;
 import ru.ydn.wicket.wicketorientdb.web.DynamicSecuredPage;

@@ -13,6 +13,8 @@ import com.orientechnologies.orient.core.metadata.schema.OClass;
  */
 public class ListOClassesModel extends AbstractListModel<OClass>
 {
+	
+	private static final long serialVersionUID = 1L;
 
 	@Override
 	protected Collection<OClass> getData() {

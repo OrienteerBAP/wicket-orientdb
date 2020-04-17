@@ -6,7 +6,9 @@ import org.apache.wicket.model.IModel;
  * SELECT FROM Class WHERE map CONTAINSVALUE "value"
  */
 public class MapContainsValueFilterCriteria extends AbstractFilterCriteria {
-    public MapContainsValueFilterCriteria(String field, IModel<?> model, IModel<Boolean> join) {
+	private static final long serialVersionUID = 1L;
+
+	public MapContainsValueFilterCriteria(String field, IModel<?> model, IModel<Boolean> join) {
         super(field, model, join);
     }
 

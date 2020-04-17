@@ -13,6 +13,7 @@ import com.orientechnologies.orient.core.metadata.schema.OProperty;
  */
 public class ListOPropertiesModel extends AbstractListModel<OProperty>
 {
+	private static final long serialVersionUID = 1L;
 	private IModel<OClass> oClassModel;
 	private IModel<Boolean> allPropertiesModel;
 	public ListOPropertiesModel(final IModel<OClass> oClassModel, final IModel<Boolean> allPropertiesModel)

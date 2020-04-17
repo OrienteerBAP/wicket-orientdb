@@ -10,7 +10,9 @@ import java.util.Collection;
  */
 public class CollectionFilterCriteria extends AbstractFilterCriteria {
 
-    public <T> CollectionFilterCriteria(String field, IModel<Collection<T>> model, IModel<Boolean> join) {
+	private static final long serialVersionUID = 1L;
+
+	public <T> CollectionFilterCriteria(String field, IModel<Collection<T>> model, IModel<Boolean> join) {
         super(field, model, join);
     }
 

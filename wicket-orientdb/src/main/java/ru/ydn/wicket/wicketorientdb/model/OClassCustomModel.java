@@ -9,6 +9,8 @@ import com.orientechnologies.orient.core.metadata.schema.OClass;
  */
 public class OClassCustomModel extends AbstractCustomValueModel<OClass, String, String> {
 
+	private static final long serialVersionUID = 1L;
+
 	public OClassCustomModel(IModel<OClass> mainObjectModel,
 			IModel<String> propertyModel) {
 		super(mainObjectModel, propertyModel);

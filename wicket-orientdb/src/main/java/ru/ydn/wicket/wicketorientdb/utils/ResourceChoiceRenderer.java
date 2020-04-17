@@ -9,6 +9,7 @@ import org.apache.wicket.markup.html.form.ChoiceRenderer;
  */
 public class ResourceChoiceRenderer<T> extends ChoiceRenderer<T> {
 	
+	private static final long serialVersionUID = 1L;
 	private final String resourcePrefix;
 
 	public ResourceChoiceRenderer(String resourcePrefix) {

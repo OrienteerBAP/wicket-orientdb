@@ -5,12 +5,11 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import ru.ydn.wicket.wicketorientdb.OrientDbWebSession;
-
 import com.orientechnologies.orient.core.metadata.schema.OClass;
 import com.orientechnologies.orient.core.metadata.schema.OProperty;
 import com.orientechnologies.orient.core.metadata.schema.OSchema;
-import com.orientechnologies.orient.core.metadata.schema.OType;
+
+import ru.ydn.wicket.wicketorientdb.OrientDbWebSession;
 
 /**
  * Prototyper for {@link OProperty}

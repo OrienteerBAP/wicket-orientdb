@@ -95,7 +95,7 @@ public class DynamicPropertyValueModel<T> extends LoadableDetachableModel<T>
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		DynamicPropertyValueModel other = (DynamicPropertyValueModel) obj;
+		DynamicPropertyValueModel<?> other = (DynamicPropertyValueModel<?>) obj;
 		if (docModel == null) {
 			if (other.docModel != null)
 				return false;

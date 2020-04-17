@@ -13,6 +13,8 @@ import com.google.common.base.Converter;
  */
 public abstract class SerializableConverter<F, T> extends Converter<F, T> implements Serializable, SerializableFunction<F, T> {
 
+	private static final long serialVersionUID = 1L;
+
 	/**
 	 * Utility method to construct converter from 2 functions
 	 * @param <F> type to convert from
@@ -24,6 +26,8 @@ public abstract class SerializableConverter<F, T> extends Converter<F, T> implem
 	public final static <F, T> SerializableConverter<F, T> of(final SerializableFunction<? super F, ? extends T> to, 
 															  final SerializableFunction<? super T, ? extends F> from) {
 		return new SerializableConverter<F, T>() {
+
+			private static final long serialVersionUID = 1L;
 
 			@Override
 			protected T doForward(F a) {

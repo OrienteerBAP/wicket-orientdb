@@ -2,14 +2,10 @@ package ru.ydn.wicket.wicketorientdb;
 
 import com.orientechnologies.orient.core.db.ODatabaseType;
 import com.orientechnologies.orient.core.db.OrientDB;
-import com.orientechnologies.orient.core.hook.ORecordHook;
 import org.apache.wicket.Page;
 import org.apache.wicket.authroles.authentication.pages.SignInPage;
 import org.apache.wicket.markup.html.WebPage;
 import ru.ydn.wicket.wicketorientdb.web.OrientDbTestPage;
-
-import java.util.LinkedList;
-import java.util.List;
 
 public class OrientDbTestWebApplication extends OrientDbWebApplication
 {
