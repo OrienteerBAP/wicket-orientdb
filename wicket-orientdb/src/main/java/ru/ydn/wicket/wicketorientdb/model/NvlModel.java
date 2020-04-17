@@ -11,6 +11,7 @@ import org.apache.wicket.model.IModel;
  */
 public class NvlModel<T> extends ChainingModel<T>{
 	
+	private static final long serialVersionUID = 1L;
 	private Object defaultValue;
 	
 	public NvlModel(IModel<T> mainModel, IModel<T> defaultValueModel) {

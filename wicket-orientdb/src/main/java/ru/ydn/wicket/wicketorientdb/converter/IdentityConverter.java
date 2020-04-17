@@ -10,6 +10,8 @@ import com.google.common.base.Converter;
  */
 public class IdentityConverter<T extends Serializable> extends Converter<T, T> implements Serializable {
 
+	private static final long serialVersionUID = 1L;
+
 	@Override
 	protected T doForward(T a) {
 		return a;

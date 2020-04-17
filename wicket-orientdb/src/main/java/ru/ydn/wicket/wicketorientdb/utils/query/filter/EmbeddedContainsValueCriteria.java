@@ -8,7 +8,9 @@ import org.apache.wicket.model.IModel;
  */
 public class EmbeddedContainsValueCriteria extends AbstractFilterCriteria {
 
-    public EmbeddedContainsValueCriteria(String field, IModel<?> model, IModel<Boolean> join) {
+	private static final long serialVersionUID = 1L;
+
+	public EmbeddedContainsValueCriteria(String field, IModel<?> model, IModel<Boolean> join) {
         super(field, model, join);
     }
 

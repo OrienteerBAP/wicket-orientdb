@@ -4,7 +4,6 @@ import java.util.Collection;
 
 import org.apache.wicket.extensions.markup.html.repeater.util.SortableDataProvider;
 import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.Model;
 
 import com.orientechnologies.orient.core.metadata.schema.OClass;

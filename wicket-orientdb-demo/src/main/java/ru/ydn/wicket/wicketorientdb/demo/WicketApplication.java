@@ -6,19 +6,16 @@ import java.util.Random;
 import org.apache.wicket.authroles.authentication.pages.SignInPage;
 import org.apache.wicket.markup.html.WebPage;
 
+import com.orientechnologies.orient.core.db.document.ODatabaseDocument;
+import com.orientechnologies.orient.core.db.document.ODatabaseDocumentTx;
+import com.orientechnologies.orient.core.metadata.schema.OType;
+import com.orientechnologies.orient.core.record.impl.ODocument;
+
 import ru.ydn.wicket.wicketorientdb.AbstractDataInstallator;
 import ru.ydn.wicket.wicketorientdb.EmbeddOrientDbApplicationListener;
 import ru.ydn.wicket.wicketorientdb.IOrientDbSettings;
 import ru.ydn.wicket.wicketorientdb.OrientDbWebApplication;
 import ru.ydn.wicket.wicketorientdb.utils.OSchemaHelper;
-
-import com.orientechnologies.orient.client.remote.OServerAdmin;
-import com.orientechnologies.orient.core.db.document.ODatabaseDocument;
-import com.orientechnologies.orient.core.db.document.ODatabaseDocumentTx;
-import com.orientechnologies.orient.core.metadata.schema.OClass;
-import com.orientechnologies.orient.core.metadata.schema.OSchema;
-import com.orientechnologies.orient.core.metadata.schema.OType;
-import com.orientechnologies.orient.core.record.impl.ODocument;
 
 /**
  * Application object for your web application.
@@ -54,6 +51,7 @@ public class WicketApplication extends OrientDbWebApplication
 			public void onAfterServerStartupAndActivation(OrientDbWebApplication app) throws Exception {
 				
 				IOrientDbSettings settings = app.getOrientDbSettings();
+				@SuppressWarnings("resource")
 				ODatabaseDocumentTx db = new ODatabaseDocumentTx(settings.getDBUrl());
 				if(!db.exists()) db = db.create();
 				if(db.isClosed()) db.open(settings.getAdminUserName(), settings.getAdminPassword());

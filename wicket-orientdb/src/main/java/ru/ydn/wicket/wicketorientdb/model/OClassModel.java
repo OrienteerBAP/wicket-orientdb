@@ -3,7 +3,6 @@ package ru.ydn.wicket.wicketorientdb.model;
 import java.util.Objects;
 
 import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.IObjectClassAwareModel;
 import org.apache.wicket.model.Model;
 
 import ru.ydn.wicket.wicketorientdb.OrientDbWebSession;

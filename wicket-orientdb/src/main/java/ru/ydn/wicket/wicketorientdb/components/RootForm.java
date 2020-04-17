@@ -10,6 +10,8 @@ import org.apache.wicket.model.IModel;
  */
 public class RootForm<T>  extends Form<T>{
 
+	private static final long serialVersionUID = 1L;
+
 	public RootForm(String id, IModel<T> model) {
 		super(id, model);
 	}

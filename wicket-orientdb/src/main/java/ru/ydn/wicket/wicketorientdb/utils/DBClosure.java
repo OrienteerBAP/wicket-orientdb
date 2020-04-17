@@ -96,6 +96,8 @@ public abstract class DBClosure<V> implements Serializable
 	 */
 	public static <R> R sudo(Function<ODatabaseDocument, R> func) {
 		return new DBClosure<R>() {
+			private static final long serialVersionUID = 1L;
+
 			@Override
 			protected R execute(ODatabaseDocument db) {
 				return func.apply(db);
@@ -109,6 +111,8 @@ public abstract class DBClosure<V> implements Serializable
 	 */
 	public static void sudoConsumer(Consumer<ODatabaseDocument> consumer) {
 		new DBClosure<Void>() {
+			private static final long serialVersionUID = 1L;
+
 			@Override
 			protected Void execute(ODatabaseDocument db) {
 				consumer.accept(db);
@@ -125,6 +129,7 @@ public abstract class DBClosure<V> implements Serializable
 	public static void sudoSave(final ODocument... docs) {
 		if(docs==null || docs.length==0) return;
 		new DBClosure<Boolean>() {
+			private static final long serialVersionUID = 1L;
 
 			@Override
 			protected Boolean execute(ODatabaseDocument db) {
@@ -145,6 +150,7 @@ public abstract class DBClosure<V> implements Serializable
 	public static void sudoSave(final ODocumentWrapper... dws) {
 		if(dws==null || dws.length==0) return;
 		new DBClosure<Boolean>() {
+			private static final long serialVersionUID = 1L;
 
 			@Override
 			protected Boolean execute(ODatabaseDocument db) {

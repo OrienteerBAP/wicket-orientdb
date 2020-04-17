@@ -8,7 +8,9 @@ import org.apache.wicket.model.IModel;
  */
 public class ContainsTextFilterCriteria extends AbstractFilterCriteria {
 
-    public ContainsTextFilterCriteria(String field, IModel<String> model, IModel<Boolean> join) {
+	private static final long serialVersionUID = 1L;
+
+	public ContainsTextFilterCriteria(String field, IModel<String> model, IModel<Boolean> join) {
         super(field, model, join);
     }
 

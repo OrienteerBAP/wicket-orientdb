@@ -11,7 +11,8 @@ import java.util.Collection;
  */
 public class EmbeddedCollectionFieldFilterCriteria extends AbstractFilterCriteria {
 
-    private final IModel<String> key;
+	private static final long serialVersionUID = 1L;
+	private final IModel<String> key;
 
     public <T> EmbeddedCollectionFieldFilterCriteria(String field, IModel<String> key, IModel<Collection<T>> model, IModel<Boolean> join) {
         super(field, model, join);

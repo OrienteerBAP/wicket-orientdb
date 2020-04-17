@@ -16,6 +16,7 @@ import ru.ydn.wicket.wicketorientdb.OrientDbWebSession;
  */
 public abstract class AbstractCustomValueModel<T, C, V> implements IModel<V>, IObjectClassAwareModel<V>{
 
+	private static final long serialVersionUID = 1L;
 	private IModel<T> objectModel;
 	private IModel<C> parameterModel;
 	public AbstractCustomValueModel(IModel<T> mainObjectModel, IModel<C> propertyModel) {

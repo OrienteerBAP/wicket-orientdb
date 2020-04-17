@@ -1,21 +1,19 @@
 package ru.ydn.wicket.wicketorientdb.model;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.util.lang.Args;
 
 import com.orientechnologies.orient.core.index.OIndex;
 import com.orientechnologies.orient.core.metadata.schema.OClass;
-import com.orientechnologies.orient.core.metadata.schema.OProperty;
 
 /**
  * {@link IModel} to list all {@link OIndex}es for a given {@link OClass}
  */
 public class ListOIndexesModel extends AbstractListModel<OIndex<?>>
 {
+	private static final long serialVersionUID = 1L;
 	private IModel<OClass> oClassModel;
 	private IModel<Boolean> allIndexesModel;
 	

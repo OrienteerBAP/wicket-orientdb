@@ -6,34 +6,23 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.net.Authenticator;
 import java.net.CookieHandler;
-import java.net.CookieManager;
-import java.net.CookiePolicy;
 import java.net.HttpURLConnection;
 import java.net.PasswordAuthentication;
 import java.net.URL;
-import java.util.Enumeration;
-import java.util.List;
-import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.wicket.protocol.http.WebApplication;
 import org.apache.wicket.request.http.WebRequest;
-import org.apache.wicket.request.http.WebResponse;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.request.resource.AbstractResource;
 import org.apache.wicket.request.resource.SharedResourceReference;
 import org.apache.wicket.util.encoding.UrlEncoder;
 import org.apache.wicket.util.io.IOUtils;
-import org.apache.wicket.util.lang.Args;
 import org.apache.wicket.util.string.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.orientechnologies.orient.server.OServer;
-import com.orientechnologies.orient.server.network.OServerNetworkListener;
-import com.orientechnologies.orient.server.network.protocol.http.ONetworkProtocolHttpAbstract;
 
 import ru.ydn.wicket.wicketorientdb.IOrientDbSettings;
 import ru.ydn.wicket.wicketorientdb.OrientDbWebApplication;
@@ -44,12 +33,13 @@ import ru.ydn.wicket.wicketorientdb.OrientDbWebSession;
  */
 public class OrientDBHttpAPIResource extends AbstractResource
 {
+	
+	private static final long serialVersionUID = 1L;
 	public static final String MOUNT_PATH = "/orientdb";
 	public static final String ORIENT_DB_KEY=OrientDBHttpAPIResource.class.getSimpleName();
 	
 	private static final Logger LOG = LoggerFactory.getLogger(OrientDBHttpAPIResource.class);
 	
-	@SuppressWarnings("restriction")
 	private static class MultiUserCache implements sun.net.www.protocol.http.AuthCache{
 	     public void put(String pkey, sun.net.www.protocol.http.AuthCacheValue value){
 
@@ -173,7 +163,6 @@ public class OrientDBHttpAPIResource extends AbstractResource
 	 * @param resource {@link OrientDBHttpAPIResource} to mount
 	 * @param app {@link WebApplication} to mount to
 	 */
-	@SuppressWarnings("restriction")
 	public static void mountOrientDbRestApi(OrientDBHttpAPIResource resource, WebApplication app) {
 		mountOrientDbRestApi(resource, app, MOUNT_PATH);
 	}
@@ -184,7 +173,6 @@ public class OrientDBHttpAPIResource extends AbstractResource
 	 * @param app {@link WebApplication} to mount to
 	 * @param mountPaths array of paths to mount to
 	 */
-	@SuppressWarnings("restriction")
 	public static void mountOrientDbRestApi(OrientDBHttpAPIResource resource, WebApplication app, String... mountPaths)
 	{
 		app.getSharedResources().add(ORIENT_DB_KEY, resource);

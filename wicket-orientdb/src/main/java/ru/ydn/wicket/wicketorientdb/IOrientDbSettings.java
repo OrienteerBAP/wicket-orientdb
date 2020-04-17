@@ -2,7 +2,6 @@ package ru.ydn.wicket.wicketorientdb;
 
 import java.util.List;
 
-import com.orientechnologies.orient.core.db.ODatabase;
 import com.orientechnologies.orient.core.db.ODatabasePoolBase;
 import com.orientechnologies.orient.core.db.ODatabaseThreadLocalFactory;
 import com.orientechnologies.orient.core.db.OPartitionedDatabasePoolFactory;

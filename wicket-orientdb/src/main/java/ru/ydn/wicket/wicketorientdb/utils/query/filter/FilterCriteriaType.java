@@ -14,7 +14,9 @@ import java.util.regex.Pattern;
  * For create own {@link FilterCriteriaType} use name pattern {@link FilterCriteriaType#NAME_PATTERN}
  */
 public final class FilterCriteriaType implements IClusterable {
-    private static final Map<String, FilterCriteriaType> REGISTRY = Maps.newHashMap();
+	private static final long serialVersionUID = 1L;
+
+	private static final Map<String, FilterCriteriaType> REGISTRY = Maps.newHashMap();
 
     private static final Pattern NAME_PATTERN = Pattern.compile("^[a-zA-Z0-9]+$");
 

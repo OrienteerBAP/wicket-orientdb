@@ -16,6 +16,8 @@ import org.apache.wicket.model.Model;
 public class JavaSortableDataProvider<T extends Serializable, S> extends
 		AbstractJavaSortableDataProvider<T, S> {
 	
+	private static final long serialVersionUID = 1L;
+
 	public JavaSortableDataProvider(IModel<? extends Collection<T>> dataModel) {
 		super(dataModel);
 	}

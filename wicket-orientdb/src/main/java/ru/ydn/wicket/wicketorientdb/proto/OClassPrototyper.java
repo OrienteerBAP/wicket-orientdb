@@ -1,16 +1,17 @@
 package ru.ydn.wicket.wicketorientdb.proto;
 
-import com.google.common.collect.Collections2;
-import com.google.common.collect.Lists;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 import com.orientechnologies.orient.core.metadata.schema.OClass;
 import com.orientechnologies.orient.core.metadata.schema.OSchema;
 import com.orientechnologies.orient.core.metadata.schema.clusterselection.OClusterSelectionFactory;
 import com.orientechnologies.orient.core.metadata.schema.clusterselection.OClusterSelectionStrategy;
 
 import ru.ydn.wicket.wicketorientdb.OrientDbWebSession;
-
-import java.lang.reflect.Method;
-import java.util.*;
 
 /**
  * Prototyper for {@link OClass}

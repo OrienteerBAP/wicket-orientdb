@@ -16,6 +16,8 @@ import com.google.common.base.Converter;
  */
 public abstract class AbstractJointConverter<F> extends Converter<F, String> implements IConverter<F>, Serializable{
 
+	private static final long serialVersionUID = 1L;
+
 	@Override
 	protected String doForward(F a) {
 		return convertToString(a, Session.exists()?Session.get().getLocale():Locale.getDefault());
@@ -47,6 +49,8 @@ public abstract class AbstractJointConverter<F> extends Converter<F, String> imp
 	public static <F> AbstractJointConverter<F> of(final SerializableFunction<? super F, String> to,
 			                                    final SerializableFunction<String, ? extends F> from) {
 		return new AbstractJointConverter<F>() {
+			private static final long serialVersionUID = 1L;
+
 			@Override
 			public String convertToString(F value, Locale locale) {
 				return to.apply(value);

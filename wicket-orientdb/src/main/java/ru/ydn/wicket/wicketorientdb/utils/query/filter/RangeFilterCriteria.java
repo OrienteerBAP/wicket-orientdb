@@ -10,7 +10,9 @@ import java.util.List;
  */
 public class RangeFilterCriteria extends AbstractFilterCriteria {
 
-    public <T> RangeFilterCriteria(String field, IModel<List<T>> model, IModel<Boolean> join) {
+	private static final long serialVersionUID = 1L;
+
+	public <T> RangeFilterCriteria(String field, IModel<List<T>> model, IModel<Boolean> join) {
         super(field, model, join);
     }
 

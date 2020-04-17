@@ -172,7 +172,7 @@ public class TestFilters {
         manager.addFilterCriteria(equalsFilterCriteria);
         String numField = wicket.getProperty(NUMBER_FIELD).getObject().getName();
         queryModel.addFilterCriteriaManager(numField, manager);
-        OQueryDataProvider provider = new OQueryDataProvider(queryModel);
+        OQueryDataProvider<ODocument> provider = new OQueryDataProvider<ODocument>(queryModel);
         assertTrue(queryModel.size() == queryModel.getObject().size());
         assertTrue(provider.size() == queryModel.getObject().size());
     }

@@ -1,6 +1,5 @@
 package ru.ydn.wicket.wicketorientdb;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -11,25 +10,9 @@ import org.apache.wicket.IApplicationListener;
 import org.apache.wicket.IConverterLocator;
 import org.apache.wicket.authroles.authentication.AuthenticatedWebApplication;
 import org.apache.wicket.core.util.lang.PropertyResolver;
-import org.apache.wicket.core.util.lang.PropertyResolver.IPropertyLocator;
-import org.apache.wicket.markup.html.IPackageResourceGuard;
-import org.apache.wicket.markup.html.SecurePackageResourceGuard;
-import org.apache.wicket.protocol.http.AjaxEnclosureListener;
 import org.apache.wicket.protocol.http.WebApplication;
 import org.apache.wicket.util.string.Strings;
 
-import ru.ydn.wicket.wicketorientdb.components.IHookPosition;
-import ru.ydn.wicket.wicketorientdb.converter.HexConverter;
-import ru.ydn.wicket.wicketorientdb.converter.ODocumentConverter;
-import ru.ydn.wicket.wicketorientdb.converter.OIdentifiableConverter;
-import ru.ydn.wicket.wicketorientdb.rest.OrientDBHttpAPIResource;
-import ru.ydn.wicket.wicketorientdb.security.IResourceCheckingStrategy;
-import ru.ydn.wicket.wicketorientdb.security.OrientPermission;
-import ru.ydn.wicket.wicketorientdb.security.WicketOrientDbAuthorizationStrategy;
-import ru.ydn.wicket.wicketorientdb.utils.FixFormEncTypeListener;
-import ru.ydn.wicket.wicketorientdb.utils.ODocumentPropertyLocator;
-
-import com.google.common.collect.Collections2;
 import com.orientechnologies.orient.core.Orient;
 import com.orientechnologies.orient.core.db.ODatabase;
 import com.orientechnologies.orient.core.db.ODatabaseInternal;
@@ -45,6 +28,16 @@ import com.orientechnologies.orient.core.metadata.security.OSecurity;
 import com.orientechnologies.orient.core.metadata.security.OSecurityUser;
 import com.orientechnologies.orient.core.record.impl.ODocument;
 import com.orientechnologies.orient.server.OServer;
+
+import ru.ydn.wicket.wicketorientdb.components.IHookPosition;
+import ru.ydn.wicket.wicketorientdb.converter.HexConverter;
+import ru.ydn.wicket.wicketorientdb.converter.ODocumentConverter;
+import ru.ydn.wicket.wicketorientdb.converter.OIdentifiableConverter;
+import ru.ydn.wicket.wicketorientdb.rest.OrientDBHttpAPIResource;
+import ru.ydn.wicket.wicketorientdb.security.IResourceCheckingStrategy;
+import ru.ydn.wicket.wicketorientdb.security.WicketOrientDbAuthorizationStrategy;
+import ru.ydn.wicket.wicketorientdb.utils.FixFormEncTypeListener;
+import ru.ydn.wicket.wicketorientdb.utils.ODocumentPropertyLocator;
 
 /**
  * {@link WebApplication} realization for applications on top of OrientDB
@@ -108,6 +101,7 @@ public abstract class OrientDbWebApplication extends AuthenticatedWebApplication
 		Orient.instance().registerThreadDatabaseFactory(new DefaultODatabaseThreadLocalFactory(this));
 		Orient.instance().addDbLifecycleListener(new ODatabaseLifecycleListener() {
 			
+			@SuppressWarnings("rawtypes")
 			private ORecordHook createHook(Class<? extends ORecordHook> clazz, ODatabaseInternal iDatabase) {
 				if(!(iDatabase instanceof ODatabaseDocument)) return null;
 				try {
@@ -120,11 +114,13 @@ public abstract class OrientDbWebApplication extends AuthenticatedWebApplication
 					}
 				}
 			}
+			@SuppressWarnings("rawtypes")
 			@Override
 			public void onOpen(ODatabaseInternal iDatabase) {
 				registerHooks(iDatabase);
 			}
 			
+			@SuppressWarnings("rawtypes")
 			@Override
 			public void onCreate(ODatabaseInternal iDatabase) {
 				registerHooks(iDatabase);
@@ -133,6 +129,7 @@ public abstract class OrientDbWebApplication extends AuthenticatedWebApplication
 				fixOrientDBRights(iDatabase);
 			}
 			
+			@SuppressWarnings("rawtypes")
 			public void registerHooks(ODatabaseInternal iDatabase) {
 				Set<ORecordHook> hooks = iDatabase.getHooks().keySet();
 				List<Class<? extends ORecordHook>> hooksToRegister = new ArrayList<Class<? extends ORecordHook>>(getOrientDbSettings().getORecordHooks());
@@ -153,9 +150,11 @@ public abstract class OrientDbWebApplication extends AuthenticatedWebApplication
 				}
 			}
 			
+			@SuppressWarnings("rawtypes")
 			@Override
 			public void onClose(ODatabaseInternal iDatabase) {/*NOP*/}
 			
+			@SuppressWarnings("rawtypes")
 			@Override
 			public void onDrop(ODatabaseInternal iDatabase) {/*NOP*/}
 			
@@ -164,9 +163,11 @@ public abstract class OrientDbWebApplication extends AuthenticatedWebApplication
 				return PRIORITY.REGULAR;
 			}
 
+			@SuppressWarnings("rawtypes")
 			@Override
 			public void onCreateClass(ODatabaseInternal iDatabase, OClass iClass) {/*NOP*/}
 
+			@SuppressWarnings("rawtypes")
 			@Override
 			public void onDropClass(ODatabaseInternal iDatabase, OClass iClass) {/*NOP*/}
 			

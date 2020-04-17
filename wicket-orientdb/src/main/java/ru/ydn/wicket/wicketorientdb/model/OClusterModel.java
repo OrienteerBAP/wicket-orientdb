@@ -11,7 +11,8 @@ import org.apache.wicket.model.Model;
  */
 public class OClusterModel extends PrototypeLoadableDetachableModel<OCluster>{
 
-    private IModel<String> clusterNameModel;
+	private static final long serialVersionUID = 1L;
+	private IModel<String> clusterNameModel;
 
     public OClusterModel(OCluster oCluster) {
         super(oCluster);

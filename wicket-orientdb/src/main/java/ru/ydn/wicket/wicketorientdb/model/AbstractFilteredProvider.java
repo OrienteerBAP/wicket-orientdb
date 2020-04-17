@@ -11,7 +11,9 @@ import org.apache.wicket.extensions.markup.html.repeater.util.SortableDataProvid
 public abstract class AbstractFilteredProvider<K, S> extends SortableDataProvider<K, S>
         implements IFilterStateLocator<OQueryModel<K>> {
 
-    public boolean isFilterEnable() {
+	private static final long serialVersionUID = 1L;
+
+	public boolean isFilterEnable() {
         return false;
     }
 

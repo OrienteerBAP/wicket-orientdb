@@ -10,6 +10,7 @@ import ru.ydn.wicket.wicketorientdb.proto.IPrototype;
  */
 public class DisableIfPrototypeBehavior extends Behavior {
 	
+	private static final long serialVersionUID = 1L;
 	public static final DisableIfPrototypeBehavior INSTANCE = new DisableIfPrototypeBehavior();
 	
 	@Override

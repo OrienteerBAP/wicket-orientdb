@@ -12,6 +12,7 @@ import ru.ydn.wicket.wicketorientdb.OrientDbWebSession;
  * @param <T> the type of required {@link ODatabase}
  */
 public class CurrentDatabaseModel<T extends ODatabase<?>> implements IModel<T> {
+	private static final long serialVersionUID = 1L;
 	private static final CurrentDatabaseModel<ODatabaseDocument> INSTANCE = new CurrentDatabaseModel<ODatabaseDocument>();
 	
 	@SuppressWarnings("unchecked")

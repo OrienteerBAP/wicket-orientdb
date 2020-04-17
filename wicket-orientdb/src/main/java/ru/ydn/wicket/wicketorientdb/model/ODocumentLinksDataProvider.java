@@ -43,12 +43,14 @@ public class ODocumentLinksDataProvider extends ForwardingDataProvider<ODocument
 	}
 
 	@Override
-	protected SortableDataProvider delegate() {
+	protected SortableDataProvider<ODocument, String> delegate() {
 		if(thisRunProvider==null)
 		{
 			if(useQueryProvider())
 			{
 				if(queryProvider==null) queryProvider = new ODocumentLinksQueryDataProvider(docModel, propertyModel) {
+					private static final long serialVersionUID = 1L;
+
 					@Override
 					public SortParam<String> getSort() {
 						return ODocumentLinksDataProvider.this.getSort();
@@ -59,6 +61,8 @@ public class ODocumentLinksDataProvider extends ForwardingDataProvider<ODocument
 			else
 			{
 				if(javaSortableProvider==null) javaSortableProvider = new ODocumentLinksJavaSortableDataProvider<String>(docModel, propertyModel){
+					private static final long serialVersionUID = 1L;
+
 					@Override
 					public SortParam<String> getSort() {
 						return ODocumentLinksDataProvider.this.getSort();

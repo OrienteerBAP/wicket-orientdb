@@ -15,6 +15,7 @@ import com.orientechnologies.orient.core.tx.OTransaction;
  */
 public class DisableIfDocumentNotSavedBehavior extends Behavior {
 	
+	private static final long serialVersionUID = 1L;
 	public static final DisableIfDocumentNotSavedBehavior INSTANCE = new DisableIfDocumentNotSavedBehavior();
 	
 	@Override

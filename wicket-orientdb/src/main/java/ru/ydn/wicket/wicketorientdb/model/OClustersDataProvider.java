@@ -11,7 +11,9 @@ import java.util.Collection;
  */
 public class OClustersDataProvider extends AbstractJavaSortableDataProvider<OCluster, String>{
 
-    public OClustersDataProvider() {
+	private static final long serialVersionUID = 1L;
+
+	public OClustersDataProvider() {
         this(new ListOClustersModel());
     }
 

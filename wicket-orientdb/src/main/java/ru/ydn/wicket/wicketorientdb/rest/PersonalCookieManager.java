@@ -10,15 +10,14 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.wicket.Session;
 import org.apache.wicket.ThreadContext;
 import org.apache.wicket.request.cycle.RequestCycle;
-
-import ru.ydn.wicket.wicketorientdb.OrientDbWebSession;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
+
+import ru.ydn.wicket.wicketorientdb.OrientDbWebSession;
 
 /**
  * {@link CookieManager} which use "per user" approach

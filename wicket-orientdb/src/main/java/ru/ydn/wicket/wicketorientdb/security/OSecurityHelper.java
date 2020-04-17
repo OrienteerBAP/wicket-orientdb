@@ -14,11 +14,9 @@ import com.orientechnologies.orient.core.metadata.security.ORestrictedAccessHook
 import com.orientechnologies.orient.core.metadata.security.ORestrictedOperation;
 import com.orientechnologies.orient.core.metadata.security.ORule;
 import com.orientechnologies.orient.core.metadata.security.ORule.ResourceGeneric;
-import com.orientechnologies.orient.core.metadata.security.OSecurityShared;
 import com.orientechnologies.orient.core.record.impl.ODocument;
 
 import ru.ydn.wicket.wicketorientdb.OrientDbWebApplication;
-import ru.ydn.wicket.wicketorientdb.OrientDbWebSession;
 
 /**
  * Helper class for security functionality
@@ -38,6 +36,7 @@ public class OSecurityHelper
 	public static final String FEATURE = "FEATURE";
 	
 	public static final ResourceGeneric FEATURE_RESOURCE = new ResourceGeneric(FEATURE, FEATURE.toLowerCase()) {
+		private static final long serialVersionUID = 1L;
 	};
 	
 	private static final Map<OrientPermission, ORestrictedOperation> MAPPING_FOR_HACK = new HashMap<OrientPermission, ORestrictedOperation>();

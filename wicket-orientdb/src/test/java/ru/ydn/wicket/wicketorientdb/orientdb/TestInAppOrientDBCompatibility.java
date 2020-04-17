@@ -1,11 +1,16 @@
 package ru.ydn.wicket.wicketorientdb.orientdb;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.lang.reflect.Method;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 import java.util.Random;
 
@@ -14,16 +19,9 @@ import org.junit.ComparisonFailure;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import ru.ydn.wicket.wicketorientdb.junit.WicketOrientDbTester;
-import ru.ydn.wicket.wicketorientdb.junit.WicketOrientDbTesterScope;
-import static org.junit.Assert.*;
-
-import com.orientechnologies.orient.core.db.ODatabase;
 import com.orientechnologies.orient.core.db.document.ODatabaseDocument;
 import com.orientechnologies.orient.core.hook.ODocumentHookAbstract;
 import com.orientechnologies.orient.core.hook.ORecordHook;
-import com.orientechnologies.orient.core.hook.ORecordHook.DISTRIBUTED_EXECUTION_MODE;
-import com.orientechnologies.orient.core.hook.ORecordHook.RESULT;
 import com.orientechnologies.orient.core.id.ORID;
 import com.orientechnologies.orient.core.id.ORecordId;
 import com.orientechnologies.orient.core.metadata.function.OFunction;
@@ -31,11 +29,13 @@ import com.orientechnologies.orient.core.metadata.schema.OClass;
 import com.orientechnologies.orient.core.metadata.schema.OProperty;
 import com.orientechnologies.orient.core.metadata.schema.OSchema;
 import com.orientechnologies.orient.core.metadata.schema.OType;
-import com.orientechnologies.orient.core.metadata.schema.clusterselection.OClusterSelectionStrategy;
 import com.orientechnologies.orient.core.metadata.security.OSecurityShared;
 import com.orientechnologies.orient.core.record.ORecord;
 import com.orientechnologies.orient.core.record.impl.ODocument;
 import com.orientechnologies.orient.core.sql.query.OSQLSynchQuery;
+
+import ru.ydn.wicket.wicketorientdb.junit.WicketOrientDbTester;
+import ru.ydn.wicket.wicketorientdb.junit.WicketOrientDbTesterScope;
 
 public class TestInAppOrientDBCompatibility
 {
@@ -57,9 +57,9 @@ public class TestInAppOrientDBCompatibility
 		doc.field("multi", Arrays.asList(doc));
 		doc.save();
 		doc.reload();
-		String title = doc.field("title");
-		ODocument link = doc.field("link");
-		Collection<ODocument> multi = doc.field("multi");
+		assertNotNull(doc.field("title"));
+		assertNotNull(doc.field("link"));
+		assertNotNull(doc.field("multi"));
 	}
 	
 	@Test

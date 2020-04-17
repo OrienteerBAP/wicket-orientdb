@@ -7,7 +7,6 @@ import org.apache.wicket.util.convert.ConversionException;
 
 import ru.ydn.wicket.wicketorientdb.OrientDbWebSession;
 
-import com.google.common.base.Converter;
 import com.orientechnologies.orient.core.index.OIndex;
 
 /**

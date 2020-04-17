@@ -19,15 +19,6 @@ import com.orientechnologies.orient.server.OServerMain;
 public class TestStandaloneOrientDBCompatibility
 {
 	
-	private OServer startServer() throws Exception
-	{
-		OServer server = OServerMain.create();
-//		server.startup();
-		server.startup(OrientDbTestWebApplication.class.getResource("db.config.xml").openStream());
-		server.activate();
-		return server;
-	}
-	
 	final String PLOCAL_DB_NAME = "plocal:testDBLifeCycle";
 	final String MEMORY_DB_NAME = "memory:testDBLifeCycle";
 	
@@ -93,6 +84,7 @@ public class TestStandaloneOrientDBCompatibility
 		assertNotNull(ODatabaseRecordThreadLocal.instance());
 		if(dropDb)
 		{
+			@SuppressWarnings("resource")
 			ODatabaseDocument dbToDrop = new ODatabaseDocumentTx(dbURL);
 			dbToDrop.open("admin", "admin");
 			dbToDrop.drop();

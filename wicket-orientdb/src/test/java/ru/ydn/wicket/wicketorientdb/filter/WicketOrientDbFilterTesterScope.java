@@ -59,7 +59,9 @@ public class WicketOrientDbFilterTesterScope extends WicketOrientDbTesterScope {
 
     private List<OClass> initTestClasses() {
         return new DBClosure<List<OClass>>() {
-            @Override
+			private static final long serialVersionUID = 1L;
+
+			@Override
             protected List<OClass> execute(ODatabaseDocument db) {
                 OClass testClass = createOClass(db, TEST_CLASS_NAME, true);
                 OClass linkClass = createOClass(db, LINK_TEST_CLASS_NAME, false);
@@ -247,7 +249,9 @@ public class WicketOrientDbFilterTesterScope extends WicketOrientDbTesterScope {
     private void deleteClassesAndDocuments(final List<OClass> classes) {
         new DBClosure<Void>() {
 
-            @Override
+			private static final long serialVersionUID = 1L;
+
+			@Override
             protected Void execute(ODatabaseDocument db) {
                 for (OClass oClass : classes) {
                     db.command(new OCommandSQL("DELETE FROM " + oClass.getName())).execute();

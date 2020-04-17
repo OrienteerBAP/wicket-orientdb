@@ -8,7 +8,9 @@ import org.apache.wicket.model.IModel;
  */
 public class EqualsFilterCriteria extends AbstractFilterCriteria {
 
-    public EqualsFilterCriteria(String field, IModel<?> model, IModel<Boolean> join) {
+	private static final long serialVersionUID = 1L;
+
+	public EqualsFilterCriteria(String field, IModel<?> model, IModel<Boolean> join) {
         super(field, model, join);
     }
 

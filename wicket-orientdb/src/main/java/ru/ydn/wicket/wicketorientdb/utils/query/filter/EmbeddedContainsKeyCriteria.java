@@ -7,7 +7,10 @@ import org.apache.wicket.model.IModel;
  * SELECT FROM Test WHERE embedded.keys() CONTAINS :myKey
  */
 public class EmbeddedContainsKeyCriteria extends AbstractFilterCriteria {
-    public EmbeddedContainsKeyCriteria(String field, IModel<?> model, IModel<Boolean> join) {
+	
+	private static final long serialVersionUID = 1L;
+
+	public EmbeddedContainsKeyCriteria(String field, IModel<?> model, IModel<Boolean> join) {
         super(field, model, join);
     }
 
