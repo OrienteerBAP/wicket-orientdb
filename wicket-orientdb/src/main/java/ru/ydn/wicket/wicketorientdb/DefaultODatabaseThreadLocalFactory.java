@@ -40,21 +40,4 @@ public class DefaultODatabaseThreadLocalFactory implements ODatabaseThreadLocalF
 		}
 		return (ODatabaseDocumentInternal) settings.getContext().cachedPool(settings.getDbName(), username, password).acquire();
 	}
-	
-	/**
-	 * Utility method to obtain {@link ODatabaseDocument} from {@link ODatabase}
-	 * @param db {@link ODatabase} to cast from
-	 * @return {@link ODatabaseDocument} for a specified {@link ODatabase}
-	 */
-	public static ODatabaseDocument castToODatabaseDocument(ODatabase<?> db)
-	{
-		while(db!=null && !(db instanceof ODatabaseDocument))
-		{
-			if(db instanceof ODatabaseInternal<?>)
-			{
-				db = ((ODatabaseInternal<?>)db).getUnderlying();
-			}
-		}
-		return (ODatabaseDocument)db;
-	}
 }

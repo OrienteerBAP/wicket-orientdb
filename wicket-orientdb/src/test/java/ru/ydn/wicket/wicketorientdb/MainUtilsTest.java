@@ -7,6 +7,7 @@ import org.junit.Test;
 
 import com.google.common.base.Converter;
 import com.orientechnologies.orient.core.db.ODatabaseRecordThreadLocal;
+import com.orientechnologies.orient.core.db.ODatabaseSession;
 import com.orientechnologies.orient.core.db.document.ODatabaseDocument;
 import com.orientechnologies.orient.core.id.ORID;
 import com.orientechnologies.orient.core.id.ORecordId;
@@ -57,7 +58,7 @@ public class MainUtilsTest
 			private static final long serialVersionUID = 1L;
 
 			@Override
-			protected OSecurityUser execute(ODatabaseDocument db) {
+			protected OSecurityUser execute(ODatabaseSession db) {
 				assertEquals(db, ODatabaseRecordThreadLocal.instance().get());
 				return db.getUser();
 			}
@@ -68,7 +69,7 @@ public class MainUtilsTest
 			private static final long serialVersionUID = 1L;
 
 			@Override
-			protected OSecurityUser execute(ODatabaseDocument db) {
+			protected OSecurityUser execute(ODatabaseSession db) {
 				assertEquals(db, ODatabaseRecordThreadLocal.instance().get());
 				return db.getUser();
 			}

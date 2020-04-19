@@ -2,7 +2,7 @@ package ru.ydn.wicket.wicketorientdb.utils;
 
 import com.orientechnologies.orient.core.db.ODatabaseDocumentInternal;
 import com.orientechnologies.orient.core.db.ODatabaseRecordThreadLocal;
-import com.orientechnologies.orient.core.db.document.ODatabaseDocument;
+import com.orientechnologies.orient.core.db.ODatabaseSession;
 import com.orientechnologies.orient.core.record.impl.ODocument;
 import com.orientechnologies.orient.core.type.ODocumentWrapper;
 import ru.ydn.wicket.wicketorientdb.IOrientDbSettings;
@@ -44,7 +44,7 @@ public abstract class DBClosure<V> implements Serializable {
 	 * @return result of execution
 	 */
 	public final V execute() {
-		ODatabaseDocument db = null;
+		ODatabaseSession db = null;
 		ODatabaseRecordThreadLocal orientDbThreadLocal = ODatabaseRecordThreadLocal.instance();
 		ODatabaseDocumentInternal oldDb = orientDbThreadLocal.getIfDefined();
 		if (oldDb != null) {
@@ -90,7 +90,7 @@ public abstract class DBClosure<V> implements Serializable {
 	 * @param db temporal DB for other user
 	 * @return results for execution on supplied DB
 	 */
-	protected abstract V execute(ODatabaseDocument db);
+	protected abstract V execute(ODatabaseSession db);
 	
 	/**
 	 * Simplified function to execute under admin
@@ -98,12 +98,12 @@ public abstract class DBClosure<V> implements Serializable {
 	 * @param <R> type of returned value
 	 * @return result of a function
 	 */
-	public static <R> R sudo(Function<ODatabaseDocument, R> func) {
+	public static <R> R sudo(Function<ODatabaseSession, R> func) {
 		return new DBClosure<R>() {
 			private static final long serialVersionUID = 1L;
 
 			@Override
-			protected R execute(ODatabaseDocument db) {
+			protected R execute(ODatabaseSession db) {
 				return func.apply(db);
 			}
 		}.execute();
@@ -113,12 +113,12 @@ public abstract class DBClosure<V> implements Serializable {
 	 * Simplified consumer to execute under admin
 	 * @param consumer - consumer to be executed
 	 */
-	public static void sudoConsumer(Consumer<ODatabaseDocument> consumer) {
+	public static void sudoConsumer(Consumer<ODatabaseSession> consumer) {
 		new DBClosure<Void>() {
 			private static final long serialVersionUID = 1L;
 
 			@Override
-			protected Void execute(ODatabaseDocument db) {
+			protected Void execute(ODatabaseSession db) {
 				consumer.accept(db);
 				return null;
 			}
@@ -136,7 +136,7 @@ public abstract class DBClosure<V> implements Serializable {
 			private static final long serialVersionUID = 1L;
 
 			@Override
-			protected Boolean execute(ODatabaseDocument db) {
+			protected Boolean execute(ODatabaseSession db) {
 				db.begin();
 				for (ODocument doc : docs) {
 					db.save(doc);
@@ -157,7 +157,7 @@ public abstract class DBClosure<V> implements Serializable {
 			private static final long serialVersionUID = 1L;
 
 			@Override
-			protected Boolean execute(ODatabaseDocument db) {
+			protected Boolean execute(ODatabaseSession db) {
 				db.begin();
 				for (ODocumentWrapper dw : dws) {
 					dw.save();
