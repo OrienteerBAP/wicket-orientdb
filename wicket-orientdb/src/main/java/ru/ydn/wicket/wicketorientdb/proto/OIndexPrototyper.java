@@ -65,7 +65,7 @@ public class OIndexPrototyper extends AbstractPrototyper<OIndex>
 	
 	@Override
 	protected OIndex createInstance(OIndex proxy) {
-		OSchema schema = OrientDbWebSession.get().getDatabase().getMetadata().getSchema();
+		OSchema schema = OrientDbWebSession.get().getSchema();
 		OClass oClass = schema.getClass(proxy.getDefinition().getClassName());
 		String name = proxy.getName();
 		List<String> fields = proxy.getDefinition().getFields();

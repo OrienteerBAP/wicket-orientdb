@@ -69,23 +69,10 @@ public class OPropertyModel extends PrototypeLoadableDetachableModel<OProperty>
 		}
 	}
 
-
-	public OSchema getSchema()
-	{
-		return getDatabase().getMetadata().getSchema();
-	}
-	
-	public ODatabaseDocument getDatabase()
-	{
-		return OrientDbWebSession.get().getDatabase();
-	}
-
-
 	@Override
 	public Class<OProperty> getObjectClass() {
 		return OProperty.class;
 	}
-
 
 	@Override
 	public int hashCode() {

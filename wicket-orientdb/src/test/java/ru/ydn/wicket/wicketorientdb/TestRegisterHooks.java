@@ -1,5 +1,6 @@
 package ru.ydn.wicket.wicketorientdb;
 
+import com.orientechnologies.orient.core.db.ODatabaseSession;
 import com.orientechnologies.orient.core.db.document.ODatabaseDocument;
 import com.orientechnologies.orient.core.hook.ODocumentHookAbstract;
 import com.orientechnologies.orient.core.hook.ORecordHook;
@@ -19,7 +20,7 @@ public class TestRegisterHooks {
 
     @Test
     public void testRegisterHooks() {
-        ODatabaseDocument db = wicket.getTester().getDatabase();
+        ODatabaseSession db = wicket.getTester().getDatabaseSession();
         IOrientDbSettings settings = wicket.getTester().getApplication().getOrientDbSettings();
 
 
@@ -27,14 +28,14 @@ public class TestRegisterHooks {
 
         assertRegisteredHook(db, RegisterHook.class);
 
-        db = wicket.getTester().getDatabase();
+        db = wicket.getTester().getDatabaseSession();
 
         assertRegisteredHook(db, RegisterHook.class);
     }
 
     @Test
     public void testRegisterHooksInTwoDatabases() {
-        ODatabaseDocument db = wicket.getTester().getDatabase();
+    	ODatabaseSession db = wicket.getTester().getDatabaseSession();
         IOrientDbSettings settings = wicket.getTester().getApplication().getOrientDbSettings();
 
         settings.addORecordHooks(RegisterHook.class);

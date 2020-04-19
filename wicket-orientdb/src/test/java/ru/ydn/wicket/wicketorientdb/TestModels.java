@@ -18,6 +18,7 @@ import org.apache.wicket.model.PropertyModel;
 import org.junit.ClassRule;
 import org.junit.Test;
 
+import com.orientechnologies.orient.core.db.ODatabaseSession;
 import com.orientechnologies.orient.core.db.document.ODatabaseDocument;
 import com.orientechnologies.orient.core.id.ORecordId;
 import com.orientechnologies.orient.core.index.OIndex;
@@ -281,7 +282,7 @@ public class TestModels
 	@Test
 	public void testODocumentModel()
 	{
-		ODatabaseDocument db = wicket.getTester().getDatabase();
+		ODatabaseSession db = wicket.getTester().getDatabaseSession();
 		ORecordId recordId = new ORecordId("#6:0");
 		ODocumentModel model = new ODocumentModel(recordId);
 		assertModelObjectEquals(recordId.getRecord(), model);

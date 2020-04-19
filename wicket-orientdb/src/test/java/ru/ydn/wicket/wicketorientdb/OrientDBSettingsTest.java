@@ -1,5 +1,6 @@
 package ru.ydn.wicket.wicketorientdb;
 
+import com.orientechnologies.orient.core.db.ODatabaseSession;
 import com.orientechnologies.orient.core.db.document.ODatabaseDocument;
 import com.orientechnologies.orient.core.metadata.schema.OClass;
 import com.orientechnologies.orient.core.record.impl.ODocument;
@@ -17,13 +18,14 @@ public class OrientDBSettingsTest {
 	@Test
 	public void testInstallingHooks()
 	{
-		ODatabaseDocument db = wicket.getTester().getDatabase();
+		ODatabaseSession db = wicket.getTester().getDatabaseSession();
 		OClass clazz = db.getMetadata().getSchema().getClass("TestHooks");
 		assertNotNull(clazz);
-		OResultSet result = db.query("select from TestHooks");
-		assertTrue(result.hasNext());
-		ODocument doc = (ODocument) result.next().getElement().orElse(null);
-		assertNotNull(doc);
-		assertEquals("HOOK", doc.field("name"));
+		try(OResultSet result = db.query("select from TestHooks")) {
+			assertTrue(result.hasNext());
+			ODocument doc = (ODocument) result.next().getElement().orElse(null);
+			assertNotNull(doc);
+			assertEquals("HOOK", doc.field("name"));
+		}
 	}
 }

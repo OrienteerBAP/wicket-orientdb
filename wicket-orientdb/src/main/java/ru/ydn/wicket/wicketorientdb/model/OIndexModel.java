@@ -38,7 +38,7 @@ public class OIndexModel extends PrototypeLoadableDetachableModel<OIndex>
 	@Override
 	protected OIndex loadInstance() {
 		OClass oClass = classModel!=null?classModel.getObject():null;
-		ODatabaseDocumentInternal database = OrientDbWebSession.get().getDatabase();
+		ODatabaseDocumentInternal database = OrientDbWebSession.get().getDatabaseDocumentInternal();
 		OIndexManagerAbstract indexManager = database.getMetadata().getIndexManagerInternal();
 		return oClass != null ? indexManager.getClassIndex(database, oClass.getName(), indexName) : indexManager.getIndex(database, indexName);
 	}

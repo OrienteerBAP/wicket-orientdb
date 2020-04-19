@@ -1,8 +1,8 @@
 package ru.ydn.wicket.wicketorientdb.demo;
 
+import com.orientechnologies.orient.core.db.ODatabaseSession;
 import com.orientechnologies.orient.core.db.ODatabaseType;
 import com.orientechnologies.orient.core.db.OrientDB;
-import com.orientechnologies.orient.core.db.document.ODatabaseDocument;
 import com.orientechnologies.orient.core.metadata.schema.OType;
 import com.orientechnologies.orient.core.record.impl.ODocument;
 import org.apache.wicket.authroles.authentication.pages.SignInPage;
@@ -60,7 +60,7 @@ public class WicketApplication extends OrientDbWebApplication
 			
 			
 			@Override
-			protected void installData(OrientDbWebApplication app, ODatabaseDocument db) {
+			protected void installData(OrientDbWebApplication app, ODatabaseSession db) {
 				OSchemaHelper helper = OSchemaHelper.bind(db);
 				helper.oClass(CLASS_NAME)
 						.oProperty(PROP_NAME, OType.STRING)

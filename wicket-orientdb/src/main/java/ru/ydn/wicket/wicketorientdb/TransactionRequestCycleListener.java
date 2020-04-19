@@ -21,7 +21,7 @@ public class TransactionRequestCycleListener extends
 	@Override
 	public void start(RequestCycle cycle) {
 		OrientDbWebSession session = OrientDbWebSession.get();
-		ODatabaseDocumentInternal db = session.getDatabase();
+		ODatabaseDocumentInternal db = session.getDatabaseDocumentInternal();
 		//It's required to have ability to check security rights locally
 		OSecurityUser oUser = session.getUser();
 		OSecurityUser dbUser = db.getUser();

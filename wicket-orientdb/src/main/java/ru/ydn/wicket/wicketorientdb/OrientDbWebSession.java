@@ -59,25 +59,44 @@ public class OrientDbWebSession extends AuthenticatedWebSession {
 		}
 		return ret;
 	}
-
+	
 	/**
 	 * @return {@link ODatabaseDocument} for current request
 	 */
+	public ODatabaseDocumentInternal getDatabaseDocumentInternal()
+	{
+		return ODatabaseRecordThreadLocal.instance().get();
+	}
+
+	/**
+	 * @return {@link ODatabaseDocument} for current request
+	 * @deprecated
+	 */
+	@Deprecated
 	public ODatabaseDocumentInternal getDatabase()
 	{
 		return ODatabaseRecordThreadLocal.instance().get();
 	}
 	
 	/**
+	 * {@link ODatabaseSession} for current request
+	 * @return {@link ODatabaseSession}
+	 */
+	public ODatabaseSession getDatabaseSession()
+	{
+		return getDatabaseDocumentInternal();
+	}
+	
+	/**
 	 * @return {@link OSchema} for current request
 	 */
 	public OSchema getSchema() {
-		return getDatabase().getMetadata().getSchema();
+		return getDatabaseSession().getMetadata().getSchema();
 	}
 
 	@Override
 	public boolean authenticate(String username, String password) {
-		ODatabaseDocument currentDB = getDatabase();
+		ODatabaseSession currentDB = getDatabaseSession();
 		try {
 			boolean inTransaction = currentDB.getTransaction().isActive();
 			IOrientDbSettings settings = OrientDbWebApplication.get().getOrientDbSettings();
@@ -110,7 +129,7 @@ public class OrientDbWebSession extends AuthenticatedWebSession {
 	public OSecurityUser getEffectiveUser()
 	{
 		OSecurityUser ret = getUser();
-		return ret!=null?ret:getDatabase().getUser();
+		return ret!=null?ret:getDatabaseSession().getUser();
 	}
 	
 	

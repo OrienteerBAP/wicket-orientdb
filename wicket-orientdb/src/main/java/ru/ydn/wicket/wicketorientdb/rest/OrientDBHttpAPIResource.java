@@ -70,7 +70,7 @@ public class OrientDBHttpAPIResource extends AbstractResource
 				for(int i=0; i<params.getIndexedCount();i++)
 				{
 					//replace provided database name
-					String segment = i==1?OrientDbWebSession.get().getDatabase().getName():params.get(i).toString();
+					String segment = i==1?OrientDbWebSession.get().getDatabaseSession().getName():params.get(i).toString();
 					sb.append(UrlEncoder.PATH_INSTANCE.encode(segment, "UTF8")).append('/');
 				}
 				if(sb.charAt(sb.length()-1)=='/')sb.setLength(sb.length()-1);

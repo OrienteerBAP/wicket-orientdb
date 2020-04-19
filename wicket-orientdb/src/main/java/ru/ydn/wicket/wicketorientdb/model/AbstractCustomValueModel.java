@@ -3,6 +3,7 @@ package ru.ydn.wicket.wicketorientdb.model;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.IObjectClassAwareModel;
 
+import com.orientechnologies.orient.core.db.ODatabaseSession;
 import com.orientechnologies.orient.core.db.document.ODatabaseDocument;
 
 import ru.ydn.wicket.wicketorientdb.OrientDbWebSession;
@@ -31,7 +32,7 @@ public abstract class AbstractCustomValueModel<T, C, V> implements IModel<V>, IO
 
 	@Override
 	public void setObject(V object) {
-		ODatabaseDocument db = OrientDbWebSession.get().getDatabase(); 
+		ODatabaseSession db = OrientDbWebSession.get().getDatabaseSession();
 		boolean isActiveTransaction = db.getTransaction().isActive();
 		if(isActiveTransaction) db.commit(); // Schema changes should be done outside of transaction
 		try {

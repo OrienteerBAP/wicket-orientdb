@@ -19,7 +19,7 @@ import org.junit.ComparisonFailure;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import com.orientechnologies.orient.core.db.document.ODatabaseDocument;
+import com.orientechnologies.orient.core.db.ODatabaseSession;
 import com.orientechnologies.orient.core.hook.ODocumentHookAbstract;
 import com.orientechnologies.orient.core.hook.ORecordHook;
 import com.orientechnologies.orient.core.id.ORID;
@@ -32,6 +32,7 @@ import com.orientechnologies.orient.core.metadata.schema.OType;
 import com.orientechnologies.orient.core.metadata.security.OSecurityShared;
 import com.orientechnologies.orient.core.record.ORecord;
 import com.orientechnologies.orient.core.record.impl.ODocument;
+import com.orientechnologies.orient.core.sql.executor.OResultSet;
 import com.orientechnologies.orient.core.sql.query.OSQLSynchQuery;
 
 import ru.ydn.wicket.wicketorientdb.junit.WicketOrientDbTester;
@@ -78,7 +79,7 @@ public class TestInAppOrientDBCompatibility
 	@Test
 	public void testRemovingReadonlyField()
 	{
-		ODatabaseDocument db = wicket.getTester().getDatabase();
+		ODatabaseSession db = wicket.getTester().getDatabaseSession();
 		OSchema schema = db.getMetadata().getSchema();
 		OClass classA = schema.createClass("TestRemovingField");
 		classA.createProperty("name", OType.STRING);
@@ -99,7 +100,7 @@ public class TestInAppOrientDBCompatibility
 	@Test
 	public void testRemovingReadonlyField2()
 	{
-		ODatabaseDocument db = wicket.getTester().getDatabase();
+		ODatabaseSession db = wicket.getTester().getDatabaseSession();
 		OSchema schema = db.getMetadata().getSchema();
 		OClass classA = schema.createClass("TestRemovingField2");
 		classA.createProperty("name", OType.STRING);
@@ -121,7 +122,7 @@ public class TestInAppOrientDBCompatibility
 	@Test
 	public void testPropertyRenaming()
 	{
-		ODatabaseDocument db = wicket.getTester().getDatabase();
+		ODatabaseSession db = wicket.getTester().getDatabaseSession();
 		OSchema schema = db.getMetadata().getSchema();
 		OClass classA = schema.createClass("TestPropertyRenaming");
 		OProperty property = classA.createProperty("propertyOld", OType.STRING);
@@ -138,7 +139,7 @@ public class TestInAppOrientDBCompatibility
 	@Ignore
 	public void testSerialization() throws Exception
 	{
-		ODatabaseDocument db = wicket.getTester().getDatabase();
+		ODatabaseSession db = wicket.getTester().getDatabaseSession();
 		OSchema schema = db.getMetadata().getSchema();
 		OClass classA = schema.createClass("SerA");
 		OClass classB = schema.createClass("SerB");
@@ -182,7 +183,7 @@ public class TestInAppOrientDBCompatibility
 	
 	@Test
 	public void testTransactions() throws Exception {
-		ODatabaseDocument db = wicket.getTester().getDatabase();
+		ODatabaseSession db = wicket.getTester().getDatabaseSession();
 		try {
 			assertFalse(db.getTransaction().isActive());
 			OSchema schema = db.getMetadata().getSchema();
@@ -218,7 +219,7 @@ public class TestInAppOrientDBCompatibility
 	@Test
 	@Ignore
 	public void testTransactions2() throws Exception {
-		ODatabaseDocument db = wicket.getTester().getDatabase();
+		ODatabaseSession db = wicket.getTester().getDatabaseSession();
 		try {
 			assertFalse(db.getTransaction().isActive());
 			OSchema schema = db.getMetadata().getSchema();
@@ -256,7 +257,7 @@ public class TestInAppOrientDBCompatibility
 	
 	@Test
 	public void testInHook() throws Exception {
-		ODatabaseDocument db = wicket.getTester().getDatabase();
+		ODatabaseSession db = wicket.getTester().getDatabaseSession();
 		OSchema schema = db.getMetadata().getSchema();
 		OClass oClass = schema.createClass("TestInHook");
 		oClass.createProperty("a", OType.INTEGER);
@@ -284,10 +285,10 @@ public class TestInAppOrientDBCompatibility
 			@Override
 			public void onRecordAfterRead(ODocument iDocument) {
 				String script = "select sum(a, b) as value from "+iDocument.getIdentity();
-				List<ODocument> calculated = database.query(new OSQLSynchQuery<Object>(script));
-				if(calculated!=null && !calculated.isEmpty())
-				{
-					iDocument.field("c", (Object) calculated.get(0).field("value"));
+				try(OResultSet result = database.query(script)) {
+					if(result.hasNext()) {
+						iDocument.field("c", (Object)result.next().getProperty("value"));
+					}
 				}
 			}
 			
@@ -305,7 +306,7 @@ public class TestInAppOrientDBCompatibility
 		doc.field("a", 3);
 		doc.field("b", 3);
 		doc.save();
-		
+		doc.reload();
 		assertEquals(3, (Object) doc.field("a"));
 		assertEquals(3, (Object) doc.field("b"));
 		assertEquals(6, (Object) doc.field("c"));
@@ -316,7 +317,7 @@ public class TestInAppOrientDBCompatibility
 	@Test
 	public void testOFunctions() throws Exception
 	{
-		ODatabaseDocument db = wicket.getTester().getDatabase();
+		ODatabaseSession db = wicket.getTester().getDatabaseSession();
 		ODocument doc =  new ODocument(OFunction.CLASS_NAME);
 		doc.field("name", "testResurection");
 		doc.field("language", "JavaScript");
@@ -325,7 +326,7 @@ public class TestInAppOrientDBCompatibility
 		ORID orid = doc.getIdentity();
 		for(int i=0;i<10;i++)
 		{
-			db = wicket.getTester().getDatabase();
+			db = wicket.getTester().getDatabaseSession();
 			String signature = "signature"+RANDOM.nextLong();
 			boolean isGoodCall = (i+1)%3 != 0;
 			db.begin();
@@ -371,7 +372,7 @@ public class TestInAppOrientDBCompatibility
 	@Ignore
 	public void testValidationAndHooksOrder()
 	{
-		ODatabaseDocument db = wicket.getTester().getDatabase();
+		ODatabaseSession db = wicket.getTester().getDatabaseSession();
 		OSchema schema = db.getMetadata().getSchema();
 		OClass classA = schema.createClass(TEST_VALIDATION_AND_HOOKS_CLASS);
 		classA.createProperty("property1", OType.STRING).setNotNull(true);
@@ -424,7 +425,7 @@ public class TestInAppOrientDBCompatibility
 	public void testUpdatesInHooks()
 	{
 		final String className = "TestUpdatesInHook";
-		ODatabaseDocument db = wicket.getTester().getDatabase();
+		ODatabaseSession db = wicket.getTester().getDatabaseSession();
 		db.registerHook(new ODocumentHookAbstract(db) {
 			
 			{
@@ -497,7 +498,7 @@ public class TestInAppOrientDBCompatibility
 	public void testDocumentTrackingSimple()
 	{
 		final String className = "TestDocumentTrackingSimple";
-		ODatabaseDocument db = wicket.getTester().getDatabase();
+		ODatabaseSession db = wicket.getTester().getDatabaseSession();
 		OSchema schema = db.getMetadata().getSchema();
 		final OClass classA = schema.createClass(className);
 		classA.createProperty("a", OType.STRING);
@@ -542,7 +543,7 @@ public class TestInAppOrientDBCompatibility
 	public void testDocumentTrackingComplex()
 	{
 		final String className = "TestDocumentTrackingComplex";
-		ODatabaseDocument db = wicket.getTester().getDatabase();
+		ODatabaseSession db = wicket.getTester().getDatabaseSession();
 		OSchema schema = db.getMetadata().getSchema();
 		final OClass classA = schema.createClass(className);
 		classA.createProperty("a", OType.STRING);
@@ -617,7 +618,7 @@ public class TestInAppOrientDBCompatibility
 	@Ignore
 	public void testLoosingLinkedClass() throws Exception
 	{
-		ODatabaseDocument db = wicket.getTester().getDatabase();
+		ODatabaseSession db = wicket.getTester().getDatabaseSession();
 		OSchema schema = wicket.getTester().getSchema();
 		OClass mainClass = schema.createClass("LMainClass");
 		OClass embeddedClass = schema.createClass("LEmbeddedClass");
@@ -637,7 +638,7 @@ public class TestInAppOrientDBCompatibility
 		
 		main.fromStream(main.toStream());
 		
-		db = wicket.getTester().getDatabase();
+		db = wicket.getTester().getDatabaseSession();
 		db.begin();
 		assertEmbeddedIsCorrect(main);
 		main.save();
@@ -645,7 +646,7 @@ public class TestInAppOrientDBCompatibility
 		db.commit();
 		db.close();
 		
-		db = wicket.getTester().getDatabase();
+		db = wicket.getTester().getDatabaseSession();
 		db.begin();
 		main = recordId.getRecord();
 		assertEmbeddedIsCorrect(main);
@@ -656,7 +657,7 @@ public class TestInAppOrientDBCompatibility
 	@Ignore
 	public void testDeletionOfDependentClass()
 	{
-		ODatabaseDocument db = wicket.getTester().getDatabase();
+		ODatabaseSession db = wicket.getTester().getDatabaseSession();
 		OSchema schema = db.getMetadata().getSchema();
 		OClass oRestricted = schema.getClass(OSecurityShared.RESTRICTED_CLASSNAME);
 		OClass classA = schema.createClass("TestDeletionOfDependentClassA", oRestricted);
@@ -668,7 +669,7 @@ public class TestInAppOrientDBCompatibility
 	@Ignore
 	public void testClassChange()
 	{
-		ODatabaseDocument db = wicket.getTester().getDatabase();
+		ODatabaseSession db = wicket.getTester().getDatabaseSession();
 		OSchema schema = db.getMetadata().getSchema();
 		OClass classA = schema.createClass("TestClassChangeA");
 		OClass classB = schema.createClass("TestClassChangeB");
@@ -682,7 +683,7 @@ public class TestInAppOrientDBCompatibility
 		ORID id = doc.getIdentity();
 		db.commit(true);
 		db.close();
-		db = wicket.getTester().getDatabase();
+		db = wicket.getTester().getDatabaseSession();
 		doc = id.getRecord();
 		assertEquals(classB.getName(), doc.getClassName());
 	}
@@ -690,7 +691,7 @@ public class TestInAppOrientDBCompatibility
 	@Test
 	public void testDeletionOfDependentClass2()
 	{
-		ODatabaseDocument db = wicket.getTester().getDatabase();
+		ODatabaseSession db = wicket.getTester().getDatabaseSession();
 		OSchema schema = db.getMetadata().getSchema();
 		OClass classAbs = schema.createAbstractClass("TestDeletionAbst");
 		OClass classA = schema.createClass("TestDeletionA", classAbs);
@@ -709,7 +710,7 @@ public class TestInAppOrientDBCompatibility
 	@Test
 	public void testCreationInHook()
 	{
-		ODatabaseDocument db = wicket.getTester().getDatabase();
+		ODatabaseSession db = wicket.getTester().getDatabaseSession();
 		OSchema schema = db.getMetadata().getSchema();
 		final OClass classA = schema.createClass("TestCreationInHookMain");
 		final OClass classB = schema.createClass("TestCreationInHookReflect");
@@ -744,7 +745,7 @@ public class TestInAppOrientDBCompatibility
 		}
 		db.commit();
 		db.close();
-		db = wicket.getTester().getDatabase();
+		db = wicket.getTester().getDatabaseSession();
 		
 		for(ODocument doc : db.browseClass(classA.getName())) {
 			String name = doc.field("name");
@@ -775,7 +776,7 @@ public class TestInAppOrientDBCompatibility
 	@Ignore //TODO: Uncomment when OrientDB issue will be fixed: https://github.com/orientechnologies/orientdb/issues/8067
 	@Test
 	public void testLinkToOUser() {
-		ODatabaseDocument db = wicket.getTester().getDatabase();
+		ODatabaseSession db = wicket.getTester().getDatabaseSession();
 		OSchema schema = db.getMetadata().getSchema();
 		final OClass classA = schema.createClass("TestLinkToOUser");
 		classA.createProperty("name", OType.STRING);
@@ -783,7 +784,7 @@ public class TestInAppOrientDBCompatibility
 		ORID userRid = new ORecordId("#6:0");
 		ODocument doc = new ODocument(classA);
 		wicket.getTester().signIn("writer", "writer");
-		db = wicket.getTester().getDatabase();
+		db = wicket.getTester().getDatabaseSession();
 		db.begin();
 		ODocument userDoc = userRid.getRecord();
 		userDoc.field("roles");

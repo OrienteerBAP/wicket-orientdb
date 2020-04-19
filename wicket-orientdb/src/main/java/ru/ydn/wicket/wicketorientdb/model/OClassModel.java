@@ -34,7 +34,7 @@ public class OClassModel extends PrototypeLoadableDetachableModel<OClass>{
 	@Override
 	protected OClass loadInstance() {
 		String className = classNameModel!=null?classNameModel.getObject():null;
-		return className!=null?getSchema().getClass(className):null;
+		return className!=null?OrientDbWebSession.get().getSchema().getClass(className):null;
 	}
 	
 	
@@ -62,16 +62,6 @@ public class OClassModel extends PrototypeLoadableDetachableModel<OClass>{
 			}
 			classNameModel.detach();
 		}
-	}
-
-	public OSchema getSchema()
-	{
-		return getDatabase().getMetadata().getSchema();
-	}
-	
-	public ODatabaseDocument getDatabase()
-	{
-		return OrientDbWebSession.get().getDatabase();
 	}
 
 	@Override

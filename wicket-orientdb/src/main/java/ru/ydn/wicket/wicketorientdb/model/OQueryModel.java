@@ -2,6 +2,7 @@ package ru.ydn.wicket.wicketorientdb.model;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Maps;
+import com.orientechnologies.orient.core.db.ODatabaseSession;
 import com.orientechnologies.orient.core.db.document.ODatabaseDocument;
 import com.orientechnologies.orient.core.metadata.schema.OClass;
 import com.orientechnologies.orient.core.record.OElement;
@@ -37,7 +38,7 @@ public class OQueryModel<K> extends LoadableDetachableModel<List<K>>
 	private static class GetObjectAndWrapDocumentsFunction<T> extends GetObjectFunction<T>
 	{
 		private static final long serialVersionUID = 1L;
-		public static final GetObjectAndWrapDocumentsFunction<?> INSTANCE = new GetObjectAndWrapDocumentsFunction<Object>();
+		private static final GetObjectAndWrapDocumentsFunction<?> INSTANCE = new GetObjectAndWrapDocumentsFunction<Object>();
 		
 		@Override
 		@SuppressWarnings("unchecked")
@@ -164,19 +165,19 @@ public class OQueryModel<K> extends LoadableDetachableModel<List<K>>
 
 	@SuppressWarnings("unchecked")
 	protected List<K> load() {
-    	ODatabaseDocument db = OrientDbWebSession.get().getDatabase();
+    	ODatabaseSession db = OrientDbWebSession.get().getDatabaseSession();
         String sql = prepareSql(null, null);
-        OResultSet result = db.query(sql, prepareParams());
-
-        if (transformer != null) {
-            return result.elementStream()
-                    .map(e -> transformer.apply(e))
-                    .collect(Collectors.toCollection(LinkedList::new));
+        try(OResultSet result = db.query(sql, prepareParams())) {
+	        if (transformer != null) {
+	            return result.elementStream()
+	                    .map(e -> transformer.apply(e))
+	                    .collect(Collectors.toCollection(LinkedList::new));
+	        }
+	
+	        return result.elementStream()
+	                .map(e -> (K) e)
+	                .collect(Collectors.toCollection(LinkedList::new));
         }
-
-        return result.elementStream()
-                .map(e -> (K) e)
-                .collect(Collectors.toCollection(LinkedList::new));
     }
 
 	/**
@@ -201,19 +202,20 @@ public class OQueryModel<K> extends LoadableDetachableModel<List<K>>
 	 */
     @SuppressWarnings("unchecked")
 	public <T> Iterator<T> iterator(long first, long count, Function<OElement, T> transformer) {
-    	ODatabaseDocument db = OrientDbWebSession.get().getDatabase();
+    	ODatabaseSession db = OrientDbWebSession.get().getDatabaseSession();
 
-        OResultSet result = db.query(prepareSql((int) first, (int) count), prepareParams());
+        try(OResultSet result = db.query(prepareSql((int) first, (int) count), prepareParams())) {
 
-        if (transformer != null) {
-            return result.elementStream()
-                    .map(transformer)
-                    .iterator();
+	        if (transformer != null) {
+	            return result.elementStream()
+	                    .map(transformer)
+	                    .iterator();
+	        }
+	
+	    	return result.elementStream()
+	                .map(e -> (T) e)
+	                .iterator();
         }
-
-    	return result.elementStream()
-                .map(e -> (T) e)
-                .iterator();
     }
     
     /**
@@ -237,14 +239,14 @@ public class OQueryModel<K> extends LoadableDetachableModel<List<K>>
      */
     public long size() {
     	if (size == null) {
-	    	ODatabaseDocument db = OrientDbWebSession.get().getDatabase();
-	    	OResultSet result = db.query(queryManager.getCountSql(), prepareParams());
-
-	    	if (result.hasNext()) {
-	    		Number sizeNumber = result.next().getProperty("count");
-	    		size = sizeNumber != null ? sizeNumber.longValue() : 0;
-	    	} else {
-	    		size = 0L;
+	    	ODatabaseSession db = OrientDbWebSession.get().getDatabaseSession();
+	    	try(OResultSet result = db.query(queryManager.getCountSql(), prepareParams())) {
+		    	if (result.hasNext()) {
+		    		Number sizeNumber = result.next().getProperty("count");
+		    		size = sizeNumber != null ? sizeNumber.longValue() : 0;
+		    	} else {
+		    		size = 0L;
+		    	}
 	    	}
     	}
     	return size;
@@ -324,12 +326,4 @@ public class OQueryModel<K> extends LoadableDetachableModel<List<K>>
         size=null;
     }
     
-    /**
-     * @return Current {@link ODatabaseDocument}
-     */
-    public ODatabaseDocument getDatabase()
-	{
-		return OrientDbWebSession.get().getDatabase();
-	}
-
 }

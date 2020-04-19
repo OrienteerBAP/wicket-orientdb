@@ -3,6 +3,7 @@ package ru.ydn.wicket.wicketorientdb.components;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.model.IModel;
 
+import com.orientechnologies.orient.core.db.ODatabaseSession;
 import com.orientechnologies.orient.core.db.document.ODatabaseDocument;
 
 import ru.ydn.wicket.wicketorientdb.OrientDbWebSession;
@@ -30,7 +31,7 @@ public class TransactionlessForm<T> extends Form<T>
 	@Override
 	protected void beforeUpdateFormComponentModels() {
 		super.beforeUpdateFormComponentModels();
-		ODatabaseDocument db = OrientDbWebSession.get().getDatabase();
+		ODatabaseSession db = OrientDbWebSession.get().getDatabaseSession();
 		isTransactionActive = db.getTransaction().isActive();
 		if(isTransactionActive) db.commit();
 	}
@@ -38,7 +39,7 @@ public class TransactionlessForm<T> extends Form<T>
 	@Override
 	protected void onValidateModelObjects() {
 		super.onValidateModelObjects();
-		if(isTransactionActive) OrientDbWebSession.get().getDatabase().begin();
+		if(isTransactionActive) OrientDbWebSession.get().getDatabaseSession().begin();
 	}
 	
 }

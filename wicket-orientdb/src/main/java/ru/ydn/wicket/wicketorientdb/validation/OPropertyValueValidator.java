@@ -159,14 +159,14 @@ public class OPropertyValueValidator<T> extends Behavior implements
 			      else if (p.getType().equals(OType.DATE)) {
 			        try {
 			          if (fieldValue != null
-			              && ((Date) fieldValue).before(getDatabase().getStorage().getConfiguration().getDateFormatInstance()
+			              && ((Date) fieldValue).before(getDatabaseDocumentInternal().getStorage().getConfiguration().getDateFormatInstance()
 			                  .parse(min)))
 			        	  validatable.error(newValidationError("minviolationDate", "min", min));
 			        } catch (ParseException e) {/*NOP*/}
 			      } else if (p.getType().equals(OType.DATETIME)) {
 			        try {
 			          if (fieldValue != null
-			              && ((Date) fieldValue).before(getDatabase().getStorage().getConfiguration().getDateTimeFormatInstance()
+			              && ((Date) fieldValue).before(getDatabaseDocumentInternal().getStorage().getConfiguration().getDateTimeFormatInstance()
 			                  .parse(min)))
 			        	  validatable.error(newValidationError("minviolationDate", "min", min));
 			        } catch (ParseException e) {/*NOP*/}
@@ -195,14 +195,14 @@ public class OPropertyValueValidator<T> extends Behavior implements
 			      else if (p.getType().equals(OType.DATE)) {
 			        try {
 			          if (fieldValue != null
-			              && ((Date) fieldValue).before(getDatabase().getStorage().getConfiguration().getDateFormatInstance()
+			              && ((Date) fieldValue).before(getDatabaseDocumentInternal().getStorage().getConfiguration().getDateFormatInstance()
 			                  .parse(max)))
 			        	  validatable.error(newValidationError("maxviolationDate", "max", max));
 			        } catch (ParseException e) {/*NOP*/}
 			      } else if (p.getType().equals(OType.DATETIME)) {
 			        try {
 			          if (fieldValue != null
-			              && ((Date) fieldValue).before(getDatabase().getStorage().getConfiguration().getDateTimeFormatInstance()
+			              && ((Date) fieldValue).before(getDatabaseDocumentInternal().getStorage().getConfiguration().getDateTimeFormatInstance()
 			                  .parse(max)))
 			        	  validatable.error(newValidationError("maxviolationDate", "max", max));
 			        } catch (ParseException e) {/*NOP*/}
@@ -308,9 +308,9 @@ public class OPropertyValueValidator<T> extends Behavior implements
 		return error;
 	}
 	
-	protected ODatabaseDocumentInternal getDatabase()
+	protected ODatabaseDocumentInternal getDatabaseDocumentInternal()
 	{
-		return (ODatabaseDocumentInternal)OrientDbWebSession.get().getDatabase();
+		return (ODatabaseDocumentInternal)OrientDbWebSession.get().getDatabaseDocumentInternal();
 	}
 
 	@Override

@@ -20,7 +20,7 @@ public class OIndexNameConverter  extends AbstractJointConverter<OIndex> impleme
 
 	@Override
 	public OIndex convertToObject(String value, Locale locale) throws ConversionException {
-		ODatabaseDocumentInternal database = OrientDbWebSession.get().getDatabase();
+		ODatabaseDocumentInternal database = OrientDbWebSession.get().getDatabaseDocumentInternal();
 		return database.getMetadata().getIndexManagerInternal().getIndex(database, value);
 	}
 
