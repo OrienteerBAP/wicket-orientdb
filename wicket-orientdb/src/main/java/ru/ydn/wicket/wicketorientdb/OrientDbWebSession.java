@@ -20,11 +20,14 @@ import com.orientechnologies.orient.core.metadata.security.OSecurityUser;
 import com.orientechnologies.orient.core.metadata.security.OUser;
 import com.orientechnologies.orient.core.record.impl.ODocument;
 
+import lombok.experimental.ExtensionMethod;
 import ru.ydn.wicket.wicketorientdb.model.ODocumentModel;
+import ru.ydn.wicket.wicketorientdb.utils.LombokExtensions;
 
 /**
  * Implementation of {@link WebSession} which shold be used in OrientDB based applications
  */
+@ExtensionMethod({LombokExtensions.class})
 public class OrientDbWebSession extends AuthenticatedWebSession {
 
 	private static final long serialVersionUID = 2L;

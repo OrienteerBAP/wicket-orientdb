@@ -77,7 +77,7 @@ public class TestRestApi
 	public void testQueryCoding() throws Exception
 	{
 		OSecurityUser currentUser = wicket.getTester().getDatabaseSession().getUser();
-		ODocument userDoc = currentUser.getDocument();
+		ODocument userDoc = currentUser.getIdentity().getRecord();
 		String rid = userDoc.getIdentity().toString();
 		String sql = "select * from OUser where @rid = "+rid;
 		String url = "orientdb/query/db/sql/"+URLEncoder.encode(sql, "UTF8");
@@ -109,7 +109,7 @@ public class TestRestApi
 		WicketOrientDbTester tester = wicket.getTester();
 		assertFalse(tester.isSignedIn());
 		assertNull(tester.getSession().getUser());
-		assertContains(tester.getDatabaseSession().getUser().getDocument().toJSON(), getCurrentUser());
+		assertContains(tester.getDatabaseSession().getUser().getIdentity().getRecord().toJSON(), getCurrentUser());
 		tester.signIn("writer", "writer");
 		assertTrue(tester.isSignedIn());
 		assertEquals("writer", tester.getSession().getUser().getName());
@@ -117,7 +117,7 @@ public class TestRestApi
 		assertContains(tester.getSession().getUserAsODocument().toJSON(), getCurrentUser());
 		tester.signOut();
 		assertFalse(tester.isSignedIn());
-		assertContains(tester.getDatabaseSession().getUser().getDocument().toJSON(), getCurrentUser());
+		assertContains(tester.getDatabaseSession().getUser().getIdentity().getRecord().toJSON(), getCurrentUser());
 		tester.signIn("admin", "admin");
 		assertTrue(tester.isSignedIn());
 		assertEquals("admin", tester.getSession().getUser().getName());
@@ -125,7 +125,7 @@ public class TestRestApi
 		
 		tester.signOut();
 		assertFalse(tester.isSignedIn());
-		assertContains(tester.getDatabaseSession().getUser().getDocument().toJSON(), getCurrentUser());
+		assertContains(tester.getDatabaseSession().getUser().getIdentity().getRecord().toJSON(), getCurrentUser());
 		
 		String currentUser = getCurrentUser("admin", "admin");
 		assertTrue(tester.isSignedIn());
