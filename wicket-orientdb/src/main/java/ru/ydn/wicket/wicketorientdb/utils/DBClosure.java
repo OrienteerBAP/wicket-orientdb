@@ -3,6 +3,7 @@ package ru.ydn.wicket.wicketorientdb.utils;
 import com.orientechnologies.orient.core.db.ODatabaseDocumentInternal;
 import com.orientechnologies.orient.core.db.ODatabaseRecordThreadLocal;
 import com.orientechnologies.orient.core.db.ODatabaseSession;
+import com.orientechnologies.orient.core.id.ORID;
 import com.orientechnologies.orient.core.record.impl.ODocument;
 import com.orientechnologies.orient.core.type.ODocumentWrapper;
 import ru.ydn.wicket.wicketorientdb.IOrientDbSettings;
@@ -164,6 +165,23 @@ public abstract class DBClosure<V> implements Serializable {
 				}
 				db.commit();
 				return true;
+			}
+		}.execute();
+	}
+	
+	/**
+	 * Loads document under admin
+	 * @param id {@link ORID} of the object to load
+	 * @return loaded document
+	 */
+	public static ODocument sudoLoad(final ORID id) {
+		if(id==null || !id.isValid()) return null;
+		return new DBClosure<ODocument>() {
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			protected ODocument execute(ODatabaseSession db) {
+				return id.getRecord();
 			}
 		}.execute();
 	}

@@ -21,9 +21,7 @@ public final class LombokExtensions {
 	 * @return {@link ODocument}
 	 */
 	public ODocument getDocument(OSecurityUser user) {
-		if(user==null) return null;
-		OIdentifiable userId = user.getIdentity();
-		return userId!=null?userId.getRecord():null;
+		return user!=null?getDocument(user.getIdentity().getIdentity()):null;
 	}
 	
 	/**
@@ -32,8 +30,13 @@ public final class LombokExtensions {
 	 * @return {@link ODocument}
 	 */
 	public ODocument getDocument(OSecurityRole role) {
-		if(role==null) return null;
-		OIdentifiable roleId = role.getIdentity();
-		return roleId!=null?roleId.getRecord():null;
+		return role!=null?getDocument(role.getIdentity().getIdentity()):null;
+	}
+	
+	private ODocument getDocument(OIdentifiable identifiable) {
+		if(identifiable==null || identifiable instanceof ODocument) return (ODocument) identifiable;
+		ODocument ret = identifiable.getRecord();
+		if(ret == null) ret = DBClosure.sudoLoad(identifiable.getIdentity());
+		return ret;
 	}
 }

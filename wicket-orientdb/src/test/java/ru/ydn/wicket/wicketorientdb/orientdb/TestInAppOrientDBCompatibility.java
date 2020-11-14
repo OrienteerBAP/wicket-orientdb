@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.lang.reflect.Method;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
@@ -19,6 +20,7 @@ import org.junit.ComparisonFailure;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import com.orientechnologies.common.util.OResettable;
 import com.orientechnologies.orient.core.db.ODatabaseSession;
 import com.orientechnologies.orient.core.hook.ODocumentHookAbstract;
 import com.orientechnologies.orient.core.hook.ORecordHook;
@@ -35,9 +37,12 @@ import com.orientechnologies.orient.core.record.impl.ODocument;
 import com.orientechnologies.orient.core.sql.executor.OResultSet;
 import com.orientechnologies.orient.core.sql.query.OSQLSynchQuery;
 
+import lombok.extern.slf4j.Slf4j;
 import ru.ydn.wicket.wicketorientdb.junit.WicketOrientDbTester;
 import ru.ydn.wicket.wicketorientdb.junit.WicketOrientDbTesterScope;
+import ru.ydn.wicket.wicketorientdb.utils.OSchemaHelper;
 
+@Slf4j
 public class TestInAppOrientDBCompatibility
 {
 	@ClassRule
@@ -791,6 +796,41 @@ public class TestInAppOrientDBCompatibility
 		doc.field("Admin");
 		doc.field("user", userDoc);
 		doc.save();
+		db.commit();
+	}
+	
+	@Test
+	@Ignore
+	//TODO: Enable when https://github.com/orientechnologies/orientdb/issues/9421 will be in OrientDB
+	public void testLinkListAndODocumentConversion()
+	{
+		ODatabaseSession db = wicket.getTester().getDatabaseSession();
+		OSchemaHelper helper = OSchemaHelper.bind(db);
+		helper.oClass("TestODocumentConverstion")
+				.oProperty("name", OType.STRING)
+				.oProperty("items", OType.LINKLIST);
+		ODocument mainDoc = helper.oDocument("name", "document").saveDocument().getODocument();
+		helper.oClass("TestODocumentConverstionItems")
+			  	.oProperty("name", OType.STRING);
+		ODocument doc1 = helper.oDocument("name", "item1").saveDocument().getODocument();
+		ODocument doc2 = helper.oDocument("name", "item2").saveDocument().getODocument();
+		ODocument doc3 = helper.oDocument("name", "item3").saveDocument().getODocument();
+		List<ODocument> items = Arrays.asList(doc1, doc2, doc3);
+		mainDoc.field("items", items);
+		mainDoc.save();
+		db.commit();
+		db.begin();
+		mainDoc = (ODocument)mainDoc.reload();
+		items = mainDoc.field("items", List.class);
+		Iterator<ODocument> it = items.iterator();
+		it.next();
+		if(it instanceof OResettable) ((OResettable)it).reset();
+		assertTrue(items.get(0) instanceof ODocument);
+		assertEquals(doc1, items.get(0));
+		assertTrue(items.get(1) instanceof ODocument);
+		assertEquals(doc2, items.get(1));
+		assertTrue(items.get(2) instanceof ODocument);
+		assertEquals(doc3, items.get(2));
 		db.commit();
 	}
 }
