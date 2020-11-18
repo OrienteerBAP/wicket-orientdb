@@ -65,8 +65,7 @@ public class ODocumentModel extends LoadableDetachableModel<ODocument> implement
 		if(orid!=null && orid.isValid())
 		{
 			try {
-				ODatabaseDocument db = OrientDbWebSession.get().getDatabase();
-				return db.load(orid);
+				return orid.getRecord();
 			} catch (ORecordNotFoundException e) {
 				return null;
 			}

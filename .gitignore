@@ -12,5 +12,5 @@ release.properties
 build.cmd
 databases/
 .idea/
-wicket-orientdb-parent.iml
+*.iml
 wicket-orientdb/.idea/

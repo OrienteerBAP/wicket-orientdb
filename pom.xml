@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>ru.ydn.wicket.wicket-orientdb</groupId>
 	<artifactId>wicket-orientdb-parent</artifactId>
-	<version>1.6-SNAPSHOT</version>
+	<version>2.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>wicket-orientdb-parent</name>
 	<description>Wicket library for OrientDB</description>
@@ -52,7 +52,8 @@
 	<properties>
 		<java.version>1.8</java.version>
 		<wicket.version>8.10.0</wicket.version>
-		<orientdb.version>2.2.37</orientdb.version>
+			<!--<orientdb.version>3.2.0-SNAPSHOT</orientdb.version>-->
+		<orientdb.version>3.1.4</orientdb.version>
 		<jetty.version>9.4.12.v20180830</jetty.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<!-- allowed values: R7, 1.0, 1.5, 2.0 or none -->
@@ -119,6 +120,12 @@
 			    <groupId>com.google.guava</groupId>
 			    <artifactId>guava</artifactId>
 			    <version>24.1.1-jre</version>
+			</dependency>
+			<dependency>
+				<groupId>org.projectlombok</groupId>
+				<artifactId>lombok</artifactId>
+				<version>1.18.16</version>
+				<scope>provided</scope>
 			</dependency>
 			<!-- END REMOTE ENGINE DEPENDENCY -->
 			<dependency>

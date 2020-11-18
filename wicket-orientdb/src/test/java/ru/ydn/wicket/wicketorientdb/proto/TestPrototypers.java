@@ -14,7 +14,6 @@ import org.apache.wicket.core.util.lang.PropertyResolver;
 import org.junit.ClassRule;
 import org.junit.Test;
 
-import com.orientechnologies.orient.core.index.ODefaultIndexFactory;
 import com.orientechnologies.orient.core.index.OIndex;
 import com.orientechnologies.orient.core.metadata.schema.OClass;
 import com.orientechnologies.orient.core.metadata.schema.OProperty;
@@ -165,13 +164,13 @@ public class TestPrototypers
 	{
 		OClass newClass = wicket.getTester().getSchema().createClass("NewClass");
 		OProperty property = newClass.createProperty("name", OType.STRING);
-		OIndex<?> newIndex = OIndexPrototyper.newPrototype("NewClass", Arrays.asList("name"));
+		OIndex newIndex = OIndexPrototyper.newPrototype("NewClass", Arrays.asList("name"));
 		assertTrue(property.getAllIndexes().size()==0);
 		PropertyResolver.setValue("type", newIndex, "notunique", null);
 		assertNotNull(newIndex.getDefinition());
 		assertTrue(newIndex.getDefinition().getFields().contains("name"));
 		assertTrue(newIndex instanceof IPrototype);
-		OIndex<?> realizedNewIndex = ((IPrototype<OIndex<?>>)newIndex).realizePrototype();
+		OIndex realizedNewIndex = ((IPrototype<OIndex>)newIndex).realizePrototype();
 		assertEquals(1, property.getAllIndexes().size());
 		assertEquals(1, newClass.getIndexes().size());
 		
@@ -179,11 +178,11 @@ public class TestPrototypers
 		newIndex = OIndexPrototyper.newPrototype("NewClass", Arrays.asList("description"));
 		PropertyResolver.setValue("type", newIndex, "notunique", null);
 		assertEquals(0, property.getAllIndexes().size());
-		PropertyResolver.setValue("algorithm", newIndex, ODefaultIndexFactory.SBTREE_ALGORITHM, null);
+		PropertyResolver.setValue("algorithm", newIndex, "SBTREE", null);
 		ODocument metadata = new ODocument();
 		metadata.field("test", "test123", OType.STRING);
 		PropertyResolver.setValue("metadata", newIndex, metadata, null);
-		realizedNewIndex = ((IPrototype<OIndex<?>>)newIndex).realizePrototype();
+		realizedNewIndex = ((IPrototype<OIndex>)newIndex).realizePrototype();
 		assertEquals(1, property.getAllIndexes().size());
 		assertEquals(2, newClass.getIndexes().size());
 		assertEquals("test123", realizedNewIndex.getMetadata().field("test"));

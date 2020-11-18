@@ -20,6 +20,8 @@ import org.apache.wicket.util.tester.WicketTester;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.orientechnologies.orient.core.db.ODatabaseDocumentInternal;
+import com.orientechnologies.orient.core.db.ODatabaseSession;
 import com.orientechnologies.orient.core.db.document.ODatabaseDocument;
 import com.orientechnologies.orient.core.metadata.OMetadata;
 import com.orientechnologies.orient.core.metadata.schema.OSchema;
@@ -55,14 +57,27 @@ public class WicketOrientDbTester extends WicketTester
 		return (OrientDbWebSession)super.getSession();
 	}
 	
+	public ODatabaseDocumentInternal getDatabaseDocumentInternal() {
+		return getSession().getDatabaseDocumentInternal();
+	}
+	
+	/**
+	 * Use getDatabaseSession instead
+	 * @return ODatabaseDocument
+	 */
+	@Deprecated
 	public ODatabaseDocument getDatabase()
 	{
 		return getSession().getDatabase();
 	}
 	
+	public ODatabaseSession getDatabaseSession() {
+		return getSession().getDatabaseSession();
+	}
+	
 	public OMetadata getMetadata()
 	{
-		return getDatabase().getMetadata();
+		return getDatabaseSession().getMetadata();
 	}
 	
 	public OSchema getSchema()

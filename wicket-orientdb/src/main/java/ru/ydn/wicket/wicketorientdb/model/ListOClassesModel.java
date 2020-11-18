@@ -18,7 +18,7 @@ public class ListOClassesModel extends AbstractListModel<OClass>
 
 	@Override
 	protected Collection<OClass> getData() {
-		return OrientDbWebSession.get().getDatabase().getMetadata().getSchema().getClasses();
+		return OrientDbWebSession.get().getSchema().getClasses();
 	}
 
 }

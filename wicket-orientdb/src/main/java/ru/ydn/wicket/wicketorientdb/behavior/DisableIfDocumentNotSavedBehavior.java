@@ -28,7 +28,7 @@ public class DisableIfDocumentNotSavedBehavior extends Behavior {
 				component.setEnabled(true);
 			} else {
 				// Is record scheduled for creation?
-				OTransaction transaction = OrientDbWebSession.get().getDatabase().getTransaction();
+				OTransaction transaction = OrientDbWebSession.get().getDatabaseSession().getTransaction();
 				ORecordOperation operation = transaction.getRecordEntry(rid);
 				component.setEnabled(operation!=null && operation.type==ORecordOperation.CREATED);
 			}

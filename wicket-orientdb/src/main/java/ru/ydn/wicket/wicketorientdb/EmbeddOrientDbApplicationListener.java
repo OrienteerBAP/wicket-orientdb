@@ -3,6 +3,8 @@ package ru.ydn.wicket.wicketorientdb;
 import java.io.File;
 import java.net.URL;
 
+import com.orientechnologies.orient.core.config.OGlobalConfiguration;
+import com.orientechnologies.orient.core.db.OPartitionedDatabasePoolFactory;
 import org.apache.wicket.Application;
 import org.apache.wicket.IApplicationListener;
 import org.apache.wicket.WicketRuntimeException;
@@ -74,7 +76,8 @@ public class EmbeddOrientDbApplicationListener implements IApplicationListener {
 			server.activate();
 			server.removeShutdownHook();
 			app.setServer(server);
-			app.getOrientDbSettings().setDatabasePoolFactory(server.getDatabasePoolFactory());
+
+			app.getOrientDbSettings().setContext(server.getContext());
 			onAfterServerStartupAndActivation(app);
 		} catch (Exception e) {
 			throw new WicketRuntimeException("Can't start OrientDB Embedded Server", e);

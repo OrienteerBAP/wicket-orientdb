@@ -7,6 +7,7 @@ import org.apache.wicket.util.convert.ConversionException;
 
 import ru.ydn.wicket.wicketorientdb.OrientDbWebSession;
 
+import com.orientechnologies.orient.core.db.ODatabaseSession;
 import com.orientechnologies.orient.core.db.document.ODatabaseDocument;
 import com.orientechnologies.orient.core.metadata.schema.OClass;
 import com.orientechnologies.orient.core.metadata.schema.OSchema;
@@ -21,9 +22,7 @@ public class OClassClassNameConverter extends AbstractJointConverter<OClass> imp
 
 	@Override
 	public OClass convertToObject(String value, Locale locale) throws ConversionException {
-		ODatabaseDocument db = OrientDbWebSession.get().getDatabase();
-		OSchema schema = db.getMetadata().getSchema();
-		return schema.getClass(value);
+		return OrientDbWebSession.get().getSchema().getClass(value);
 	}
 
 	@Override

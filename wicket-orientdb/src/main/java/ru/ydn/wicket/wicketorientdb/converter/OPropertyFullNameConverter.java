@@ -28,8 +28,7 @@ public class OPropertyFullNameConverter extends Converter<OProperty, String> imp
 
 	@Override
 	protected OProperty doBackward(String b) {
-		ODatabaseDocument db = OrientDbWebSession.get().getDatabase();
-		OSchema schema = db.getMetadata().getSchema();
+		OSchema schema = OrientDbWebSession.get().getSchema();
 		String className = Strings.beforeFirst(b, '.');
 		String propertyName = Strings.afterFirst(b, '.');
 		OClass oClass = schema.getClass(className);

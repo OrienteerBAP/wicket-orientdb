@@ -7,6 +7,7 @@ import org.junit.Test;
 
 import com.google.common.base.Converter;
 import com.orientechnologies.orient.core.db.ODatabaseRecordThreadLocal;
+import com.orientechnologies.orient.core.db.ODatabaseSession;
 import com.orientechnologies.orient.core.db.document.ODatabaseDocument;
 import com.orientechnologies.orient.core.id.ORID;
 import com.orientechnologies.orient.core.id.ORecordId;
@@ -57,7 +58,7 @@ public class MainUtilsTest
 			private static final long serialVersionUID = 1L;
 
 			@Override
-			protected OSecurityUser execute(ODatabaseDocument db) {
+			protected OSecurityUser execute(ODatabaseSession db) {
 				assertEquals(db, ODatabaseRecordThreadLocal.instance().get());
 				return db.getUser();
 			}
@@ -68,7 +69,7 @@ public class MainUtilsTest
 			private static final long serialVersionUID = 1L;
 
 			@Override
-			protected OSecurityUser execute(ODatabaseDocument db) {
+			protected OSecurityUser execute(ODatabaseSession db) {
 				assertEquals(db, ODatabaseRecordThreadLocal.instance().get());
 				return db.getUser();
 			}
@@ -83,7 +84,7 @@ public class MainUtilsTest
 		testConverter(OClassClassNameConverter.INSTANCE, schema.getClass("OUser"), "OUser");
 		testConverter(OPropertyFullNameConverter.INSTANCE, schema.getClass("Ouser").getProperty("name"), "OUser.name");
 		testConverter(OIndexNameConverter.INSTANCE, schema.getClass("Ouser").getClassIndex("OUser.name"), "OUser.name");
-		ORID orid = new ORecordId("#5:0"); //Admin ORID
+		ORID orid = new ORecordId("#6:0"); //Admin ORID
 		ODocument document = orid.getRecord();
 		testConverter(ODocumentORIDConverter.INSTANCE, document, orid);
 	}
@@ -97,7 +98,7 @@ public class MainUtilsTest
 	@Test
 	public void testDocumentWrapper() throws Exception
 	{
-		ORID orid = new ORecordId("#5:0"); //Admin ORID
+		ORID orid = new ORecordId("#6:0"); //Admin ORID
 		ODocument adminDocument = orid.getRecord();
 		OUser admin = wicket.getTester().getMetadata().getSecurity().getUser("admin");
 		DocumentWrapperTransformer<OUser> transformer = new DocumentWrapperTransformer<OUser>(OUser.class);
@@ -107,12 +108,12 @@ public class MainUtilsTest
 	@Test
 	public void testDocumentConverter() throws Exception
 	{
-		ORID orid = new ORecordId("#5:0"); //Admin ORID
+		ORID orid = new ORecordId("#6:0"); //Admin ORID
 		ODocument adminDocument = orid.getRecord();
 		ODocumentConverter converter = new ODocumentConverter();
-		assertEquals(adminDocument, converter.convertToObject("#5:0", Locale.getDefault()));
-		assertEquals(orid, converter.convertToOIdentifiable("#5:0", Locale.getDefault()));
-		assertEquals("#5:0", converter.convertToString(adminDocument, Locale.getDefault()));
+		assertEquals(adminDocument, converter.convertToObject("#6:0", Locale.getDefault()));
+		assertEquals(orid, converter.convertToOIdentifiable("#6:0", Locale.getDefault()));
+		assertEquals("#6:0", converter.convertToString(adminDocument, Locale.getDefault()));
 	}
 	
 	@Test

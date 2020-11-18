@@ -8,6 +8,7 @@ import org.apache.wicket.model.IModel;
 
 import com.google.common.base.Function;
 import com.orientechnologies.orient.core.metadata.schema.OClass;
+import com.orientechnologies.orient.core.record.OElement;
 import com.orientechnologies.orient.core.record.impl.ODocument;
 
 /**
@@ -29,7 +30,7 @@ public class OQueryDataProvider <K> extends AbstractFilteredProvider<K, String> 
 	 * @param sql SQL to be executed to obtain data
 	 * @param transformer transformer for wrapping of {@link ODocument} ot required type
 	 */
-	public OQueryDataProvider(String sql, Function<?, K> transformer)
+	public OQueryDataProvider(String sql, Function<OElement, K> transformer)
 	{
 		this(new OQueryModel<K>(sql, transformer));
 	}
@@ -60,19 +61,6 @@ public class OQueryDataProvider <K> extends AbstractFilteredProvider<K, String> 
     public OQueryDataProvider<K> setParameter(String paramName, IModel<?> value)
     {
         model.setParameter(paramName, value);
-        return this;
-    }
-    
-    /**
-     * Set value for context variable
-     * @param varName name of the variable to set
-     * @param value {@link IModel} for the variable value
-     * @return this {@link OQueryDataProvider}
-     */
-	public OQueryDataProvider<K> setContextVariable(String varName, IModel<?> value)
-    {
-    	model.setContextVariable(varName, value);
-        super.detach();
         return this;
     }
 

@@ -18,6 +18,7 @@ import org.apache.wicket.model.PropertyModel;
 import org.junit.ClassRule;
 import org.junit.Test;
 
+import com.orientechnologies.orient.core.db.ODatabaseSession;
 import com.orientechnologies.orient.core.db.document.ODatabaseDocument;
 import com.orientechnologies.orient.core.id.ORecordId;
 import com.orientechnologies.orient.core.index.OIndex;
@@ -93,11 +94,11 @@ public class TestModels
 		OClass oClass = schema.getClass("OUser");
 		OIndexesDataProvider provider = new OIndexesDataProvider(oClass, true);
 		provider.setSort("name", SortOrder.ASCENDING);
-		Iterator<? extends OIndex<?>> it = provider.iterator(0, -1);
-		List<OIndex<?>> allIndexes = new ArrayList<OIndex<?>>(oClass.getIndexes());
+		Iterator<? extends OIndex> it = provider.iterator(0, -1);
+		List<OIndex> allIndexes = new ArrayList<>(oClass.getIndexes());
 		while(it.hasNext())
 		{
-			OIndex<?> oIndex = it.next();
+			OIndex oIndex = it.next();
 			assertTrue(allIndexes.remove(provider.model(oIndex).getObject()));
 		}
 		assertTrue(allIndexes.size()==0);
@@ -110,9 +111,9 @@ public class TestModels
 		IModel<String> classNameModel = Model.of();
 		IModel<OClass> classModel = new OClassModel(classNameModel);
 		IModel<List<OProperty>> propertiesModel = new ListOPropertiesModel(classModel, null);
-		IModel<List<OIndex<?>>> indexesModel = new ListOIndexesModel(classModel, null);
+		IModel<List<OIndex>> indexesModel = new ListOIndexesModel(classModel, null);
 		List<OProperty> properties = propertiesModel.getObject();
-		List<OIndex<?>> indexes = indexesModel.getObject();
+		List<OIndex> indexes = indexesModel.getObject();
 		assertNotNull(properties);
 		assertNotNull(indexes);
 		assertTrue(properties.isEmpty());
@@ -147,17 +148,7 @@ public class TestModels
 		provider.detach();
 		assertTrue(provider.size()==allUsers.size());
 	}
-	
-	@Test
-	public void testOQueryProviderContextVariables()
-	{
-		OQueryDataProvider<OUser> provider = new OQueryDataProvider<OUser>("select from OUser where name = $name", OUser.class);
-		provider.setSort("name", SortOrder.ASCENDING);
-		provider.setContextVariable("name", Model.of("admin"));
-		Iterator<OUser> it = provider.iterator(0, -1);
-		assertEquals(1, provider.size());
-		assertEquals("admin", it.next().getName());
-	}
+
 	
 	@Test
 	public void testOQueryModelSimple()
@@ -165,28 +156,6 @@ public class TestModels
 		IModel<String> nameModel = Model.of();
 		OQueryModel<ODocument> queryModel = new OQueryModel<ODocument>("select from ClassA where name = :name");
 		queryModel.setParameter("name", nameModel);
-		nameModel.setObject("doc1");
-		assertEquals(1, queryModel.size());
-		assertEquals("doc1", queryModel.getObject().get(0).field("name"));
-		queryModel.detach();
-		
-		nameModel.setObject("doc2");
-		assertEquals(1, queryModel.size());
-		assertEquals("doc2", queryModel.getObject().get(0).field("name"));
-		queryModel.detach();
-		
-		nameModel.setObject("doc3");
-		assertEquals(1, queryModel.size());
-		assertEquals("doc3", queryModel.getObject().get(0).field("name"));
-		queryModel.detach();
-	}
-	
-	@Test
-	public void testOQueryModelContextVariables()
-	{
-		IModel<String> nameModel = Model.of();
-		OQueryModel<ODocument> queryModel = new OQueryModel<ODocument>("select from ClassA where name = $name");
-		queryModel.setContextVariable("name", nameModel);
 		nameModel.setObject("doc1");
 		assertEquals(1, queryModel.size());
 		assertEquals("doc1", queryModel.getObject().get(0).field("name"));
@@ -301,7 +270,7 @@ public class TestModels
 	@Test
 	public void testODocumentMapWrapper()
 	{
-		Map<String, Object> map = new ODocumentMapWrapper(new ORecordId("#5:0"));
+		Map<String, Object> map = new ODocumentMapWrapper(new ORecordId("#6:0"));
 		assertTrue(map.containsKey("name"));
 		assertEquals("admin", map.get("name"));
 		assertTrue(map.size()>0);
@@ -313,12 +282,12 @@ public class TestModels
 	@Test
 	public void testODocumentModel()
 	{
-		ODatabaseDocument db = wicket.getTester().getDatabase();
-		ORecordId recordId = new ORecordId("#5:0");
+		ODatabaseSession db = wicket.getTester().getDatabaseSession();
+		ORecordId recordId = new ORecordId("#6:0");
 		ODocumentModel model = new ODocumentModel(recordId);
 		assertModelObjectEquals(recordId.getRecord(), model);
 		
-		recordId = new ORecordId("#5:1");
+		recordId = new ORecordId("#6:1");
 		model.setObject((ODocument)recordId.getRecord());
 		assertModelObjectEquals(recordId.getRecord(), model);
 		
@@ -358,7 +327,7 @@ public class TestModels
 	@Test
 	public void testODocumentPropertyLocator()
 	{
-		ORecordId recordId = new ORecordId("#5:0");
+		ORecordId recordId = new ORecordId("#6:0");
 		assertModelObjectEquals("admin", new PropertyModel<>(new ODocumentModel(recordId), "name"));
 		assertModelObjectEquals("OUser", new PropertyModel<>(new ODocumentModel(recordId), "@schemaClass.name"));
 	}

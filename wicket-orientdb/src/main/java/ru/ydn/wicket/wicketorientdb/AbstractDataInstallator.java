@@ -1,6 +1,9 @@
 package ru.ydn.wicket.wicketorientdb;
 
 
+import com.orientechnologies.orient.core.db.ODatabasePool;
+import com.orientechnologies.orient.core.db.ODatabaseSession;
+
 import org.apache.wicket.Application;
 import org.apache.wicket.IApplicationListener;
 import org.slf4j.Logger;
@@ -17,7 +20,7 @@ public abstract class AbstractDataInstallator implements IApplicationListener
 	@Override
 	public void onAfterInitialized(Application application) {
 		OrientDbWebApplication app = (OrientDbWebApplication)application;
-		ODatabaseDocument db = getDatabase(app);
+		ODatabaseSession db = getDatabase(app);
 		try
 		{
 			installData(app, db);
@@ -29,18 +32,20 @@ public abstract class AbstractDataInstallator implements IApplicationListener
 		finally
 		{
 			db.close();
+			app.getOrientDbSettings().getContext().invalidateCachedPools();
 		}
 	}
 	
-	protected ODatabaseDocument getDatabase(OrientDbWebApplication app)
+	protected ODatabaseSession getDatabase(OrientDbWebApplication app)
 	{
 		IOrientDbSettings settings = app.getOrientDbSettings();
 		String username = settings.getAdminUserName();
 		String password = settings.getAdminPassword();
-		return settings.getDatabasePoolFactory().get(settings.getDBUrl(), username, password).acquire();
+		ODatabasePool pool = settings.getContext().cachedPool(settings.getDbName(), username, password);
+		return pool.acquire();
 	}
 	
-	protected abstract void installData(OrientDbWebApplication app, ODatabaseDocument db);
+	protected abstract void installData(OrientDbWebApplication app, ODatabaseSession db);
 
 	@Override
 	public void onBeforeDestroyed(Application application) {

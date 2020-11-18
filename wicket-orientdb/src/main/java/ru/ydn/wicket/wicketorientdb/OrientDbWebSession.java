@@ -2,6 +2,7 @@ package ru.ydn.wicket.wicketorientdb;
 
 import java.util.Set;
 
+import com.orientechnologies.orient.core.db.ODatabaseSession;
 import org.apache.wicket.Session;
 import org.apache.wicket.authroles.authentication.AuthenticatedWebSession;
 import org.apache.wicket.authroles.authorization.strategies.role.Roles;
@@ -19,11 +20,14 @@ import com.orientechnologies.orient.core.metadata.security.OSecurityUser;
 import com.orientechnologies.orient.core.metadata.security.OUser;
 import com.orientechnologies.orient.core.record.impl.ODocument;
 
+import lombok.experimental.ExtensionMethod;
 import ru.ydn.wicket.wicketorientdb.model.ODocumentModel;
+import ru.ydn.wicket.wicketorientdb.utils.LombokExtensions;
 
 /**
  * Implementation of {@link WebSession} which shold be used in OrientDB based applications
  */
+@ExtensionMethod({LombokExtensions.class})
 public class OrientDbWebSession extends AuthenticatedWebSession {
 
 	private static final long serialVersionUID = 2L;
@@ -58,32 +62,49 @@ public class OrientDbWebSession extends AuthenticatedWebSession {
 		}
 		return ret;
 	}
-
+	
 	/**
 	 * @return {@link ODatabaseDocument} for current request
 	 */
+	public ODatabaseDocumentInternal getDatabaseDocumentInternal()
+	{
+		return ODatabaseRecordThreadLocal.instance().get();
+	}
+
+	/**
+	 * @return {@link ODatabaseDocument} for current request
+	 * @deprecated
+	 */
+	@Deprecated
 	public ODatabaseDocumentInternal getDatabase()
 	{
 		return ODatabaseRecordThreadLocal.instance().get();
 	}
 	
 	/**
+	 * {@link ODatabaseSession} for current request
+	 * @return {@link ODatabaseSession}
+	 */
+	public ODatabaseSession getDatabaseSession()
+	{
+		return getDatabaseDocumentInternal();
+	}
+	
+	/**
 	 * @return {@link OSchema} for current request
 	 */
 	public OSchema getSchema() {
-		return getDatabase().getMetadata().getSchema();
+		return getDatabaseSession().getMetadata().getSchema();
 	}
 
 	@Override
 	public boolean authenticate(String username, String password) {
-		ODatabaseDocumentInternal currentDB = getDatabase();
-		try
-		{
+		ODatabaseSession currentDB = getDatabaseSession();
+		try {
 			boolean inTransaction = currentDB.getTransaction().isActive();
 			IOrientDbSettings settings = OrientDbWebApplication.get().getOrientDbSettings();
-			ODatabaseDocumentInternal newDB = settings.getDatabasePoolFactory().get(settings.getDBUrl(), username, password).acquire();
-			if(newDB!=currentDB)
-			{
+			ODatabaseSession newDB = settings.getContext().cachedPool(settings.getDbName(), username, password).acquire();
+			if (newDB != currentDB) {
 				currentDB.activateOnCurrentThread();
 				currentDB.commit();
 				currentDB.close();
@@ -91,12 +112,11 @@ public class OrientDbWebSession extends AuthenticatedWebSession {
 			}
 			setUser(username, password);
 			userModel.setObject(newDB.getUser().getDocument());
-//			user = newDB.getMetadata().getSecurity().getUser(username);
-//			newDB.setUser(user);
-			if(inTransaction && !newDB.getTransaction().isActive()) newDB.begin();
+			if (inTransaction && !newDB.getTransaction().isActive()) {
+				newDB.begin();
+			}
 			return true;
-		} catch (OSecurityAccessException e)
-		{
+		} catch (OSecurityAccessException e) {
 			currentDB.activateOnCurrentThread();
 			return false;
 		}
@@ -112,7 +132,7 @@ public class OrientDbWebSession extends AuthenticatedWebSession {
 	public OSecurityUser getEffectiveUser()
 	{
 		OSecurityUser ret = getUser();
-		return ret!=null?ret:getDatabase().getUser();
+		return ret!=null?ret:getDatabaseSession().getUser();
 	}
 	
 	

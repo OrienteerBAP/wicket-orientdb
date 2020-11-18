@@ -23,7 +23,7 @@ public class CurrentDatabaseModel<T extends ODatabase<?>> implements IModel<T> {
 	@SuppressWarnings("unchecked")
 	@Override
 	public T getObject() {
-		return (T)OrientDbWebSession.get().getDatabase();
+		return (T)OrientDbWebSession.get().getDatabaseDocumentInternal();
 	}
 
 }

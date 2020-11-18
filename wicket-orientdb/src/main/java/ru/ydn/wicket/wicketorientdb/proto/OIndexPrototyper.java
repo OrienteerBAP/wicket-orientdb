@@ -16,7 +16,6 @@ import com.orientechnologies.orient.core.record.impl.ODocument;
 /**
  * Prototyper for {@link OIndex}
  */
-@SuppressWarnings("rawtypes")
 public class OIndexPrototyper extends AbstractPrototyper<OIndex>
 {
 	private static final long serialVersionUID = 1L;
@@ -65,8 +64,8 @@ public class OIndexPrototyper extends AbstractPrototyper<OIndex>
 	}
 	
 	@Override
-	protected OIndex<?> createInstance(OIndex proxy) {
-		OSchema schema = OrientDbWebSession.get().getDatabase().getMetadata().getSchema();
+	protected OIndex createInstance(OIndex proxy) {
+		OSchema schema = OrientDbWebSession.get().getSchema();
 		OClass oClass = schema.getClass(proxy.getDefinition().getClassName());
 		String name = proxy.getName();
 		List<String> fields = proxy.getDefinition().getFields();
@@ -95,12 +94,12 @@ public class OIndexPrototyper extends AbstractPrototyper<OIndex>
 		return OIndex.class;
 	}
 	
-	public static OIndex<?> newPrototype(String className, List<String> fields)
+	public static OIndex newPrototype(String className, List<String> fields)
 	{
 		return newPrototype(className, fields, null);
 	}
 
-	public static OIndex<?> newPrototype(String className, List<String> fields, IPrototypeListener<OIndex> listener)
+	public static OIndex newPrototype(String className, List<String> fields, IPrototypeListener<OIndex> listener)
 	{
 		return newPrototypeInternal(new OIndexPrototyper(className, fields), listener);
 	}

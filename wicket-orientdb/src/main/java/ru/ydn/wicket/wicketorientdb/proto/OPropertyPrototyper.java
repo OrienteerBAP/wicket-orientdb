@@ -42,7 +42,7 @@ public class OPropertyPrototyper extends AbstractPrototyper<OProperty> {
 
 	@Override
 	protected OProperty createInstance(OProperty proxy) {
-		OSchema schema = OrientDbWebSession.get().getDatabase().getMetadata().getSchema();
+		OSchema schema = OrientDbWebSession.get().getSchema();
 		OClass oClass = schema.getClass(className);
 		return oClass.createProperty(proxy.getName(), proxy.getType());
 	}
@@ -51,7 +51,7 @@ public class OPropertyPrototyper extends AbstractPrototyper<OProperty> {
 	protected Object handleGet(String propName, Class<?> returnType) {
 		if("ownerClass".equals(propName))
 		{
-			OSchema schema = OrientDbWebSession.get().getDatabase().getMetadata().getSchema();
+			OSchema schema = OrientDbWebSession.get().getSchema();
 			return schema.getClass(className);
 		}
 		else if("fullName".equals(propName))

@@ -7,6 +7,7 @@ import org.apache.wicket.util.lang.Objects;
 
 import ru.ydn.wicket.wicketorientdb.OrientDbWebSession;
 
+import com.orientechnologies.orient.core.db.ODatabaseSession;
 import com.orientechnologies.orient.core.db.document.ODatabaseDocument;
 import com.orientechnologies.orient.core.index.OIndex;
 import com.orientechnologies.orient.core.metadata.schema.OClass;
@@ -15,6 +16,7 @@ import com.orientechnologies.orient.core.metadata.schema.OSchema;
 import com.orientechnologies.orient.core.metadata.schema.OType;
 import com.orientechnologies.orient.core.metadata.schema.OClass.INDEX_TYPE;
 import com.orientechnologies.orient.core.record.impl.ODocument;
+import com.orientechnologies.orient.core.sql.executor.OResultSet;
 import com.orientechnologies.orient.core.sql.query.OSQLSynchQuery;
 
 /**
@@ -23,15 +25,15 @@ import com.orientechnologies.orient.core.sql.query.OSQLSynchQuery;
  */
 public class OSchemaHelper
 {
-	protected ODatabaseDocument db;
+	protected ODatabaseSession db;
 	protected OSchema schema;
 	
 	protected OClass lastClass;
 	protected OProperty lastProperty;
-	protected OIndex<?> lastIndex;
+	protected OIndex lastIndex;
 	protected ODocument lastDocument;
 	
-	protected OSchemaHelper(ODatabaseDocument db)
+	protected OSchemaHelper(ODatabaseSession db)
 	{
 		this.db = db;
 		this.schema = db.getMetadata().getSchema();
@@ -43,7 +45,7 @@ public class OSchemaHelper
 	 */
 	public static OSchemaHelper bind()
 	{
-		return new OSchemaHelper(OrientDbWebSession.get().getDatabase());
+		return new OSchemaHelper(OrientDbWebSession.get().getDatabaseSession());
 	}
 	
 	/**
@@ -51,7 +53,7 @@ public class OSchemaHelper
 	 * @param db {@link ODatabaseDocument} to bind to
 	 * @return helper
 	 */
-	public static OSchemaHelper bind(ODatabaseDocument db)
+	public static OSchemaHelper bind(ODatabaseSession db)
 	{
 		return new OSchemaHelper(db);
 	}
@@ -323,15 +325,14 @@ public class OSchemaHelper
 	public OSchemaHelper oDocument(String pkField, Object pkValue)
 	{
 		checkOClass();
-		List<ODocument> docs = db.query(new OSQLSynchQuery<ODocument>("select from "+lastClass.getName()+" where "+pkField+" = ?", 1), pkValue);
-		if(docs!=null && !docs.isEmpty())
-		{
-			lastDocument = docs.get(0);
-		}
-		else
-		{
-			lastDocument = new ODocument(lastClass);
-			lastDocument.field(pkField, pkValue);
+		
+		try(OResultSet result = db.query("select from "+lastClass.getName()+" where "+pkField+" = ? limit 1", pkValue)){
+			if(result.hasNext()) {
+				lastDocument = (ODocument) result.next().toElement();
+			} else {
+				lastDocument = new ODocument(lastClass);
+				lastDocument.field(pkField, pkValue);
+			}
 		}
 		return this;
 	}
@@ -399,7 +400,7 @@ public class OSchemaHelper
 	/**
 	 * @return current {@link OIndex}
 	 */
-	public OIndex<?> getOIndex() {
+	public OIndex getOIndex() {
 		return lastIndex;
 	}
 	
@@ -408,7 +409,7 @@ public class OSchemaHelper
 	 * @param consumer to perform actions
 	 * @return this helper
 	 */
-	public OSchemaHelper doOnOIndex(Consumer<OIndex<?>> consumer) {
+	public OSchemaHelper doOnOIndex(Consumer<OIndex> consumer) {
 		checkOIndex();
 		consumer.accept(getOIndex());
 		return this;

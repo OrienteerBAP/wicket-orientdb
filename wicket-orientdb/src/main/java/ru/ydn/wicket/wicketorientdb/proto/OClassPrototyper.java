@@ -39,7 +39,7 @@ public class OClassPrototyper extends AbstractPrototyper<OClass> {
 
 	@Override
 	protected OClass createInstance(OClass proxy) {
-		OSchema schema = OrientDbWebSession.get().getDatabase().getMetadata().getSchema();
+		OSchema schema = OrientDbWebSession.get().getSchema();
 		OClass oClass = schema.createClass(proxy.getName());
 		oClass.setSuperClasses(proxy.getSuperClasses());
 		String clusterSelection = (String) values.get(CLUSTER_SELECTION);
@@ -105,7 +105,7 @@ public class OClassPrototyper extends AbstractPrototyper<OClass> {
 			List<OClass> ret = new ArrayList<OClass>();
 			List<String> superClassesNames = (List<String>) values.get(SUPER_CLASSES_NAMES);
 			if(superClassesNames!=null && !superClassesNames.isEmpty()) {
-				OSchema schema = OrientDbWebSession.get().getDatabase().getMetadata().getSchema();
+				OSchema schema = OrientDbWebSession.get().getSchema();
 				for (String superClassName : superClassesNames) {
 					OClass superClass = schema.getClass(superClassName);
 					if(superClass!=null) ret.add(superClass);

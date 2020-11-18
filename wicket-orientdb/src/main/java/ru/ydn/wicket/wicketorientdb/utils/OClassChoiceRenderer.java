@@ -39,7 +39,7 @@ public class OClassChoiceRenderer implements IChoiceRenderer<OClass> {
 	@Override
 	public OClass getObject(String id,
 			IModel<? extends List<? extends OClass>> choicesModel) {
-		OClass ret = OrientDbWebSession.get().getDatabase().getMetadata().getSchema().getClass(id);
+		OClass ret = OrientDbWebSession.get().getSchema().getClass(id);
 		List<? extends OClass> choices = choicesModel.getObject();
 		return choices!=null && choices.contains(ret) ? ret : null;
 	}

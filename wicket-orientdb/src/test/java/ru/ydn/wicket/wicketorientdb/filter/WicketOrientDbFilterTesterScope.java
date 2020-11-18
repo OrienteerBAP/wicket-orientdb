@@ -2,6 +2,7 @@ package ru.ydn.wicket.wicketorientdb.filter;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.orientechnologies.orient.core.db.ODatabaseSession;
 import com.orientechnologies.orient.core.db.document.ODatabaseDocument;
 import com.orientechnologies.orient.core.metadata.schema.OClass;
 import com.orientechnologies.orient.core.metadata.schema.OProperty;
@@ -62,7 +63,7 @@ public class WicketOrientDbFilterTesterScope extends WicketOrientDbTesterScope {
 			private static final long serialVersionUID = 1L;
 
 			@Override
-            protected List<OClass> execute(ODatabaseDocument db) {
+            protected List<OClass> execute(ODatabaseSession db) {
                 OClass testClass = createOClass(db, TEST_CLASS_NAME, true);
                 OClass linkClass = createOClass(db, LINK_TEST_CLASS_NAME, false);
 
@@ -252,9 +253,9 @@ public class WicketOrientDbFilterTesterScope extends WicketOrientDbTesterScope {
 			private static final long serialVersionUID = 1L;
 
 			@Override
-            protected Void execute(ODatabaseDocument db) {
+            protected Void execute(ODatabaseSession db) {
                 for (OClass oClass : classes) {
-                    db.command(new OCommandSQL("DELETE FROM " + oClass.getName())).execute();
+                	db.command("DELETE FROM " + oClass.getName()).close();
                     db.getMetadata().getSchema().dropClass(oClass.getName());
                 }
                 return null;

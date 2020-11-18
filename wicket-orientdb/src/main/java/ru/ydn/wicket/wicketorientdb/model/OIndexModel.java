@@ -1,23 +1,24 @@
 package ru.ydn.wicket.wicketorientdb.model;
 
+import com.orientechnologies.orient.core.db.ODatabaseDocumentInternal;
+import com.orientechnologies.orient.core.index.OIndexManagerAbstract;
 import org.apache.wicket.model.IModel;
 
 import ru.ydn.wicket.wicketorientdb.OrientDbWebSession;
 
 import com.orientechnologies.orient.core.index.OIndex;
 import com.orientechnologies.orient.core.index.OIndexDefinition;
-import com.orientechnologies.orient.core.index.OIndexManager;
 import com.orientechnologies.orient.core.metadata.schema.OClass;
 
 /**
  * Model for storing {@link OIndex}
  */
-public class OIndexModel extends PrototypeLoadableDetachableModel<OIndex<?>>
+public class OIndexModel extends PrototypeLoadableDetachableModel<OIndex>
 {
 	private static final long serialVersionUID = 1L;
 	private IModel<OClass> classModel;
 	private String indexName;
-	public OIndexModel(OIndex<?> object)
+	public OIndexModel(OIndex object)
 	{
 		super(object);
 	}
@@ -35,14 +36,15 @@ public class OIndexModel extends PrototypeLoadableDetachableModel<OIndex<?>>
 
 
 	@Override
-	protected OIndex<?> loadInstance() {
+	protected OIndex loadInstance() {
 		OClass oClass = classModel!=null?classModel.getObject():null;
-		OIndexManager indexManager = OrientDbWebSession.get().getDatabase().getMetadata().getIndexManager();
-		return oClass!=null? indexManager.getClassIndex(oClass.getName(), indexName):indexManager.getIndex(indexName);
+		ODatabaseDocumentInternal database = OrientDbWebSession.get().getDatabaseDocumentInternal();
+		OIndexManagerAbstract indexManager = database.getMetadata().getIndexManagerInternal();
+		return oClass != null ? indexManager.getClassIndex(database, oClass.getName(), indexName) : indexManager.getIndex(database, indexName);
 	}
 
 	@Override
-	protected void handleObject(OIndex<?> object) {
+	protected void handleObject(OIndex object) {
 		indexName = object.getName();
 		OIndexDefinition indexDefinition = object.getDefinition();
 		if(indexDefinition!=null)
@@ -60,7 +62,7 @@ public class OIndexModel extends PrototypeLoadableDetachableModel<OIndex<?>>
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
-	public Class<OIndex<?>> getObjectClass() {
+	public Class<OIndex> getObjectClass() {
 		return (Class)OIndex.class;
 	}
 

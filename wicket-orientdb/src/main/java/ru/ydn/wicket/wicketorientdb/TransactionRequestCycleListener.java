@@ -13,15 +13,19 @@ import com.orientechnologies.orient.core.db.ODatabaseRecordThreadLocal;
 import com.orientechnologies.orient.core.db.document.ODatabaseDocument;
 import com.orientechnologies.orient.core.metadata.security.OSecurityUser;
 
+import lombok.experimental.ExtensionMethod;
+import ru.ydn.wicket.wicketorientdb.utils.LombokExtensions;
+
 /**
  * Implementation of {@link IRequestCycleListener} for starting and stoping transactions just for pages and dynamic resources
  */
+@ExtensionMethod({LombokExtensions.class})
 public class TransactionRequestCycleListener extends
 		AbstractContentAwareTransactionRequestCycleListener {
 	@Override
 	public void start(RequestCycle cycle) {
 		OrientDbWebSession session = OrientDbWebSession.get();
-		ODatabaseDocumentInternal db = session.getDatabase();
+		ODatabaseDocumentInternal db = session.getDatabaseDocumentInternal();
 		//It's required to have ability to check security rights locally
 		OSecurityUser oUser = session.getUser();
 		OSecurityUser dbUser = db.getUser();

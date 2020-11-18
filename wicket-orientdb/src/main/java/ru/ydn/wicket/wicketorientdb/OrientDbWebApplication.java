@@ -1,9 +1,5 @@
 package ru.ydn.wicket.wicketorientdb;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-
 import org.apache.wicket.Application;
 import org.apache.wicket.ConverterLocator;
 import org.apache.wicket.IApplicationListener;
@@ -14,28 +10,20 @@ import org.apache.wicket.protocol.http.WebApplication;
 import org.apache.wicket.util.string.Strings;
 
 import com.orientechnologies.orient.core.Orient;
-import com.orientechnologies.orient.core.db.ODatabase;
-import com.orientechnologies.orient.core.db.ODatabaseInternal;
-import com.orientechnologies.orient.core.db.ODatabaseLifecycleListener;
-import com.orientechnologies.orient.core.db.document.ODatabaseDocument;
 import com.orientechnologies.orient.core.db.record.OIdentifiable;
-import com.orientechnologies.orient.core.hook.ORecordHook;
-import com.orientechnologies.orient.core.metadata.schema.OClass;
 import com.orientechnologies.orient.core.metadata.security.ODatabaseSecurityResources;
-import com.orientechnologies.orient.core.metadata.security.ORole;
 import com.orientechnologies.orient.core.metadata.security.ORule.ResourceGeneric;
-import com.orientechnologies.orient.core.metadata.security.OSecurity;
 import com.orientechnologies.orient.core.metadata.security.OSecurityUser;
 import com.orientechnologies.orient.core.record.impl.ODocument;
 import com.orientechnologies.orient.server.OServer;
 
-import ru.ydn.wicket.wicketorientdb.components.IHookPosition;
 import ru.ydn.wicket.wicketorientdb.converter.HexConverter;
 import ru.ydn.wicket.wicketorientdb.converter.ODocumentConverter;
 import ru.ydn.wicket.wicketorientdb.converter.OIdentifiableConverter;
 import ru.ydn.wicket.wicketorientdb.rest.OrientDBHttpAPIResource;
 import ru.ydn.wicket.wicketorientdb.security.IResourceCheckingStrategy;
 import ru.ydn.wicket.wicketorientdb.security.WicketOrientDbAuthorizationStrategy;
+import ru.ydn.wicket.wicketorientdb.service.ODatabaseHooksInstallListener;
 import ru.ydn.wicket.wicketorientdb.utils.FixFormEncTypeListener;
 import ru.ydn.wicket.wicketorientdb.utils.ODocumentPropertyLocator;
 
@@ -99,83 +87,7 @@ public abstract class OrientDbWebApplication extends AuthenticatedWebApplication
 	protected void init() {
 		super.init();
 		Orient.instance().registerThreadDatabaseFactory(new DefaultODatabaseThreadLocalFactory(this));
-		Orient.instance().addDbLifecycleListener(new ODatabaseLifecycleListener() {
-			
-			@SuppressWarnings("rawtypes")
-			private ORecordHook createHook(Class<? extends ORecordHook> clazz, ODatabaseInternal iDatabase) {
-				if(!(iDatabase instanceof ODatabaseDocument)) return null;
-				try {
-					return (ORecordHook) clazz.getConstructor(ODatabaseDocument.class).newInstance(iDatabase);
-				} catch (Exception e) {
-					try {
-						return (ORecordHook) clazz.newInstance();
-					} catch (Exception e1) {
-						throw new IllegalStateException("Can't initialize hook "+clazz.getName(), e);
-					}
-				}
-			}
-			@SuppressWarnings("rawtypes")
-			@Override
-			public void onOpen(ODatabaseInternal iDatabase) {
-				registerHooks(iDatabase);
-			}
-			
-			@SuppressWarnings("rawtypes")
-			@Override
-			public void onCreate(ODatabaseInternal iDatabase) {
-				registerHooks(iDatabase);
-				//Fix for "feature" appeared in OrientDB 2.1.1
-				//Issue: https://github.com/orientechnologies/orientdb/issues/4906
-				fixOrientDBRights(iDatabase);
-			}
-			
-			@SuppressWarnings("rawtypes")
-			public void registerHooks(ODatabaseInternal iDatabase) {
-				Set<ORecordHook> hooks = iDatabase.getHooks().keySet();
-				List<Class<? extends ORecordHook>> hooksToRegister = new ArrayList<Class<? extends ORecordHook>>(getOrientDbSettings().getORecordHooks());
-				for(ORecordHook hook : hooks)
-				{
-					if(hooksToRegister.contains(hook.getClass())) hooksToRegister.remove(hook.getClass());
-				}
-				for (Class<? extends ORecordHook> oRecordHookClass : hooksToRegister)
-				{
-					ORecordHook hook = createHook(oRecordHookClass, iDatabase);
-					if(hook!=null){
-						if (hook instanceof IHookPosition){
-							iDatabase.registerHook(hook,((IHookPosition) hook).getPosition());		
-						}else{
-							iDatabase.registerHook(hook);		
-						}
-					}
-				}
-			}
-			
-			@SuppressWarnings("rawtypes")
-			@Override
-			public void onClose(ODatabaseInternal iDatabase) {/*NOP*/}
-			
-			@SuppressWarnings("rawtypes")
-			@Override
-			public void onDrop(ODatabaseInternal iDatabase) {/*NOP*/}
-			
-			
-			public PRIORITY getPriority() {
-				return PRIORITY.REGULAR;
-			}
-
-			@SuppressWarnings("rawtypes")
-			@Override
-			public void onCreateClass(ODatabaseInternal iDatabase, OClass iClass) {/*NOP*/}
-
-			@SuppressWarnings("rawtypes")
-			@Override
-			public void onDropClass(ODatabaseInternal iDatabase, OClass iClass) {/*NOP*/}
-			
-			@Override
-			public void onLocalNodeConfigurationRequest(ODocument arg0) {/*NOP*/}
-			
-			
-		});
+		Orient.instance().addDbLifecycleListener(new ODatabaseHooksInstallListener(this));
 		getRequestCycleListeners().add(newTransactionRequestCycleListener());
 		getRequestCycleListeners().add(new OrientDefaultExceptionsHandlingListener());
 		getSecuritySettings().setAuthorizationStrategy(new WicketOrientDbAuthorizationStrategy(this, this));
@@ -194,32 +106,10 @@ public abstract class OrientDbWebApplication extends AuthenticatedWebApplication
 		});
 		getAjaxRequestTargetListeners().add(new FixFormEncTypeListener());
 		//workaround to support changing system users passwords in web interface
-		getOrientDbSettings().getORecordHooks().add(OUserCatchPasswordHook.class);
+		getOrientDbSettings().addORecordHooks(OUserCatchPasswordHook.class);
 		PropertyResolver.setLocator(this, new ODocumentPropertyLocator(new PropertyResolver.CachingPropertyLocator(new PropertyResolver.DefaultPropertyLocator())));
 	}
-	
-	/**
-	 * Required for explicit update of rights due to changes in OrientDB 2.2.23
-	 * Related issue: https://github.com/orientechnologies/orientdb/issues/7549
-	 * @param db - database to apply fix on
-	 */
-	public void fixOrientDBRights(ODatabase<?> db) {
-		OSecurity security = db.getMetadata().getSecurity();
-		ORole readerRole = security.getRole("reader");
-		readerRole.grant(ResourceGeneric.CLUSTER, "orole", ORole.PERMISSION_READ);
-		readerRole.grant(ResourceGeneric.CLUSTER, "ouser", ORole.PERMISSION_READ);
-		readerRole.grant(ResourceGeneric.CLASS, "orole", ORole.PERMISSION_READ);
-		readerRole.grant(ResourceGeneric.CLASS, "ouser", ORole.PERMISSION_READ);
-		readerRole.grant(ResourceGeneric.SYSTEM_CLUSTERS, null, ORole.PERMISSION_READ);
-		readerRole.save();
-		ORole writerRole = security.getRole("writer");
-		writerRole.grant(ResourceGeneric.CLUSTER, "orole", ORole.PERMISSION_READ);
-		writerRole.grant(ResourceGeneric.CLUSTER, "ouser", ORole.PERMISSION_READ);
-		writerRole.grant(ResourceGeneric.CLASS, "orole", ORole.PERMISSION_READ);
-		writerRole.grant(ResourceGeneric.CLASS, "ouser", ORole.PERMISSION_READ);
-		writerRole.grant(ResourceGeneric.SYSTEM_CLUSTERS, null, ORole.PERMISSION_READ);
-		writerRole.save();
-	}
+
 	
 	protected TransactionRequestCycleListener newTransactionRequestCycleListener()
 	{

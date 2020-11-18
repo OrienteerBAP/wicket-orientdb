@@ -40,7 +40,7 @@ public class StringQueryManager implements IQueryManager {
 				countSql = matcher.replaceFirst("select sum("+expandMatcher.group(1)+".size()) as count from");
         	}
         	else {
-        		countSql = matcher.replaceFirst("select count(*) from"); 
+        		countSql = matcher.replaceFirst("select count(*) as count from");
         	}
         }
         else {
@@ -84,7 +84,7 @@ public class StringQueryManager implements IQueryManager {
     	String filter = applyFilters();
     	boolean wrapForSkip = containExpand && !Strings.isNullOrEmpty(filter);
     	if (countSql && wrapForSkip) {
-    		sql = "select count(*) from (" + this.sql + ")";
+    		sql = "select count(*) as count from (" + this.sql + ")";
 		}
 		return prepareSql(sql, filter, null, false, !countSql && wrapForSkip);
 	}

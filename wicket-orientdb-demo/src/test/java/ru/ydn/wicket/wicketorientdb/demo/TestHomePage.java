@@ -2,7 +2,6 @@ package ru.ydn.wicket.wicketorientdb.demo;
 
 import org.apache.wicket.util.tester.WicketTester;
 import org.junit.AfterClass;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 

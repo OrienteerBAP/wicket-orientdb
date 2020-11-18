@@ -32,40 +32,37 @@ public class TestRestApi
 	private static final Random RANDOM = new Random();
 	
 	@Test
-	public void testGetDocument() throws Exception
-	{
-		ODocument doc = (ODocument) wicket.getTester().getDatabase().browseClass(TEST_REST_CLASS).current();
+	public void testGetDocument() throws Exception {
+        ODocument doc = wicket.getTester().getDatabaseSession().browseClass(TEST_REST_CLASS).next();
 		ORID id = doc.getIdentity();
 		String ret = wicket.getTester().executeUrl("orientdb/document/db/"+id.getClusterId()+":"+id.getClusterPosition(), "GET", null);
 		assertEquals(doc.toJSON(), ret);
 	}
 	
 	@Test
-	public void testPostDocument() throws Exception
-	{
-		long current = wicket.getTester().getDatabase().countClass(TEST_REST_CLASS);
+	public void testPostDocument() throws Exception {
+		long current = wicket.getTester().getDatabaseSession().countClass(TEST_REST_CLASS);
 		String content = "{\"@class\":\"TestRest\",\"a\":\"test2\",\"b\":11,\"c\":false}";
 		wicket.getTester().executeUrl("orientdb/document/db/", "POST", content);
-		assertEquals(current+1, wicket.getTester().getDatabase().countClass(TEST_REST_CLASS));
+		assertEquals(current+1, wicket.getTester().getDatabaseSession().countClass(TEST_REST_CLASS));
 	}
 	
 	@Test
 	public void testDeleteDocument() throws Exception
 	{
-		long current = wicket.getTester().getDatabase().countClass(TEST_REST_CLASS);
+		long current = wicket.getTester().getDatabaseSession().countClass(TEST_REST_CLASS);
 		String content = "{\"@class\":\"TestRest\",\"a\":\"todelete\",\"b\":11,\"c\":false}";
 		String created = wicket.getTester().executeUrl("orientdb/document/db/", "POST", content);
-		assertEquals(current+1, wicket.getTester().getDatabase().countClass(TEST_REST_CLASS));
+		assertEquals(current+1, wicket.getTester().getDatabaseSession().countClass(TEST_REST_CLASS));
 		Matcher rid = RID_PATTERN.matcher(created);
 		assertTrue(rid.find());
 		wicket.getTester().executeUrl("orientdb/document/db/"+rid.group(1), "DELETE", content);
-		assertEquals(current, wicket.getTester().getDatabase().countClass(TEST_REST_CLASS));
+		assertEquals(current, wicket.getTester().getDatabaseSession().countClass(TEST_REST_CLASS));
 	}
 	
 	@Test
-	public void testQueryAndUpdate() throws Exception
-	{
-		ODocument doc = (ODocument) wicket.getTester().getDatabase().browseClass(TEST_REST_CLASS).current();
+	public void testQueryAndUpdate() throws Exception {
+		ODocument doc = wicket.getTester().getDatabaseSession().browseClass(TEST_REST_CLASS).next();
 		String ret = wicket.getTester().executeUrl("orientdb/query/db/sql/select+from+"+TEST_REST_CLASS, "GET", null);
 		assertTrue(ret.contains(doc.toJSON()));
 		
@@ -79,8 +76,8 @@ public class TestRestApi
 	@Test
 	public void testQueryCoding() throws Exception
 	{
-		OSecurityUser currentUser = wicket.getTester().getDatabase().getUser();
-		ODocument userDoc = currentUser.getDocument();
+		OSecurityUser currentUser = wicket.getTester().getDatabaseSession().getUser();
+		ODocument userDoc = currentUser.getIdentity().getRecord();
 		String rid = userDoc.getIdentity().toString();
 		String sql = "select * from OUser where @rid = "+rid;
 		String url = "orientdb/query/db/sql/"+URLEncoder.encode(sql, "UTF8");
@@ -112,7 +109,7 @@ public class TestRestApi
 		WicketOrientDbTester tester = wicket.getTester();
 		assertFalse(tester.isSignedIn());
 		assertNull(tester.getSession().getUser());
-		assertContains(tester.getDatabase().getUser().getDocument().toJSON(), getCurrentUser());
+		assertContains(tester.getDatabaseSession().getUser().getIdentity().getRecord().toJSON(), getCurrentUser());
 		tester.signIn("writer", "writer");
 		assertTrue(tester.isSignedIn());
 		assertEquals("writer", tester.getSession().getUser().getName());
@@ -120,7 +117,7 @@ public class TestRestApi
 		assertContains(tester.getSession().getUserAsODocument().toJSON(), getCurrentUser());
 		tester.signOut();
 		assertFalse(tester.isSignedIn());
-		assertContains(tester.getDatabase().getUser().getDocument().toJSON(), getCurrentUser());
+		assertContains(tester.getDatabaseSession().getUser().getIdentity().getRecord().toJSON(), getCurrentUser());
 		tester.signIn("admin", "admin");
 		assertTrue(tester.isSignedIn());
 		assertEquals("admin", tester.getSession().getUser().getName());
@@ -128,7 +125,7 @@ public class TestRestApi
 		
 		tester.signOut();
 		assertFalse(tester.isSignedIn());
-		assertContains(tester.getDatabase().getUser().getDocument().toJSON(), getCurrentUser());
+		assertContains(tester.getDatabaseSession().getUser().getIdentity().getRecord().toJSON(), getCurrentUser());
 		
 		String currentUser = getCurrentUser("admin", "admin");
 		assertTrue(tester.isSignedIn());
@@ -152,7 +149,7 @@ public class TestRestApi
 	
 	private String getCurrentUser(String username, String password) throws Exception
 	{
-		return wicket.getTester().executeUrl("orientdb/query/db/sql/select+from+$user", "GET", null, username, password);
+		return wicket.getTester().executeUrl("orientdb/query/db/sql/select+from+ouser", "GET", null, username, password);
 	}
 	
 }

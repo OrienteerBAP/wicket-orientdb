@@ -50,7 +50,7 @@ public class OClassesDataProvider extends AbstractJavaSortableDataProvider<OClas
 	
 	protected static OSchema getSchema()
 	{
-		return OrientDbWebSession.get().getDatabase().getMetadata().getSchema();
+		return OrientDbWebSession.get().getSchema();
 	}
 
 	@Override
