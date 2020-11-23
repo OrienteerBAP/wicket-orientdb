@@ -1,5 +1,9 @@
 package ru.ydn.wicket.wicketorientdb.utils;
 
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.wicket.request.Request;
+
 import com.orientechnologies.orient.core.db.record.OIdentifiable;
 import com.orientechnologies.orient.core.metadata.security.OSecurityRole;
 import com.orientechnologies.orient.core.metadata.security.OSecurityUser;
@@ -31,6 +35,11 @@ public final class LombokExtensions {
 	 */
 	public ODocument getDocument(OSecurityRole role) {
 		return role!=null?getDocument(role.getIdentity().getIdentity()):null;
+	}
+	
+	public HttpServletRequest asHttpServletRequest(Request request) {
+		if(request==null) return null;
+		else return (HttpServletRequest) request.getContainerRequest();
 	}
 	
 	private ODocument getDocument(OIdentifiable identifiable) {

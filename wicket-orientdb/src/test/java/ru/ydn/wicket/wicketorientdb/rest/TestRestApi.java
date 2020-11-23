@@ -80,7 +80,9 @@ public class TestRestApi
 		ODocument userDoc = currentUser.getIdentity().getRecord();
 		String rid = userDoc.getIdentity().toString();
 		String sql = "select * from OUser where @rid = "+rid;
+		System.out.println("SQL: "+sql);
 		String url = "orientdb/query/db/sql/"+URLEncoder.encode(sql, "UTF8");
+		System.out.println("Requested URL: "+url);
 		String ret = wicket.getTester().executeUrl(url, "GET", null);
 		assertTrue(ret.contains(userDoc.getIdentity().toString()));
 		assertTrue(ret.contains((String)userDoc.field("name")));

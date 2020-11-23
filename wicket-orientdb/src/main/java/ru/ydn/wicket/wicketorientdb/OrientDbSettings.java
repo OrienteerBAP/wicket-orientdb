@@ -14,11 +14,17 @@ import com.orientechnologies.orient.core.hook.ORecordHook;
 import com.orientechnologies.orient.server.OServer;
 import com.orientechnologies.orient.server.network.OServerNetworkListener;
 import com.orientechnologies.orient.server.network.protocol.http.ONetworkProtocolHttpAbstract;
+
+import lombok.extern.slf4j.Slf4j;
+import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
+import ru.ydn.wicket.wicketorientdb.rest.WicketSessionCookieJar;
 import ru.ydn.wicket.wicketorientdb.utils.ODbUtils;
 
 /**
  * Default implementation of {@link IOrientDbSettings}
  */
+@Slf4j
 public class OrientDbSettings implements IOrientDbSettings
 {
 	public static final String ADMIN_DEFAULT_USERNAME = "admin";
@@ -33,6 +39,7 @@ public class OrientDbSettings implements IOrientDbSettings
 	private String adminUserName=ADMIN_DEFAULT_USERNAME;
 	private String adminPassword=ADMIN_DEFAULT_PASSWORD;
 	private String orientDbRestApiUrl;
+	private OkHttpClient okHttpClient;
 
 	private OrientDB context;
 
@@ -157,6 +164,17 @@ public class OrientDbSettings implements IOrientDbSettings
 		}
 		return orientDbRestApiUrl;
 	}
+	
+	@Override
+	public OkHttpClient getOkHttpClient() {
+		if(okHttpClient==null) {
+			setOkHttpClient(new OkHttpClient.Builder()
+					.cookieJar(new WicketSessionCookieJar())
+					.addNetworkInterceptor(new HttpLoggingInterceptor(System.out::println).setLevel(HttpLoggingInterceptor.Level.BODY))
+					.build());
+		}
+		return okHttpClient;
+	}
 
 	@Override
 	public void setDbName(String dbName) {
@@ -178,6 +196,11 @@ public class OrientDbSettings implements IOrientDbSettings
 	public void setOrientDBRestApiUrl(String orientDbRestApiUrl) {
 		if(orientDbRestApiUrl!=null && !orientDbRestApiUrl.endsWith("/")) orientDbRestApiUrl+="/";
 		this.orientDbRestApiUrl = orientDbRestApiUrl;
+	}
+	
+	@Override
+	public void setOkHttpClient(OkHttpClient okHttpClient) {
+		this.okHttpClient = okHttpClient;
 	}
 	
 	/**

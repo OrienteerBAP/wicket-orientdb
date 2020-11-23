@@ -6,6 +6,8 @@ import com.orientechnologies.orient.core.db.*;
 import com.orientechnologies.orient.core.db.document.ODatabaseDocument;
 import com.orientechnologies.orient.core.hook.ORecordHook;
 
+import okhttp3.OkHttpClient;
+
 /**
  * OrientDB setting to be used in Wicket-OrientDB application
  */
@@ -46,6 +48,12 @@ public interface IOrientDbSettings {
 	 * @return default url for orientdb rest API
 	 */
 	public String getOrientDBRestApiUrl();
+	
+	/**
+	 * Obtain {@link OkHttpClient} to be used to communicate with OrientDB REST API
+	 * @return OkHttpClient
+	 */
+	public OkHttpClient getOkHttpClient();
 
 	/**
 	 * Set name of database
@@ -91,6 +99,11 @@ public interface IOrientDbSettings {
 	 * @param orientDbRestApiUrl URL of orientDB REST API
 	 */
 	public void setOrientDBRestApiUrl(String orientDbRestApiUrl);
+	/**
+	 * Set {@link OkHttpClient} to be used to communicate with OrientDB REST API
+	 * @param okHttpClient default {@link OkHttpClient} to be used
+	 */
+	public void setOkHttpClient(OkHttpClient okHttpClient);
 	/**
 	 * @return Unmodifiable{@link List} of {@link ORecordHook} which should be registered for every DB instance created
 	 */
