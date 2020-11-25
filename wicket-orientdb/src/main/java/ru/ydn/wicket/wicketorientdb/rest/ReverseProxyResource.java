@@ -65,35 +65,38 @@ public class ReverseProxyResource extends AbstractResource {
 		final ResourceResponse response = new ResourceResponse();
 		if(response.dataNeedsToBeWritten(attributes))
 		{
+			OkHttpClient okHttpClient = obtainOkHttpClient();
+			Request request = mapRequest(attributes);
+			Response okHttpResponse;
 			try {
-				OkHttpClient okHttpClient = obtainOkHttpClient();
-				Response okHttpResponse = okHttpClient.newCall(mapRequest(attributes)).execute();
-				if(okHttpResponse.isSuccessful()) {
-					response.setStatusCode(okHttpResponse.code());
-				} else {
-					response.setError(okHttpResponse.code(), okHttpResponse.message());
-				}
-				final ResponseBody okHttpResponseBody = okHttpResponse.body();
-				response.setContentType(okHttpResponseBody.contentType().toString());
-				Map<String, List<String>> headersMap = okHttpResponse.headers().toMultimap();
-				HttpHeaderCollection headersToreturn = response.getHeaders();
-				for (Map.Entry<String, List<String>> headerEntry: headersMap.entrySet()) {
-					if(HEADERS_TO_BLOCK.contains(headerEntry.getKey())) continue;
-					for (String value : headerEntry.getValue()) {
-						headersToreturn.addHeader(headerEntry.getKey(), value);
-					}
-				}
-				response.setWriteCallback(new WriteCallback() {
-					@Override
-					public void writeData(Attributes attributes) throws IOException {
-						IOUtils.copy(okHttpResponseBody.byteStream(), attributes.getResponse().getOutputStream());
-					}
-				});
+				okHttpResponse = okHttpClient.newCall(request).execute();
 			} catch (IOException e) {
-				String message = "Can't communicate with "+getBaseUrl();
+				String message = "Can't communicate with "+request.url();
 				log.error(message, e);
 				response.setError(HttpServletResponse.SC_BAD_GATEWAY, message);
+				return response;
 			}
+			if(okHttpResponse.isSuccessful()) {
+				response.setStatusCode(okHttpResponse.code());
+			} else {
+				response.setError(okHttpResponse.code(), okHttpResponse.message());
+			}
+			final ResponseBody okHttpResponseBody = okHttpResponse.body();
+			response.setContentType(okHttpResponseBody.contentType().toString());
+			Map<String, List<String>> headersMap = okHttpResponse.headers().toMultimap();
+			HttpHeaderCollection headersToreturn = response.getHeaders();
+			for (Map.Entry<String, List<String>> headerEntry: headersMap.entrySet()) {
+				if(HEADERS_TO_BLOCK.contains(headerEntry.getKey())) continue;
+				for (String value : headerEntry.getValue()) {
+					headersToreturn.addHeader(headerEntry.getKey(), value);
+				}
+			}
+			response.setWriteCallback(new WriteCallback() {
+				@Override
+				public void writeData(Attributes attributes) throws IOException {
+					IOUtils.copy(okHttpResponseBody.byteStream(), attributes.getResponse().getOutputStream());
+				}
+			});
 		}
 		return response;
 	}
@@ -102,7 +105,7 @@ public class ReverseProxyResource extends AbstractResource {
 		return OrientDbWebApplication.get().getOrientDbSettings().getOkHttpClient();
 	}
 	
-	protected HttpUrl getBaseUrl() {
+	protected HttpUrl getBaseUrl(Attributes attributes) {
 		if(baseUrl==null) {
 			if(baseUrlStr==null) throw new IllegalStateException("BaseUrl was not specified");
 			baseUrl = HttpUrl.get(baseUrlStr);
@@ -111,13 +114,16 @@ public class ReverseProxyResource extends AbstractResource {
 	}
 	
 	protected HttpUrl mapUrl(Attributes attributes) {
-		HttpUrl.Builder builder = getBaseUrl().newBuilder();
+		HttpUrl.Builder builder = getBaseUrl(attributes).newBuilder();
 		WebRequest webRequest = (WebRequest)attributes.getRequest();
 		Url url = webRequest.getUrl();
-//		List<String> segments = url.getSegments();
-		builder.addEncodedPathSegments(url.getPath());
+		PageParameters pageParameters = attributes.getParameters();
+		for(int i=0; i<pageParameters.getIndexedCount();i++) {
+			builder.addPathSegment(pageParameters.get(i).toString());
+		}
+//		builder.addEncodedPathSegments(url.getPath());
 		builder.fragment(url.getFragment());
-		builder.query(webRequest.asHttpServletRequest().getQueryString());
+		builder.encodedQuery(webRequest.asHttpServletRequest().getQueryString());
 		onMapUrl(attributes, builder);
 		return builder.build();
 	}

@@ -20,14 +20,13 @@ public class OrientDBHttpAPIResource extends ReverseProxyResource {
 	public static final String MOUNT_PATH = "/orientdb";
 	public static final String ORIENT_DB_KEY=OrientDBHttpAPIResource.class.getSimpleName();
 	@Override
-	protected HttpUrl getBaseUrl() {
+	protected HttpUrl getBaseUrl(Attributes attributes) {
 		return HttpUrl.get(OrientDbWebApplication.get().getOrientDbSettings().getOrientDBRestApiUrl());
 	}
 	
 	@Override
 	protected void onMapUrl(Attributes attributes, HttpUrl.Builder builder) {
-		builder.setPathSegment(2, OrientDbWebSession.get().getDatabaseSession().getName());
-		builder.removePathSegment(0);
+		builder.setPathSegment(1, OrientDbWebSession.get().getDatabaseSession().getName());
 	}
 	
 	@Override
