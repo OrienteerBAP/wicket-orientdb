@@ -18,6 +18,7 @@ import com.orientechnologies.orient.server.network.protocol.http.ONetworkProtoco
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
+import ru.ydn.wicket.wicketorientdb.rest.DynamicInterceptor;
 import ru.ydn.wicket.wicketorientdb.rest.WicketSessionCookieJar;
 import ru.ydn.wicket.wicketorientdb.utils.ODbUtils;
 
@@ -170,7 +171,8 @@ public class OrientDbSettings implements IOrientDbSettings
 		if(okHttpClient==null) {
 			setOkHttpClient(new OkHttpClient.Builder()
 					.cookieJar(new WicketSessionCookieJar())
-					.addNetworkInterceptor(new HttpLoggingInterceptor(System.out::println).setLevel(HttpLoggingInterceptor.Level.BODY))
+					.addInterceptor(DynamicInterceptor.INSTANCE)
+					.addNetworkInterceptor(DynamicInterceptor.INSTANCE)
 					.build());
 		}
 		return okHttpClient;

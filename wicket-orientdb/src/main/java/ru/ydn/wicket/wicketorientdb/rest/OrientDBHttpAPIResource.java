@@ -6,6 +6,8 @@ import org.apache.wicket.request.resource.SharedResourceReference;
 import okhttp3.Credentials;
 import okhttp3.Headers;
 import okhttp3.HttpUrl;
+import okhttp3.Request;
+import okhttp3.logging.HttpLoggingInterceptor;
 import ru.ydn.wicket.wicketorientdb.IOrientDbSettings;
 import ru.ydn.wicket.wicketorientdb.LazyAuthorizationRequestCycleListener;
 import ru.ydn.wicket.wicketorientdb.OrientDbWebApplication;
@@ -19,6 +21,7 @@ public class OrientDBHttpAPIResource extends ReverseProxyResource {
 	private static final long serialVersionUID = 1L;
 	public static final String MOUNT_PATH = "/orientdb";
 	public static final String ORIENT_DB_KEY=OrientDBHttpAPIResource.class.getSimpleName();
+	
 	@Override
 	protected HttpUrl getBaseUrl(Attributes attributes) {
 		return HttpUrl.get(OrientDbWebApplication.get().getOrientDbSettings().getOrientDBRestApiUrl());

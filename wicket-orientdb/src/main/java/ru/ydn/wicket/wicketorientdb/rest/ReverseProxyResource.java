@@ -29,6 +29,7 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
 import okhttp3.internal.http.HttpMethod;
+import okhttp3.logging.HttpLoggingInterceptor;
 import okio.BufferedSink;
 import okio.Okio;
 import okio.Source;
@@ -196,12 +197,20 @@ public class ReverseProxyResource extends AbstractResource {
 		builder.url(mapUrl(attributes));
 		String method = attributes.getRequest().asHttpServletRequest().getMethod();
 		builder.method(method, mapRequestBody(attributes, method));
+		if(isDebugLoggingEnabled(attributes)) {
+			DynamicInterceptor.addNetworkInterceptors(builder, new HttpLoggingInterceptor(System.out::println)
+					.setLevel(HttpLoggingInterceptor.Level.BODY));
+		}
 		onMapRequest(attributes, builder);
 		return builder.build();
 	}
 	
 	protected void onMapRequest(Attributes attributes, Request.Builder builder) {
 		
+	}
+	
+	protected boolean isDebugLoggingEnabled(Attributes attributes) {
+		return attributes.getRequest().getRequestParameters().getParameterValue("_debug").toBoolean(false);
 	}
 
 }
