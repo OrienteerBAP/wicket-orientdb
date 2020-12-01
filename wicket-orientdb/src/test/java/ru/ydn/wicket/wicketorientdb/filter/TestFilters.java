@@ -211,13 +211,13 @@ public class TestFilters {
         manager = new FilterCriteriaManager(wicket.getProperty(LINK_FIELD));
         ODocument doc1 = queryModel.getObject().get(0).field(LINK_FIELD);
         ODocument doc2 = queryModel.getObject().get(1).field(LINK_FIELD);
-        IFilterCriteria criteria = manager.createLinkCollectionFilterCriteria(new CollectionModel<>(Arrays.asList(doc1, doc2)), true, Model.of(true));
+        IFilterCriteria criteria = manager.createCollectionFilterCriteria(new CollectionModel<>(Arrays.asList(doc1, doc2)), Model.of(true));
         queryModel.detach();
 
         manager.addFilterCriteria(criteria);
         queryModel.clearFilterCriteriaManagers();
         queryModel.addFilterCriteriaManager(wicket.getProperty(LINK_FIELD).getObject().getName(), manager);
-        assertTrue(queryModel.getObject().size() == 2);
+        assertEquals(2, queryModel.getObject().size());
     }
 
     @Test

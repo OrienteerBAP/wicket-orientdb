@@ -18,6 +18,12 @@ public class CollectionLinkFilterCriteria extends CollectionFilterCriteria {
         super(field, model, join);
         this.list = list;
     }
+    
+    @Override
+    @SuppressWarnings("unchecked")
+    protected String apply(String field) {
+        return field + " IN [:" + getName()+"]";
+    }
 
     @Override
     public FilterCriteriaType getFilterCriteriaType() {
