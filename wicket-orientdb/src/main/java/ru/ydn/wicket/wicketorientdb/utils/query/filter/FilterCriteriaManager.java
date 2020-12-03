@@ -79,10 +79,10 @@ public class FilterCriteriaManager implements IFilterCriteriaManager {
     public <T> IFilterCriteria createRangeFilterCriteria(IModel<List<T>> model, IModel<Boolean> join) {
         return new RangeFilterCriteria(field, model, join);
     }
-
+    
     @Override
-    public IFilterCriteria createContainsStringFilterCriteria(IModel<String> model, IModel<Boolean> join) {
-        return new ContainsTextFilterCriteria(field, model, join);
+    public IFilterCriteria createContainsStringFilterCriteria(IModel<String> model, boolean toStringRequired, IModel<Boolean> join) {
+        return new ContainsTextFilterCriteria(field, model, toStringRequired, join);
     }
 
     @Override

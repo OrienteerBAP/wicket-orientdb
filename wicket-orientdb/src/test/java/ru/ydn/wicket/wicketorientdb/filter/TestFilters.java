@@ -225,7 +225,7 @@ public class TestFilters {
         IModel<OProperty> property = wicket.getProperty(STRING_FIELD);
         IFilterCriteriaManager manager = new FilterCriteriaManager(property);
         IModel<String> model = Model.of("summer");
-        manager.addFilterCriteria(manager.createContainsStringFilterCriteria(model, Model.of(true)));
+        manager.addFilterCriteria(manager.createContainsStringFilterCriteria(model, false, Model.of(true)));
         queryModel.addFilterCriteriaManager(property.getObject().getName(), manager);
         assertTrue(queryModel.size() == 1);
         assertTrue(queryModel.getObject().get(0).field(STRING_FIELD).equals(STR_VALUE_2));

@@ -56,10 +56,11 @@ public interface IFilterCriteriaManager extends IClusterable {
     /**
      * Create filter for search string which contains model value
      * @param model {@link IModel} with {@link String} value
+     * @param toStringRequired flag to request asString() conversion
      * @param join {@link IModel} if true - result of filtering includes to result of query.
      * @return {@link IFilterCriteria} which represents contains string filter
      */
-    public IFilterCriteria createContainsStringFilterCriteria(IModel<String> model, IModel<Boolean> join);
+    public IFilterCriteria createContainsStringFilterCriteria(IModel<String> model, boolean toStringRequired, IModel<Boolean> join);
 
     /**
      * Create filter for search {@link ODocument} in collection of links

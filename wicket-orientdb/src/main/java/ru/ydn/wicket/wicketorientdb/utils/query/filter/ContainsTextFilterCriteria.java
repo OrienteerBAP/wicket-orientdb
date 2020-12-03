@@ -9,14 +9,17 @@ import org.apache.wicket.model.IModel;
 public class ContainsTextFilterCriteria extends AbstractFilterCriteria {
 
 	private static final long serialVersionUID = 1L;
+	
+	private boolean toStringRequired;
 
-	public ContainsTextFilterCriteria(String field, IModel<String> model, IModel<Boolean> join) {
+	public ContainsTextFilterCriteria(String field, IModel<String> model, boolean toStringRequired, IModel<Boolean> join) {
         super(field, model, join);
+        this.toStringRequired = toStringRequired;
     }
 
     @Override
     protected String apply(String field) {
-        return field + " CONTAINSTEXT :" + getName();
+        return (toStringRequired?field + ".asString()" : field) + " CONTAINSTEXT :" + getName();
     }
 
     @Override
