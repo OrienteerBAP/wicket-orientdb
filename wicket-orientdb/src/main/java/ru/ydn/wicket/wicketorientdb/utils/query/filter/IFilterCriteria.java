@@ -5,8 +5,9 @@ import org.apache.wicket.util.io.IClusterable;
 
 /**
  * Interface for save filter criteria and generate SQL depending on filter criteria
+ * @param <T> type of model for filtering
  */
-public interface IFilterCriteria extends IClusterable {
+public interface IFilterCriteria<T> extends IClusterable {
     /**
      * Apply filter
      * @return sql of filter
@@ -32,7 +33,7 @@ public interface IFilterCriteria extends IClusterable {
     /**
      * @return model for filtering
      */
-    public IModel<?> getModel();
+    public IModel<T> getModel();
 
     /**
      * @return {@link FilterCriteriaType} for current FilterCriteria

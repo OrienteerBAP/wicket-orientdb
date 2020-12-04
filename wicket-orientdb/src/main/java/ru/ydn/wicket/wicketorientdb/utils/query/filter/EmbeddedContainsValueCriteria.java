@@ -5,12 +5,13 @@ import org.apache.wicket.model.IModel;
 /**
  * Embedded contains value filter criteria
  * SELECT FROM Test WHERE embedded.values() CONTAINS :myValue
+ * @param <T> type of model for filtering
  */
-public class EmbeddedContainsValueCriteria extends AbstractFilterCriteria {
+public class EmbeddedContainsValueCriteria<T> extends AbstractFilterCriteria<T> {
 
 	private static final long serialVersionUID = 1L;
 
-	public EmbeddedContainsValueCriteria(String field, IModel<?> model, IModel<Boolean> join) {
+	public EmbeddedContainsValueCriteria(String field, IModel<T> model, IModel<Boolean> join) {
         super(field, model, join);
     }
 

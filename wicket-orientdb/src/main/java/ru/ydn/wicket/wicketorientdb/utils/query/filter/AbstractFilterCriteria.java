@@ -7,15 +7,16 @@ import java.util.Collection;
 
 /**
  * Abstract class for IFilterCriteria
+ * @param <T> type of model for filtering
  */
-public abstract class AbstractFilterCriteria implements IFilterCriteria {
+public abstract class AbstractFilterCriteria<T> implements IFilterCriteria<T> {
 
 	private static final long serialVersionUID = 1L;
 	private final String field;
-    private final IModel<?> model;
+    private final IModel<T> model;
     private final IModel<Boolean> join;
 
-    public AbstractFilterCriteria(String field, IModel<?> model, IModel<Boolean> join) {
+    public AbstractFilterCriteria(String field, IModel<T> model, IModel<Boolean> join) {
         this.field = field;
         this.model = model;
         this.join = join;
@@ -49,7 +50,7 @@ public abstract class AbstractFilterCriteria implements IFilterCriteria {
     }
 
     @Override
-    public IModel<?> getModel() {
+    public IModel<T> getModel() {
         return model;
     }
 
@@ -87,7 +88,7 @@ public abstract class AbstractFilterCriteria implements IFilterCriteria {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        AbstractFilterCriteria that = (AbstractFilterCriteria) o;
+        AbstractFilterCriteria<?> that = (AbstractFilterCriteria<?>) o;
 
         if (field != null ? !field.equals(that.field) : that.field != null) return false;
         return getFilterCriteriaType() == that.getFilterCriteriaType();

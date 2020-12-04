@@ -7,12 +7,13 @@ import java.util.Collection;
 /**
  * Collection filter
  * SELECT FROM Class WHERE num IN ['1', '2', '3']
+ * @param <C> type of collection objects for filtering
  */
-public class CollectionFilterCriteria extends AbstractFilterCriteria {
+public class CollectionFilterCriteria<C> extends AbstractFilterCriteria<Collection<C>> {
 
 	private static final long serialVersionUID = 1L;
 
-	public <T> CollectionFilterCriteria(String field, IModel<Collection<T>> model, IModel<Boolean> join) {
+	public CollectionFilterCriteria(String field, IModel<Collection<C>> model, IModel<Boolean> join) {
         super(field, model, join);
     }
 

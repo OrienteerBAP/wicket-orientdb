@@ -6,7 +6,7 @@ import org.apache.wicket.model.IModel;
  * Contains text filter
  * SELECT FROM Class WHERE name CONTAINSTEXT 'text'
  */
-public class ContainsTextFilterCriteria extends AbstractFilterCriteria {
+public class ContainsTextFilterCriteria extends AbstractFilterCriteria<String> {
 
 	private static final long serialVersionUID = 1L;
 	

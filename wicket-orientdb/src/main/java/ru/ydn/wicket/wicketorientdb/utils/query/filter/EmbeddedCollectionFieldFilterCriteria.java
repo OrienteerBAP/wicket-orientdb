@@ -8,13 +8,14 @@ import java.util.Collection;
 /**
  * Filter criteria for EMBEDDED collections
  * SELECT FROM Test WHERE embedded_collection.{field} CONTAINS value
+ * @param <C> type of objects in collection for filtering
  */
-public class EmbeddedCollectionFieldFilterCriteria extends AbstractFilterCriteria {
+public class EmbeddedCollectionFieldFilterCriteria<C> extends AbstractFilterCriteria<Collection<C>> {
 
 	private static final long serialVersionUID = 1L;
 	private final IModel<String> key;
 
-    public <T> EmbeddedCollectionFieldFilterCriteria(String field, IModel<String> key, IModel<Collection<T>> model, IModel<Boolean> join) {
+    public EmbeddedCollectionFieldFilterCriteria(String field, IModel<String> key, IModel<Collection<C>> model, IModel<Boolean> join) {
         super(field, model, join);
         this.key = key;
     }

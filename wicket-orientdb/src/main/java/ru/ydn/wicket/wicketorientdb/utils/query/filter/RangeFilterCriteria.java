@@ -7,12 +7,13 @@ import java.util.List;
 /**
  * Range filter
  * SELECT FROM Class WHERE num BETWEEN '1' AND '5'
+ * @param <C> type of objects for between range for filtering
  */
-public class RangeFilterCriteria extends AbstractFilterCriteria {
+public class RangeFilterCriteria<C> extends AbstractFilterCriteria<List<C>> {
 
 	private static final long serialVersionUID = 1L;
 
-	public <T> RangeFilterCriteria(String field, IModel<List<T>> model, IModel<Boolean> join) {
+	public <T> RangeFilterCriteria(String field, IModel<List<C>> model, IModel<Boolean> join) {
         super(field, model, join);
     }
 

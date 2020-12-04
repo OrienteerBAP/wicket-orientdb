@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * Class in collection filter
  * select from Parent where @class in ["Child", "Child2"] */
-public class ClassInCollectionFilterCriteria extends AbstractFilterCriteria {
+public class ClassInCollectionFilterCriteria extends AbstractFilterCriteria<Collection<String>> {
 
 	private static final long serialVersionUID = 1L;
 

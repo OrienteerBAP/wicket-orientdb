@@ -6,7 +6,7 @@ import org.apache.wicket.model.IModel;
  * Instance of filter
  * select from Parent where @class instanceof Child
  */
-public class ClassInstanceOfFilterCriteria extends AbstractFilterCriteria {
+public class ClassInstanceOfFilterCriteria extends AbstractFilterCriteria<String> {
 
 	private static final long serialVersionUID = 1L;
 

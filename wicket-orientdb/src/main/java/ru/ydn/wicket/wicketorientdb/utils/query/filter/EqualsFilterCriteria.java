@@ -5,12 +5,13 @@ import org.apache.wicket.model.IModel;
 /**
  * Equals filter
  * SELECT FROM Class WHERE num = '1'
+ * @param <T> type of model for filtering
  */
-public class EqualsFilterCriteria extends AbstractFilterCriteria {
+public class EqualsFilterCriteria<T> extends AbstractFilterCriteria<T> {
 
 	private static final long serialVersionUID = 1L;
 
-	public EqualsFilterCriteria(String field, IModel<?> model, IModel<Boolean> join) {
+	public EqualsFilterCriteria(String field, IModel<T> model, IModel<Boolean> join) {
         super(field, model, join);
     }
 

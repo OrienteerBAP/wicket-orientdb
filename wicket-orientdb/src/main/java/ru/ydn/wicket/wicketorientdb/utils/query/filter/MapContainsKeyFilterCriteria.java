@@ -4,11 +4,12 @@ import org.apache.wicket.model.IModel;
 
 /**
  * SELECT FROM Class WHERE map CONTAINSKEY 'key'
+ * @param <T> type of model for filtering
  */
-public class MapContainsKeyFilterCriteria extends AbstractFilterCriteria {
+public class MapContainsKeyFilterCriteria<T> extends AbstractFilterCriteria<T> {
 	private static final long serialVersionUID = 1L;
 
-	public MapContainsKeyFilterCriteria(String field, IModel<?> model, IModel<Boolean> join) {
+	public MapContainsKeyFilterCriteria(String field, IModel<T> model, IModel<Boolean> join) {
         super(field, model, join);
 
     }

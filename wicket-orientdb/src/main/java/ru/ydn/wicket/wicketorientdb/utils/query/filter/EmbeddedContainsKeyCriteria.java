@@ -5,12 +5,13 @@ import org.apache.wicket.model.IModel;
 /**
  * Embedded contains key filter criteria
  * SELECT FROM Test WHERE embedded.keys() CONTAINS :myKey
+ * @param <T> type of model for filtering
  */
-public class EmbeddedContainsKeyCriteria extends AbstractFilterCriteria {
+public class EmbeddedContainsKeyCriteria<T> extends AbstractFilterCriteria<T> {
 	
 	private static final long serialVersionUID = 1L;
 
-	public EmbeddedContainsKeyCriteria(String field, IModel<?> model, IModel<Boolean> join) {
+	public EmbeddedContainsKeyCriteria(String field, IModel<T> model, IModel<Boolean> join) {
         super(field, model, join);
     }
 

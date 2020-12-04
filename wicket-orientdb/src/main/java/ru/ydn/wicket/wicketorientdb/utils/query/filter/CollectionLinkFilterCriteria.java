@@ -9,7 +9,7 @@ import java.util.Collection;
  * Link collection filter
  * SELECT FROM Class WHERE link IN [#21:0, #22:0, #23:0]
  */
-public class CollectionLinkFilterCriteria extends CollectionFilterCriteria {
+public class CollectionLinkFilterCriteria extends CollectionFilterCriteria<ODocument> {
 
 	private static final long serialVersionUID = 1L;
 	private final boolean list;
