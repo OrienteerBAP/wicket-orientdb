@@ -183,6 +183,7 @@ public class ReverseProxyResource extends AbstractResource {
 				builder.add(headerName, headerValues.nextElement());
 			}
 		}
+		builder.removeAll("Host");
 		onMapHeaders(attributes, builder);
 		return builder.build();
 	}
@@ -198,7 +199,7 @@ public class ReverseProxyResource extends AbstractResource {
 		String method = attributes.getRequest().asHttpServletRequest().getMethod();
 		builder.method(method, mapRequestBody(attributes, method));
 		if(isDebugLoggingEnabled(attributes)) {
-			DynamicInterceptor.addNetworkInterceptors(builder, new HttpLoggingInterceptor(System.out::println)
+			DynamicInterceptor.addNetworkInterceptors(builder, new HttpLoggingInterceptor(log::info)
 					.setLevel(HttpLoggingInterceptor.Level.BODY));
 		}
 		onMapRequest(attributes, builder);
