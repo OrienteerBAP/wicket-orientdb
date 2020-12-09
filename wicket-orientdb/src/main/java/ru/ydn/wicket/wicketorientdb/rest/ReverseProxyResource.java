@@ -44,11 +44,13 @@ import ru.ydn.wicket.wicketorientdb.utils.LombokExtensions;
 @Slf4j
 public class ReverseProxyResource extends AbstractResource {
 	
-	private static final Set<String> HEADERS_TO_BLOCK = 
+	private static final Set<String> SERVERS_HEADERS_TO_BLOCK = 
 					new HashSet<String>(Arrays.asList("Set-Cookie".toLowerCase()));
+	private static final Set<String> CLIENT_HEADERS_TO_BLOCK = 
+			new HashSet<String>(Arrays.asList("Host".toLowerCase(), "Cookie".toLowerCase()));
 	
 	static {
-		HEADERS_TO_BLOCK.addAll(INTERNAL_HEADERS);
+		SERVERS_HEADERS_TO_BLOCK.addAll(INTERNAL_HEADERS);
 	}
 	
 	private String baseUrlStr;
@@ -87,7 +89,7 @@ public class ReverseProxyResource extends AbstractResource {
 			Map<String, List<String>> headersMap = okHttpResponse.headers().toMultimap();
 			HttpHeaderCollection headersToreturn = response.getHeaders();
 			for (Map.Entry<String, List<String>> headerEntry: headersMap.entrySet()) {
-				if(HEADERS_TO_BLOCK.contains(headerEntry.getKey())) continue;
+				if(SERVERS_HEADERS_TO_BLOCK.contains(headerEntry.getKey())) continue;
 				for (String value : headerEntry.getValue()) {
 					headersToreturn.addHeader(headerEntry.getKey(), value);
 				}
@@ -178,12 +180,12 @@ public class ReverseProxyResource extends AbstractResource {
 		Enumeration<String> headerNames = request.getHeaderNames();
 		while(headerNames.hasMoreElements()) {
 			String headerName = headerNames.nextElement();
+			if(CLIENT_HEADERS_TO_BLOCK.contains(headerName.toLowerCase())) continue;
 			Enumeration<String> headerValues = request.getHeaders(headerName);
 			while(headerValues.hasMoreElements()) {
 				builder.add(headerName, headerValues.nextElement());
 			}
 		}
-		builder.removeAll("Host");
 		onMapHeaders(attributes, builder);
 		return builder.build();
 	}

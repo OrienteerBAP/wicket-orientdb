@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import com.orientechnologies.orient.core.Orient;
@@ -171,6 +172,9 @@ public class OrientDbSettings implements IOrientDbSettings
 		if(okHttpClient==null) {
 			setOkHttpClient(new OkHttpClient.Builder()
 					.cookieJar(new WicketSessionCookieJar())
+					.connectTimeout(30, TimeUnit.SECONDS)
+					.readTimeout(30, TimeUnit.SECONDS)
+					.writeTimeout(30, TimeUnit.SECONDS)
 					.addInterceptor(DynamicInterceptor.INSTANCE)
 					.addNetworkInterceptor(DynamicInterceptor.INSTANCE)
 					.build());
