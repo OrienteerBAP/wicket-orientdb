@@ -25,6 +25,7 @@ import ru.ydn.wicket.wicketorientdb.security.IResourceCheckingStrategy;
 import ru.ydn.wicket.wicketorientdb.security.WicketOrientDbAuthorizationStrategy;
 import ru.ydn.wicket.wicketorientdb.service.ODatabaseHooksInstallListener;
 import ru.ydn.wicket.wicketorientdb.utils.FixFormEncTypeListener;
+import ru.ydn.wicket.wicketorientdb.utils.FlexyMetaDataKey;
 import ru.ydn.wicket.wicketorientdb.utils.ODocumentPropertyLocator;
 
 /**
@@ -154,6 +155,17 @@ public abstract class OrientDbWebApplication extends AuthenticatedWebApplication
 			if(user.checkIfAllowed(resource, specific+"."+ODatabaseSecurityResources.ALL, iOperation)!=null) return true;
 		}
 		return false;
+	}
+	
+	public final synchronized <K, V> V getMetaData(final K key)
+	{
+		return FlexyMetaDataKey.get(this, key);
+	}
+	
+	public final synchronized <K, V> OrientDbWebApplication setMetaData(final K key, final V value)
+	{
+		FlexyMetaDataKey.set(this, key, value);
+		return this;
 	}
 	
 }

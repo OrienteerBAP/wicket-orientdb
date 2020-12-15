@@ -1,5 +1,6 @@
 package ru.ydn.wicket.wicketorientdb;
 
+import java.io.Serializable;
 import java.util.Set;
 
 import com.orientechnologies.orient.core.db.ODatabaseSession;
@@ -22,6 +23,7 @@ import com.orientechnologies.orient.core.record.impl.ODocument;
 
 import lombok.experimental.ExtensionMethod;
 import ru.ydn.wicket.wicketorientdb.model.ODocumentModel;
+import ru.ydn.wicket.wicketorientdb.utils.FlexyMetaDataKey;
 import ru.ydn.wicket.wicketorientdb.utils.LombokExtensions;
 
 /**
@@ -177,6 +179,17 @@ public class OrientDbWebSession extends AuthenticatedWebSession {
 		this.password=null;
 		this.userModel.setObject(null);
 		ODatabaseRecordThreadLocal.instance().remove();
+	}
+	
+	public final synchronized <K, V extends Serializable> V getMetaData(final K key)
+	{
+		return FlexyMetaDataKey.get(this, key);
+	}
+	
+	public final synchronized <K, V extends Serializable> OrientDbWebSession setMetaData(final K key, final V value)
+	{
+		FlexyMetaDataKey.set(this, key, value);
+		return this;
 	}
 
 }
