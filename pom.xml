@@ -55,7 +55,7 @@
 			<!--<orientdb.version>3.2.0-SNAPSHOT</orientdb.version>-->
 		<orientdb.version>3.1.5</orientdb.version>
 		<jetty.version>9.4.12.v20180830</jetty.version>
-		<okhttp.version>3.14.9</okhttp.version>
+		<okhttp.version>4.9.0</okhttp.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<!-- allowed values: R7, 1.0, 1.5, 2.0 or none -->
 		<wtp.version>none</wtp.version>

@@ -8,6 +8,7 @@ import java.util.List;
 import okhttp3.Interceptor;
 import okhttp3.Request;
 import okhttp3.Response;
+import okhttp3.internal.connection.RealCall;
 import okhttp3.internal.http.RealInterceptorChain;
 
 /**
@@ -44,7 +45,15 @@ public class DynamicInterceptor implements Interceptor {
 			}
 			
 		});
-		RealInterceptorChain subChain = new RealInterceptorChain(interceptors, 
+		RealInterceptorChain subChain = new RealInterceptorChain((RealCall)original.call(), 
+																  interceptors, 
+																  0, 
+																  original.getExchange$okhttp(), 
+																  original.request(),
+																  original.connectTimeoutMillis(),
+																  original.readTimeoutMillis(),
+																  original.writeTimeoutMillis());
+		/*RealInterceptorChain subChain = new RealInterceptorChain(interceptors, 
 																 original.transmitter(), 
 																 original.exchange(),
 																 0,
@@ -52,7 +61,7 @@ public class DynamicInterceptor implements Interceptor {
 																 original.call(),
 																 original.connectTimeoutMillis(),
 																 original.readTimeoutMillis(),
-																 original.writeTimeoutMillis());
+																 original.writeTimeoutMillis());*/
 		return subChain.proceed(original.request());
 	}
 	

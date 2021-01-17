@@ -10,6 +10,7 @@ import org.apache.wicket.markup.html.WebPage;
 import ru.ydn.wicket.wicketorientdb.AbstractDataInstallator;
 import ru.ydn.wicket.wicketorientdb.EmbeddOrientDbApplicationListener;
 import ru.ydn.wicket.wicketorientdb.OrientDbWebApplication;
+import ru.ydn.wicket.wicketorientdb.rest.OrientDBHttpAPIResource;
 import ru.ydn.wicket.wicketorientdb.utils.OSchemaHelper;
 
 import java.sql.Date;
@@ -56,6 +57,7 @@ public class WicketApplication extends OrientDbWebApplication
 		getOrientDbSettings().setDbType(ODatabaseType.MEMORY);
 		getOrientDbSettings().setGuestUserName("admin");
 		getOrientDbSettings().setGuestPassword("admin");
+		OrientDBHttpAPIResource.mountOrientDbRestApi(this);
 		getApplicationListeners().add(new AbstractDataInstallator() {
 			
 			
