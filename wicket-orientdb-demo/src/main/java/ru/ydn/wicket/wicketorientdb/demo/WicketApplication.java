@@ -7,6 +7,9 @@ import com.orientechnologies.orient.core.metadata.schema.OType;
 import com.orientechnologies.orient.core.record.impl.ODocument;
 import org.apache.wicket.authroles.authentication.pages.SignInPage;
 import org.apache.wicket.markup.html.WebPage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import ru.ydn.wicket.wicketorientdb.AbstractDataInstallator;
 import ru.ydn.wicket.wicketorientdb.EmbeddOrientDbApplicationListener;
 import ru.ydn.wicket.wicketorientdb.OrientDbWebApplication;
@@ -21,6 +24,8 @@ import java.util.Random;
  */
 public class WicketApplication extends OrientDbWebApplication
 {
+	private static final Logger LOG = LoggerFactory.getLogger(WicketApplication.class);
+	
 	public static final String DB_NAME = "WicketOrientDb";
 	public static final String CLASS_NAME = "TestData";
 	public static final String PROP_NAME = "name";
@@ -83,6 +88,7 @@ public class WicketApplication extends OrientDbWebApplication
 				
 			}
 		});
+		LOG.info("Wicket-OrientDB Demo Web App has been started");
 	}
 
 	@Override
