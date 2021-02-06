@@ -22,6 +22,7 @@ import ru.ydn.wicket.wicketorientdb.converter.ODocumentConverter;
 import ru.ydn.wicket.wicketorientdb.converter.OIdentifiableConverter;
 import ru.ydn.wicket.wicketorientdb.rest.OrientDBHttpAPIResource;
 import ru.ydn.wicket.wicketorientdb.security.IResourceCheckingStrategy;
+import ru.ydn.wicket.wicketorientdb.security.OSecurityHelper;
 import ru.ydn.wicket.wicketorientdb.security.WicketOrientDbAuthorizationStrategy;
 import ru.ydn.wicket.wicketorientdb.service.ODatabaseHooksInstallListener;
 import ru.ydn.wicket.wicketorientdb.utils.FixFormEncTypeListener;
@@ -87,6 +88,7 @@ public abstract class OrientDbWebApplication extends AuthenticatedWebApplication
 	@Override
 	protected void init() {
 		super.init();
+		OSecurityHelper.init(); //Make sure that FEATURE was loaded
 		Orient.instance().registerThreadDatabaseFactory(new DefaultODatabaseThreadLocalFactory(this));
 		Orient.instance().addDbLifecycleListener(new ODatabaseHooksInstallListener(this));
 		getRequestCycleListeners().add(newTransactionRequestCycleListener());

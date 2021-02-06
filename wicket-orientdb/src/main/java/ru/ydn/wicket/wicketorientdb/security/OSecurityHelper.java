@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.apache.wicket.Component;
 import org.apache.wicket.authorization.Action;
+import org.apache.wicket.util.lang.Args;
 import org.apache.wicket.util.string.Strings;
 
 import com.orientechnologies.orient.core.db.ODatabaseRecordThreadLocal;
@@ -87,6 +88,10 @@ public class OSecurityHelper
 			return action;
 		}
 		
+	}
+	
+	public static void init() {
+		Args.notNull(FEATURE_RESOURCE, "FEATURE_RESOURCE");
 	}
 	private OSecurityHelper()
 	{
