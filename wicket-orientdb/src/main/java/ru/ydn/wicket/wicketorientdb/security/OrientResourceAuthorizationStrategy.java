@@ -137,19 +137,7 @@ public class OrientResourceAuthorizationStrategy  implements IAuthorizationStrat
 	public RequiredOrientResource[] getRequiredOrientResources(Class<?> clazz)
 	{
 		if(clazz.isAnonymousClass()) clazz = clazz.getSuperclass();
-		RequiredOrientResources resources = clazz.getAnnotation(RequiredOrientResources.class);
-		RequiredOrientResource singleResource = clazz.getAnnotation(RequiredOrientResource.class);
-		if(resources==null && singleResource==null) return null;
-		if(resources!=null && singleResource==null) return resources.value();
-		if(resources==null && singleResource!=null) return new RequiredOrientResource[]{singleResource};
-		if(resources!=null && singleResource!=null)
-		{
-			RequiredOrientResource[] ret = new RequiredOrientResource[resources.value().length+1];
-			ret[0]=singleResource;
-			System.arraycopy(resources.value(), 0, ret, 1, resources.value().length);
-			return ret;
-		}
-		return null;
+		return clazz.getAnnotationsByType(RequiredOrientResource.class);
 	}
 
 	@Override
