@@ -1,5 +1,7 @@
 package ru.ydn.wicket.wicketorientdb;
 
+import java.util.function.Supplier;
+
 import org.apache.wicket.Application;
 import org.apache.wicket.ConverterLocator;
 import org.apache.wicket.IApplicationListener;
@@ -7,6 +9,7 @@ import org.apache.wicket.IConverterLocator;
 import org.apache.wicket.authroles.authentication.AuthenticatedWebApplication;
 import org.apache.wicket.core.util.lang.PropertyResolver;
 import org.apache.wicket.protocol.http.WebApplication;
+import org.apache.wicket.request.IExceptionMapper;
 import org.apache.wicket.util.string.Strings;
 
 import com.orientechnologies.orient.core.Orient;
@@ -36,7 +39,7 @@ public abstract class OrientDbWebApplication extends AuthenticatedWebApplication
 	
 	private IOrientDbSettings orientDbSettings = new OrientDbSettings();
 	private OServer server;
-
+	private Supplier<IExceptionMapper> exceptionMapperProvider = () -> new OrientDefaultExceptionMapper();
 	@Override
 	protected Class<? extends OrientDbWebSession> getWebSessionClass()
 	{
@@ -92,7 +95,6 @@ public abstract class OrientDbWebApplication extends AuthenticatedWebApplication
 		Orient.instance().registerThreadDatabaseFactory(new DefaultODatabaseThreadLocalFactory(this));
 		Orient.instance().addDbLifecycleListener(new ODatabaseHooksInstallListener(this));
 		getRequestCycleListeners().add(newTransactionRequestCycleListener());
-		getRequestCycleListeners().add(new OrientDefaultExceptionsHandlingListener());
 		getSecuritySettings().setAuthorizationStrategy(new WicketOrientDbAuthorizationStrategy(this, this));
 		getApplicationListeners().add(new IApplicationListener() {
 			
@@ -159,6 +161,15 @@ public abstract class OrientDbWebApplication extends AuthenticatedWebApplication
 		return false;
 	}
 	
+	@Override
+	public Supplier<IExceptionMapper> getExceptionMapperProvider() {
+		return exceptionMapperProvider;
+	}
+	
+	protected void setExceptionMapperProvider(Supplier<IExceptionMapper> exceptionMapperProvider) {
+		this.exceptionMapperProvider = exceptionMapperProvider!=null?exceptionMapperProvider:super.getExceptionMapperProvider();
+	}
+
 	public final synchronized <K, V> V getMetaData(final K key)
 	{
 		return FlexyMetaDataKey.get(this, key);
