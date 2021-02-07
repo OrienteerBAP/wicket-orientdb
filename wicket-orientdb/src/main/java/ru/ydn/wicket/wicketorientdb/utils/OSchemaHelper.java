@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.function.Consumer;
 
 import org.apache.wicket.util.lang.Objects;
+import org.apache.wicket.util.string.Strings;
 
 import ru.ydn.wicket.wicketorientdb.OrientDbWebSession;
 
@@ -267,7 +268,7 @@ public class OSchemaHelper
 	public OSchemaHelper oIndex(INDEX_TYPE type)
 	{
 		checkOProperty();
-		return oIndex(lastProperty.getFullName(), type);
+		return oIndex(null, type);
 	}
 	
 	/**
@@ -279,7 +280,7 @@ public class OSchemaHelper
 	public OSchemaHelper oIndex(String name, INDEX_TYPE type)
 	{
 		checkOProperty();
-		return oIndex(name, type, lastProperty.getName());
+		return oIndex(Strings.defaultIfEmpty(name, lastProperty.getFullName()), type, lastProperty.getName());
 	}
 	
 	/**
