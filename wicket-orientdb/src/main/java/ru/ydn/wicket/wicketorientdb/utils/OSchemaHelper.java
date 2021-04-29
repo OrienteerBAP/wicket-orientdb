@@ -1,24 +1,22 @@
 package ru.ydn.wicket.wicketorientdb.utils;
 
-import java.util.List;
 import java.util.function.Consumer;
 
 import org.apache.wicket.util.lang.Objects;
 import org.apache.wicket.util.string.Strings;
 
-import ru.ydn.wicket.wicketorientdb.OrientDbWebSession;
-
 import com.orientechnologies.orient.core.db.ODatabaseSession;
 import com.orientechnologies.orient.core.db.document.ODatabaseDocument;
 import com.orientechnologies.orient.core.index.OIndex;
 import com.orientechnologies.orient.core.metadata.schema.OClass;
+import com.orientechnologies.orient.core.metadata.schema.OClass.INDEX_TYPE;
 import com.orientechnologies.orient.core.metadata.schema.OProperty;
 import com.orientechnologies.orient.core.metadata.schema.OSchema;
 import com.orientechnologies.orient.core.metadata.schema.OType;
-import com.orientechnologies.orient.core.metadata.schema.OClass.INDEX_TYPE;
 import com.orientechnologies.orient.core.record.impl.ODocument;
 import com.orientechnologies.orient.core.sql.executor.OResultSet;
-import com.orientechnologies.orient.core.sql.query.OSQLSynchQuery;
+
+import ru.ydn.wicket.wicketorientdb.OrientDbWebSession;
 
 /**
  * Utility to help create/update a schema

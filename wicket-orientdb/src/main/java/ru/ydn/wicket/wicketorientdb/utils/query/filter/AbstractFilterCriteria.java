@@ -13,11 +13,13 @@ public abstract class AbstractFilterCriteria<T> implements IFilterCriteria<T> {
 
 	private static final long serialVersionUID = 1L;
 	private final String field;
+	private final String preparedFieldName;
     private final IModel<T> model;
     private final IModel<Boolean> join;
 
     public AbstractFilterCriteria(String field, IModel<T> model, IModel<Boolean> join) {
         this.field = field;
+        this.preparedFieldName = field.replace('.', '_');
         this.model = model;
         this.join = join;
     }
@@ -56,7 +58,7 @@ public abstract class AbstractFilterCriteria<T> implements IFilterCriteria<T> {
 
     @Override
     public String getName() {
-        return getFilterCriteriaType().getName() + field;
+        return getFilterCriteriaType().getName() + preparedFieldName;
     }
 
     @Override
