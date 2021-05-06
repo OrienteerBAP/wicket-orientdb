@@ -17,7 +17,7 @@ public class EmbeddedContainsKeyCriteria<T> extends AbstractFilterCriteria<T> {
 
     @Override
     protected String apply(String field) {
-        return " " + field + ".keys() CONTAINS :" + getName();
+        return " " + field + ".keys() CONTAINS :" + getPSVariableName();
     }
 
     @Override

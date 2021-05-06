@@ -17,7 +17,7 @@ public class EqualsFilterCriteria<T> extends AbstractFilterCriteria<T> {
 
     @Override
     protected String apply(String field) {
-        return field + " = :" + getName();
+        return field + " = :" + getPSVariableName();
     }
 
     @Override

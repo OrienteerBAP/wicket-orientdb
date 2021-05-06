@@ -20,7 +20,7 @@ public class CollectionFilterCriteria<C> extends AbstractFilterCriteria<Collecti
     @Override
     @SuppressWarnings("unchecked")
     protected String apply(String field) {
-        return field + " IN :" + getName();
+        return field + " IN :" + getPSVariableName();
     }
 
     @Override

@@ -22,7 +22,7 @@ public class CollectionLinkFilterCriteria extends CollectionFilterCriteria<ODocu
     @Override
     @SuppressWarnings("unchecked")
     protected String apply(String field) {
-        return field + " IN [:" + getName()+"]";
+        return field + " IN [:" + getPSVariableName()+"]";
     }
 
     @Override

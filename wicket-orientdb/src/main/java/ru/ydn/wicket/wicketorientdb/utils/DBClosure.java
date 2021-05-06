@@ -52,7 +52,7 @@ public abstract class DBClosure<V> implements Serializable {
 			orientDbThreadLocal.remove(); //Required to avoid stack of transactions
 		}
 		try {
-			db = getSettings().getContext().cachedPool(getDbName(), getUsername(), getPassword()).acquire();
+			db = openNewODatabaseSession();
 			db.activateOnCurrentThread();
 			return execute(db);
 		} 
@@ -66,6 +66,10 @@ public abstract class DBClosure<V> implements Serializable {
 				orientDbThreadLocal.remove();
 			}
 		}
+	}
+	
+	protected ODatabaseSession openNewODatabaseSession() {
+		return getSettings().getContext().cachedPool(getDbName(), getUsername(), getPassword()).acquire();
 	}
 	
 	protected String getDbName() {

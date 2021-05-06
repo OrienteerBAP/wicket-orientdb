@@ -60,6 +60,11 @@ public abstract class AbstractFilterCriteria<T> implements IFilterCriteria<T> {
     public String getName() {
         return getFilterCriteriaType().getName() + preparedFieldName;
     }
+    
+    @Override
+	public String getPSVariableName() {
+		return getName();
+	}
 
     @Override
     @SuppressWarnings("unchecked")

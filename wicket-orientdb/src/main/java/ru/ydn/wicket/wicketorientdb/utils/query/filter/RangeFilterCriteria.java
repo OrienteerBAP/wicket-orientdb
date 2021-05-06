@@ -22,11 +22,11 @@ public class RangeFilterCriteria<C> extends AbstractFilterCriteria<List<C>> {
         String result;
         List<?> list = (List<?>) getModel().getObject();
         if (list.get(0) != null && list.get(1) != null) {
-            result = field + " BETWEEN :" + getName() + "0 AND :" + getName() + "1";
+            result = field + " BETWEEN :" + getPSVariableName() + "0 AND :" + getPSVariableName() + "1";
         } else if (list.get(0) != null && list.get(1) == null) {
-            result = field + " >= :" + getName();
+            result = field + " >= :" + getPSVariableName();
         } else {
-            result = field + " <= :" + getName();
+            result = field + " <= :" + getPSVariableName();
         }
         return result;
     }

@@ -19,7 +19,7 @@ public class ContainsTextFilterCriteria extends AbstractFilterCriteria<String> {
 
     @Override
     protected String apply(String field) {
-        return (toStringRequired?field + ".asString()" : field) + " CONTAINSTEXT :" + getName();
+        return (toStringRequired?field + ".asString()" : field) + " CONTAINSTEXT :" + getPSVariableName();
     }
 
     @Override

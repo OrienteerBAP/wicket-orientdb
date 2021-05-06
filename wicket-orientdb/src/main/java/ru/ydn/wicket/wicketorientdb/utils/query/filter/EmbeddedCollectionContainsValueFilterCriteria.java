@@ -17,7 +17,7 @@ public class EmbeddedCollectionContainsValueFilterCriteria<T> extends AbstractFi
 
     @Override
     protected String apply(String field) {
-        return field + " CONTAINS :" + getName();
+        return field + " CONTAINS :" + getPSVariableName();
     }
 
     @Override

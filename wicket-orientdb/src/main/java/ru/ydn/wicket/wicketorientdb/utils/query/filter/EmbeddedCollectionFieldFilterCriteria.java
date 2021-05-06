@@ -22,7 +22,7 @@ public class EmbeddedCollectionFieldFilterCriteria<C> extends AbstractFilterCrit
 
     @Override
     protected String apply(String field) {
-        return field + "." + key.getObject() + " IN :" + getName();
+        return field + "." + key.getObject() + " IN :" + getPSVariableName();
     }
 
     @Override

@@ -15,7 +15,7 @@ public class MapContainsValueFilterCriteria<T> extends AbstractFilterCriteria<T>
 
     @Override
     protected String apply(String field) {
-        return field + " CONTAINSVALUE :" + getName();
+        return field + " CONTAINSVALUE :" + getPSVariableName();
     }
 
     @Override

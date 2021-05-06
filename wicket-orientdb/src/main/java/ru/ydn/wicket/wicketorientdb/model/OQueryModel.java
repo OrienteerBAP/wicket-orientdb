@@ -138,10 +138,10 @@ public class OQueryModel<K> extends LoadableDetachableModel<List<K>>
                     Object first = list.get(0);
                     Object second = list.get(1);
                     if (first != null && second != null) {
-                        setParameter(criteria.getName() + 0, Model.of((Serializable) first));
-                        setParameter(criteria.getName() + 1, Model.of((Serializable) second));
-                    } else setParameter(criteria.getName(), Model.of(first != null ? (Serializable) first : (Serializable) second));
-                } else setParameter(criteria.getName(), criteria.getModel());
+                        setParameter(criteria.getPSVariableName() + 0, Model.of((Serializable) first));
+                        setParameter(criteria.getPSVariableName() + 1, Model.of((Serializable) second));
+                    } else setParameter(criteria.getPSVariableName(), Model.of(first != null ? (Serializable) first : (Serializable) second));
+                } else setParameter(criteria.getPSVariableName(), criteria.getModel());
             }
         }
     }

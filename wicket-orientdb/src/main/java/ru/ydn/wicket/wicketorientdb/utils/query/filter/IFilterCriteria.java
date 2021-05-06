@@ -29,6 +29,11 @@ public interface IFilterCriteria<T> extends IClusterable {
      * @return filter name
      */
     public String getName();
+    
+    /**
+     * @return prepared statement variable name
+     */
+    public String getPSVariableName();
 
     /**
      * @return model for filtering
