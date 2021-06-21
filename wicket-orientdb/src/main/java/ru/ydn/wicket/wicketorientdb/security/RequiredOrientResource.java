@@ -5,7 +5,7 @@ import org.apache.wicket.authorization.Action;
 /**
  * Annotation for specification of required OrientDB resources
  */
-@java.lang.annotation.Target(value = {java.lang.annotation.ElementType.TYPE})
+@java.lang.annotation.Target(value = {java.lang.annotation.ElementType.TYPE, java.lang.annotation.ElementType.METHOD})
 @java.lang.annotation.Retention(value = java.lang.annotation.RetentionPolicy.RUNTIME)
 @java.lang.annotation.Documented
 @java.lang.annotation.Repeatable(RequiredOrientResources.class)
