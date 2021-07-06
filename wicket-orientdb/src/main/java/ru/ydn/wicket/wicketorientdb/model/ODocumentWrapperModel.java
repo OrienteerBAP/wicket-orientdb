@@ -1,6 +1,9 @@
 package ru.ydn.wicket.wicketorientdb.model;
 
 import com.orientechnologies.orient.core.exception.ORecordNotFoundException;
+import com.orientechnologies.orient.core.metadata.schema.OClass;
+import com.orientechnologies.orient.core.record.impl.ODocument;
+
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 
@@ -11,7 +14,7 @@ import com.orientechnologies.orient.core.type.ODocumentWrapper;
  *
  * @param <T> {@link ODocumentWrapper} type
  */
-public class ODocumentWrapperModel<T extends ODocumentWrapper> extends Model<T> {
+public class ODocumentWrapperModel<T extends ODocumentWrapper> extends Model<T> implements IOClassAware {
 	private static final long serialVersionUID = 1L;
 	
 	private boolean needToReload=false;
@@ -44,6 +47,14 @@ public class ODocumentWrapperModel<T extends ODocumentWrapper> extends Model<T> 
 	public void setObject(T object) {
 		super.setObject(object);
 		needToReload = false;
+	}
+	
+	@Override
+	public OClass getSchemaClass() {
+		T object = getObject();
+		if(object==null) return null;
+		ODocument doc = object.getDocument();
+		return doc!=null?doc.getSchemaClass():null;
 	}
 
 	@Override

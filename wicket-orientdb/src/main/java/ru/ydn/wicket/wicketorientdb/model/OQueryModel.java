@@ -33,7 +33,7 @@ import java.util.stream.Collectors;
  * Model to obtain data from OrientDB by query
  * @param <K> The Model Object type
  */
-public class OQueryModel<K> extends LoadableDetachableModel<List<K>>
+public class OQueryModel<K> extends LoadableDetachableModel<List<K>> implements IOClassAware
 {
 	private static class GetObjectAndWrapDocumentsFunction<T> extends GetObjectFunction<T>
 	{
@@ -66,6 +66,8 @@ public class OQueryModel<K> extends LoadableDetachableModel<List<K>>
     private boolean isAscending =true;
     
     private transient Long size;
+    
+    private IModel<OClass> probedClassModel;
     
     /**
 	 * @param sql SQL to be executed to obtain data
@@ -223,9 +225,18 @@ public class OQueryModel<K> extends LoadableDetachableModel<List<K>>
      * @param probeLimit size of a probe
      * @return OClass or null if there is no common parent for {@link ODocument}'s in a sample
      */
-    public OClass probeOClass(int probeLimit) {
+    protected OClass probeOClass(int probeLimit) {
     	Iterator<ODocument> it = iterator(0, probeLimit, null);
     	return OSchemaUtils.probeOClass(it, probeLimit);
+    }
+    
+    @Override
+    public OClass getSchemaClass() {
+    	if(probedClassModel==null) {
+    		OClass oClass = probeOClass(20);
+    		probedClassModel = new OClassModel(oClass);
+    	}
+    	return probedClassModel.getObject();
     }
     
     protected String prepareSql(Integer first, Integer count)
@@ -322,6 +333,7 @@ public class OQueryModel<K> extends LoadableDetachableModel<List<K>>
         {
             model.detach();
         }
+        if(probedClassModel!=null)probedClassModel.detach();
         super.detach();
         size=null;
     }

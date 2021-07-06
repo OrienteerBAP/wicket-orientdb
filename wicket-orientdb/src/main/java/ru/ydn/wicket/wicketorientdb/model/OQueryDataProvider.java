@@ -15,7 +15,7 @@ import com.orientechnologies.orient.core.record.impl.ODocument;
  * Provider of data by quering of OrientDB
  * @param <K> The provider object type
  */
-public class OQueryDataProvider <K> extends AbstractFilteredProvider<K, String> {
+public class OQueryDataProvider <K> extends AbstractFilteredProvider<K, String> implements IOClassAware {
 	private static final long serialVersionUID = 1L;
 	private OQueryModel<K> model;
 
@@ -76,8 +76,13 @@ public class OQueryDataProvider <K> extends AbstractFilteredProvider<K, String> 
         return (Iterator<K>)model.iterator(first, count);        
     }
     
-    public OClass probeOClass(int probeLimit) {
+    protected OClass probeOClass(int probeLimit) {
     	return model.probeOClass(probeLimit);
+    }
+    
+    @Override
+    public OClass getSchemaClass() {
+    	return model.getSchemaClass();
     }
 
     @SuppressWarnings("unchecked")

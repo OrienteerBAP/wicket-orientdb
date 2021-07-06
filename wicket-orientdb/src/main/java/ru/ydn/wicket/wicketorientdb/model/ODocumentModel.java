@@ -13,13 +13,14 @@ import com.orientechnologies.orient.core.db.document.ODatabaseDocument;
 import com.orientechnologies.orient.core.db.record.OIdentifiable;
 import com.orientechnologies.orient.core.exception.ORecordNotFoundException;
 import com.orientechnologies.orient.core.id.ORID;
+import com.orientechnologies.orient.core.metadata.schema.OClass;
 import com.orientechnologies.orient.core.record.ORecordInternal;
 import com.orientechnologies.orient.core.record.impl.ODocument;
 
 /**
  * Model for storing of {@link ODocument}
  */
-public class ODocumentModel extends LoadableDetachableModel<ODocument> implements IObjectClassAwareModel<ODocument>, IComponentInheritedModel<ODocument>
+public class ODocumentModel extends LoadableDetachableModel<ODocument> implements IObjectClassAwareModel<ODocument>, IComponentInheritedModel<ODocument>, IOClassAware
 {
 	private static final long serialVersionUID = 1L;
 	private ORID orid;
@@ -39,6 +40,12 @@ public class ODocumentModel extends LoadableDetachableModel<ODocument> implement
 	@Override
 	public Class<ODocument> getObjectClass() {
 		return ODocument.class;
+	}
+	
+	@Override
+	public OClass getSchemaClass() {
+		ODocument doc = getObject();
+		return doc!=null?doc.getSchemaClass():null;
 	}
 	
 	/**
