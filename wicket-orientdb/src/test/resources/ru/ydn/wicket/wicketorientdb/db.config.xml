@@ -13,4 +13,7 @@
     <users>
 	<user name="root" password="WicketOrientDB" resources="*"/>
     </users>
+    <properties>
+    	<entry name="security.createDefaultUsers" value="true"/>
+    </properties>
 </orient-server>

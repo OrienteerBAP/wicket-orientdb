@@ -30,19 +30,23 @@ public final class ODbUtils {
     public static void fixOrientDBRights(ODatabase<?> db) {
         OSecurity security = db.getMetadata().getSecurity();
         ORole readerRole = security.getRole("reader");
-        readerRole.grant(ResourceGeneric.CLUSTER, "orole", ORole.PERMISSION_READ);
-        readerRole.grant(ResourceGeneric.CLUSTER, "ouser", ORole.PERMISSION_READ);
-        readerRole.grant(ResourceGeneric.CLASS, "orole", ORole.PERMISSION_READ);
-        readerRole.grant(ResourceGeneric.CLASS, "ouser", ORole.PERMISSION_READ);
-        readerRole.grant(ResourceGeneric.SYSTEM_CLUSTERS, null, ORole.PERMISSION_READ);
-        readerRole.save();
+        if(readerRole!=null) {
+	        readerRole.grant(ResourceGeneric.CLUSTER, "orole", ORole.PERMISSION_READ);
+	        readerRole.grant(ResourceGeneric.CLUSTER, "ouser", ORole.PERMISSION_READ);
+	        readerRole.grant(ResourceGeneric.CLASS, "orole", ORole.PERMISSION_READ);
+	        readerRole.grant(ResourceGeneric.CLASS, "ouser", ORole.PERMISSION_READ);
+	        readerRole.grant(ResourceGeneric.SYSTEM_CLUSTERS, null, ORole.PERMISSION_READ);
+	        readerRole.save();
+        }
         ORole writerRole = security.getRole("writer");
-        writerRole.grant(ResourceGeneric.CLUSTER, "orole", ORole.PERMISSION_READ);
-        writerRole.grant(ResourceGeneric.CLUSTER, "ouser", ORole.PERMISSION_READ);
-        writerRole.grant(ResourceGeneric.CLASS, "orole", ORole.PERMISSION_READ);
-        writerRole.grant(ResourceGeneric.CLASS, "ouser", ORole.PERMISSION_READ);
-        writerRole.grant(ResourceGeneric.SYSTEM_CLUSTERS, null, ORole.PERMISSION_READ);
-        writerRole.save();
+        if(writerRole!=null) {
+	        writerRole.grant(ResourceGeneric.CLUSTER, "orole", ORole.PERMISSION_READ);
+	        writerRole.grant(ResourceGeneric.CLUSTER, "ouser", ORole.PERMISSION_READ);
+	        writerRole.grant(ResourceGeneric.CLASS, "orole", ORole.PERMISSION_READ);
+	        writerRole.grant(ResourceGeneric.CLASS, "ouser", ORole.PERMISSION_READ);
+	        writerRole.grant(ResourceGeneric.SYSTEM_CLUSTERS, null, ORole.PERMISSION_READ);
+	        writerRole.save();
+        }
     }
 
     /**
