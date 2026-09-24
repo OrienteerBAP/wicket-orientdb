@@ -1,0 +1,14 @@
+# Minimal settings matching the existing code style. Do not reformat existing files:
+# trailing whitespace and final newlines are intentionally not enforced.
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+
+[*.{java,xml,html}]
+indent_style = tab
+tab_width = 4
+
+[*.cmd]
+end_of_line = crlf

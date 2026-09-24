@@ -79,8 +79,8 @@ Goal: `./mvnw clean verify` green on JDK 21 and 25 with `--release 21`, Wicket 8
 `./mvnw install` puts jar + test-jar + parent pom for `2.0-SNAPSHOT` into `~/.m2`.
 Baseline (2026-09-24, JDK 21): Checkstyle 6.18 passes; `compile` fails with `IllegalAccessError` from Lombok 1.18.16.
 
-- [ ] A1 Maven Wrapper 3.9.16 (`mvn wrapper:wrapper -Dmaven=3.9.16 -Dtype=only-script`): commit `mvnw`, `mvnw.cmd`, `.mvn/wrapper/maven-wrapper.properties`
-- [ ] A1 `.sdkmanrc` (`java=21.0.11-tem`) and a minimal `.editorconfig` (UTF-8, LF, tabs for `*.java`/`*.xml`/`*.html`; no trailing-whitespace or final-newline enforcement — 31 files lack one; **no reformat**)
+- [x] A1 Maven Wrapper 3.9.16 (`mvn wrapper:wrapper -Dmaven=3.9.16 -Dtype=only-script`): commit `mvnw`, `mvnw.cmd`, `.mvn/wrapper/maven-wrapper.properties` — 2026-09-24, wrapper plugin 3.3.4
+- [x] A1 `.sdkmanrc` (`java=21.0.11-tem`) and a minimal `.editorconfig` (UTF-8, LF, tabs for `*.java`/`*.xml`/`*.html`; no trailing-whitespace or final-newline enforcement — 31 files lack one; **no reformat**) — 2026-09-24
 - [ ] A2 Compiler: `maven.compiler.release=21` replaces `java.version` source/target (there was no `-parameters`; not added)
 - [ ] A2 Lombok 1.18.16 → 1.18.48, declared in `maven-compiler-plugin` `annotationProcessorPaths` (required from JDK 23)
 - [ ] A2 `converter.HexConverter` (+ `ConvertersTests`): `javax.xml.bind.DatatypeConverter` → `java.util.HexFormat` (upper-case output, case-insensitive parsing, `IllegalArgumentException` on bad input — same behavior)
