@@ -23,27 +23,30 @@ and is modernized in lockstep with it. Dormant from Feb 2024 to Sep 2026.
 
 | Area | Current | Target (see plan) |
 |---|---|---|
-| Java | `--release 21` (`maven.compiler.release` in root pom) | verified on JDK 21 and 25 (Stage A) |
+| Java | `--release 21` (`maven.compiler.release`), built/tested on JDK 21 **and** 25 | stays 21 |
 | Web | Wicket 8.15 (core, extensions, auth-roles), `javax.servlet-api` 3.0.1 `provided` | Wicket 9.x (B) → 10.x + jakarta Servlet 6 (C) |
-| DB | OrientDB 3.2.56 (core + server; embedded server supported) | latest 3.2.x; Orienteer decides the runtime version |
+| DB | OrientDB 3.2.56 (core + server; embedded server supported); GraalJS 25.0.4 replaces OrientDB's Graal 21.3.5 | latest 3.2.x; Orienteer decides the runtime version |
 | Other | Guava 33, OkHttp 4.9 (+ logging-interceptor), Lombok 1.18.48 `provided`, SLF4J 1.7 (via Wicket) | OkHttp current (C) |
-| Tests | JUnit 4.13, `WicketTester`, embedded OrientDB | JUnit 4.13.2 (A), Jupiter (B, required by Wicket 9 testers) |
+| Tests | JUnit 4.13.2, `WicketTester`, embedded OrientDB | Jupiter + vintage (B, required by Wicket 9 testers) |
 | DI | none (no Guice, no `javax.inject`) | nothing to do |
 
 ## Build status — read first
 
-- Stage A in progress: the build is green on JDK 21 with `--release 21` (Lombok 1.18.48 via `annotationProcessorPaths`,
-  `HexFormat` instead of `javax.xml.bind`). JDK 8 is gone for good; don't try to keep a JDK 8 build working.
-- Dev machine: Maven 3.9 (Homebrew), Temurin 21 via SDKMAN (default). Homebrew JDK 27 is non-LTS — don't target it.
+- **Stage A done (2026-09-24):** `./mvnw clean verify` is green on Temurin 21 and 25 (103 tests, 17 `@Ignore`d), no
+  `--add-opens` needed. Next: Stage B/C and phase R (publishing) — see the plan. JDK 8 is gone; don't support it.
+- Use `./mvnw` (Maven 3.9.16). Enforcer requires Maven ≥ 3.9 and JDK ≥ 21. `.sdkmanrc` pins Temurin 21.0.11;
+  Temurin 25.0.4 is installed for verification: `JAVA_HOME=~/.sdkman/candidates/java/25.0.4-tem ./mvnw clean verify`.
+  Homebrew JDK 27 is non-LTS — don't target it.
+- Plugin versions live only in the root `<pluginManagement>`; don't add versions in module poms.
 - Dead infra: oss.sonatype.org (OSSRH) and jcenter/bintray. Publishing moves to the Central Portal (plan phase R).
 
 ## Commands
 
 ```bash
-mvn clean verify                                   # build + tests + checkstyle (runs at validate, fails the build)
-mvn -DskipTests install                            # fast install into ~/.m2 for Orienteer
-mvn -pl wicket-orientdb test -Dtest=TestModels     # single test class
-mvn -pl wicket-orientdb-demo jetty:run             # demo app on :8080 with embedded OrientDB
+./mvnw clean verify                                 # build + tests + checkstyle (runs at validate, fails the build)
+./mvnw install                                      # install jar + test-jar + parent pom into ~/.m2 for Orienteer
+./mvnw -pl wicket-orientdb test -Dtest=TestModels   # single test class
+./mvnw -pl wicket-orientdb-demo jetty:run           # demo on :8080 (install first); embedded OrientDB
 ```
 
 ## Layout and key classes
@@ -77,7 +80,8 @@ mvn -pl wicket-orientdb-demo jetty:run             # demo app on :8080 with embe
   binary port 2424-2430, HTTP 2480-2490). REST tests go through that real HTTP listener.
 - Users: admin/admin, reader/reader, writer/writer (OrientDB default users). `TestDataInstallator` creates the test
   schema and data, including JavaScript `OFunction`s (executed by GraalJS, pulled in by OrientDB).
-- 17 tests are `@Ignore`d on purpose (OrientDB issues, remote server needed) — see plan Appendix C.
+- 17 tests are `@Ignore`d on purpose (OrientDB issues, remote server needed) — see plan Appendix C. Tests that loop
+  over results must also assert the count (an empty-iterator bug hid behind such a loop until Stage A).
 
 ## Pitfalls
 

@@ -6,10 +6,11 @@ the REST bridge mounted at `/orientdb`, and `HomePage` listing the data. Root ru
 
 - **Not published:** `maven-deploy-plugin` `skip=true`. Orienteer does not use it. It may be **parked** (removed from the
   root `<modules>`) if it ever blocks a stage — record that in `../REFRESH_PLAN.md`.
-- **Run:** `mvn -pl wicket-orientdb-demo -am install -DskipTests` once, then `mvn -pl wicket-orientdb-demo jetty:run`
-  (Jetty 9.4 plugin, :8080). `src/test/java/.../Start.java` is an alternative embedded-Jetty launcher using the
-  test-scoped `jetty-all` uber jar and the Wicket quickstart `keystore` (expired certificate, password `wicket`).
-- **Logging:** the only place with a logging binding (`log4j-slf4j-impl`) and `src/main/resources/log4j2.xml`. Keep it here.
+- **Run:** `./mvnw install -DskipTests` once, then `./mvnw -pl wicket-orientdb-demo jetty:run` (Jetty 9.4.58 plugin, :8080;
+  works on JDK 21 and 25 — the plugin gets ASM `${jetty.asm.version}` so it can scan Java 25 multi-release jars).
+  `src/test/java/.../Start.java` is an alternative embedded-Jetty launcher using the test-scoped `jetty-all` uber jar
+  and the Wicket quickstart `keystore` (expired certificate, password `wicket`).
+- **Logging:** the only place with a logging binding (`log4j-slf4j-impl` 2.26.1) and `src/main/resources/log4j2.xml`. Keep it here.
 - **Tests:** 1 (`TestHomePage`, WicketTester renders `HomePage`; starts the embedded server, binds 2424+/2480+).
 - **Guest user** is `admin/admin` (demo only).
 

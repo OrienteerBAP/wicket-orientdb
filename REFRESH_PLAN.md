@@ -13,7 +13,7 @@ Started: 2026-09-24. Versions below were checked on Maven Central on that date �
 | Phase | Goal | Depends on | Unblocks Orienteer | Status |
 |---|---|---|---|---|
 | P0 | AI initialization: AGENTS.md files + this plan | — | — | done |
-| A | Stage A: JDK 21/25 build on the **same** framework majors (Wicket 8.15, javax, OrientDB 3.2.x), `./mvnw install` | P0 | P3 | todo |
+| A | Stage A: JDK 21/25 build on the **same** framework majors (Wicket 8.15, javax, OrientDB 3.2.x), `./mvnw install` | P0 | P3 | done (local install; published artifact → R) |
 | B | Stage B: Wicket 9.x, still javax; JUnit 5 in the test-jar | A | P5 | todo |
 | C | Stage C: Wicket 10.x, `jakarta.servlet` 6, `wicket-tester`, OkHttp current | B | P6 | todo |
 | R | Release & CI: GitHub Actions, Maven Central via the Central Portal (releases + snapshots) | A (CI), C (final release) | P3 "resolvable from a real repo" | todo |
@@ -99,9 +99,9 @@ Baseline (2026-09-24, JDK 21): Checkstyle 6.18 passes; `compile` fails with `Ill
 - [x] A11 JDK 25 blocker: OrientDB's GraalVM/Truffle 21.3.5 → GraalJS 25.0.4 (D11); `TestRestApi.testExecuteFunction` (JS `OFunction`s over the REST bridge) passes on 21 and 25 — 2026-09-24. First JDK 25 run without it: all 11 embedded-server test classes failed in `initializationError`
 - [x] A11 Demo `jetty:run` on JDK 25: Jetty 9.4.58's annotation scanner (ASM 9.7.1) failed on the Java 25 multi-release classes of `bcprov-jdk18on` 1.85 (new transitive dep of OrientDB 3.2.56 server) → ASM 9.10.1 as a `jetty-maven-plugin` dependency (`jetty.asm.version`); home page + REST bridge verified on 21 and 25 — 2026-09-24
 - [x] A11 Install Temurin 25.0.4 (SDKMAN, not default); `./mvnw clean verify` green on 21 **and** 25 — 2026-09-24: both 103 run / 17 skipped / 0 failures (+ demo 1/0)
-- [ ] A11 `./mvnw install`; confirm `~/.m2/repository/ru/ydn/wicket/wicket-orientdb/wicket-orientdb/2.0-SNAPSHOT/` has the jar **and** `-tests.jar`, and the parent pom is installed; class files are major version 65
-- [ ] A11 Update `AGENTS.md` (build status, stack) and write "Handoff to Orienteer" below
-- [ ] Exit check: `./mvnw clean verify` green on JDK 21 and 25; `./mvnw install` done; test results match Appendix C (differences explained)
+- [x] A11 `./mvnw install`; confirm `~/.m2/repository/ru/ydn/wicket/wicket-orientdb/wicket-orientdb/2.0-SNAPSHOT/` has the jar **and** `-tests.jar`, and the parent pom is installed; class files are major version 65 — 2026-09-24: jar (177 classes) + `-tests.jar` (42 classes) + pom, parent pom; all class files major 65; manifest `Build-Jdk-Spec: 21`
+- [x] A11 Update `AGENTS.md` (build status, stack) and write "Handoff to Orienteer" below — 2026-09-24
+- [x] Exit check: `./mvnw clean verify` green on JDK 21 and 25; `./mvnw install` done; test results match Appendix C (differences explained) — 2026-09-24: 103 run / 17 skipped (= the 17 static `@Ignore`s) / 0 failures on both JDKs; +2 tests vs baseline (A2); demo 1/0. **Stage A done**
 
 ## B — Stage B: Wicket 8 → 9, still javax (→ Orienteer P5)
 
@@ -238,6 +238,9 @@ Surefire 3.5.4 (Maven default, used in A2) reports a class-level `@Ignore` as **
 | **wicket-orientdb total** | **101 → 103** | **17** | **100 / 14**, 0 failures | 12 classes |
 | demo `TestHomePage` | 1 | 0 | 1 / 0 | WicketTester + embedded server |
 
+Stage A exit (A11, surefire 3.6.0, OrientDB 3.2.56, GraalJS 25.0.4): **JDK 21.0.11 and JDK 25.0.4: 103 run, 17 skipped,
+0 failures, 0 errors**; demo 1 run. The 17 skipped are exactly the static `@Ignore`s above.
+
 ## Appendix D — Stage B/C inventory (2026-09-24)
 
 | Item | Where (main / test-jar) | Stage |
@@ -268,4 +271,118 @@ javap -v -cp wicket-orientdb/target/classes ru.ydn.wicket.wicketorientdb.OrientD
 
 ## Handoff to Orienteer
 
-_Filled in when Stage A is complete (A11)._
+Stage A, 2026-09-24. This covers the local install only: nothing has been pushed or published, so Orienteer must run `./mvnw install` in this repo first (see phase R).
+
+### 1. Installed artifacts (`~/.m2/repository/ru/ydn/wicket/wicket-orientdb/`)
+
+| Coordinates | File |
+|---|---|
+| `ru.ydn.wicket.wicket-orientdb:wicket-orientdb-parent:2.0-SNAPSHOT:pom` | `wicket-orientdb-parent/2.0-SNAPSHOT/wicket-orientdb-parent-2.0-SNAPSHOT.pom` |
+| `ru.ydn.wicket.wicket-orientdb:wicket-orientdb:2.0-SNAPSHOT:jar` | `wicket-orientdb/2.0-SNAPSHOT/wicket-orientdb-2.0-SNAPSHOT.jar` (177 classes) |
+| `ru.ydn.wicket.wicket-orientdb:wicket-orientdb:2.0-SNAPSHOT:test-jar` (classifier `tests`) | `wicket-orientdb/2.0-SNAPSHOT/wicket-orientdb-2.0-SNAPSHOT-tests.jar` (42 classes) |
+| (demo, not for Orienteer) `wicket-orientdb-demo:2.0-SNAPSHOT:war` | `wicket-orientdb-demo/2.0-SNAPSHOT/` |
+
+- **Bytecode:** `--release 21`, so every class file is major version **65**; the manifest says `Build-Jdk-Spec: 21`. JDK 17 cannot load the classes.
+- **Built and tested with:** Temurin 21.0.11 and Temurin 25.0.4, using Maven 3.9.16 through `./mvnw`.
+
+### 2. Versions compiled against
+
+| Library | Version | Scope in the library pom |
+|---|---|---|
+| Apache Wicket (core, extensions, auth-roles) | 8.15.0 | compile |
+| Servlet API | `javax.servlet:javax.servlet-api` 3.0.1 | **provided** |
+| OrientDB (core, server → client, tools) | **3.2.56** (was 3.2.27) | compile |
+| GraalJS (`polyglot`, `js-scriptengine`; `js` pom at runtime) | **25.0.4**, replacing OrientDB's GraalVM 21.3.5 (D11) | compile / runtime |
+| Guava | 33.0.0-jre | compile |
+| OkHttp + logging-interceptor | 4.9.0 (kotlin-stdlib 1.4.10, okio 2.8.0) | compile |
+| Jackson | `jackson-core` 2.22.0, transitive from OrientDB (was 2.15.2); no databind | — |
+| SLF4J | `slf4j-api` 1.7.25, transitive from Wicket; **no binding** | — |
+| Log4j | not a library dependency. The demo only uses `log4j-slf4j-impl` 2.26.1 | — |
+| Guice / `javax.inject` | not used | — |
+| Lombok | 1.18.48, declared in `annotationProcessorPaths` | provided |
+| JUnit | 4.13.2 | test |
+
+### 3. JVM flags Orienteer must mirror
+
+- **Required: none.** Every test passes on JDK 21 and on JDK 25 without `--add-opens` or `--add-exports`.
+- **Optional, and only for quieter logs or better diagnostics:**
+  - `--add-opens java.base/java.io=ALL-UNNAMED` (valid on JDK 21 and 25): Wicket 8's `CheckingObjectOutputStream` needs this to print a field path for "not serializable" errors in development mode. Without it Wicket silently falls back to a less detailed message.
+  - `--enable-native-access=ALL-UNNAMED` (JDK 21 and 25): silences the JDK 25 warning about Truffle's `System::load`.
+  - `--sun-misc-unsafe-memory-access=allow`: silences the `sun.misc.Unsafe::objectFieldOffset` warning Truffle triggers on JDK 25. This flag exists **only on JDK 23+**, and JDK 21 refuses to start with it, so put it in a JDK-activated profile or leave it out.
+  - `-Dpolyglot.engine.WarnInterpreterOnly=false`: silences Truffle's "fallback runtime" warning, which appears on both JDKs and existed before this change.
+- **Not seen in tests:** OrientDB's jar manifest lists `Add-Opens: jdk.unsupported/sun.misc java.base/sun.security.x509`. The tests didn't need these, so only add them if the Orienteer standalone jar or Docker image shows problems.
+
+### 4. Actions required in Orienteer (P1/P3)
+
+1. **Exclude GraalVM 21.3.5 from Orienteer's own `orientdb-core` declaration.**
+   - Why it's needed: Orienteer declares `orientdb-core` directly. Maven then takes the GraalVM artifacts from that declaration, and Orienteer ends up with a mix of 21.3.5 and 25.0.4. `graal-sdk` 21.3.5 and `polyglot` 25.0.4 both contain `org.graalvm.polyglot`, and `truffle-api` 21.3.5 sits next to `truffle-runtime` 25.0.4. I reproduced this with a throwaway consumer pom.
+   - Fix: add these exclusions to the `orientdb-core` entry in the root `dependencyManagement`. With them the mix disappears, which I also verified. GraalJS 25.0.4 then arrives transitively through wicket-orientdb.
+     ```xml
+     <exclusions>
+       <exclusion><groupId>org.graalvm.sdk</groupId><artifactId>*</artifactId></exclusion>
+       <exclusion><groupId>org.graalvm.truffle</groupId><artifactId>*</artifactId></exclusion>
+       <exclusion><groupId>org.graalvm.js</groupId><artifactId>*</artifactId></exclusion>
+       <exclusion><groupId>org.graalvm.tools</groupId><artifactId>*</artifactId></exclusion>
+     </exclusions>
+     ```
+     Among the OrientDB 3.2.56 artifacts Orienteer uses, only `orientdb-core` pulls in GraalVM; server, client, distributed, graphdb, etl, lucene and tools do not.
+   - This also covers Orienteer P3's "Nashorn replacement" item: GraalJS is available through `javax.script` under the names `js`, `javascript` and `graal.js`.
+2. **Jetty 9.4 on JDK 25:** Jetty 9.4.58 bundles ASM 9.7.1, and its annotation scanning fails on the Java 25 multi-release classes in `bcprov-jdk18on` 1.85. OrientDB 3.2.56 brings that jar in through `orientdb-server` → `bcpkix`. Orienteer's Jetty 9.4 stopgap therefore needs ASM ≥ 9.8 (this repo uses 9.10.1) as a `jetty-maven-plugin` dependency, and likewise on any Jetty 9.4 runtime classpath (standalone or Docker). The problem goes away with Jetty 12 in P6.
+3. **OrientDB result sets:** OrientDB 3.2.56 returns nothing from an `OResultSet` once it has been closed. `OQueryModel.iterator` depended on that and is now fixed. I found no such pattern in Orienteer's 12 files that use `OResultSet`, but watch for code that returns a stream or iterator out of a `try (OResultSet …)` block.
+4. **Repositories:** the parent pom no longer declares `oss.sonatype.org`. Until phase R publishes artifacts, the snapshot comes only from `~/.m2`.
+
+### 5. Public API changes
+
+- **None**, in either the main jar or the test-jar (`ru.ydn.wicket.wicketorientdb.junit`). Only two main-source files changed, and only their implementation:
+  - `converter/HexConverter`: `javax.xml.bind` replaced with `java.util.HexFormat`. Output and error behavior are the same.
+  - `model/OQueryModel.iterator(...)`: now reads the whole page before closing the result set. The signature is unchanged. This is a behavior fix: on OrientDB 3.2.56 every page came back empty.
+
+### 6. Transitive dependency changes (runtime classpath of `wicket-orientdb`, baseline → Stage A)
+
+| Change | Artifacts | Cause |
+|---|---|---|
+| upgraded | `orientdb-core/-server/-client/-tools` 3.2.27 → 3.2.56; `jackson-core` 2.15.2 → 2.22.0 | OrientDB bump |
+| relocated | `org.lz4:lz4-java` 1.8.0 → `at.yawk.lz4:lz4-java` 1.11.0 (same `net.jpountz` packages) | OrientDB 3.2.56 |
+| **removed** | `commons-lang:commons-lang` 2.6 (Orienteer has no `org.apache.commons.lang.` imports) | OrientDB 3.2.56 |
+| **added** | `org.bouncycastle:bcprov/bcpkix/bcutil-jdk18on` 1.85 | OrientDB 3.2.56 server |
+| **replaced** | `org.graalvm.sdk:graal-sdk`, `truffle-api` (compile), `js`, `js-scriptengine`, `regex`, `com.ibm.icu:icu4j` 71.1, `org.graalvm.tools:profiler`/`chromeinspector` 21.3.5 → `polyglot`, `collections`, `nativeimage`, `word`, `js-scriptengine` (compile), `js-language`, `regex`, `truffle-api`/`-runtime`/`-compiler`, `jniutils`, `org.graalvm.shadowed:icu4j`/`xz` 25.0.4 (runtime) | D11 |
+| unchanged | Wicket 8.15.0 and its dependencies (openjson, commons-io 2.6, commons-fileupload 1.5, commons-collections4 4.4, danekja 1.8.6, slf4j-api 1.7.25), Guava 33.0.0-jre, OkHttp 4.9.0 / kotlin 1.4.10, jnr/asm 9.2, JAXB 3.0.x from orientdb-tools | — |
+
+In total the runtime classpath went from 61 to 69 artifacts. Note that `truffle-api` moved from compile to runtime scope, which only matters if Orienteer imports `com.oracle.truffle`; it doesn't.
+
+### 7. Test results
+
+| JDK | wicket-orientdb | demo |
+|---|---|---|
+| Temurin 21.0.11 | 103 run, 0 failures, 0 errors, 17 skipped | 1 run, 0 failures |
+| Temurin 25.0.4 | 103 run, 0 failures, 0 errors, 17 skipped | 1 run, 0 failures |
+
+The 17 skipped tests are `@Ignore`d in the source; nothing was disabled in Stage A:
+- 10 in `TestInAppOrientDBCompatibility`: OrientDB behavior issues, including #8067 and #9421.
+- 3 in `TestFilters`.
+- 4 in `TestStandaloneOrientDBCompatibility`: the whole class is ignored because it needs a remote OrientDB on `localhost`.
+
+Two tests were added (`ConvertersTests`), and one existing assertion was strengthened (`TestModels.testOQueryProvider` now checks how many items it iterated). The demo's `jetty:run` serves its home page and the REST bridge on both JDKs. Checkstyle 14.1.0 reports 0 violations.
+
+### 8. Work for Stages B and C (plan sections B and C)
+
+- **Stage B** (Wicket 9.24, javax, Servlet 3.1). Estimate: **S, 0.5–1 day.**
+  - Rewrite `WicketOrientDbTesterScope` and `WicketOrientDbFilterTesterScope`, because Wicket 9 removes `WicketTesterScope`. Keep the same public API on top of JUnit 4 `ExternalResource`, and add a Jupiter extension.
+  - Implement the Servlet 3.1 `ServletInputStream` methods in `WicketOrientDbTester.executeUrl`.
+  - Add Jupiter and vintage to the test classpath. Orienteer's tests must add them too, because Wicket 9 testers use Jupiter assertions.
+  - Fix whatever fails to compile.
+  - Nothing else in the migration guide applies: no page store, `ModalWindow`, `util.time` or inline JS. Danekja lambdas can stay (D9).
+- **Stage C** (Wicket 10, jakarta Servlet 6, OkHttp current). Estimate: **S–M, 1–2 days.**
+  - `javax.servlet` → `jakarta.servlet` in 3 files. This is **one API change**: the return type of `LombokExtensions.asHttpServletRequest`.
+  - Add the `wicket-tester` artifact. Orienteer needs it too.
+  - Move to OkHttp 5 (or 4.12), dropping the internal `HttpMethod` and fixing the `RequestBody.create` argument order.
+  - Switch the demo to `log4j-slf4j2-impl` and Jetty 12 ee10, or park the demo.
+  - Guice 7 and `jakarta.inject` are **not needed**: the library uses neither.
+
+### 9. Open questions for the owner
+
+1. **GraalJS swap (D11):** do you accept it? The alternatives are to keep OrientDB's 21.3.5, which breaks the embedded OrientDB on JDK 22+, or to wait for an OrientDB release with a newer Graal.
+2. **Stage B:** deliver it separately, or go straight from A to C? Orienteer's D5 allows merging P5 and P6.
+3. **Snapshots vs. release:** publish `2.0-SNAPSHOT` to the Central Portal snapshot repository, or release it? Is the `ru.ydn` namespace verified on the Central Portal? Orienteer's "Stage A delivered" item needs one of the two (phase R).
+4. **Demo module:** keep it through Stage C (Jetty 12 port), or drop it?
+5. **Cleanup:** delete the fully merged remote branches `future`, `wicket7-upgrade` and `wicket8`, plus the stale `dependabot/*` branch?
