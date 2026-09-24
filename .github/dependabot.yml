@@ -1,0 +1,52 @@
+# Weekly dependency update PRs (REFRESH_PLAN.md, phase R).
+# Framework majors move only in their stages (B: Wicket 9, C: Wicket 10 + jakarta + OkHttp 5 + Jetty 12),
+# so those updates are ignored here. Review every PR against the Orienteer contract before merging.
+version: 2
+updates:
+  - package-ecosystem: maven
+    directory: /
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 10
+    groups:
+      maven-plugins:
+        patterns:
+          - "org.apache.maven.plugins:*"
+          - "org.codehaus.mojo:*"
+          - "org.jacoco:*"
+          - "org.sonatype.central:*"
+          - "com.puppycrawl.tools:*"
+      graalvm:
+        patterns:
+          - "org.graalvm.*"
+    ignore:
+      # Stage B/C: Wicket 9/10 (majors)
+      - dependency-name: "org.apache.wicket:*"
+        update-types: ["version-update:semver-major"]
+      # Stage C: jakarta Servlet 6; javax.servlet-api stays at the Wicket 8 baseline
+      - dependency-name: "javax.servlet:javax.servlet-api"
+      # Stage C: OkHttp 5 (D5 keeps 4.9.0 for Stage A)
+      - dependency-name: "com.squareup.okhttp3:*"
+      # Demo: Jetty 9.4 stays until Stage C (Jetty 12 ee10)
+      - dependency-name: "org.eclipse.jetty:*"
+        update-types: ["version-update:semver-major", "version-update:semver-minor"]
+      - dependency-name: "org.eclipse.jetty.aggregate:*"
+        update-types: ["version-update:semver-major", "version-update:semver-minor"]
+      # Stays on OrientDB 3.2.x; Orienteer decides the runtime version
+      - dependency-name: "com.orientechnologies:*"
+        update-types: ["version-update:semver-major", "version-update:semver-minor"]
+      # Stays on JUnit 4 until Stage B (Jupiter + vintage)
+      - dependency-name: "junit:junit"
+        update-types: ["version-update:semver-major"]
+      # Demo logging binding: log4j-slf4j2-impl comes with SLF4J 2 in Stage C
+      - dependency-name: "org.apache.logging.log4j:*"
+        update-types: ["version-update:semver-major"]
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    groups:
+      github-actions:
+        patterns:
+          - "*"
