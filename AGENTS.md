@@ -32,8 +32,10 @@ and is modernized in lockstep with it. Dormant from Feb 2024 to Sep 2026.
 
 ## Build status — read first
 
-- **Stage A done (2026-09-24):** `./mvnw clean verify` is green on Temurin 21 and 25 (103 tests, 17 `@Ignore`d), no
-  `--add-opens` needed. Next: Stage B/C and phase R (publishing) — see the plan. JDK 8 is gone; don't support it.
+- **Stage A done and accepted (2026-09-24):** `./mvnw clean verify` is green on Temurin 21 and 25 (103 tests, 17 `@Ignore`d),
+  no `--add-opens` needed. `master` = Stage A = `2.0-SNAPSHOT`, which Orienteer builds against. JDK 8 is gone; don't support it.
+- **Stage B/C are not started** (plan D12): don't begin them without the owner's go-ahead. **Never install a Stage B/C build
+  as `2.0-SNAPSHOT`** — they need their own branch and version, still to be decided by the owner (plan D13).
 - Use `./mvnw` (Maven 3.9.16). Enforcer requires Maven ≥ 3.9 and JDK ≥ 21. `.sdkmanrc` pins Temurin 21.0.11;
   Temurin 25.0.4 is installed for verification: `JAVA_HOME=~/.sdkman/candidates/java/25.0.4-tem ./mvnw clean verify`.
   Homebrew JDK 27 is non-LTS — don't target it.
