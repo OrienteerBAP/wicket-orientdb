@@ -14,14 +14,14 @@ Started: 2026-09-24. Versions below were checked on Maven Central on that date �
 |---|---|---|---|---|
 | P0 | AI initialization: AGENTS.md files + this plan | — | — | done |
 | A | Stage A: JDK 21/25 build on the **same** framework majors (Wicket 8.15, javax, OrientDB 3.2.x), `./mvnw install` | P0 | P3 | done (local install; published artifact → R) |
-| B | Stage B: Wicket 9.x, still javax; JUnit 5 in the test-jar | A, D13 (versioning) | P5 | todo — **not started**; Orienteer consumes Stage A during its P1–P4 (D12) |
-| C | Stage C: Wicket 10.x, `jakarta.servlet` 6, `wicket-tester`, OkHttp current | B, D13 (versioning) | P6 | todo |
-| R | Release & CI: GitHub Actions, Maven Central via the Central Portal (releases + snapshots) | A (CI), C (final release) | P3 "resolvable from a real repo" | todo |
+| B | Stage B: Wicket 9.x, still javax; JUnit 5 in the test-jar → `2.1` | A, 2.0 release (D13) | P5 | todo — **not started**; Orienteer consumes Stage A during its P1–P4 (D12) |
+| C | Stage C: Wicket 10.x, `jakarta.servlet` 6, `wicket-tester`, OkHttp current → `3.0` | B (D13) | P6 | todo |
+| R | Release & CI: GitHub Actions, Maven Central via the Central Portal: `2.0-SNAPSHOT` now, `2.0` after Orienteer P3 is green (D13/D14) | A | P3 "resolvable from a real repo" | todo |
 | X | Cleanup, docs, known bugs & security | any time | — | todo |
 
 ## Guiding principles
 
-1. **Never break the Orienteer contract** (below): coordinates, version `2.0-SNAPSHOT` (= Stage A; versions for B/C: D13), jar + test-jar, public API.
+1. **Never break the Orienteer contract** (below): coordinates, version `2.0-SNAPSHOT`/`2.0` (= Stage A; B = `2.1`, C = `3.0`, D13), jar + test-jar, public API.
 2. **Keep the build green after every item.** One concern per commit; no big-bang upgrades.
 3. **Same framework majors per stage:** A changes JDK/tooling only; B changes Wicket 8 → 9 only; C does jakarta + Wicket 10.
    Coupled libraries move together: Wicket ↔ servlet API ↔ jakarta ↔ Jetty (demo).
@@ -33,27 +33,30 @@ Started: 2026-09-24. Versions below were checked on Maven Central on that date �
 | # | Date | Decision | Status |
 |---|---|---|---|
 | D1 | 2026-09-24 | Target `--release 21`; verify on JDK 21 **and** 25 (Temurin 25.0.4 via SDKMAN). JDK 27 (non-LTS) is not targeted. Same as Orienteer D1. | accepted |
-| D2 | 2026-09-24 | Coordinates and version stay `ru.ydn.wicket.wicket-orientdb:wicket-orientdb:2.0-SNAPSHOT` (+ `test-jar`, parent `wicket-orientdb-parent`) through all stages. The release version is decided in phase R. | accepted for Stage A; the "through all stages" part conflicts with Orienteer D9 — amendment proposed in D13 |
+| D2 | 2026-09-24 | Coordinates and version stay `ru.ydn.wicket.wicket-orientdb:wicket-orientdb:2.0-SNAPSHOT` (+ `test-jar`, parent `wicket-orientdb-parent`) through all stages. The release version is decided in phase R. | accepted for Stage A (`2.0-SNAPSHOT` → `2.0`); "through all stages" is **superseded by D13** (decided) |
 | D3 | 2026-09-24 | Stage A compiles and tests against **OrientDB 3.2.56** (latest 3.2.x; Orienteer contract row). Orienteer's `dependencyManagement` decides the runtime version. | accepted |
 | D4 | 2026-09-24 | Checkstyle is upgraded in Stage A (plugin 3.6.0 + Checkstyle 14.1.0) with a semantically equivalent `check_style.xml`; only Javadoc fixes or documented deviations if the new engine flags more. | accepted |
 | D5 | 2026-09-24 | OkHttp stays **4.9.0** in Stage A (no transitive change for Orienteer's rproxy). Upgrade in Stage C (known CVEs: CVE-2021-0341 in okhttp < 4.9.2, CVE-2020-29582 / CVE-2022-24329 in kotlin-stdlib 1.4.10). | accepted |
 | D6 | 2026-09-24 | Tests stay on JUnit 4.13.2 in Stage A; Mockito is not added (unused). Jupiter + vintage come in Stage B because Wicket 9 testers need JUnit 5. | accepted |
 | D7 | 2026-09-24 | Publishing (`distributionManagement`, `release` profile, nexus-staging, maven-release-plugin) is left untouched in Stage A and replaced in phase R (Central Portal). Only the dead `<repositories>` entry is removed in A. | accepted |
-| D8 | 2026-09-24 | The demo module stays in the reactor while it builds; if it blocks a stage it is parked (removed from `<modules>`, code kept). | accepted |
+| D8 | 2026-09-24 | The demo module stays in the reactor while it builds; if it blocks a stage it is parked (removed from `<modules>`, code kept). | accepted; for Stage C superseded by D15 (keep and port, no parking) |
 | D9 | 2026-09-24 | Keep `org.danekja` `SerializableFunction` in the public API (`FunctionModel`, `SerializableConverter`, `AbstractJointConverter`): wicket-core 9.24.0 **and** 10.11.0 still depend on `org.danekja:jdk-serializable-functional`. Orienteer P5's "replace danekja lambdas" is optional, not forced by this library. | proposed |
 | D10 | 2026-09-24 | Stage B keeps `junit.WicketOrientDbTesterScope` as a JUnit 4 rule with the same public API (re-implemented on `ExternalResource`, since Wicket 9 removes `WicketTesterScope`) and adds a Jupiter extension next to it; tests run via `junit-vintage-engine`. | proposed |
-| D11 | 2026-09-24 | **GraalJS swap:** OrientDB 3.2.56 still brings GraalVM/Truffle 21.3.5 (via a JDK-activated profile in `orientdb-core`), which crashes every embedded OrientDB start on JDK 22+ (`NoSuchMethodError: sun.misc.Unsafe.ensureClassInitialized`). The library excludes `org.graalvm.{sdk,truffle,js,tools}` from `orientdb-core` and declares GraalJS **25.0.4** (`polyglot`, `js-scriptengine` compile; `js` pom runtime — same roles/scopes as OrientDB's). OrientDB only uses the stable `org.graalvm.polyglot` API + `javax.script`. Orienteer must mirror the exclusions on its own `orientdb-core` declaration (handoff). Revisit when OrientDB upgrades Graal. | accepted (owner, 2026-09-24; Orienteer mirrors it as its D8) |
+| D11 | 2026-09-24 | **GraalJS swap:** OrientDB 3.2.56 still brings GraalVM/Truffle 21.3.5 (via a JDK-activated profile in `orientdb-core`), which crashes every embedded OrientDB start on JDK 22+ (`NoSuchMethodError: sun.misc.Unsafe.ensureClassInitialized`). The library excludes `org.graalvm.{sdk,truffle,js,tools}` from `orientdb-core` and declares GraalJS **25.0.4** (`polyglot`, `js-scriptengine` compile; `js` pom runtime — same roles/scopes as OrientDB's). OrientDB only uses the stable `org.graalvm.polyglot` API + `javax.script`. Orienteer must mirror the exclusions on its own `orientdb-core` declaration (handoff). Revisit when OrientDB upgrades Graal. | accepted by the owner (2026-09-24); Orienteer mirrors it as its D8 |
 | D12 | 2026-09-24 | **Stage B stays a separate stage** (Wicket 9, still javax), consistent with Orienteer's two-step plan (Orienteer D5): no A → C jump. It is **not started now**: Orienteer builds against Stage A during its P1–P4; Stage B starts only when the owner gives the go-ahead and D13 is decided. | accepted (owner, 2026-09-24) |
-| D13 | 2026-09-24 | **Amends D2 — distinct versions after Stage A.** Stage B/C builds must never overwrite `2.0-SNAPSHOT` in `~/.m2` while Orienteer builds against Stage A (constraint from Orienteer D9, proposed). Options: **(a)** do Stage B on a branch with version `2.1-SNAPSHOT` (Wicket 9) and Stage C with `3.0-SNAPSHOT` (Wicket 10/jakarta), keeping `master` at `2.0-SNAPSHOT` = Stage A; or **(b)** release Stage A first (e.g. `2.0`, phase R) and continue B/C on newer snapshot versions. Under both options groupId/artifactId, the `test-jar` and the parent `wicket-orientdb-parent` stay unchanged; only the version moves, set with `./mvnw versions:set` across parent and modules. Until decided: no `./mvnw install` of anything but Stage A as `2.0-SNAPSHOT`. | proposed — **owner decides** |
+| D13 | 2026-09-24 | **Amends D2 — distinct versions after Stage A.** Stage B/C builds must never overwrite `2.0-SNAPSHOT` in `~/.m2` while Orienteer builds against Stage A (constraint from Orienteer D9, proposed). Options: **(a)** do Stage B on a branch with version `2.1-SNAPSHOT` (Wicket 9) and Stage C with `3.0-SNAPSHOT` (Wicket 10/jakarta), keeping `master` at `2.0-SNAPSHOT` = Stage A; or **(b)** release Stage A first (e.g. `2.0`, phase R) and continue B/C on newer snapshot versions. Under both options groupId/artifactId, the `test-jar` and the parent `wicket-orientdb-parent` stay unchanged; only the version moves, set with `./mvnw versions:set` across parent and modules. **Decided (owner delegated, 2026-09-24) — option (b):** (1) publish Stage A now as `2.0-SNAPSHOT` to the Central Portal snapshots repository (`https://central.sonatype.com/repository/maven-snapshots/`), so Orienteer and CI resolve it without a local install; (2) release `2.0` from Stage A **only after Orienteer's P3 build is green against it** (Orienteer P3 is the real integration test; Central releases are immutable) — fixes found there go into `2.0-SNAPSHOT` first; (3) after the `2.0` release `master` moves to `2.1-SNAPSHOT` for Stage B (Wicket 9), released as `2.1`; Stage C (Wicket 10/jakarta, breaking `LombokExtensions.asHttpServletRequest`) becomes `3.0-SNAPSHOT`, released as `3.0`; (4) if Stage B must start before `2.0` is released, it goes on a branch with `2.1-SNAPSHOT`, never `2.0-SNAPSHOT`. | decided (2026-09-24) |
+| D14 | 2026-09-24 | **Publishing:** the `ru.ydn` namespace is verified on the Central Portal; publishing is approved in principle. Snapshots: **yes** (`2.0-SNAPSHOT` → Central Portal snapshots, D13). Releases go through the Central Portal with `central-publishing-maven-plugin` (server id `central`); every upload (snapshot deploy, release) is run by the owner — agents only prepare and validate locally. | accepted (owner, 2026-09-24) |
+| D15 | 2026-09-24 | **Demo module is kept after Stage C**; its Jetty 12 ee10 port (plugin, `web.xml`, `Start.java`) is part of Stage C. It is never published to Central. | accepted (owner, 2026-09-24) |
+| D16 | 2026-09-24 | **Stale remote branches are kept for now** (`future`, `wicket7-upgrade`, `wicket8`, `dependabot/maven/org.apache.wicket-wicket-core-8.12.0`). Nobody deletes branches without a new owner decision. | accepted (owner, 2026-09-24) |
 
 ### Open questions (decide when the phase starts; record the answer above)
 
 - [x] **Stage B at all?** Orienteer D5 allows merging P5+P6 if this library jumps straight to Wicket 10. Deliver B separately (recommended: cheap here, gives Orienteer a javax-only intermediate) or go A → C? (B) — 2026-09-24, owner: separate stage, not started now → D12
-- [ ] **Versions for Stage B/C** (D13, amends D2): branch + `2.1-SNAPSHOT` / `3.0-SNAPSHOT`, or release Stage A first? Blocks the start of Stage B. (owner)
-- [ ] **Release version and namespace:** release `2.0` after Stage C? Is the `ru.ydn` namespace verified on the Central Portal (needs DNS control of `ydn.ru`)? (R) — still open after Stage A (owner); interacts with D13 option (b)
-- [ ] **Snapshots:** publish `2.0-SNAPSHOT` to `https://central.sonatype.com/repository/maven-snapshots/` so Orienteer CI does not need a local install? (R) — still open after Stage A (owner)
-- [ ] **Demo module:** keep after Stage C (Jetty 12 ee10 port) or drop it? (C) — still open after Stage A (owner)
-- [ ] **Stale remote branches:** delete `future`, `wicket7-upgrade`, `wicket8` (fully merged) and `dependabot/maven/org.apache.wicket-wicket-core-8.12.0` (superseded)? (X) — still open (owner); **don't delete any branch without the owner's go-ahead**
+- [x] **Versions for Stage B/C** (D13, amends D2): branch + `2.1-SNAPSHOT` / `3.0-SNAPSHOT`, or release Stage A first? Blocks the start of Stage B. (owner) — 2026-09-24: `2.0-SNAPSHOT` published now, `2.0` released after Orienteer P3 is green, then `2.1-SNAPSHOT` (B) and `3.0-SNAPSHOT` (C); a pre-release B start uses a `2.1-SNAPSHOT` branch → D13
+- [x] **Release version and namespace:** release `2.0` after Stage C? Is the `ru.ydn` namespace verified on the Central Portal (needs DNS control of `ydn.ru`)? (R) — 2026-09-24: `2.0` is released **from Stage A** (after Orienteer P3 is green), not after Stage C; `ru.ydn` is verified, publishing approved in principle → D13, D14
+- [x] **Snapshots:** publish `2.0-SNAPSHOT` to `https://central.sonatype.com/repository/maven-snapshots/` so Orienteer CI does not need a local install? (R) — 2026-09-24: yes → D14
+- [x] **Demo module:** keep after Stage C (Jetty 12 ee10 port) or drop it? (C) — 2026-09-24: keep; Jetty 12 ee10 port in Stage C → D15
+- [x] **Stale remote branches:** delete `future`, `wicket7-upgrade`, `wicket8` (fully merged) and `dependabot/maven/org.apache.wicket-wicket-core-8.12.0` (superseded)? (X) — 2026-09-24: **keep for now**, don't delete → D16
 - [ ] **Credential forwarding:** `OrientDBHttpAPIResource` sends the session user's password to OrientDB's HTTP API; `OrientDbWebSession` keeps the password in the session. Keep, or switch to a token/`root`-proxy model? (X)
 
 ## Contract with Orienteer (from Orienteer's "External dependency requirements")
@@ -112,10 +115,10 @@ Baseline (2026-09-24, JDK 21): Checkstyle 6.18 passes; `compile` fails with `Ill
 
 Goal: Wicket 9.24 (last 9.x), javax Servlet 3.1, green on 21/25, test-jar usable by Orienteer with JUnit 5.
 Migration guide: https://cwiki.apache.org/confluence/display/WICKET/Migration+to+Wicket+9.0 · Size: **S (0.5–1 day)**.
-**Don't start until the owner gives the go-ahead** (D12) and D13 is decided; never install a Stage B build as `2.0-SNAPSHOT`.
+**Don't start until the owner gives the go-ahead** (D12); version `2.1-SNAPSHOT` → `2.1` (D13); never install a Stage B build as `2.0-SNAPSHOT`.
 
 - [x] Resolve the open question "Stage B at all?" — 2026-09-24: separate stage, not started now (D12)
-- [ ] Prerequisite: D13 decided by the owner; work on a branch with the chosen version (e.g. `2.1-SNAPSHOT`), or Stage A released first
+- [ ] Prerequisite (D13): `2.0` released from Stage A and `master` moved to `2.1-SNAPSHOT`; if Stage B must start earlier, work on a branch with `2.1-SNAPSHOT` (never `2.0-SNAPSHOT`)
 - [ ] Wicket 8.15.0 → 9.24.0 (`wicket-core`, `wicket-extensions`, `wicket-auth-roles`, demo `wicket-devutils`)
 - [ ] `javax.servlet-api` 3.0.1 → 3.1.0 `provided` (Wicket 9 baseline); test-jar `WicketOrientDbTester.executeUrl`: the anonymous `ServletInputStream` must implement `isFinished()`, `isReady()`, `setReadListener()`
 - [ ] Test-jar: `org.apache.wicket.util.tester.WicketTesterScope` is removed in Wicket 9 → re-implement `WicketOrientDbTesterScope` on JUnit 4 `ExternalResource` with the same constructors, `create()`, `createApplication()`, `getTester()` (D10); same for `filter.WicketOrientDbFilterTesterScope`
@@ -133,14 +136,14 @@ Migration guide: https://cwiki.apache.org/confluence/display/WICKET/Migration+to
 
 Goal: no `javax.servlet` left; Wicket 10.x; `jakarta.servlet-api` 6.0 `provided`; OkHttp current. Size: **S–M (1–2 days)**.
 
-- [ ] Prerequisite: Stage B done; version per D13 (e.g. `3.0-SNAPSHOT` on its own branch) — never installed as `2.0-SNAPSHOT` or as the Stage B version
+- [ ] Prerequisite: Stage B done (`2.1` released); version `3.0-SNAPSHOT` → `3.0` (D13; breaking `asHttpServletRequest`) — never installed as `2.0-SNAPSHOT` or `2.1-SNAPSHOT`
 - [ ] Wicket 9.24 → 10.x (10.11.0 seen); add `org.apache.wicket:wicket-tester` (the test-jar's `WicketOrientDbTester` needs it — Orienteer must add it too)
 - [ ] `javax.servlet` → `jakarta.servlet` (3 files: `rest/ReverseProxyResource`, `utils/LombokExtensions`, test-jar `junit/WicketOrientDbTester`); `LombokExtensions.asHttpServletRequest` return type changes (**API change → handoff**)
 - [ ] `javax.servlet-api` → `jakarta.servlet:jakarta.servlet-api` 6.0.0 `provided` (Wicket 10 baseline)
 - [ ] Guice 7 / `jakarta.inject`: not used by this library — nothing to do (verify with `rg 'javax.inject|com.google.inject'`)
 - [ ] OkHttp 4.9.0 → current 5.x (or at least 4.12.0): replace internal `okhttp3.internal.http.HttpMethod.permitsRequestBody` in `ReverseProxyResource.mapRequestBody` with a local check; `RequestBody.create(MediaType, byte[])` → `RequestBody.create(byte[], MediaType)`; check whether Maven needs `okhttp-jvm` for 5.x; bump `logging-interceptor`; report kotlin-stdlib/okio changes (Orienteer rproxy uses okhttp3 transitively)
 - [ ] SLF4J 2 arrives with Wicket 10: demo binding `log4j-slf4j-impl` → `log4j-slf4j2-impl`
-- [ ] Demo: `web.xml` 2.5 → Jakarta EE 10 `web-app_6_0.xsd`; `jetty-maven-plugin` 9.4 → `org.eclipse.jetty.ee10:jetty-ee10-maven-plugin` 12.1.x; rewrite or delete `Start.java` (`jetty-all` no longer exists) — or park the demo (D8)
+- [ ] Demo: `web.xml` 2.5 → Jakarta EE 10 `web-app_6_0.xsd`; `jetty-maven-plugin` 9.4 → `org.eclipse.jetty.ee10:jetty-ee10-maven-plugin` 12.1.x; rewrite `Start.java` for Jetty 12 (`jetty-all` no longer exists) — the demo is kept (D15)
 - [ ] Enforcer `bannedDependencies`: `javax.servlet:*`, `javax.inject:javax.inject`
 - [ ] Update `AGENTS.md` files and "Handoff to Orienteer"
 - [ ] Exit check: `rg 'javax\.servlet'` finds nothing; `./mvnw clean verify` green on 21/25; `./mvnw install`; Orienteer P6 compiles against it
@@ -149,13 +152,15 @@ Goal: no `javax.servlet` left; Wicket 10.x; `jakarta.servlet-api` 6.0 `provided`
 
 - [ ] GitHub Actions workflow: push + PR, matrix JDK 21/25 (`actions/setup-java`, `distribution: temurin`, `cache: maven`), `./mvnw -B verify`, upload surefire reports, `concurrency` to cancel superseded runs (tests bind ports 2424+/2480+ — one job per runner)
 - [ ] Remove `.travis.yml`; remove Travis/Coveralls badges from `README.md`
-- [ ] Replace OSSRH `distributionManagement` and `nexus-staging-maven-plugin` with `org.sonatype.central:central-publishing-maven-plugin` (0.11.0 seen); verify the `ru.ydn` namespace on the Central Portal (owner)
+- [ ] Replace OSSRH `distributionManagement` and `nexus-staging-maven-plugin` with `org.sonatype.central:central-publishing-maven-plugin` (0.11.0 seen); `ru.ydn` namespace verified on the Central Portal (owner, 2026-09-24, D14)
 - [ ] Release profile: sources + javadoc jars (fix doclint errors, e.g. the broken `{@link LegacyOrientDBHttpAPIResource}` in `OrientDBHttpAPIResource`), GPG signing (`maven-gpg-plugin` 3.x, loopback pinentry in CI), required POM metadata check
-- [ ] Snapshot publishing to `https://central.sonatype.com/repository/maven-snapshots/` (if the open question says yes); tell Orienteer to add that repository (snapshots only)
-- [ ] maven-release-plugin 2.5.3 → 3.x or a CI-driven `versions:set` + tag; keep tag format `v@{project.version}`; decide the first release version (open question)
+- [ ] Snapshot publishing to `https://central.sonatype.com/repository/maven-snapshots/` (decided: yes, D14); tell Orienteer to add that repository (snapshots only)
+- [ ] maven-release-plugin 2.5.3 → 3.x or a CI-driven `versions:set` + tag; keep tag format `v@{project.version}`; first release version: `2.0` from Stage A (D13)
 - [ ] Demo module keeps `maven-deploy-plugin` `skip` (and is excluded from Central publishing)
 - [ ] `.github/dependabot.yml` (maven + github-actions, weekly, grouped); ignore majors of Wicket/servlet/OkHttp until their stages
 - [ ] JaCoCo report (replaces cobertura/coveralls), optional CodeQL
+- [ ] Owner: Central Portal user token in `~/.m2/settings.xml` (server `central`), SNAPSHOTs enabled for `ru.ydn` in the portal, first `2.0-SNAPSHOT` deploy (D14)
+- [ ] Owner: release `2.0` once Orienteer P3 is green against `2.0-SNAPSHOT` (GPG key published to a keyserver); then `master` → `2.1-SNAPSHOT` (D13)
 - [ ] Exit check: a tagged release (or snapshot) resolves from Central in a clean `~/.m2`; Orienteer's "Stage A delivered" item can be ticked
 
 ## X — Cleanup, docs, known bugs & security
@@ -164,7 +169,7 @@ Goal: no `javax.servlet` left; Wicket 10.x; `jakarta.servlet-api` 6.0 `provided`
 - [ ] README: drop dead badges, add prerequisites (JDK 21, `./mvnw`), fix outdated examples (`OServerAdmin`/`local:` URLs → `OrientDB`/`createIfNotExists`, `setAdminUserPassword` → `setAdminPassword`)
 - [ ] `.gitignore`: add `.DS_Store`, `.vscode/`, `*.log`
 - [ ] Library tests run without an SLF4J binding (NOP warning, Wicket logs dropped); optionally add a test-scoped binding + `src/test/resources` config (never in the jar)
-- [ ] Delete stale remote branches (owner): `future`, `wicket7-upgrade`, `wicket8` (fully merged), `dependabot/maven/org.apache.wicket-wicket-core-8.12.0` (superseded by 8.15) — open question; don't delete without the owner's go-ahead
+- [x] ~~Delete stale remote branches~~ `future`, `wicket7-upgrade`, `wicket8`, `dependabot/maven/org.apache.wicket-wicket-core-8.12.0` — 2026-09-24, owner: **keep for now** (D16); closed, nothing deleted
 - [ ] `rest.WicketSessionCookieJar` uses `org.apache.commons.collections4.map.HashedMap` (transitive via wicket-util) → `java.util.HashMap`, or declare the dependency
 - [ ] Keep all `AGENTS.md` files current at the end of every stage
 
@@ -384,13 +389,13 @@ Two tests were added (`ConvertersTests`), and one existing assertion was strengt
   - `javax.servlet` → `jakarta.servlet` in 3 files. This is **one API change**: the return type of `LombokExtensions.asHttpServletRequest`.
   - Add the `wicket-tester` artifact. Orienteer needs it too.
   - Move to OkHttp 5 (or 4.12), dropping the internal `HttpMethod` and fixing the `RequestBody.create` argument order.
-  - Switch the demo to `log4j-slf4j2-impl` and Jetty 12 ee10, or park the demo.
+  - Switch the demo to `log4j-slf4j2-impl` and port it to Jetty 12 ee10 (the demo is kept, D15).
   - Guice 7 and `jakarta.inject` are **not needed**: the library uses neither.
 
 ### 9. Open questions for the owner (answers recorded 2026-09-24)
 
 1. **GraalJS swap (D11):** do you accept it? — **Accepted**; Orienteer mirrors it as its D8.
-2. **Stage B:** deliver it separately, or go straight from A to C? — **Separate stage (D12), not started now**; Orienteer consumes Stage A during its P1–P4. New constraint from Orienteer D9 (proposed): Stage B/C must not overwrite `2.0-SNAPSHOT` in `~/.m2` → **D13 (proposed, amends D2), owner decides**.
-3. **Snapshots vs. release:** publish `2.0-SNAPSHOT` to the Central Portal snapshot repository, or release it? Is the `ru.ydn` namespace verified on the Central Portal? Orienteer's "Stage A delivered" item needs one of the two (phase R). — **Still open (owner).**
-4. **Demo module:** keep it through Stage C (Jetty 12 port), or drop it? — **Still open (owner).**
-5. **Cleanup:** delete the fully merged remote branches `future`, `wicket7-upgrade` and `wicket8`, plus the stale `dependabot/*` branch? — **Still open (owner); no branches deleted.**
+2. **Stage B:** deliver it separately, or go straight from A to C? — **Separate stage (D12), not started now**; Orienteer consumes Stage A during its P1–P4. New constraint from Orienteer D9 (proposed): Stage B/C must not overwrite `2.0-SNAPSHOT` in `~/.m2` → **D13 (decided)**: `2.0-SNAPSHOT` published now, `2.0` released after Orienteer P3 is green, then `2.1-SNAPSHOT` (B) and `3.0-SNAPSHOT` (C).
+3. **Snapshots vs. release:** publish `2.0-SNAPSHOT` to the Central Portal snapshot repository, or release it? Is the `ru.ydn` namespace verified on the Central Portal? Orienteer's "Stage A delivered" item needs one of the two (phase R). — **Both, in order (D13/D14):** `2.0-SNAPSHOT` to the snapshots repository now, `2.0` release after Orienteer P3 is green. `ru.ydn` is verified.
+4. **Demo module:** keep it through Stage C (Jetty 12 port), or drop it? — **Keep, Jetty 12 ee10 port in Stage C (D15).**
+5. **Cleanup:** delete the fully merged remote branches `future`, `wicket7-upgrade` and `wicket8`, plus the stale `dependabot/*` branch? — **Keep for now (D16); no branches deleted.**
