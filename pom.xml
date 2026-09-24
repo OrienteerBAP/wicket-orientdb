@@ -56,6 +56,7 @@
 		<orientdb.version>3.2.56</orientdb.version>
 		<jetty.version>9.4.12.v20180830</jetty.version>
 		<okhttp.version>4.9.0</okhttp.version>
+		<log4j.version>2.26.1</log4j.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 	<modules>
@@ -125,11 +126,11 @@
 				<version>${lombok.version}</version>
 				<scope>provided</scope>
 			</dependency>
-			<!-- END REMOTE ENGINE DEPENDENCY -->
+			<!-- Logging binding for the demo only: never add it to the library -->
 			<dependency>
 				<groupId>org.apache.logging.log4j</groupId>
 				<artifactId>log4j-slf4j-impl</artifactId>
-				<version>2.14.0</version>
+				<version>${log4j.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>junit</groupId>
