@@ -70,7 +70,7 @@ public class OrientDBHttpAPIResource extends ReverseProxyResource {
 	
 	/**
 	 * Mounts OrientDB REST API Bridge to an app
-	 * @param resource {@link LegacyOrientDBHttpAPIResource} to mount
+	 * @param resource {@link OrientDBHttpAPIResource} to mount
 	 * @param app {@link WebApplication} to mount to
 	 */
 	public static void mountOrientDbRestApi(OrientDBHttpAPIResource resource, WebApplication app) {
@@ -79,7 +79,7 @@ public class OrientDBHttpAPIResource extends ReverseProxyResource {
 	
 	/**
 	 * Mounts OrientDB REST API Bridge to an app
-	 * @param resource {@link LegacyOrientDBHttpAPIResource} to mount
+	 * @param resource {@link OrientDBHttpAPIResource} to mount
 	 * @param app {@link WebApplication} to mount to
 	 * @param mountPaths array of paths to mount to
 	 */

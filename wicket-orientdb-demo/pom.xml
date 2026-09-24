@@ -25,6 +25,12 @@
   </parent>
 	<artifactId>wicket-orientdb-demo</artifactId>
 	<packaging>war</packaging>
+	<properties>
+		<!-- Never published (excluded from Central in the root pom): skip release-profile extras -->
+		<maven.source.skip>true</maven.source.skip>
+		<maven.javadoc.skip>true</maven.javadoc.skip>
+		<gpg.skip>true</gpg.skip>
+	</properties>
 	<dependencies>
 		<dependency>
 		      <groupId>ru.ydn.wicket.wicket-orientdb</groupId>
