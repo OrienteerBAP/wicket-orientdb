@@ -1,17 +1,34 @@
 <?xml version="1.0"?>
  <!DOCTYPE module PUBLIC
-   "-//Puppy Crawl//DTD Check Configuration 1.2//EN"
-   "http://www.puppycrawl.com/dtds/configuration_1_2.dtd">
+   "-//Checkstyle//DTD Checkstyle Configuration 1.3//EN"
+   "https://checkstyle.org/dtds/configuration_1_3.dtd">
 <!--keep the file in project root although NetBeans 8.0.2 doesn't find it there and allow to add additional project files (don't skip a proper project structure in favour of IDE deficies)-->
+<!-- Migrated from Checkstyle 6.18 to 14.x in 2026-09 with the same rules (see REFRESH_PLAN.md, Stage A6) -->
 <module name="Checker">
+	<!-- Was inside TreeWalker before Checkstyle 8.24 -->
+	<module name="LineLength">
+		<property name="fileExtensions" value="java"/>
+		<property name="max" value="180"/>
+	</module>
     <module name="TreeWalker">
-        <!-- Checks the Javadoc of a method or constructor. -->
-        <module name="JavadocMethod">
+        <!-- Public methods longer than 2 lines must have Javadoc (was part of JavadocMethod before Checkstyle 8.20) -->
+        <module name="MissingJavadocMethod">
             <property name="scope" value="public"/>
             <property name="severity" value="error"/>
             <property name="allowMissingPropertyJavadoc" value="true"/>
             <property name="minLineCount" value="2"/>
             <property name="tokens" value="METHOD_DEF"/>
+        </module>
+        <!-- Checks the Javadoc of a method: @param/@return tags of existing Javadoc. -->
+        <module name="JavadocMethod">
+            <property name="accessModifiers" value="public"/>
+            <property name="severity" value="error"/>
+            <property name="tokens" value="METHOD_DEF"/>
+        </module>
+        <!-- Public types must have Javadoc (was part of JavadocType before Checkstyle 8.20) -->
+        <module name="MissingJavadocType">
+            <property name="scope" value="public"/>
+            <property name="severity" value="error"/>
         </module>
         <!-- Checks Javadoc comments for class and interface definitions. -->
         <module name="JavadocType">
@@ -19,7 +36,7 @@
             <property name="severity" value="error"/>
         </module>
         <!-- Checks for Naming Conventions.              -->
-        <!-- See http://checkstyle.sourceforge.net/config_naming.html -->
+        <!-- See https://checkstyle.org/checks/naming/index.html -->
         <!-- Sun Naming Conventions -->
         <module name="ConstantName"/>
         <module name="LocalFinalVariableName"/>
@@ -48,9 +65,6 @@
 		<module name="HideUtilityClassConstructor"/>
 		<module name="MethodLength">
 		    <property name="max" value="200"/>
-		</module>
-		<module name="LineLength">
-		    <property name="max" value="180"/>
 		</module>
 		<module name="NestedIfDepth">
 		    <property name="max" value="3"/>
