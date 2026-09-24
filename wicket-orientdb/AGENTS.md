@@ -35,8 +35,9 @@ Everything is in package `ru.ydn.wicket.wicketorientdb`. Root rules: [`../AGENTS
 
 ## Tests
 
-- 12 test classes, 102 `@Test`, 17 `@Ignore` (10 `TestInAppOrientDBCompatibility`, 3 `TestFilters`,
-  4 `TestStandaloneOrientDBCompatibility` which needs a remote server). Only `ConvertersTests` is a plain unit test.
+- 12 test classes, 103 `@Test`, 17 `@Ignore` (10 `TestInAppOrientDBCompatibility`, 3 `TestFilters`,
+  4 `TestStandaloneOrientDBCompatibility` which needs a remote server). Surefire: 100 run, 14 skipped.
+  Only `ConvertersTests` is a plain unit test.
 - They start an embedded OrientDB server with HTTP on 2480-2490; `TestRestApi` goes through it and calls JavaScript functions.
 
 ## Pitfalls

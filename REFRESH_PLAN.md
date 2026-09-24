@@ -81,11 +81,11 @@ Baseline (2026-09-24, JDK 21): Checkstyle 6.18 passes; `compile` fails with `Ill
 
 - [x] A1 Maven Wrapper 3.9.16 (`mvn wrapper:wrapper -Dmaven=3.9.16 -Dtype=only-script`): commit `mvnw`, `mvnw.cmd`, `.mvn/wrapper/maven-wrapper.properties` — 2026-09-24, wrapper plugin 3.3.4
 - [x] A1 `.sdkmanrc` (`java=21.0.11-tem`) and a minimal `.editorconfig` (UTF-8, LF, tabs for `*.java`/`*.xml`/`*.html`; no trailing-whitespace or final-newline enforcement — 31 files lack one; **no reformat**) — 2026-09-24
-- [ ] A2 Compiler: `maven.compiler.release=21` replaces `java.version` source/target (there was no `-parameters`; not added)
-- [ ] A2 Lombok 1.18.16 → 1.18.48, declared in `maven-compiler-plugin` `annotationProcessorPaths` (required from JDK 23)
-- [ ] A2 `converter.HexConverter` (+ `ConvertersTests`): `javax.xml.bind.DatatypeConverter` → `java.util.HexFormat` (upper-case output, case-insensitive parsing, `IllegalArgumentException` on bad input — same behavior)
-- [ ] A2 Surefire `argLine`: add `--add-opens`/`--add-exports` only if a test run proves them necessary; list them in the handoff
-- [ ] A2 First green `./mvnw clean verify` on JDK 21; record test counts in Appendix C
+- [x] A2 Compiler: `maven.compiler.release=21` replaces `java.version` source/target (there was no `-parameters`; not added) — 2026-09-24
+- [x] A2 Lombok 1.18.16 → 1.18.48, declared in `maven-compiler-plugin` `annotationProcessorPaths` (required from JDK 23) — 2026-09-24
+- [x] A2 `converter.HexConverter` (+ `ConvertersTests`): `javax.xml.bind.DatatypeConverter` → `java.util.HexFormat` (upper-case output, case-insensitive parsing, `IllegalArgumentException` on bad input — same behavior) — 2026-09-24; 2 tests added (odd length, illegal character) plus case assertions
+- [x] A2 Surefire `argLine`: add `--add-opens`/`--add-exports` only if a test run proves them necessary; list them in the handoff — 2026-09-24: **none needed**. Found (not needed by tests): Wicket 8 `CheckingObjectOutputStream` (serialization diagnostics) silently disables itself without `--add-opens java.base/java.io=ALL-UNNAMED` (verified with a probe) → optional dev flag, see handoff
+- [x] A2 First green `./mvnw clean verify` on JDK 21; record test counts in Appendix C — 2026-09-24: library 100 run / 14 skipped, demo 1 run; compiler plugin still 3.7.0 (bumped in A5)
 - [ ] A3 Remove the dead `snapshots-repo` (oss.sonatype.org) from `<repositories>` (inherited by every consumer); `distributionManagement` stays until R (D7)
 - [ ] A4 Remove dead plugins: `maven-eclipse-plugin` (+ `wtp.version`), `coveralls-maven-plugin`, `cobertura-maven-plugin`, m2e `lifecycle-mapping`, `maven-bundle-plugin` extension; drop `<type>bundle</type>` from the OrientDB entries in `dependencyManagement` and the explicit `${orientdb.version}` in the module pom
 - [ ] A5 Pin every build plugin once in root `<pluginManagement>` (Appendix B); remove module-level versions (jar 3.0.2, deploy 2.7, jetty); release-profile source/javadoc/gpg pinned to current (javadoc 2.x is JDK-incompatible), nexus-staging/release-plugin left for R
@@ -210,24 +210,26 @@ Goal: no `javax.servlet` left; Wicket 10.x; `jakarta.servlet-api` 6.0 `provided`
 | maven-eclipse-plugin, m2e lifecycle-mapping | 2.10, 1.0.0 | retired / IDE-only | remove (A) |
 | cobertura-maven-plugin, coveralls-maven-plugin | 2.7, 4.3.0 | dead | remove (A) → JaCoCo (R) |
 
-## Appendix C — Test inventory (static count 2026-09-24; confirm in A2/A11)
+## Appendix C — Test inventory (static count 2026-09-24, confirmed by surefire in A2)
 
-| Test class | `@Test` | `@Ignore` | Notes |
-|---|---|---|---|
-| `TestModels` | 18 | 0 | |
-| `filter.TestFilters` | 26 | 3 | own scope `WicketOrientDbFilterTesterScope` |
-| `orientdb.TestInAppOrientDBCompatibility` | 22 | 10 | OrientDB behavior checks; #8067, #9421 |
-| `orientdb.TestStandaloneOrientDBCompatibility` | 4 | 4 (class-level) | needs a remote OrientDB server |
-| `rest.TestRestApi` | 8 | 0 | real HTTP to the embedded server; JS functions (GraalJS) |
-| `TestSecurity` | 7 | 0 | |
-| `MainUtilsTest` | 6 | 0 | |
-| `proto.TestPrototypers` | 5 | 0 | |
-| `TestRegisterHooks` | 2 | 0 | |
-| `TestFlexyMetaDataKey` | 2 | 0 | |
-| `OrientDBSettingsTest` | 1 | 0 | |
-| `converter.ConvertersTests` | 1 | 0 | plain unit test (`HexConverter`) |
-| **wicket-orientdb total** | **102** | **17** | 12 classes |
-| demo `TestHomePage` | 1 | 0 | WicketTester + embedded server |
+Surefire reports a class-level `@Ignore` as **one** skipped test, so "run" = active `@Test` − 4 + 1.
+
+| Test class | `@Test` | `@Ignore` | Surefire JDK 21 (A2): run / skipped | Notes |
+|---|---|---|---|---|
+| `TestModels` | 18 | 0 | 18 / 0 | |
+| `filter.TestFilters` | 26 | 3 | 26 / 3 | own scope `WicketOrientDbFilterTesterScope` |
+| `orientdb.TestInAppOrientDBCompatibility` | 22 | 10 | 22 / 10 | OrientDB behavior checks; #8067, #9421 |
+| `orientdb.TestStandaloneOrientDBCompatibility` | 4 | 4 (class-level) | 1 / 1 | needs a remote OrientDB server |
+| `rest.TestRestApi` | 8 | 0 | 8 / 0 | real HTTP to the embedded server; JS functions (GraalJS) |
+| `TestSecurity` | 6 (+1 commented out) | 0 | 6 / 0 | |
+| `MainUtilsTest` | 6 | 0 | 6 / 0 | |
+| `proto.TestPrototypers` | 5 | 0 | 5 / 0 | |
+| `TestRegisterHooks` | 2 | 0 | 2 / 0 | |
+| `TestFlexyMetaDataKey` | 2 | 0 | 2 / 0 | |
+| `OrientDBSettingsTest` | 1 | 0 | 1 / 0 | |
+| `converter.ConvertersTests` | 1 → 3 (A2) | 0 | 3 / 0 | plain unit test (`HexConverter`) |
+| **wicket-orientdb total** | **101 → 103** | **17** | **100 / 14**, 0 failures | 12 classes |
+| demo `TestHomePage` | 1 | 0 | 1 / 0 | WicketTester + embedded server |
 
 ## Appendix D — Stage B/C inventory (2026-09-24)
 

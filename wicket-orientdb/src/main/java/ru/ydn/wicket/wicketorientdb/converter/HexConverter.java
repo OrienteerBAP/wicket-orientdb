@@ -1,8 +1,7 @@
 package ru.ydn.wicket.wicketorientdb.converter;
 
+import java.util.HexFormat;
 import java.util.Locale;
-
-import javax.xml.bind.DatatypeConverter;
 
 import org.apache.wicket.util.convert.ConversionException;
 import org.apache.wicket.util.string.Strings;
@@ -13,6 +12,7 @@ import org.apache.wicket.util.string.Strings;
 public class HexConverter extends AbstractJointConverter<byte[]> {
 	
 	private static final long serialVersionUID = 1L;
+	private static final HexFormat HEX_FORMAT = HexFormat.of().withUpperCase();
 	private final String prefix;
 	private final int cols;
 	private final int maxLength;
@@ -32,7 +32,7 @@ public class HexConverter extends AbstractJointConverter<byte[]> {
 		try {
 			if(Strings.isEmpty(data)) return null;
 			if(!Strings.isEmpty(prefix) && data.startsWith(prefix)) data = data.substring(prefix.length());
-			return DatatypeConverter.parseHexBinary(data.replaceAll("\\R", ""));
+			return HEX_FORMAT.parseHex(data.replaceAll("\\R", ""));
 		} catch (IllegalArgumentException e) {
 			throw newConversionException(e.getMessage(), data, byte[].class, locale);
 		}
@@ -46,7 +46,7 @@ public class HexConverter extends AbstractJointConverter<byte[]> {
 			System.arraycopy(array, 0, newArray, 0, newArray.length);
 			array = newArray;
 		}
-		String data = DatatypeConverter.printHexBinary(array);
+		String data = HEX_FORMAT.formatHex(array);
 		if(!Strings.isEmpty(prefix))data = prefix+data;
 		if(cols>0) data = data.replaceAll("(.{"+cols+"})", "$1\n");
 		return data;

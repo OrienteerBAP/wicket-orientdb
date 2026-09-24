@@ -23,17 +23,17 @@ and is modernized in lockstep with it. Dormant from Feb 2024 to Sep 2026.
 
 | Area | Current | Target (see plan) |
 |---|---|---|
-| Java | 1.8 (`java.version` in root pom) | `--release 21`, verified on JDK 21 and 25 (Stage A) |
+| Java | `--release 21` (`maven.compiler.release` in root pom) | verified on JDK 21 and 25 (Stage A) |
 | Web | Wicket 8.15 (core, extensions, auth-roles), `javax.servlet-api` 3.0.1 `provided` | Wicket 9.x (B) → 10.x + jakarta Servlet 6 (C) |
 | DB | OrientDB 3.2.27 (core + server; embedded server supported) | latest 3.2.x; Orienteer decides the runtime version |
-| Other | Guava 33, OkHttp 4.9 (+ logging-interceptor), Lombok 1.18.16 `provided`, SLF4J (via Wicket) | Lombok latest (A), OkHttp current (C) |
+| Other | Guava 33, OkHttp 4.9 (+ logging-interceptor), Lombok 1.18.48 `provided`, SLF4J 1.7 (via Wicket) | OkHttp current (C) |
 | Tests | JUnit 4.13, `WicketTester`, embedded OrientDB | JUnit 4.13.2 (A), Jupiter (B, required by Wicket 9 testers) |
 | DI | none (no Guice, no `javax.inject`) | nothing to do |
 
 ## Build status — read first
 
-- Until Stage A lands the build does **not** compile on JDK 17+ (Lombok 1.18.16, `javax.xml.bind` in `HexConverter`).
-  There is no JDK 8 on the dev machine; don't try to keep a JDK 8 build working.
+- Stage A in progress: the build is green on JDK 21 with `--release 21` (Lombok 1.18.48 via `annotationProcessorPaths`,
+  `HexFormat` instead of `javax.xml.bind`). JDK 8 is gone for good; don't try to keep a JDK 8 build working.
 - Dev machine: Maven 3.9 (Homebrew), Temurin 21 via SDKMAN (default). Homebrew JDK 27 is non-LTS — don't target it.
 - Dead infra: oss.sonatype.org (OSSRH) and jcenter/bintray. Publishing moves to the Central Portal (plan phase R).
 
