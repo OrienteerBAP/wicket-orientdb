@@ -54,7 +54,7 @@
 		<lombok.version>1.18.48</lombok.version>
 		<wicket.version>8.15.0</wicket.version>
 		<orientdb.version>3.2.56</orientdb.version>
-		<jetty.version>9.4.12.v20180830</jetty.version>
+		<jetty.version>9.4.58.v20250814</jetty.version>
 		<okhttp.version>4.9.0</okhttp.version>
 		<log4j.version>2.26.1</log4j.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
