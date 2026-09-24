@@ -24,7 +24,8 @@ Everything is in package `ru.ydn.wicket.wicketorientdb`. Root rules: [`../AGENTS
 - Compile: wicket-core, wicket-extensions, wicket-auth-roles, orientdb-core, orientdb-server, Guava, OkHttp + logging-interceptor.
 - `provided`: javax.servlet-api, Lombok. Test: JUnit 4 (also on the test-jar's API: `WicketOrientDbTesterScope` is a JUnit 4 rule).
 - Transitive but used directly: commons-collections4 (arrives via wicket-util) in `rest/WicketSessionCookieJar`.
-- OrientDB 3.2 brings GraalJS/Truffle 21.3.5 through a JDK-activated profile in its pom (needed for JS `OFunction`s).
+- GraalJS for OrientDB's JS `OFunction`s/scripts: `orientdb-core` brings GraalVM 21.3.5 (JDK-activated profile), which
+  breaks on JDK 22+; the pom **excludes** it and declares GraalJS `${graalvm.version}` instead (plan D11). Keep both together.
 
 ## Test-jar (public API for Orienteer)
 

@@ -83,6 +83,8 @@ mvn -pl wicket-orientdb-demo jetty:run             # demo app on :8080 with embe
 
 - Tests bind ports 2424+/2480+: don't run this build in parallel with Orienteer's tests or a local OrientDB.
 - Coupled libraries move together: Wicket ↔ servlet API ↔ jakarta (Stages B/C). Never bump one alone.
+- GraalJS: `orientdb-core`'s own GraalVM 21.3.5 is excluded and replaced by `graalvm.version` (it crashes on JDK 22+).
+  Don't drop the exclusions; consumers declaring `orientdb-core` directly need the same exclusions (plan D11).
 - `rest.ReverseProxyResource` uses the OkHttp-internal `okhttp3.internal.http.HttpMethod` (breaks on OkHttp 5).
 - `OrientDBHttpAPIResource` forwards the signed-in user's password to OrientDB's HTTP API as Basic auth.
 - The parent pom's `<repositories>`/`<distributionManagement>` are inherited by consumers — keep them clean.

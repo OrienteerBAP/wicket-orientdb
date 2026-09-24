@@ -35,6 +35,41 @@
 		<dependency>
 			<groupId>com.orientechnologies</groupId>
 			<artifactId>orientdb-core</artifactId>
+			<!-- OrientDB 3.2.x brings GraalVM/Truffle 21.3.5, which fails on JDK 22+ (it calls the removed
+			     sun.misc.Unsafe.ensureClassInitialized). Replaced by the current GraalJS below. -->
+			<exclusions>
+				<exclusion>
+					<groupId>org.graalvm.sdk</groupId>
+					<artifactId>*</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.graalvm.truffle</groupId>
+					<artifactId>*</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.graalvm.js</groupId>
+					<artifactId>*</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.graalvm.tools</groupId>
+					<artifactId>*</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<!-- GraalJS for OrientDB's JavaScript functions/scripts (same roles and scopes as in orientdb-core's pom) -->
+		<dependency>
+			<groupId>org.graalvm.polyglot</groupId>
+			<artifactId>polyglot</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.graalvm.js</groupId>
+			<artifactId>js-scriptengine</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.graalvm.js</groupId>
+			<artifactId>js</artifactId>
+			<type>pom</type>
+			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.orientechnologies</groupId>

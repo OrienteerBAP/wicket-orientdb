@@ -57,6 +57,8 @@
 		<jetty.version>9.4.58.v20250814</jetty.version>
 		<okhttp.version>4.9.0</okhttp.version>
 		<log4j.version>2.26.1</log4j.version>
+		<!-- GraalJS replacing the GraalVM 21.3.5 that OrientDB 3.2.x brings (fails on JDK 22+) -->
+		<graalvm.version>25.0.4</graalvm.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 	<modules>
@@ -104,6 +106,22 @@
 				<groupId>com.orientechnologies</groupId>
 				<artifactId>orientdb-client</artifactId>
 				<version>${orientdb.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.graalvm.polyglot</groupId>
+				<artifactId>polyglot</artifactId>
+				<version>${graalvm.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.graalvm.js</groupId>
+				<artifactId>js-scriptengine</artifactId>
+				<version>${graalvm.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.graalvm.js</groupId>
+				<artifactId>js</artifactId>
+				<version>${graalvm.version}</version>
+				<type>pom</type>
 			</dependency>
 			<dependency>
 			    <groupId>com.google.guava</groupId>
