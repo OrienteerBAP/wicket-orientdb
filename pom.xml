@@ -53,7 +53,7 @@
 		<maven.compiler.release>21</maven.compiler.release>
 		<lombok.version>1.18.48</lombok.version>
 		<wicket.version>8.15.0</wicket.version>
-		<orientdb.version>3.2.27</orientdb.version>
+		<orientdb.version>3.2.56</orientdb.version>
 		<jetty.version>9.4.12.v20180830</jetty.version>
 		<okhttp.version>4.9.0</okhttp.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

@@ -206,16 +206,19 @@ public class OQueryModel<K> extends LoadableDetachableModel<List<K>> implements 
 	public <T> Iterator<T> iterator(long first, long count, Function<OElement, T> transformer) {
     	ODatabaseSession db = OrientDbWebSession.get().getDatabaseSession();
 
+        // Collect results before the result set is closed: recent OrientDB 3.2.x (e.g. 3.2.56) yields nothing from a closed OResultSet
         try(OResultSet result = db.query(prepareSql((int) first, (int) count), prepareParams())) {
 
 	        if (transformer != null) {
 	            return result.elementStream()
 	                    .map(transformer)
+	                    .collect(Collectors.toList())
 	                    .iterator();
 	        }
 	
 	    	return result.elementStream()
 	                .map(e -> (T) e)
+	                .collect(Collectors.toList())
 	                .iterator();
         }
     }

@@ -25,7 +25,7 @@ and is modernized in lockstep with it. Dormant from Feb 2024 to Sep 2026.
 |---|---|---|
 | Java | `--release 21` (`maven.compiler.release` in root pom) | verified on JDK 21 and 25 (Stage A) |
 | Web | Wicket 8.15 (core, extensions, auth-roles), `javax.servlet-api` 3.0.1 `provided` | Wicket 9.x (B) → 10.x + jakarta Servlet 6 (C) |
-| DB | OrientDB 3.2.27 (core + server; embedded server supported) | latest 3.2.x; Orienteer decides the runtime version |
+| DB | OrientDB 3.2.56 (core + server; embedded server supported) | latest 3.2.x; Orienteer decides the runtime version |
 | Other | Guava 33, OkHttp 4.9 (+ logging-interceptor), Lombok 1.18.48 `provided`, SLF4J 1.7 (via Wicket) | OkHttp current (C) |
 | Tests | JUnit 4.13, `WicketTester`, embedded OrientDB | JUnit 4.13.2 (A), Jupiter (B, required by Wicket 9 testers) |
 | DI | none (no Guice, no `javax.inject`) | nothing to do |

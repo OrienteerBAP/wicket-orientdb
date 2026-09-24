@@ -140,11 +140,14 @@ public class TestModels
 		Iterator<OUser> it = provider.iterator(0, -1);
 		List<ODocument> allUsers = wicket.getTester().getMetadata().getSecurity().getAllUsers();
 		assertTrue(provider.size()==allUsers.size());
+		int iterated = 0;
 		while(it.hasNext())
 		{
 			OUser oUser = it.next();
 			assertTrue(allUsers.contains(provider.model(oUser).getObject().getDocument()));
+			iterated++;
 		}
+		assertEquals(allUsers.size(), iterated);
 		provider.detach();
 		assertTrue(provider.size()==allUsers.size());
 	}
