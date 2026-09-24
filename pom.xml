@@ -55,6 +55,7 @@
 		<wicket.version>8.15.0</wicket.version>
 		<orientdb.version>3.2.56</orientdb.version>
 		<jetty.version>9.4.58.v20250814</jetty.version>
+		<jetty.asm.version>9.10.1</jetty.asm.version>
 		<okhttp.version>4.9.0</okhttp.version>
 		<log4j.version>2.26.1</log4j.version>
 		<!-- GraalJS replacing the GraalVM 21.3.5 that OrientDB 3.2.x brings (fails on JDK 22+) -->
@@ -325,6 +326,20 @@
 					<groupId>org.eclipse.jetty</groupId>
 					<artifactId>jetty-maven-plugin</artifactId>
 					<version>${jetty.version}</version>
+					<!-- Jetty 9.4.58 bundles ASM 9.7.1 (reads up to Java 24). On JDK 25 its annotation scanning fails on the
+					     Java 25 multi-release classes of bcprov-jdk18on (brought by OrientDB 3.2.56); ASM >= 9.8 reads them. -->
+					<dependencies>
+						<dependency>
+							<groupId>org.ow2.asm</groupId>
+							<artifactId>asm</artifactId>
+							<version>${jetty.asm.version}</version>
+						</dependency>
+						<dependency>
+							<groupId>org.ow2.asm</groupId>
+							<artifactId>asm-commons</artifactId>
+							<version>${jetty.asm.version}</version>
+						</dependency>
+					</dependencies>
 				</plugin>
 			</plugins>
 		</pluginManagement>
