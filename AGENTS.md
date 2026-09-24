@@ -38,9 +38,9 @@ and is modernized in lockstep with it. Dormant from Feb 2024 to Sep 2026.
   `2.0-SNAPSHOT`** (plan D13): `2.0` is released from Stage A after Orienteer P3 is green; then B = `2.1-SNAPSHOT`,
   C = `3.0-SNAPSHOT` (a B start before the `2.0` release goes on a `2.1-SNAPSHOT` branch).
 - Use `./mvnw` (Maven 3.9.16). Enforcer requires Maven ≥ 3.9 and JDK ≥ 21. `.sdkmanrc` pins Temurin 21.0.11;
-  Temurin 25.0.4 is installed for verification: `JAVA_HOME=~/.sdkman/candidates/java/25.0.4-tem ./mvnw clean verify`.
-  Homebrew JDK 27 is non-LTS — don't target it.
-- Plugin versions live only in the root `<pluginManagement>`; don't add versions in module poms.
+  Temurin 25.0.4 for verification: `JAVA_HOME=~/.sdkman/candidates/java/25.0.4-tem ./mvnw clean verify`. JDK 27 is non-LTS.
+- Plugin versions live only in the root `<pluginManagement>`. CI: `.github/workflows/ci.yml` (push + PR, JDK 21/25,
+  surefire + JaCoCo reports); Dependabot: `.github/dependabot.yml`.
 - Publishing: `central-publishing-maven-plugin` (server id `central`) — `-SNAPSHOT`s to the Central Portal snapshots
   repository, releases as a portal bundle; the demo is excluded. **Only the owner runs `deploy`/releases** (plan D14);
   agents never upload, push or tag. OSSRH (oss.sonatype.org) and jcenter/bintray are dead.
@@ -52,6 +52,7 @@ and is modernized in lockstep with it. Dormant from Feb 2024 to Sep 2026.
 ./mvnw install                                      # install jar + test-jar + parent pom into ~/.m2 for Orienteer
 ./mvnw -pl wicket-orientdb test -Dtest=TestModels   # single test class
 ./mvnw -pl wicket-orientdb-demo jetty:run           # demo on :8080 (install first); embedded OrientDB
+./mvnw -Prelease -Dgpg.skip -DskipTests verify      # release artifacts (sources, javadoc) locally; never `deploy` (owner only)
 ```
 
 ## Layout and key classes

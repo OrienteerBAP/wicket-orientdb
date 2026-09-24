@@ -16,7 +16,7 @@ Started: 2026-09-24. Versions below were checked on Maven Central on that date �
 | A | Stage A: JDK 21/25 build on the **same** framework majors (Wicket 8.15, javax, OrientDB 3.2.x), `./mvnw install` | P0 | P3 | done (local install; published artifact → R) |
 | B | Stage B: Wicket 9.x, still javax; JUnit 5 in the test-jar → `2.1` | A, 2.0 release (D13) | P5 | todo — **not started**; Orienteer consumes Stage A during its P1–P4 (D12) |
 | C | Stage C: Wicket 10.x, `jakarta.servlet` 6, `wicket-tester`, OkHttp current → `3.0` | B (D13) | P6 | todo |
-| R | Release & CI: GitHub Actions, Maven Central via the Central Portal: `2.0-SNAPSHOT` now, `2.0` after Orienteer P3 is green (D13/D14) | A | P3 "resolvable from a real repo" | todo |
+| R | Release & CI: GitHub Actions, Maven Central via the Central Portal: `2.0-SNAPSHOT` now, `2.0` after Orienteer P3 is green (D13/D14) | A | P3 "resolvable from a real repo" | prepared and validated locally (2026-09-24); owner steps pending (token, SNAPSHOTs, GPG) |
 | X | Cleanup, docs, known bugs & security | any time | — | todo |
 
 ## Guiding principles
@@ -159,9 +159,53 @@ Goal: no `javax.servlet` left; Wicket 10.x; `jakarta.servlet-api` 6.0 `provided`
 - [x] Demo module keeps `maven-deploy-plugin` `skip` (and is excluded from Central publishing) — 2026-09-24: `excludeArtifacts` = `wicket-orientdb-demo`; the plugin (0.11.0, checked in its bytecode) applies it on both the snapshot and the release path
 - [x] `.github/dependabot.yml` (maven + github-actions, weekly, grouped); ignore majors of Wicket/servlet/OkHttp until their stages — 2026-09-24: groups for Maven plugins, GraalVM and all GitHub Actions; ignored until their stages: Wicket majors, `javax.servlet-api`, OkHttp, Jetty minor/major (demo), OrientDB minor/major (3.2.x), JUnit 4 major, Log4j major. Validated against the Dependabot JSON schema; active once pushed
 - [x] JaCoCo report (replaces cobertura/coveralls), optional CodeQL — 2026-09-24: `jacoco-maven-plugin` 0.8.15, `prepare-agent` + `report` at `verify`, instrumenting only `ru/ydn/**` (OrientDB/GraalJS untouched); no thresholds. Green on 21 and 25; baseline coverage of `wicket-orientdb`: 51% instructions, 53% lines (150 classes). CI uploads the report from the JDK 21 job. CodeQL not added (optional, owner's call)
-- [ ] Owner: Central Portal user token in `~/.m2/settings.xml` (server `central`), SNAPSHOTs enabled for `ru.ydn` in the portal, first `2.0-SNAPSHOT` deploy (D14)
+- [x] Local validation without any upload — 2026-09-24: `./mvnw -B clean verify` green on JDK 21 and 25 (103/17/0 + demo 1/0, JaCoCo on); `-Prelease -Dgpg.skip` builds sources, test-sources and javadoc jars (0 doclint warnings). A Central bundle can't be produced by the plugin without running `deploy`: in 0.11.0 `skipPublishing=true` drops every artifact before staging (it's a per-module exclude, not "bundle only"), and a release deploy needs the `central` credentials before staging. So the bundle was assembled offline exactly like the plugin does (Maven layout, `maven-metadata` removed, md5/sha1/sha256/sha512) from a `-Prelease -Dgpg.skip verify` build of a throwaway `git archive` copy set to `2.0` (never installed): 7 artifacts + 28 checksums, required POM metadata OK on both POMs, library `.pom/.jar/-sources/-javadoc` present, no demo artifacts; only the `.asc` signatures are missing (gpg skipped). File list in the handoff
+- [ ] Owner: Central Portal user token in `~/.m2/settings.xml` (server `central`), SNAPSHOTs enabled for `ru.ydn` in the portal, first `2.0-SNAPSHOT` deploy (D14) — runbook below
 - [ ] Owner: release `2.0` once Orienteer P3 is green against `2.0-SNAPSHOT` (GPG key published to a keyserver); then `master` → `2.1-SNAPSHOT` (D13)
+- [ ] Optional, owner's call: publish from CI (GitHub secrets + a workflow on tags) and CodeQL — not implemented; CI only builds and tests
 - [ ] Exit check: a tagged release (or snapshot) resolves from Central in a clean `~/.m2`; Orienteer's "Stage A delivered" item can be ticked
+
+### Publishing runbook (owner only — D14)
+
+Prerequisites (one-off):
+1. **Central Portal user token** (https://central.sonatype.com → account → *Generate User Token*) in `~/.m2/settings.xml`,
+   server id `central` (the plugin also accepts a password encrypted with `mvn --encrypt-password`):
+   ```xml
+   <settings>
+     <servers>
+       <server>
+         <id>central</id>
+         <username><!-- token username --></username>
+         <password><!-- token password --></password>
+       </server>
+     </servers>
+   </settings>
+   ```
+2. **Enable SNAPSHOTs** for the `ru.ydn` namespace: https://central.sonatype.com/publishing/namespaces → `ru.ydn` → ⋮ → *Enable SNAPSHOTs*.
+3. **GPG key (needed for `2.0`, not for snapshots):** `gpg --full-generate-key` (RSA 4096, `Ilia Naryzhny <phantom@ydn.ru>`),
+   then `gpg --keyserver keyserver.ubuntu.com --send-keys <KEYID>` (Central also looks at keys.openpgp.org — verify the e-mail there).
+4. **CI publishing (optional, not set up):** GitHub secrets `CENTRAL_TOKEN_USERNAME`, `CENTRAL_TOKEN_PASSWORD`,
+   `MAVEN_GPG_PRIVATE_KEY` (`gpg --armor --export-secret-keys <KEYID>`), `MAVEN_GPG_PASSPHRASE`, plus a workflow using
+   `actions/setup-java` `server-id: central`, `server-username`/`server-password`, `gpg-private-key`, `gpg-passphrase`.
+
+Snapshot `2.0-SNAPSHOT` (now; repeat after every fix Orienteer P3 needs):
+```bash
+git switch master && git pull && git status                 # clean tree at 2.0-SNAPSHOT
+./mvnw -B clean deploy -Prelease -Dgpg.skip                 # tests + sources/javadoc; -SNAPSHOT → Central Portal snapshots
+curl -s https://central.sonatype.com/repository/maven-snapshots/ru/ydn/wicket/wicket-orientdb/wicket-orientdb/2.0-SNAPSHOT/maven-metadata.xml
+```
+(Once a GPG key exists, drop `-Dgpg.skip` to sign snapshots too. Snapshots are not validated and expire after 90 days.)
+
+Release `2.0` (only after Orienteer P3 is green against `2.0-SNAPSHOT` — D13):
+```bash
+./mvnw -B release:prepare -DreleaseVersion=2.0 -DdevelopmentVersion=2.1-SNAPSHOT -Dtag=v2.0   # local commits + tag only
+./mvnw -B release:perform          # builds tag v2.0 from the local clone with -Prelease: signs, uploads the bundle, waits for validation
+# → https://central.sonatype.com/publishing/deployments : inspect "wicket-orientdb 2.0", then Publish (or Drop and fix)
+git push origin master && git push origin v2.0                                                 # after publishing
+```
+If validation fails before anything was pushed: Drop the deployment, `git tag -d v2.0`, `git reset --hard HEAD~2`
+(the two `[maven-release-plugin]` commits), `./mvnw release:clean`, fix, repeat. Central releases are immutable once published.
+Not exercised yet (would upload): the plugin's snapshot/release upload paths and `release:perform`; first real run is the owner's.
 
 ## X — Cleanup, docs, known bugs & security
 
@@ -222,12 +266,12 @@ Goal: no `javax.servlet` left; Wicket 10.x; `jakarta.servlet-api` 6.0 `provided`
 | maven-enforcer-plugin | — | 3.6.3 | add (A) |
 | maven-wrapper-plugin | — | 3.3.4 | wrapper (A) |
 | jetty-maven-plugin (demo) | 9.4.12 | 9.4.58 → ee10 12.1.x | bump (A), replace (C) |
-| maven-source / javadoc / gpg (release profile) | 3.0.1 / 2.10.4 / 1.6 | 3.4.0 / 3.12.0 / 3.2.8 | pin (A), wire up (R) |
-| maven-release-plugin | 2.5.3 | 3.3.1 | R |
-| nexus-staging-maven-plugin | 1.6.8 | OSSRH gone | → central-publishing-maven-plugin 0.11.0 (R) |
+| maven-source / javadoc / gpg (release profile) | 3.0.1 / 2.10.4 / 1.6 | 3.4.0 / 3.12.0 / 3.2.8 | pinned (A), wired up in `release` profile (R, done) |
+| maven-release-plugin | 2.5.3 | 3.3.1 | 3.3.1 (R, done) |
+| nexus-staging-maven-plugin | 1.6.8 | OSSRH gone | removed → central-publishing-maven-plugin 0.11.0 (R, done) |
 | maven-bundle-plugin (extension) | 3.3.0 | 6.x | remove with `type=bundle` (A) |
 | maven-eclipse-plugin, m2e lifecycle-mapping | 2.10, 1.0.0 | retired / IDE-only | remove (A) |
-| cobertura-maven-plugin, coveralls-maven-plugin | 2.7, 4.3.0 | dead | remove (A) → JaCoCo (R) |
+| cobertura-maven-plugin, coveralls-maven-plugin | 2.7, 4.3.0 | dead | removed (A) → jacoco-maven-plugin 0.8.15 (R, done) |
 
 ## Appendix C — Test inventory (static count 2026-09-24, confirmed by surefire in A2)
 
@@ -284,7 +328,7 @@ javap -v -cp wicket-orientdb/target/classes ru.ydn.wicket.wicketorientdb.OrientD
 
 ## Handoff to Orienteer
 
-Stage A, 2026-09-24. This covers the local install only: nothing has been pushed or published, so Orienteer must run `./mvnw install` in this repo first (see phase R).
+Stage A, 2026-09-24. Until the owner's first snapshot deploy (phase R runbook), Orienteer must run `./mvnw install` in this repo first; after it, `2.0-SNAPSHOT` resolves from the Central Portal snapshots repository.
 
 ### 1. Installed artifacts (`~/.m2/repository/ru/ydn/wicket/wicket-orientdb/`)
 
@@ -342,7 +386,16 @@ Stage A, 2026-09-24. This covers the local install only: nothing has been pushed
    - This also covers Orienteer P3's "Nashorn replacement" item: GraalJS is available through `javax.script` under the names `js`, `javascript` and `graal.js`.
 2. **Jetty 9.4 on JDK 25:** Jetty 9.4.58 bundles ASM 9.7.1, and its annotation scanning fails on the Java 25 multi-release classes in `bcprov-jdk18on` 1.85. OrientDB 3.2.56 brings that jar in through `orientdb-server` → `bcpkix`. Orienteer's Jetty 9.4 stopgap therefore needs ASM ≥ 9.8 (this repo uses 9.10.1) as a `jetty-maven-plugin` dependency, and likewise on any Jetty 9.4 runtime classpath (standalone or Docker). The problem goes away with Jetty 12 in P6.
 3. **OrientDB result sets:** OrientDB 3.2.56 returns nothing from an `OResultSet` once it has been closed. `OQueryModel.iterator` depended on that and is now fixed. I found no such pattern in Orienteer's 12 files that use `OResultSet`, but watch for code that returns a stream or iterator out of a `try (OResultSet …)` block.
-4. **Repositories:** the parent pom no longer declares `oss.sonatype.org`. Until phase R publishes artifacts, the snapshot comes only from `~/.m2`.
+4. **Repositories:** the parent pom declares no repositories. Once the owner has deployed `2.0-SNAPSHOT` (phase R), Orienteer adds
+   this to its root pom (snapshots only) instead of relying on a local install; it can go away when Orienteer switches to `2.0`:
+   ```xml
+   <repository>
+     <id>central-portal-snapshots</id>
+     <url>https://central.sonatype.com/repository/maven-snapshots/</url>
+     <releases><enabled>false</enabled></releases>
+     <snapshots><enabled>true</enabled></snapshots>
+   </repository>
+   ```
 
 ### 5. Public API changes
 
@@ -399,3 +452,18 @@ Two tests were added (`ConvertersTests`), and one existing assertion was strengt
 3. **Snapshots vs. release:** publish `2.0-SNAPSHOT` to the Central Portal snapshot repository, or release it? Is the `ru.ydn` namespace verified on the Central Portal? Orienteer's "Stage A delivered" item needs one of the two (phase R). — **Both, in order (D13/D14):** `2.0-SNAPSHOT` to the snapshots repository now, `2.0` release after Orienteer P3 is green. `ru.ydn` is verified.
 4. **Demo module:** keep it through Stage C (Jetty 12 port), or drop it? — **Keep, Jetty 12 ee10 port in Stage C (D15).**
 5. **Cleanup:** delete the fully merged remote branches `future`, `wicket7-upgrade` and `wicket8`, plus the stale `dependabot/*` branch? — **Keep for now (D16); no branches deleted.**
+
+### 10. Phase R — Central bundle (local dry run, 2026-09-24)
+
+What the owner's `release:perform` for `2.0` will upload, minus the `.asc` signatures (every file below also gets `.asc` when signed).
+Each file has `.md5`, `.sha1`, `.sha256` and `.sha512` next to it (28 checksum files); 35 entries in total. The demo is excluded.
+
+| Size (bytes) | Path |
+|---|---|
+| 15543 | `ru/ydn/wicket/wicket-orientdb/wicket-orientdb-parent/2.0/wicket-orientdb-parent-2.0.pom` |
+| 3886 | `ru/ydn/wicket/wicket-orientdb/wicket-orientdb/2.0/wicket-orientdb-2.0.pom` |
+| 245957 | `ru/ydn/wicket/wicket-orientdb/wicket-orientdb/2.0/wicket-orientdb-2.0.jar` |
+| 87728 | `ru/ydn/wicket/wicket-orientdb/wicket-orientdb/2.0/wicket-orientdb-2.0-tests.jar` |
+| 131154 | `ru/ydn/wicket/wicket-orientdb/wicket-orientdb/2.0/wicket-orientdb-2.0-sources.jar` |
+| 35298 | `ru/ydn/wicket/wicket-orientdb/wicket-orientdb/2.0/wicket-orientdb-2.0-test-sources.jar` |
+| 926769 | `ru/ydn/wicket/wicket-orientdb/wicket-orientdb/2.0/wicket-orientdb-2.0-javadoc.jar` |
