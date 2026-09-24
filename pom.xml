@@ -57,8 +57,6 @@
 		<jetty.version>9.4.12.v20180830</jetty.version>
 		<okhttp.version>4.9.0</okhttp.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<!-- allowed values: R7, 1.0, 1.5, 2.0 or none -->
-		<wtp.version>none</wtp.version>
 	</properties>
 	<modules>
 		<module>wicket-orientdb</module>
@@ -95,19 +93,16 @@
 				<groupId>com.orientechnologies</groupId>
 				<artifactId>orientdb-core</artifactId>
 				<version>${orientdb.version}</version>
-				<type>bundle</type>
 			</dependency>
 			<dependency>
 				<groupId>com.orientechnologies</groupId>
 				<artifactId>orientdb-server</artifactId>
 				<version>${orientdb.version}</version>
-				<type>bundle</type>
 			</dependency>
 			<dependency>
 				<groupId>com.orientechnologies</groupId>
 				<artifactId>orientdb-client</artifactId>
 				<version>${orientdb.version}</version>
-				<type>bundle</type>
 			</dependency>
 			<dependency>
 			    <groupId>com.google.guava</groupId>
@@ -146,12 +141,6 @@
 	</dependencyManagement>
 	<build>
 		<plugins>
-			<plugin>
-				<groupId>org.apache.felix</groupId>
-				<artifactId>maven-bundle-plugin</artifactId>
-				<version>3.3.0</version>
-				<extensions>true</extensions>
-			</plugin>
 		    <plugin>
 			<groupId>org.apache.maven.plugins</groupId>
 			<artifactId>maven-release-plugin</artifactId>
@@ -162,37 +151,6 @@
 			    <releaseProfiles>release</releaseProfiles>
 			    <goals>deploy</goals>
 			    <tagNameFormat>v@{project.version}</tagNameFormat>
-			</configuration>
-		    </plugin>
-		    <plugin>
-			    <groupId>org.apache.maven.plugins</groupId>
-			    <artifactId>maven-eclipse-plugin</artifactId>
-			    <version>2.10</version>
-			    <configuration>
-				    <downloadSources>true</downloadSources>
-				    <wtpversion>${wtp.version}</wtpversion>
-			    </configuration>
-		    </plugin>
-		    <plugin>
-			<groupId>org.eluder.coveralls</groupId>
-			<artifactId>coveralls-maven-plugin</artifactId>
-			<version>4.3.0</version>
-			<configuration>
-			    <sourceEncoding>UTF8</sourceEncoding>
-			</configuration>
-		    </plugin>
-		    <plugin>
-			<groupId>org.codehaus.mojo</groupId>
-			<artifactId>cobertura-maven-plugin</artifactId>
-			<version>2.7</version>
-			<configuration>
-			    <formats>
-				<format>html</format>
-				<format>xml</format>
-			    </formats>
-			    <maxmem>256m</maxmem>
-			    <!-- aggregated reports for multi-module projects -->
-			    <aggregate>true</aggregate>
 			</configuration>
 		    </plugin>
                     <plugin>
@@ -217,37 +175,6 @@
 		</plugins>
 		<pluginManagement>
 			<plugins>
-				<!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
-				<plugin>
-					<groupId>org.eclipse.m2e</groupId>
-					<artifactId>lifecycle-mapping</artifactId>
-					<version>1.0.0</version>
-					<configuration>
-						<lifecycleMappingMetadata>
-							<pluginExecutions>
-								<pluginExecution>
-									<pluginExecutionFilter>
-										<groupId>
-											org.apache.maven.plugins
-										</groupId>
-										<artifactId>
-											maven-checkstyle-plugin
-										</artifactId>
-										<versionRange>
-											[2.15,)
-										</versionRange>
-										<goals>
-											<goal>check</goal>
-										</goals>
-									</pluginExecutionFilter>
-									<action>
-										<ignore />
-									</action>
-								</pluginExecution>
-							</pluginExecutions>
-						</lifecycleMappingMetadata>
-					</configuration>
-				</plugin>
 			<plugin>
 				<inherited>true</inherited>
 				<groupId>org.apache.maven.plugins</groupId>
