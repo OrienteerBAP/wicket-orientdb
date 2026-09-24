@@ -34,13 +34,16 @@ and is modernized in lockstep with it. Dormant from Feb 2024 to Sep 2026.
 
 - **Stage A done and accepted (2026-09-24):** `./mvnw clean verify` is green on Temurin 21 and 25 (103 tests, 17 `@Ignore`d),
   no `--add-opens` needed. `master` = Stage A = `2.0-SNAPSHOT`, which Orienteer builds against. JDK 8 is gone; don't support it.
-- **Stage B/C are not started** (plan D12): don't begin them without the owner's go-ahead. **Never install a Stage B/C build
-  as `2.0-SNAPSHOT`** — they need their own branch and version, still to be decided by the owner (plan D13).
+- **Stage B/C are not started** (plan D12): don't begin them without the owner's go-ahead. **Never build Stage B/C as
+  `2.0-SNAPSHOT`** (plan D13): `2.0` is released from Stage A after Orienteer P3 is green; then B = `2.1-SNAPSHOT`,
+  C = `3.0-SNAPSHOT` (a B start before the `2.0` release goes on a `2.1-SNAPSHOT` branch).
 - Use `./mvnw` (Maven 3.9.16). Enforcer requires Maven ≥ 3.9 and JDK ≥ 21. `.sdkmanrc` pins Temurin 21.0.11;
   Temurin 25.0.4 is installed for verification: `JAVA_HOME=~/.sdkman/candidates/java/25.0.4-tem ./mvnw clean verify`.
   Homebrew JDK 27 is non-LTS — don't target it.
 - Plugin versions live only in the root `<pluginManagement>`; don't add versions in module poms.
-- Dead infra: oss.sonatype.org (OSSRH) and jcenter/bintray. Publishing moves to the Central Portal (plan phase R).
+- Publishing: `central-publishing-maven-plugin` (server id `central`) — `-SNAPSHOT`s to the Central Portal snapshots
+  repository, releases as a portal bundle; the demo is excluded. **Only the owner runs `deploy`/releases** (plan D14);
+  agents never upload, push or tag. OSSRH (oss.sonatype.org) and jcenter/bintray are dead.
 
 ## Commands
 
@@ -61,7 +64,7 @@ and is modernized in lockstep with it. Dormant from Feb 2024 to Sep 2026.
   - `model` (models/data providers), `security`, `rest` (OkHttp reverse proxy + OrientDB REST bridge),
     `proto` (JDK dynamic-proxy prototypes of `OClass`/`OProperty`/`OIndex`), `utils` (`DBClosure`, `OSchemaHelper`,
     `LombokExtensions`, `query/filter`), `converter`, `validation`, `behavior`, `components`, `service`.
-- `wicket-orientdb-demo/` — sample war (never deployed). May be parked if it blocks a stage. Has its own `AGENTS.md`.
+- `wicket-orientdb-demo/` — sample war, never published; kept through Stage C (Jetty 12 port, plan D15). Has its own `AGENTS.md`.
 - `check_style.xml` — Checkstyle rules for main sources.
 
 ## Conventions
@@ -93,4 +96,4 @@ and is modernized in lockstep with it. Dormant from Feb 2024 to Sep 2026.
   Don't drop the exclusions; consumers declaring `orientdb-core` directly need the same exclusions (plan D11).
 - `rest.ReverseProxyResource` uses the OkHttp-internal `okhttp3.internal.http.HttpMethod` (breaks on OkHttp 5).
 - `OrientDBHttpAPIResource` forwards the signed-in user's password to OrientDB's HTTP API as Basic auth.
-- The parent pom's `<repositories>`/`<distributionManagement>` are inherited by consumers — keep them clean.
+- The parent pom is published and inherited: keep it free of `<repositories>`/`<distributionManagement>` (none today).

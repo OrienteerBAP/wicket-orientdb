@@ -20,16 +20,6 @@
 		<system>github</system>
 		<url>https://github.com/OrienteerBAP/wicket-orientdb/issues</url>
 	</issueManagement>
-	<distributionManagement>
-	  <snapshotRepository>
-	    <id>ossrh</id>
-	    <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-	  </snapshotRepository>
-	  <repository>
-	    <id>ossrh</id>
-	    <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-	  </repository>
-	</distributionManagement>
 	<developers>
 	    <developer>
 		    <id>owner</id>
@@ -61,6 +51,8 @@
 		<!-- GraalJS replacing the GraalVM 21.3.5 that OrientDB 3.2.x brings (fails on JDK 22+) -->
 		<graalvm.version>25.0.4</graalvm.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<!-- Publishing (REFRESH_PLAN.md D13/D14): snapshots and releases go to Maven Central via the Central Portal -->
+		<central.snapshots.url>https://central.sonatype.com/repository/maven-snapshots/</central.snapshots.url>
 	</properties>
 	<modules>
 		<module>wicket-orientdb</module>
@@ -183,6 +175,23 @@
 					</execution>
 				</executions>
 			</plugin>
+			<!-- Replaces maven-deploy-plugin: `./mvnw deploy` publishes -SNAPSHOTs to ${central.snapshots.url} and
+			     releases as a validated bundle to the Central Portal. Credentials: server id `central` in ~/.m2/settings.xml.
+			     Only the owner uploads (D14). autoPublish is left at false: a release is published manually in the portal. -->
+			<plugin>
+				<groupId>org.sonatype.central</groupId>
+				<artifactId>central-publishing-maven-plugin</artifactId>
+				<extensions>true</extensions>
+				<configuration>
+					<publishingServerId>central</publishingServerId>
+					<centralSnapshotsUrl>${central.snapshots.url}</centralSnapshotsUrl>
+					<deploymentName>wicket-orientdb ${project.version}</deploymentName>
+					<excludeArtifacts>
+						<!-- The demo war is never published (D15) -->
+						<artifact>wicket-orientdb-demo</artifact>
+					</excludeArtifacts>
+				</configuration>
+			</plugin>
 		    <plugin>
 			<groupId>org.apache.maven.plugins</groupId>
 			<artifactId>maven-release-plugin</artifactId>
@@ -301,6 +310,11 @@
 					<artifactId>maven-gpg-plugin</artifactId>
 					<version>3.2.8</version>
 				</plugin>
+				<plugin>
+					<groupId>org.sonatype.central</groupId>
+					<artifactId>central-publishing-maven-plugin</artifactId>
+					<version>0.11.0</version>
+				</plugin>
 				<!-- Release tooling is replaced in the Release & CI phase (see REFRESH_PLAN.md) -->
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
@@ -349,17 +363,6 @@
 	    <id>release</id>
 	    <build>
 		<plugins>
-		    <plugin>
-		      <groupId>org.sonatype.plugins</groupId>
-		      <artifactId>nexus-staging-maven-plugin</artifactId>
-		      <version>1.6.8</version>
-		      <extensions>true</extensions>
-		      <configuration>
-		        <serverId>ossrh</serverId>
-		        <nexusUrl>https://oss.sonatype.org/</nexusUrl>
-		        <autoReleaseAfterClose>true</autoReleaseAfterClose>
-		      </configuration>
-		    </plugin>
 		    <plugin>
 		      <groupId>org.apache.maven.plugins</groupId>
 		      <artifactId>maven-source-plugin</artifactId>

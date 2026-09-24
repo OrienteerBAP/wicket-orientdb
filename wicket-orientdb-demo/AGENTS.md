@@ -4,8 +4,8 @@ Sample war showing the library: `WicketApplication extends OrientDbWebApplicatio
 (memory DB `WicketOrientDb`, `db.config.xml` next to the class), a `TestData` class filled with 50 random documents,
 the REST bridge mounted at `/orientdb`, and `HomePage` listing the data. Root rules: [`../AGENTS.md`](../AGENTS.md).
 
-- **Not published:** `maven-deploy-plugin` `skip=true`. Orienteer does not use it. It may be **parked** (removed from the
-  root `<modules>`) if it ever blocks a stage — record that in `../REFRESH_PLAN.md`.
+- **Not published:** excluded from Central via `excludeArtifacts` of `central-publishing-maven-plugin` (root pom), and
+  `maven-deploy-plugin` `skip=true`. Orienteer does not use it. **Kept** through Stage C, which ports it to Jetty 12 ee10 (plan D15).
 - **Run:** `./mvnw install -DskipTests` once, then `./mvnw -pl wicket-orientdb-demo jetty:run` (Jetty 9.4.58 plugin, :8080;
   works on JDK 21 and 25 — the plugin gets ASM `${jetty.asm.version}` so it can scan Java 25 multi-release jars).
   `src/test/java/.../Start.java` is an alternative embedded-Jetty launcher using the test-scoped `jetty-all` uber jar
