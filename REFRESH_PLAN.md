@@ -88,8 +88,8 @@ Baseline (2026-09-24, JDK 21): Checkstyle 6.18 passes; `compile` fails with `Ill
 - [x] A2 First green `./mvnw clean verify` on JDK 21; record test counts in Appendix C — 2026-09-24: library 100 run / 14 skipped, demo 1 run; compiler plugin still 3.7.0 (bumped in A5)
 - [x] A3 Remove the dead `snapshots-repo` (oss.sonatype.org) from `<repositories>` (inherited by every consumer); `distributionManagement` stays until R (D7) — 2026-09-24; no bintray/jcenter entries existed. Everything now resolves from Maven Central only
 - [x] A4 Remove dead plugins: `maven-eclipse-plugin` (+ `wtp.version`), `coveralls-maven-plugin`, `cobertura-maven-plugin`, m2e `lifecycle-mapping`, `maven-bundle-plugin` extension; drop `<type>bundle</type>` from the OrientDB entries in `dependencyManagement` and the explicit `${orientdb.version}` in the module pom — 2026-09-24; dependency tree unchanged (the `bundle` entries never matched the `jar` dependencies)
-- [ ] A5 Pin every build plugin once in root `<pluginManagement>` (Appendix B); remove module-level versions (jar 3.0.2, deploy 2.7, jetty); release-profile source/javadoc/gpg pinned to current (javadoc 2.x is JDK-incompatible), nexus-staging/release-plugin left for R
-- [ ] A5 Add `maven-enforcer-plugin`: `requireMavenVersion [3.9,)`, `requireJavaVersion [21,)`
+- [x] A5 Pin every build plugin once in root `<pluginManagement>` (Appendix B); remove module-level versions (jar 3.0.2, deploy 2.7, jetty); release-profile source/javadoc/gpg pinned to current (javadoc 2.x is JDK-incompatible), nexus-staging/release-plugin left for R — 2026-09-24; also pinned dependency 3.11.0, wrapper 3.3.4, versions 2.22.0 (helper goals). nexus-staging (build extension) keeps its version in the `release` profile until R
+- [x] A5 Add `maven-enforcer-plugin`: `requireMavenVersion [3.9,)`, `requireJavaVersion [21,)` — 2026-09-24 (build-time only; not inherited by consumers, who don't use this parent)
 - [ ] A6 Checkstyle plugin 3.0.0 → 3.6.0 with Checkstyle 14.1.0; migrate `check_style.xml` (DTD 1.3; `JavadocMethod`/`JavadocType` split into `Missing*` + validation; `LineLength` moved under `Checker` with `fileExtensions=java`); still `failOnViolation`, still at `validate`
 - [ ] A7 JUnit 4.13.1 → 4.13.2
 - [ ] A8 OrientDB 3.2.27 → 3.2.56 (D3); record the transitive dependency diff in the handoff
@@ -195,10 +195,11 @@ Goal: no `javax.servlet` left; Wicket 10.x; `jakarta.servlet-api` 6.0 `provided`
 | Plugin | Current | Latest seen | Action (stage) |
 |---|---|---|---|
 | maven-compiler-plugin | 3.7.0 | 3.16.0 | bump, `release` 21, Lombok APT path (A) |
-| maven-surefire-plugin | unpinned (Maven default) | 3.6.0 | pin (A) |
+| maven-surefire-plugin | unpinned (Maven default 3.5.4) | 3.6.0 | pin (A) |
 | maven-jar-plugin | 3.0.2 (module) | 3.5.1 | pin in root (A) |
-| maven-war-plugin (demo) | unpinned | 3.5.1 | pin — < 3.3.1 fails on JDK 16+ (A) |
+| maven-war-plugin (demo) | unpinned (Maven default 3.5.1) | 3.5.1 | pin — < 3.3.1 fails on JDK 16+ (A) |
 | maven-resources/clean/install/deploy | unpinned / deploy 2.7 (demo) | 3.5.0 / 3.5.0 / 3.2.0 / 3.2.0 | pin (A) |
+| maven-dependency / versions (helper goals) | unpinned | 3.11.0 / 2.22.0 | pin (A) |
 | maven-checkstyle-plugin (+ Checkstyle) | 3.0.0 (6.18) | 3.6.0 (14.1.0) | bump + config migration (A, D4) |
 | maven-enforcer-plugin | — | 3.6.3 | add (A) |
 | maven-wrapper-plugin | — | 3.3.4 | wrapper (A) |
@@ -212,7 +213,8 @@ Goal: no `javax.servlet` left; Wicket 10.x; `jakarta.servlet-api` 6.0 `provided`
 
 ## Appendix C — Test inventory (static count 2026-09-24, confirmed by surefire in A2)
 
-Surefire reports a class-level `@Ignore` as **one** skipped test, so "run" = active `@Test` − 4 + 1.
+Surefire 3.5.4 (Maven default, used in A2) reports a class-level `@Ignore` as **one** skipped test; surefire 3.6.0
+(pinned in A5) reports each of its 4 methods, so from A5 on the totals are **103 run / 17 skipped**.
 
 | Test class | `@Test` | `@Ignore` | Surefire JDK 21 (A2): run / skipped | Notes |
 |---|---|---|---|---|
