@@ -150,8 +150,8 @@ Goal: no `javax.servlet` left; Wicket 10.x; `jakarta.servlet-api` 6.0 `provided`
 
 ## R — Release & CI
 
-- [ ] GitHub Actions workflow: push + PR, matrix JDK 21/25 (`actions/setup-java`, `distribution: temurin`, `cache: maven`), `./mvnw -B verify`, upload surefire reports, `concurrency` to cancel superseded runs (tests bind ports 2424+/2480+ — one job per runner)
-- [ ] Remove `.travis.yml`; remove Travis/Coveralls badges from `README.md`
+- [x] GitHub Actions workflow: push + PR, matrix JDK 21/25 (`actions/setup-java`, `distribution: temurin`, `cache: maven`), `./mvnw -B verify`, upload surefire reports, `concurrency` to cancel superseded runs (tests bind ports 2424+/2480+ — one job per runner) — 2026-09-24: `.github/workflows/ci.yml` (push to any branch, PR, manual; `actions/checkout@v7`, `setup-java@v6`, `upload-artifact@v7`; `contents: read`). Validated against the GitHub workflow JSON schema; first real run happens when the owner pushes. No publishing in CI (D14)
+- [x] Remove `.travis.yml`; remove Travis/Coveralls badges from `README.md` — 2026-09-24; README now shows the GitHub Actions CI badge
 - [ ] Replace OSSRH `distributionManagement` and `nexus-staging-maven-plugin` with `org.sonatype.central:central-publishing-maven-plugin` (0.11.0 seen); `ru.ydn` namespace verified on the Central Portal (owner, 2026-09-24, D14)
 - [ ] Release profile: sources + javadoc jars (fix doclint errors, e.g. the broken `{@link LegacyOrientDBHttpAPIResource}` in `OrientDBHttpAPIResource`), GPG signing (`maven-gpg-plugin` 3.x, loopback pinentry in CI), required POM metadata check
 - [ ] Snapshot publishing to `https://central.sonatype.com/repository/maven-snapshots/` (decided: yes, D14); tell Orienteer to add that repository (snapshots only)
@@ -166,7 +166,7 @@ Goal: no `javax.servlet` left; Wicket 10.x; `jakarta.servlet-api` 6.0 `provided`
 ## X — Cleanup, docs, known bugs & security
 
 ### Docs & cleanup
-- [ ] README: drop dead badges, add prerequisites (JDK 21, `./mvnw`), fix outdated examples (`OServerAdmin`/`local:` URLs → `OrientDB`/`createIfNotExists`, `setAdminUserPassword` → `setAdminPassword`)
+- [ ] README: ~~drop dead badges~~ (done in R, 2026-09-24), add prerequisites (JDK 21, `./mvnw`), fix outdated examples (`OServerAdmin`/`local:` URLs → `OrientDB`/`createIfNotExists`, `setAdminUserPassword` → `setAdminPassword`)
 - [ ] `.gitignore`: add `.DS_Store`, `.vscode/`, `*.log`
 - [ ] Library tests run without an SLF4J binding (NOP warning, Wicket logs dropped); optionally add a test-scoped binding + `src/test/resources` config (never in the jar)
 - [x] ~~Delete stale remote branches~~ `future`, `wicket7-upgrade`, `wicket8`, `dependabot/maven/org.apache.wicket-wicket-core-8.12.0` — 2026-09-24, owner: **keep for now** (D16); closed, nothing deleted

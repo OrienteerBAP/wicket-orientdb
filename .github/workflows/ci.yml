@@ -1,0 +1,47 @@
+# Build and test on every push and pull request (REFRESH_PLAN.md, phase R).
+# Publishing to Maven Central is NOT done here: the owner runs snapshot deploys and releases (D14).
+name: CI
+
+on:
+  push:
+    branches: ['**']
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Build (JDK ${{ matrix.java }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        java: ['21', '25']
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: ${{ matrix.java }}
+          cache: maven
+
+      # Tests start an embedded OrientDB server (ports 2424-2430, 2480-2490); each matrix job runs on its own runner.
+      - name: Build and test
+        run: ./mvnw -B -ntp clean verify
+
+      - name: Upload test reports
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: surefire-reports-jdk${{ matrix.java }}
+          path: '**/target/surefire-reports/'
+          if-no-files-found: ignore
+          retention-days: 14

@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/OrienteerBAP/wicket-orientdb.svg?branch=master)](https://travis-ci.org/OrienteerBAP/wicket-orientdb) [![Coverage Status](https://img.shields.io/coveralls/OrienteerBAP/wicket-orientdb.svg)](https://coveralls.io/r/OrienteerBAP/wicket-orientdb)
+[![CI](https://github.com/OrienteerBAP/wicket-orientdb/actions/workflows/ci.yml/badge.svg)](https://github.com/OrienteerBAP/wicket-orientdb/actions/workflows/ci.yml)
 
 wicket-orientdb
 ===============
