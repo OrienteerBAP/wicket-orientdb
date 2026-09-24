@@ -45,3 +45,12 @@ jobs:
           path: '**/target/surefire-reports/'
           if-no-files-found: ignore
           retention-days: 14
+
+      - name: Upload coverage report
+        if: matrix.java == '21'
+        uses: actions/upload-artifact@v7
+        with:
+          name: jacoco-report
+          path: wicket-orientdb/target/site/jacoco/
+          if-no-files-found: ignore
+          retention-days: 14
