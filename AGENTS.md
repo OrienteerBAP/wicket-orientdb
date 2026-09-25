@@ -41,8 +41,8 @@ and is modernized in lockstep with it. Dormant from Feb 2024 to Sep 2026.
   Temurin 25.0.4 for verification: `JAVA_HOME=~/.sdkman/candidates/java/25.0.4-tem ./mvnw clean verify`. JDK 27 is non-LTS.
 - Plugin versions live only in the root `<pluginManagement>`. CI: `.github/workflows/ci.yml` (push + PR, JDK 21/25,
   surefire + JaCoCo reports); Dependabot: `.github/dependabot.yml`.
-- Publishing: `central-publishing-maven-plugin` (server id `central`) — `-SNAPSHOT`s to the Central Portal snapshots
-  repository, releases as a portal bundle; the demo is excluded. **Only the owner runs `deploy`/releases** (plan D14);
+- Publishing: `central-publishing-maven-plugin` (server id `${central.server.id}`, default `central`) — `-SNAPSHOT`s to the
+  Central Portal snapshots repository (`2.0-SNAPSHOT` is published), releases as a portal bundle; the demo is excluded. **Only the owner runs `deploy`/releases** (plan D14);
   agents never upload, push or tag. OSSRH (oss.sonatype.org) and jcenter/bintray are dead.
 
 ## Commands
