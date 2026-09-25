@@ -52,7 +52,7 @@
 		<okhttp.version>4.9.0</okhttp.version>
 		<log4j.version>2.26.1</log4j.version>
 		<!-- GraalJS replacing the GraalVM 21.3.5 that OrientDB 3.2.x brings (fails on JDK 22+) -->
-		<graalvm.version>25.0.4</graalvm.version>
+		<graalvm.version>25.4.4.1.1</graalvm.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<!-- Publishing (REFRESH_PLAN.md D13/D14): snapshots and releases go to Maven Central via the Central Portal -->
 		<central.snapshots.url>https://central.sonatype.com/repository/maven-snapshots/</central.snapshots.url>
