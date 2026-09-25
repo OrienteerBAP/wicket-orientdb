@@ -56,6 +56,8 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<!-- Publishing (REFRESH_PLAN.md D13/D14): snapshots and releases go to Maven Central via the Central Portal -->
 		<central.snapshots.url>https://central.sonatype.com/repository/maven-snapshots/</central.snapshots.url>
+		<!-- settings.xml server holding the Central Portal user token; override with -Dcentral.server.id=<id> -->
+		<central.server.id>central</central.server.id>
 	</properties>
 	<modules>
 		<module>wicket-orientdb</module>
@@ -212,7 +214,7 @@
 				<artifactId>central-publishing-maven-plugin</artifactId>
 				<extensions>true</extensions>
 				<configuration>
-					<publishingServerId>central</publishingServerId>
+					<publishingServerId>${central.server.id}</publishingServerId>
 					<centralSnapshotsUrl>${central.snapshots.url}</centralSnapshotsUrl>
 					<deploymentName>wicket-orientdb ${project.version}</deploymentName>
 					<excludeArtifacts>

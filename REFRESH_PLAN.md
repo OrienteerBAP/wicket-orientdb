@@ -181,6 +181,7 @@ Prerequisites (one-off):
      </servers>
    </settings>
    ```
+   If the token sits under another server id, add `-Dcentral.server.id=<id>` to the deploy/release commands (property in the root pom).
 2. **Enable SNAPSHOTs** for the `ru.ydn` namespace: https://central.sonatype.com/publishing/namespaces → `ru.ydn` → ⋮ → *Enable SNAPSHOTs*.
 3. **GPG key (needed for `2.0`, not for snapshots):** `gpg --full-generate-key` (RSA 4096, `Ilia Naryzhny <phantom@ydn.ru>`),
    then `gpg --keyserver keyserver.ubuntu.com --send-keys <KEYID>` (Central also looks at keys.openpgp.org — verify the e-mail there).
